@@ -11,10 +11,21 @@ header{background:#fff;border-bottom:1px solid #e2ebe4}.home-brand{display:flex;
 main{width:min(100% - 30px,760px);margin:28px auto 60px}.hero{background:linear-gradient(120deg,#123b27,#1b7544);color:#fff;border-radius:18px;padding:27px;text-align:center}.hero .icon{font-size:42px}.hero h1{margin:3px 0;font-size:27px}.hero p{margin:5px 0 0;color:#d7e9dc;font-size:13px}
 .intro{margin:17px 2px;color:#647269;font-size:13px}.levels{display:grid;gap:10px}.level{display:flex;align-items:center;gap:14px;padding:15px 17px;background:#fff;border:1px solid #e2ebe4;border-radius:13px;box-shadow:0 5px 18px #153d2508}.medal{width:48px;height:48px;flex:none;display:grid;place-items:center;border-radius:50%;background:#eef5f0;font-size:25px}.detail{flex:1;min-width:0}.detail strong{display:block;font-size:16px}.detail small{color:#78857c;font-size:11px}.threshold{font-size:15px;font-weight:900;white-space:nowrap;color:#28613d}
 .level.nobel{background:linear-gradient(110deg,#fff8df,#f2e1b0 52%,#fffaf0);border:2px solid #c6a34c;box-shadow:0 8px 24px #9c77251c}.nobel .medal{background:radial-gradient(circle,#fff8dc 35%,#e8cb7d 36%,#a67b26 72%,#f7e9bd 74%);color:#735116;border:2px double #fff3c6}.nobel .detail strong,.nobel .threshold{color:#805d1d}.nobel .detail small{color:#987b3d}.note{margin-top:17px;padding:14px 16px;border:1px solid #e2ebe4;background:#fff;border-radius:11px;color:#68766d;font-size:12px}.back{display:block;text-align:center;margin:20px auto;color:#28613d;font-weight:800;text-decoration:none;font-size:13px}
+
+/* トップページと共通のヘッダー */
+.site-header{background:#fff;border-bottom:1px solid #e2ebe4}
+.home-brand{display:flex;align-items:center;gap:13px;text-decoration:none;color:inherit;flex:none}
+.header-inner{max-width:1100px;margin:auto;padding:15px 24px;display:flex;align-items:center;gap:13px}
+.logo{width:46px;height:46px;border-radius:5px;background:#168b4c;color:white;display:grid;place-items:center;font-size:29px;font-weight:900;box-shadow:inset 0 -3px 0 #0d6d3a}
+.brand{font-size:23px;font-weight:850;color:#1d3426}.brand small{display:block;font-size:10px;letter-spacing:.16em;color:#839087;line-height:1.2}
+.header-tag{margin-left:auto;color:#678071;font-size:12px;font-weight:700;background:#f0f7f2;padding:7px 12px;border-radius:30px}
+.ranking-open{margin-left:auto;border:1px solid #dce8df;border-radius:9px;background:#f3f8f4;color:#28613d;padding:9px 12px;font:inherit;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap}
+.account-open{margin-left:8px;border:0;border-radius:9px;background:#168b4c;color:#fff;padding:10px 14px;font:inherit;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap}
+@media(max-width:650px){.header-inner{padding:12px 16px}.header-tag{font-size:10px;padding:6px 8px}.ranking-open{margin-left:auto;padding:8px 9px;font-size:11px}.account-open{margin-left:0;padding:8px 9px;font-size:11px}}
 </style>
 </head>
 <body>
-<header><div class="head"><a class="home-brand" href="https://shunshunday.github.io/science-study/" aria-label="理科キッズ ホーム"><div class="logo">理</div><div class="brand">理科キッズ</div></a></div></header>
+<header class="site-header"><div class="header-inner"><a class="home-brand" href="https://shunshunday.github.io/science-study/" aria-label="理科キッズ ホーム"><div class="logo" aria-hidden="true">理</div><div class="brand">理科キッズ<small>SCIENCE KIDS</small></div></a><div class="header-tag">中学1〜3年生・理科用語集</div><a class="ranking-open" href="./ranking.html">🏆 ランキング</a><a class="ranking-open" href="./titles.html">🎖️ 称号一覧</a><a class="account-open" href="./profile.html">マイプロフィール</a></div></header>
 <main>
 <section class="hero"><div class="icon">🎖️</div><h1>称号一覧</h1><p>クイズに正解して、称号をランクアップしよう！</p></section>
 <p class="intro">累計正解数に応じて称号が自動で変わります。同じ問題にもう一度正解した場合も、正解数に加算されます。</p>
