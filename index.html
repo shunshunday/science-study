@@ -423,7 +423,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAccount();});
 function setAuthMode(mode){authMode=mode;document.querySelectorAll('.auth-tab').forEach(b=>b.classList.toggle('active',b.dataset.authTab===mode));document.getElementById('authSubmit').textContent=mode==='login'?'ログイン':'新規登録';document.getElementById('authPassword').autocomplete=mode==='login'?'current-password':'new-password';authMessage.textContent='';}
 document.querySelectorAll('.auth-tab').forEach(b=>b.addEventListener('click',()=>setAuthMode(b.dataset.authTab)));
 function usernameEmail(username){return username.toLowerCase()+'@accounts.rikakids.invalid';}
-function scienceTitle(n){if(n>=200)return '伝説の科学者';if(n>=100)return '科学の天才';if(n>=60)return '理科博士';if(n>=30)return '理科マスター';if(n>=10)return '理科チャレンジャー';return '理科ビギナー';}
+function scienceTitle(n){if(n>=500)return 'ノーベル賞';if(n>=200)return '伝説の科学者';if(n>=100)return '科学の天才';if(n>=60)return '理科博士';if(n>=30)return '理科マスター';if(n>=10)return '理科チャレンジャー';return '理科ビギナー';}
 async function refreshAccount(){
  const accountOpen=document.getElementById('accountOpen');
  if(!supabaseClient){accountOpen.textContent='ログイン・プロフィール';authView.hidden=false;profileView.hidden=true;document.getElementById('accountSetup').hidden=false;return;}
