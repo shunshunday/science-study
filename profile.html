@@ -40,6 +40,16 @@ h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:
 .member-rank strong{font-size:15px;font-weight:950;color:#26343b;text-align:right}
 .member-card.gold .member-rank{border-color:#a77a17;background:linear-gradient(100deg,#fff4bd,#e6bd42);color:#513b08}
 .member-card.gold .member-rank span{color:#795a16}.member-card.gold .member-rank strong{color:#513b08}
+/* 会員証の称号欄：通常称号は白、ノーベル賞は金、覇者は深紫 */
+.member-card .member-rank{background:#fff;border-color:#d7dde3;color:#26343b}
+.member-card .member-rank span{color:#687680}
+.member-card .member-rank strong{color:#26343b}
+.member-card .member-rank.nobel{border-color:#c8a44e;background:linear-gradient(110deg,#fff8df,#f5e7bd 48%,#fffaf0);box-shadow:0 5px 14px #9c77251c;color:#6d4d12}
+.member-card .member-rank.nobel span{color:#987020}
+.member-card .member-rank.nobel strong{color:#916719}
+.member-card .member-rank.haisha{border:1px solid #542b79;background:linear-gradient(110deg,#100d1d,#28113e 48%,#42132f);box-shadow:0 0 16px #7d2cff55,inset 0 0 16px #d0006b22;color:#f1d9ff}
+.member-card .member-rank.haisha span{color:#d9b9f3}
+.member-card .member-rank.haisha strong{color:#f1d9ff}
 .member-footer{position:relative;display:flex;justify-content:space-between;gap:8px;margin-top:9px;padding-top:8px;border-top:1px solid #26323830;color:#65737b;font-size:8px;font-weight:800;letter-spacing:.06em}
 .member-card.gold .member-footer{border-color:#8e6a183d;color:#755719}
 @media(max-width:480px){.member-card{padding:14px;min-height:0}.member-body{grid-template-columns:minmax(0,.8fr) minmax(0,1.3fr);gap:8px}.member-stats{gap:5px}.member-stat{padding:8px 5px}.member-stat span{font-size:8px}.member-stat strong{font-size:14px}.member-rank{padding:8px}.member-rank strong{font-size:13px}.member-name{font-size:18px}.avatar-wrap{width:48px;height:48px;font-size:20px}.member-identity{gap:7px}.member-footer{font-size:7px}}
@@ -264,6 +274,9 @@ async function refreshProfile(){
   const count=Math.max(0,Number(data.correct_count)||0);
   document.getElementById("correct").textContent=count.toLocaleString("ja-JP");
   document.getElementById("rank").textContent=titleFor(count);
+  const titleBar=document.querySelector(".member-rank");
+  titleBar.classList.toggle("nobel",count>=500&&count<1000);
+  titleBar.classList.toggle("haisha",count>=1000);
   const isGold=count>=100;
   const card=document.getElementById("memberCard");
   card.classList.toggle("gold",isGold);
