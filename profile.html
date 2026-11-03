@@ -393,8 +393,17 @@ document.getElementById("deleteButton").addEventListener("click",async()=>{
   message.textContent="アカウントを削除しています…";
   const result=await api("/functions/v1/delete-account",{method:"POST",body:JSON.stringify({})},session.access_token);
   if(!result?.success)throw new Error(result?.error||"削除できませんでした。");
-  localStorage.removeItem(STORAGE_KEY);
-  alert("アカウントを削除しました。ご利用ありがとうございました。");
+  // 削除成功後は、この画面のメモリ上のセッションも破棄してログアウト状態にする
+  try{
+   localStorage.removeItem(STORAGE_KEY);
+   if(currentUser?.id)localStorage.removeItem(profilePendingKey(currentUser.id));
+  }catch(e){console.warn("ローカルセッションの削除:",e);}
+  currentSession=null;
+  accessToken=null;
+  currentUser=null;
+  profilePlaytimeUserId=null;
+  if(profilePlaytimeTimer){clearInterval(profilePlaytimeTimer);profilePlaytimeTimer=null;}
+  alert("アカウントを削除しました。ログアウトしました。ご利用ありがとうございました。");
   location.replace("./");
  }catch(err){message.textContent=err.message||"削除できませんでした。";button.disabled=false;}
 });
