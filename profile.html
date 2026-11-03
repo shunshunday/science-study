@@ -26,7 +26,7 @@ h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:
 .member-card.gold .member-mark{border-color:#116b39;background:#16834a;color:#fff}
 .member-body{position:relative;display:grid;grid-template-columns:minmax(0, .9fr) minmax(0,1.5fr);align-items:center;gap:14px;padding:13px 0 10px}
 .member-label{margin:0 0 5px;color:#697781;font-size:9px;font-weight:900;letter-spacing:.18em}
-.member-identity{display:flex;align-items:center;gap:11px;min-width:0}.avatar-wrap{width:64px;height:64px;flex:none;border-radius:50%;overflow:hidden;border:2px solid #cbd3da;background:#e9f2eb;display:grid;place-items:center;color:#16834a;font-size:25px;font-weight:950}.avatar-wrap img{width:100%;height:100%;object-fit:cover;display:block}.avatar-wrap img[hidden]{display:none!important}.member-card.gold .avatar-wrap{border-color:#b88a1b}.member-name{font-size:clamp(18px,3.5vw,25px);font-weight:950;letter-spacing:.02em;overflow-wrap:anywhere;color:#1f2d35;line-height:1.25}
+.member-identity{display:flex;align-items:center;gap:11px;min-width:0}.avatar-wrap{width:64px;height:64px;flex:none;border-radius:50%;overflow:hidden;border:2px solid #cbd3da;background:#e9f2eb;display:grid;place-items:center;color:#16834a;font-size:25px;font-weight:950}.avatar-wrap img{width:100%;height:100%;object-fit:cover;display:block}.avatar-wrap img[hidden]{display:none!important}.avatar-wrap{cursor:copy;transition:box-shadow .15s,border-color .15s}.avatar-wrap.avatar-drag-over{border-color:#16834a;box-shadow:0 0 0 5px #16834a35}.member-card.gold .avatar-wrap{border-color:#b88a1b}.member-name{font-size:clamp(18px,3.5vw,25px);font-weight:950;letter-spacing:.02em;overflow-wrap:anywhere;color:#1f2d35;line-height:1.25}
 .member-sub{margin-top:5px;color:#65737b;font-size:10px}
 .member-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
 .member-stat{min-width:0;padding:10px 8px;border:1px solid #cbd3da;border-radius:9px;background:#ffffffb8}
@@ -298,17 +298,15 @@ async function refreshProfile(){
   showStatus(error.message||"ログイン情報を確認できません。ホーム画面からログインし直してください。");
  }
 }
-document.getElementById("avatarUploadButton").addEventListener("click",async()=>{
- const input=document.getElementById("avatarFile");
- const file=input.files&&input.files[0];
+async function uploadAvatarFile(file){
  const message=document.getElementById("avatarMessage");
  const button=document.getElementById("avatarUploadButton");
- if(!file){message.textContent="先に写真を選択してください。";return;}
+ if(!file){message.textContent="画像ファイルをドロップしてください。";return;}
  const allowed=["image/jpeg","image/png","image/webp","image/gif"];
  if(!allowed.includes(file.type)){message.textContent="PNG・JPG・WebP・GIF画像を選んでください。";return;}
  if(file.size>2*1024*1024){message.textContent="画像は2MB以下にしてください。";return;}
  if(!currentUser||!accessToken){message.textContent="ログイン状態を確認できません。再読み込みしてください。";return;}
- const ext=({ "image/jpeg":"jpg","image/png":"png","image/webp":"webp","image/gif":"gif" })[file.type];
+ const ext=({"image/jpeg":"jpg","image/png":"png","image/webp":"webp","image/gif":"gif"})[file.type];
  const path=encodeURIComponent(currentUser.id)+"/avatar."+ext;
  button.disabled=true;message.textContent="写真をアップロードしています…";
  try{
@@ -322,9 +320,30 @@ document.getElementById("avatarUploadButton").addEventListener("click",async()=>
   if(!response.ok)throw new Error(result.message||result.error||"写真のアップロードに失敗しました。");
   const publicUrl=SUPABASE_URL+"/storage/v1/object/public/avatars/"+currentUser.id+"/avatar."+ext+"?v="+Date.now();
   await api("/rest/v1/profiles?id=eq."+encodeURIComponent(currentUser.id),{method:"PATCH",headers:{"Prefer":"return=minimal"},body:JSON.stringify({avatar_url:publicUrl})});
-  showAvatar(publicUrl);message.textContent="プロフィール写真を変更しました。";input.value="";
+  showAvatar(publicUrl);message.textContent="プロフィール写真を変更しました。";
+  document.getElementById("avatarFile").value="";
  }catch(error){console.error("Avatar upload failed:",error);message.textContent=error.message||"写真を変更できませんでした。";}
  finally{button.disabled=false;}
+}
+document.getElementById("avatarUploadButton").addEventListener("click",()=>{
+ const input=document.getElementById("avatarFile");
+ uploadAvatarFile(input.files&&input.files[0]);
+});
+const avatarDropArea=document.querySelector(".avatar-wrap");
+avatarDropArea.title="ここに画像をドロップしてプロフィール写真を設定";
+avatarDropArea.addEventListener("dragover",event=>{
+ event.preventDefault();
+ event.dataTransfer.dropEffect="copy";
+ avatarDropArea.classList.add("avatar-drag-over");
+});
+avatarDropArea.addEventListener("dragleave",event=>{
+ if(!avatarDropArea.contains(event.relatedTarget))avatarDropArea.classList.remove("avatar-drag-over");
+});
+avatarDropArea.addEventListener("drop",event=>{
+ event.preventDefault();
+ avatarDropArea.classList.remove("avatar-drag-over");
+ const file=event.dataTransfer.files&&event.dataTransfer.files[0];
+ uploadAvatarFile(file);
 });
 async function verifyPassword(password){
  const email=currentUser?.email;
