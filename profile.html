@@ -326,9 +326,17 @@ async function uploadAvatarFile(file){
  }catch(error){console.error("Avatar upload failed:",error);message.textContent=error.message||"写真を変更できませんでした。";}
  finally{button.disabled=false;}
 }
+const avatarFileInput=document.getElementById("avatarFile");
 document.getElementById("avatarUploadButton").addEventListener("click",()=>{
- const input=document.getElementById("avatarFile");
- uploadAvatarFile(input.files&&input.files[0]);
+ if(!currentUser||!accessToken){
+  document.getElementById("avatarMessage").textContent="ログイン状態を確認できません。再読み込みしてください。";
+  return;
+ }
+ avatarFileInput.click();
+});
+avatarFileInput.addEventListener("change",()=>{
+ const file=avatarFileInput.files&&avatarFileInput.files[0];
+ if(file)uploadAvatarFile(file);
 });
 const avatarDropArea=document.querySelector(".avatar-wrap");
 avatarDropArea.title="ここに画像をドロップしてプロフィール写真を設定";
