@@ -57,7 +57,7 @@ function titleFor(n){if(n>=500)return "ノーベル賞";if(n>=200)return "伝説
   const name=document.createElement("div");name.className="name";name.textContent=item.username;if(isNobel){const crown=document.createElement("span");crown.className="nobel-crown";crown.textContent="♛";name.appendChild(crown);}
   const title=document.createElement("span");title.className="rank";title.textContent=titleFor(Number(item.correct_count||0))+(isNobel?"　✦ NOBEL LAUREATE ✦":"");name.appendChild(title);
   const score=document.createElement("div");score.className="score";score.textContent=Number(item.correct_count||0).toLocaleString("ja-JP");
-  const small=document.createElement("small");small.textContent="正解";score.appendChild(small);
+  const small=document.createElement("small");small.textContent="問正解";score.appendChild(small);
   row.append(pos,name,score);list.appendChild(row);
  });
  document.getElementById("updated").textContent="上位"+data.length+"人を表示";
