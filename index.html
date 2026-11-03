@@ -453,9 +453,10 @@ document.getElementById('authForm').addEventListener('submit',async e=>{
 });
 document.getElementById('logoutButton').addEventListener('click',async()=>{if(!supabaseClient)return;await supabaseClient.auth.signOut();await refreshAccount();});
 async function saveCorrectAnswer(unit){
+ if(!supabaseClient)return;
  try{
   const {data:{session}}=await supabaseClient.auth.getSession();if(!session)return;
-  const {error}=await supabaseClient.rpc('record_quiz_result',{p_unit:unit});
+  const {error}=await supabaseClient.from('quiz_attempts').insert({user_id:session.user.id,unit});
   if(error)throw error;
   const {data:profile}=await supabaseClient.from('profiles').select('correct_count').eq('id',session.user.id).single();
   if(profile)document.getElementById('profileCorrect').textContent=Number(profile.correct_count||0).toLocaleString('ja-JP');
