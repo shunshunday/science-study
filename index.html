@@ -51,6 +51,7 @@ footer{background:#fff;border-top:1px solid var(--line);color:#8a968e}.footer-in
    <div class="profile-user"><div class="profile-avatar">理</div><div><strong id="profileUsername">ユーザー</strong><small>理科キッズ メンバー</small></div></div>
    <div class="profile-score"><strong id="profileCorrect">0</strong><span>累計正解数</span></div>
    <p class="profile-caption">これまでに正解した問題の合計です。同じ問題に何度正解しても、そのたびに加算されます。</p>
+   <a class="auth-submit" style="display:block;text-align:center;text-decoration:none" href="profile.html">プロフィールページを開く</a>
    <button class="auth-submit" id="logoutButton" type="button">ログアウト</button>
    <p class="auth-message" id="profileMessage" role="status"></p>
   </div>
@@ -463,6 +464,7 @@ async function saveCorrectAnswer(unit){
  }catch(e){console.error('正解数の保存に失敗しました',e);}
 }
 if(supabaseClient){supabaseClient.auth.onAuthStateChange(()=>{if(accountModal.classList.contains('open'))refreshAccount();});}
+if(new URLSearchParams(location.search).get('login')==='1') showAccount();
 
 </script>
 </body></html>
