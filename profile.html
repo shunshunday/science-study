@@ -131,10 +131,9 @@ function formatPlaytime(seconds){
  const minutes=totalMinutes%60;
  return hours>0?hours+"時間"+minutes+"分":totalMinutes+"分";
 }
-function loadPlaytime(userId){
+function loadPlaytime(seconds){
  try{
-  const seconds=Number(localStorage.getItem("rikakids-playtime-"+userId)||0);
-  document.getElementById("playtime").textContent=formatPlaytime(seconds);
+  document.getElementById("playtime").textContent=formatPlaytime(Number(seconds)||0);
  }catch(e){document.getElementById("playtime").textContent="—";}
 }
 function titleFor(n){
@@ -192,12 +191,12 @@ async function refreshProfile(){
  try{
   showStatus("ログイン状態を確認しています…");
   const session=await ensureSession();
-  const rows=await api("/rest/v1/profiles?select=username,correct_count,avatar_url&id=eq."+encodeURIComponent(session.user.id),{method:"GET",cache:"no-store",headers:{"Cache-Control":"no-cache"}});
+  const rows=await api("/rest/v1/profiles?select=username,correct_count,avatar_url,playtime_seconds&id=eq."+encodeURIComponent(session.user.id),{method:"GET",cache:"no-store",headers:{"Cache-Control":"no-cache"}});
   const data=Array.isArray(rows)?rows[0]:null;
   if(!data)throw new Error("プロフィール情報が見つかりません。");
   document.getElementById("username").textContent=data.username||"ユーザー";
   showAvatar(data.avatar_url||"");
-  loadPlaytime(session.user.id);
+  loadPlaytime(data.playtime_seconds);
   const count=Math.max(0,Number(data.correct_count)||0);
   document.getElementById("correct").textContent=count.toLocaleString("ja-JP");
   document.getElementById("rank").textContent=titleFor(count);

@@ -471,36 +471,79 @@ document.querySelectorAll('.quiz-unit').forEach(b=>b.addEventListener('click',()
 document.getElementById('startQuiz').addEventListener('click',startQuiz);
 
 
-// ログイン中にサイトを表示している時間を端末内に累計記録
+// 表示中かつフォーカス中の時間だけをSupabaseへ累計保存
 let playtimeUserId=null;
 let playtimeTimer=null;
 let lastPlaytimeTick=0;
+let pendingPlaytimeSeconds=0;
+let playtimeSyncPromise=null;
+function playtimePendingKey(userId){return "rikakids-playtime-pending-"+userId;}
+function pageIsActivelyViewed(){
+ return document.visibilityState==="visible"&&document.hasFocus();
+}
+async function syncPendingPlaytime(){
+ if(!playtimeUserId||!supabaseClient||playtimeSyncPromise)return;
+ const userId=playtimeUserId;
+ playtimeSyncPromise=(async()=>{
+  while(playtimeUserId===userId&&pendingPlaytimeSeconds>0){
+   const chunk=Math.min(30,pendingPlaytimeSeconds);
+   const {error}=await supabaseClient.rpc("increment_playtime",{p_seconds:chunk});
+   if(error){
+    console.error("プレイ時間の保存に失敗:",error);
+    break;
+   }
+   pendingPlaytimeSeconds-=chunk;
+   try{localStorage.setItem(playtimePendingKey(userId),String(pendingPlaytimeSeconds));}catch(e){}
+  }
+ })();
+ try{await playtimeSyncPromise;}finally{playtimeSyncPromise=null;}
+}
 function flushPlaytime(){
  if(!playtimeUserId||!lastPlaytimeTick)return;
  const now=Date.now();
- if(document.visibilityState==="visible"&&document.hasFocus()){
+ if(pageIsActivelyViewed()){
   const elapsed=Math.min(30,Math.max(0,Math.floor((now-lastPlaytimeTick)/1000)));
   if(elapsed>0){
-   const key="rikakids-playtime-"+playtimeUserId;
-   const total=Number(localStorage.getItem(key)||0)+elapsed;
-   localStorage.setItem(key,String(total));
+   pendingPlaytimeSeconds+=elapsed;
+   try{localStorage.setItem(playtimePendingKey(playtimeUserId),String(pendingPlaytimeSeconds));}catch(e){}
+   syncPendingPlaytime();
   }
  }
  lastPlaytimeTick=now;
 }
 function stopPlaytimeTracking(){
  flushPlaytime();
+ syncPendingPlaytime();
  if(playtimeTimer)clearInterval(playtimeTimer);
- playtimeTimer=null;playtimeUserId=null;lastPlaytimeTick=0;
+ playtimeTimer=null;playtimeUserId=null;lastPlaytimeTick=0;pendingPlaytimeSeconds=0;
 }
-function startPlaytimeTracking(userId){
- if(!userId)return;
+async function startPlaytimeTracking(userId){
+ if(!userId||!supabaseClient)return;
  if(playtimeUserId===userId)return;
  stopPlaytimeTracking();
- playtimeUserId=userId;lastPlaytimeTick=Date.now();
+ playtimeUserId=userId;
+ try{
+  const pending=Number(localStorage.getItem(playtimePendingKey(userId))||0);
+  pendingPlaytimeSeconds=Number.isFinite(pending)?Math.max(0,Math.floor(pending)):0;
+ }catch(e){pendingPlaytimeSeconds=0;}
+ // 旧バージョンで端末内にだけ保存されていた時間を一度だけ移行
+ try{
+  const legacyKey="rikakids-playtime-"+userId;
+  const legacySeconds=Number(localStorage.getItem(legacyKey)||0);
+  if(legacySeconds>0){
+   const {error}=await supabaseClient.rpc("import_legacy_playtime",{p_seconds:Math.min(604800,Math.floor(legacySeconds))});
+   if(error)throw error;
+   localStorage.removeItem(legacyKey);
+  }
+ }catch(e){console.error("以前のプレイ時間の移行に失敗:",e);}
+ lastPlaytimeTick=Date.now();
+ syncPendingPlaytime();
  playtimeTimer=setInterval(flushPlaytime,10000);
 }
-document.addEventListener("visibilitychange",()=>{flushPlaytime();lastPlaytimeTick=Date.now();});
+document.addEventListener("visibilitychange",()=>{
+ if(document.visibilityState==="hidden")flushPlaytime();
+ else lastPlaytimeTick=Date.now();
+});
 window.addEventListener("focus",()=>{lastPlaytimeTick=Date.now();});
 window.addEventListener("blur",flushPlaytime);
 window.addEventListener("pagehide",flushPlaytime);
