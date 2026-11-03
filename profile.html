@@ -122,8 +122,6 @@ button:disabled{opacity:.55;cursor:wait}
   <section class="panel danger-panel">
    <h2>アカウント削除</h2>
    <p class="warning">アカウントを削除すると、プロフィール・累計正解数・ランキング情報・学習履歴が削除されます。この操作は取り消せません。</p>
-   <label for="deletePassword">本人確認のため、現在のパスワードを入力</label>
-   <input id="deletePassword" type="password" autocomplete="current-password">
    <label for="deleteConfirm">確認のため「削除する」と入力</label>
    <input id="deleteConfirm" type="text" autocomplete="off" placeholder="削除する">
    <button class="danger-button" id="deleteButton" type="button">アカウントを完全に削除</button>
@@ -380,16 +378,14 @@ document.getElementById("passwordForm").addEventListener("submit",async e=>{
  finally{button.disabled=false;}
 });
 document.getElementById("deleteButton").addEventListener("click",async()=>{
- const password=document.getElementById("deletePassword").value;
  const confirmation=document.getElementById("deleteConfirm").value.trim();
  const message=document.getElementById("deleteMessage");
  const button=document.getElementById("deleteButton");
- if(!password){message.textContent="現在のパスワードを入力してください。";return;}
  if(confirmation!=="削除する"){message.textContent="確認欄に「削除する」と正確に入力してください。";return;}
  if(!confirm("本当にアカウントを削除しますか？この操作は取り消せません。"))return;
- button.disabled=true;message.textContent="本人確認中…";
+ button.disabled=true;message.textContent="ログイン状態を確認しています…";
  try{
-  const session=await verifyPassword(password);
+  const session=await ensureSession();
   message.textContent="アカウントを削除しています…";
   const result=await api("/functions/v1/delete-account",{method:"POST",body:JSON.stringify({})},session.access_token);
   if(!result?.success)throw new Error(result?.error||"削除できませんでした。");
