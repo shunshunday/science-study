@@ -1,0 +1,45 @@
+name: Publish 理科キッズ to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Enable GitHub Pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages" \
+            -f "source[branch]=main" -f "source[path]=/" >/tmp/pages.json 2>/tmp/pages.err
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ]; then
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/pages" \
+              -f "source[branch]=main" -f "source[path]=/"
+          fi
+
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4
