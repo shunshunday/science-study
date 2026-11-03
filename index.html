@@ -456,15 +456,14 @@ document.getElementById('logoutButton').addEventListener('click',async()=>{if(!s
 async function saveCorrectAnswer(unit){
  if(!supabaseClient)return;
  try{
-  const {data:{session}}=await supabaseClient.auth.getSession();if(!session)return;
-  const {error}=await supabaseClient.from('quiz_attempts').insert({user_id:session.user.id,unit});
+  const {data:{user},error:authError}=await supabaseClient.auth.getUser();if(authError||!user)return;
+  const {error}=await supabaseClient.from('quiz_attempts').insert({user_id:user.id,unit,correct_count:1});
   if(error)throw error;
-  const {data:profile}=await supabaseClient.from('profiles').select('correct_count').eq('id',session.user.id).single();
+  const {data:profile}=await supabaseClient.from('profiles').select('correct_count').eq('id',user.id).single();
   if(profile)document.getElementById('profileCorrect').textContent=Number(profile.correct_count||0).toLocaleString('ja-JP');
  }catch(e){console.error('正解数の保存に失敗しました',e);}
 }
 if(supabaseClient){supabaseClient.auth.onAuthStateChange(()=>{if(accountModal.classList.contains('open'))refreshAccount();});}
-if(new URLSearchParams(location.search).get('login')==='1')showAccount();
 if(new URLSearchParams(location.search).get('login')==='1') showAccount();
 
 </script>
