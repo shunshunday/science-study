@@ -470,6 +470,41 @@ quizNext.addEventListener('click',()=>{
 document.querySelectorAll('.quiz-unit').forEach(b=>b.addEventListener('click',()=>{selectedUnit=b.dataset.unit;document.querySelectorAll('.quiz-unit').forEach(x=>x.classList.toggle('active',x===b));}));
 document.getElementById('startQuiz').addEventListener('click',startQuiz);
 
+
+// ログイン中にサイトを表示している時間を端末内に累計記録
+let playtimeUserId=null;
+let playtimeTimer=null;
+let lastPlaytimeTick=0;
+function flushPlaytime(){
+ if(!playtimeUserId||!lastPlaytimeTick)return;
+ const now=Date.now();
+ if(document.visibilityState==="visible"&&document.hasFocus()){
+  const elapsed=Math.min(30,Math.max(0,Math.floor((now-lastPlaytimeTick)/1000)));
+  if(elapsed>0){
+   const key="rikakids-playtime-"+playtimeUserId;
+   const total=Number(localStorage.getItem(key)||0)+elapsed;
+   localStorage.setItem(key,String(total));
+  }
+ }
+ lastPlaytimeTick=now;
+}
+function stopPlaytimeTracking(){
+ flushPlaytime();
+ if(playtimeTimer)clearInterval(playtimeTimer);
+ playtimeTimer=null;playtimeUserId=null;lastPlaytimeTick=0;
+}
+function startPlaytimeTracking(userId){
+ if(!userId)return;
+ if(playtimeUserId===userId)return;
+ stopPlaytimeTracking();
+ playtimeUserId=userId;lastPlaytimeTick=Date.now();
+ playtimeTimer=setInterval(flushPlaytime,10000);
+}
+document.addEventListener("visibilitychange",()=>{flushPlaytime();lastPlaytimeTick=Date.now();});
+window.addEventListener("focus",()=>{lastPlaytimeTick=Date.now();});
+window.addEventListener("blur",flushPlaytime);
+window.addEventListener("pagehide",flushPlaytime);
+
 let authMode='login';
 const accountModal=document.getElementById('accountModal');
 const authView=document.getElementById('authView');
@@ -490,7 +525,8 @@ async function refreshAccount(){
  if(!supabaseClient){accountOpen.textContent='ログイン・プロフィール';authView.hidden=false;profileView.hidden=true;document.getElementById('accountSetup').hidden=false;return;}
  document.getElementById('accountSetup').hidden=true;
  const {data:{session}}=await supabaseClient.auth.getSession();
- if(!session){accountOpen.textContent='ログイン・プロフィール';authView.hidden=false;profileView.hidden=true;return;}
+ if(!session){stopPlaytimeTracking();accountOpen.textContent='ログイン・プロフィール';authView.hidden=false;profileView.hidden=true;return;}
+ startPlaytimeTracking(session.user.id);
  authView.hidden=true;profileView.hidden=false;
  const {data:profile,error}=await supabaseClient.from('profiles').select('username,correct_count').eq('id',session.user.id).single();
  if(error){accountOpen.textContent=(session.user.user_metadata?.username||session.user.email?.split('@')[0]||'ユーザー')+'（ログイン中）';document.getElementById('profileMessage').textContent='プロフィールを読み込めません。';return;}
@@ -520,7 +556,7 @@ document.getElementById('authForm').addEventListener('submit',async e=>{
  }catch(err){authMessage.textContent=authMode==='signup'?'登録できませんでした。ユーザー名が使用済みか、設定を確認してください。':'ログインできません。ユーザー名とパスワードを確認してください。';}
  finally{submit.disabled=false;}
 });
-document.getElementById('logoutButton').addEventListener('click',async()=>{if(!supabaseClient)return;await supabaseClient.auth.signOut();await refreshAccount();});
+document.getElementById('logoutButton').addEventListener('click',async()=>{if(!supabaseClient)return;stopPlaytimeTracking();await supabaseClient.auth.signOut();await refreshAccount();});
 async function saveCorrectAnswer(unit){
  if(!supabaseClient)return;
  try{
@@ -531,7 +567,7 @@ async function saveCorrectAnswer(unit){
   if(profile){const count=Number(profile.correct_count||0);document.getElementById('profileCorrect').textContent=count.toLocaleString('ja-JP');document.getElementById('profileRank').textContent=scienceTitle(count);profileView.classList.toggle('profile-view-nobel',count>=500&&count<1000);profileView.classList.toggle('profile-view-haki',count>=1000);}
  }catch(e){console.error('正解数の保存に失敗しました',e);}
 }
-if(supabaseClient){supabaseClient.auth.onAuthStateChange(()=>{if(accountModal.classList.contains('open'))refreshAccount();});}
+if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else stopPlaytimeTracking();if(accountModal.classList.contains('open'))refreshAccount();});}
 if(new URLSearchParams(location.search).get('login')==='1') showAccount();
 
 </script>
