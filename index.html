@@ -9,7 +9,7 @@
 <style>
 :root{--green:#16834a;--dark:#0d6537;--pale:#eaf6ee;--ink:#202a24;--muted:#69766e;--line:#e4ebe6;--bg:#f5f8f5}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans JP","Yu Gothic",Meiryo,system-ui,sans-serif;line-height:1.75}
-.site-header{background:#fff;border-bottom:1px solid var(--line)}.header-inner{max-width:1100px;margin:auto;padding:15px 24px;display:flex;align-items:center;gap:13px}
+.site-header{background:#fff;border-bottom:1px solid var(--line)}.home-brand{display:flex;align-items:center;gap:13px;text-decoration:none;color:inherit;flex:none}.header-inner{max-width:1100px;margin:auto;padding:15px 24px;display:flex;align-items:center;gap:13px}
 .logo{width:46px;height:46px;border-radius:5px;background:#168b4c;color:white;display:grid;place-items:center;font-size:29px;font-weight:900;box-shadow:inset 0 -3px 0 #0d6d3a}
 .brand{font-size:23px;font-weight:850;color:#1d3426}.brand small{display:block;font-size:10px;letter-spacing:.16em;color:#839087;line-height:1.2}.header-tag{margin-left:auto;color:#678071;font-size:12px;font-weight:700;background:#f0f7f2;padding:7px 12px;border-radius:30px}
 main{max-width:1100px;margin:auto;padding:30px 24px 75px}.hero{background:linear-gradient(115deg,#e7f5eb,#f5faf6 70%);border:1px solid #d8ebde;border-radius:18px;padding:27px 32px;margin-bottom:23px;position:relative;overflow:hidden}.hero:after{content:"理";position:absolute;right:35px;top:-38px;font-size:180px;font-weight:900;color:#16834a0e;pointer-events:none}
@@ -27,7 +27,7 @@ footer{background:#fff;border-top:1px solid var(--line);color:#8a968e}.footer-in
 </style>
 </head>
 <body>
-<header class="site-header"><div class="header-inner"><div class="logo" aria-label="理">理</div><div class="brand">理科キッズ<small>SCIENCE KIDS</small></div><div class="header-tag">中学1〜3年生・理科用語集</div><a class="ranking-open" href="./ranking.html">🏆 ランキング</a><a class="ranking-open" href="./titles.html">🎖️ 称号一覧</a><button class="account-open" id="accountOpen" type="button">ログイン・プロフィール</button></div></header>
+<header class="site-header"><div class="header-inner"><a class="home-brand" href="./" aria-label="理科キッズ ホーム"><div class="logo" aria-hidden="true">理</div><div class="brand">理科キッズ<small>SCIENCE KIDS</small></div></a><div class="header-tag">中学1〜3年生・理科用語集</div><a class="ranking-open" href="./ranking.html">🏆 ランキング</a><a class="ranking-open" href="./titles.html">🎖️ 称号一覧</a><button class="account-open" id="accountOpen" type="button">ログイン・プロフィール</button></div></header>
 
 <section class="account-modal" id="accountModal" aria-hidden="true">
  <div class="account-backdrop" id="accountBackdrop"></div>
