@@ -72,16 +72,31 @@ button:disabled{opacity:.55;cursor:wait}
   <a class="action secondary" href="./">理科キッズに戻る</a>
  </section>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="this.onerror=null;this.src='https://unpkg.com/@supabase/supabase-js@2';"></script>
+<!-- Supabaseライブラリは下のスクリプトから非同期で読み込みます -->
 <script>
 let supabase=null;
 const statusElement=document.getElementById("status");
-try{
- if(!window.supabase?.createClient)throw new Error("認証ライブラリを読み込めませんでした。");
- supabase=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
-}catch(initError){
- statusElement.textContent="認証システムを読み込めませんでした。ページを再読み込みしてください。";
- console.error("Supabase client initialization failed:",initError);
+function loadSupabaseLibrary(url){
+ return new Promise((resolve,reject)=>{
+  const script=document.createElement("script");
+  script.src=url;
+  script.onload=()=>resolve();
+  script.onerror=()=>reject(new Error("ライブラリの読み込みに失敗"));
+  document.head.appendChild(script);
+ });
+}
+async function initializeSupabase(){
+ statusElement.textContent="認証システムを読み込んでいます…";
+ try{
+  try{await withTimeout(loadSupabaseLibrary("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"),7000);}
+  catch(firstError){await withTimeout(loadSupabaseLibrary("https://unpkg.com/@supabase/supabase-js@2"),7000);}
+  if(!window.supabase?.createClient)throw new Error("認証ライブラリを利用できません。");
+  supabase=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
+  await refreshProfile();
+ }catch(error){
+  console.error("Supabase initialization failed:",error);
+  statusElement.textContent=error.message||"認証システムに接続できません。";
+ }
 }
 let currentUser=null;
 function titleFor(n){if(n>=1000)return "覇者";if(n>=500)return "ノーベル賞";if(n>=200)return "伝説の科学者";if(n>=100)return "科学の天才";if(n>=60)return "理科博士";if(n>=30)return "理科マスター";if(n>=10)return "理科チャレンジャー";return "理科ビギナー";}
@@ -155,7 +170,7 @@ document.getElementById("deleteButton").addEventListener("click",async()=>{
  }catch(err){message.textContent=err.message||"削除できませんでした。もう一度お試しください。";button.disabled=false;}
 });
 document.getElementById("logout").addEventListener("click",async()=>{if(!supabase)return;await supabase.auth.signOut();location.replace("./");});
-refreshProfile();
+initializeSupabase();
 </script>
 </body>
 </html>
