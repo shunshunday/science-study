@@ -24,27 +24,13 @@ footer{background:#fff;border-top:1px solid var(--line);color:#8a968e}.footer-in
 
 
 
-/* Ranking page header: rebuilt cleanly, isolated from all page styles */
-#ranking-site-header{position:relative;inset:auto;transform:none;float:none;clear:both;display:block;width:100%;max-width:none;height:auto;min-height:0;margin:0;padding:0;background:#fff;border:0;border-bottom:1px solid #e4ebe6;box-sizing:border-box}
-#ranking-site-header *{box-sizing:border-box}
-#ranking-site-header .rk-header-inner{position:static;inset:auto;transform:none;float:none;width:100%;max-width:1100px;height:auto;min-height:76px;margin:0 auto;padding:15px 24px;display:flex;align-items:center;gap:13px}
-#ranking-site-header .rk-home-brand{display:flex;align-items:center;gap:13px;flex:none;margin:0;padding:0;text-decoration:none;color:inherit}
-#ranking-site-header .rk-logo{width:46px;height:46px;min-width:46px;min-height:46px;margin:0;padding:0;border-radius:5px;background:#168b4c;color:#fff;display:grid;place-items:center;font-size:29px;font-weight:900;line-height:1;box-shadow:inset 0 -3px 0 #0d6d3a}
-#ranking-site-header .rk-brand{margin:0;padding:0;font-size:23px;font-weight:850;line-height:1.35;color:#1d3426}
-#ranking-site-header .rk-brand small{display:block;margin:0;padding:0;font-size:10px;font-weight:400;letter-spacing:.16em;line-height:1.2;color:#839087}
-#ranking-site-header .rk-header-tag{margin-left:auto;padding:7px 12px;border-radius:30px;background:#f0f7f2;color:#678071;font-size:12px;font-weight:700;line-height:1.5;white-space:nowrap}
-#ranking-site-header .rk-nav-link{margin-left:auto;padding:9px 12px;border:1px solid #dce8df;border-radius:9px;background:#f3f8f4;color:#28613d;font:inherit;font-size:12px;font-weight:800;line-height:1.5;text-decoration:none;white-space:nowrap}
-#ranking-site-header .rk-account-link{margin-left:8px;padding:10px 14px;border:0;border-radius:9px;background:#168b4c;color:#fff;font:inherit;font-size:12px;font-weight:800;line-height:1.5;white-space:nowrap;cursor:pointer}
-@media(max-width:650px){
-#ranking-site-header .rk-header-inner{padding:12px 16px}
-#ranking-site-header .rk-header-tag{font-size:10px;padding:6px 8px}
-#ranking-site-header .rk-nav-link{margin-left:auto;padding:8px 9px;font-size:11px}
-#ranking-site-header .rk-account-link{margin-left:0;padding:8px 9px;font-size:11px}
-}
+.site-header{background:#fff;border-bottom:1px solid var(--line)}.home-brand{display:flex;align-items:center;gap:13px;text-decoration:none;color:inherit;flex:none}.header-inner{max-width:1100px;margin:auto;padding:15px 24px;display:flex;align-items:center;gap:13px}
+.logo{width:46px;height:46px;border-radius:5px;background:#168b4c;color:white;display:grid;place-items:center;font-size:29px;font-weight:900;box-shadow:inset 0 -3px 0 #0d6d3a}
+.brand{font-size:23px;font-weight:850;color:#1d3426}.brand small{display:block;font-size:10px;letter-spacing:.16em;color:#839087;line-height:1.2}.header-tag{margin-left:auto;color:#678071;font-size:12px;font-weight:700;background:#f0f7f2;padding:7px 12px;border-radius:30px}
 </style>
 </head>
 <body>
-<header id="ranking-site-header"><div class="rk-header-inner"><a class="rk-home-brand" href="./" aria-label="理科キッズ ホーム"><div class="rk-logo" aria-hidden="true">理</div><div class="rk-brand">理科キッズ<small>SCIENCE KIDS</small></div></a><div class="rk-header-tag">中学1〜3年生・理科用語集</div><a class="rk-nav-link" href="./ranking.html">🏆 ランキング</a><a class="rk-nav-link" href="./titles.html">🎖️ 称号一覧</a><button class="rk-account-link" type="button" onclick="location.href='./profile.html'">ログイン・プロフィール</button></div></header>
+<header class="site-header"><div class="header-inner"><a class="home-brand" href="./" aria-label="理科キッズ ホーム"><div class="logo" aria-hidden="true">理</div><div class="brand">理科キッズ<small>SCIENCE KIDS</small></div></a><div class="header-tag">中学1〜3年生・理科用語集</div><a class="ranking-open" href="./ranking.html">🏆 ランキング</a><a class="ranking-open" href="./titles.html">🎖️ 称号一覧</a><button class="account-open" type="button" onclick="location.href='./profile.html'">ログイン・プロフィール</button></div></header>
 <main>
 <section class="hero"><div class="cup">🏆</div><h1>正解数ランキング</h1><p>みんなの累計正解数で競おう！</p></section>
 <section class="panel"><div id="status" class="status">ランキングを読み込んでいます…</div><div id="list"></div></section>
