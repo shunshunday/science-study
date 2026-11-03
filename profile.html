@@ -88,8 +88,8 @@ function loadSupabaseLibrary(url){
 async function initializeSupabase(){
  statusElement.textContent="認証システムを読み込んでいます…";
  try{
-  try{await withTimeout(loadSupabaseLibrary("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"),7000);}
-  catch(firstError){await withTimeout(loadSupabaseLibrary("https://unpkg.com/@supabase/supabase-js@2"),7000);}
+  try{await withTimeout(loadSupabaseLibrary("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"),7000);}
+  catch(firstError){await withTimeout(loadSupabaseLibrary("https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"),7000);}
   if(!window.supabase?.createClient)throw new Error("認証ライブラリを利用できません。");
   supabase=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
   await refreshProfile();
