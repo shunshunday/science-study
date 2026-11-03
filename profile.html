@@ -26,7 +26,8 @@ button{background:var(--green);color:#fff}a{background:#eef5f0;color:#28613d}
  <p id="status">ログイン状態を確認しています…</p>
  <section id="profile" hidden>
   <div class="user"><strong id="username"></strong><div>理科キッズ メンバー</div></div>
-  <div class="score"><strong id="correct">0</strong><span>累計正解数</span></div>\n  <div class="rank"><span>現在の称号</span><strong id="rank">理科ビギナー</strong></div>
+  <div class="score"><strong id="correct">0</strong><span>累計正解数</span></div>
+  <div class="rank"><span>現在の称号</span><strong id="rank">理科ビギナー</strong></div>
   <button id="logout" type="button">ログアウト</button>
   <a href="./">理科キッズに戻る</a>
  </section>
@@ -34,16 +35,22 @@ button{background:var(--green);color:#fff}a{background:#eef5f0;color:#28613d}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const supabase = window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
-function titleFor(n){if(n>=500)return "ノーベル賞";if(n>=200)return "伝説の科学者";if(n>=100)return "科学の天才";if(n>=60)return "理科博士";if(n>=30)return "理科マスター";if(n>=10)return "理科チャレンジャー";return "理科ビギナー";}\n(async()=>{
+function titleFor(n){if(n>=500)return "ノーベル賞";if(n>=200)return "伝説の科学者";if(n>=100)return "科学の天才";if(n>=60)return "理科博士";if(n>=30)return "理科マスター";if(n>=10)return "理科チャレンジャー";return "理科ビギナー";}
+async function refreshProfile(){
  const {data:{user},error:authError}=await supabase.auth.getUser();
  if(authError||!user){location.replace("./?login=1");return;}
  const {data,error}=await supabase.from("profiles").select("username,correct_count").eq("id",user.id).single();
  if(error){document.getElementById("status").textContent="プロフィールを読み込めませんでした。";return;}
  document.getElementById("username").textContent=data.username;
- const count=Number(data.correct_count||0);\n document.getElementById("correct").textContent=count.toLocaleString("ja-JP");\n document.getElementById("rank").textContent=titleFor(count);
+ const count=Number(data.correct_count||0);
+ document.getElementById("correct").textContent=count.toLocaleString("ja-JP");
+ document.getElementById("rank").textContent=titleFor(count);
  document.getElementById("status").hidden=true;
  document.getElementById("profile").hidden=false;
-})();
+}
+refreshProfile();
+window.addEventListener("focus",refreshProfile);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshProfile();});
 document.getElementById("logout").addEventListener("click",async()=>{await supabase.auth.signOut();location.replace("./");});
 </script>
 </body>
