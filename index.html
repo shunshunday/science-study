@@ -1,10 +1,153 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>理科キッズ</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#16834a">
+<meta name="description" content="中学3年生向けの理科用語と意味をわかりやすくまとめた学習サイト、理科キッズ。">
+<title>理科キッズ｜中学3年 理科用語集</title>
+<style>
+:root{--green:#16834a;--green-dark:#0d6537;--green-pale:#eaf6ee;--ink:#202a24;--muted:#69766e;--line:#e4ebe6;--paper:#fff;--bg:#f5f8f5}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans JP","Yu Gothic",Meiryo,system-ui,sans-serif;line-height:1.75}
+a{color:inherit;text-decoration:none}
+.site-header{background:#fff;border-bottom:1px solid var(--line)}
+.header-inner{max-width:1100px;margin:auto;padding:17px 24px;display:flex;align-items:center;gap:13px}
+.logo{width:46px;height:46px;border-radius:5px;background:#168b4c;color:white;display:grid;place-items:center;font-size:29px;font-weight:900;line-height:1;box-shadow:inset 0 -3px 0 #0d6d3a;letter-spacing:-2px}
+.brand{font-size:23px;font-weight:850;letter-spacing:.02em;color:#1d3426}
+.brand small{display:block;font-size:10px;letter-spacing:.16em;color:#839087;font-weight:700;line-height:1.2}
+.header-tag{margin-left:auto;color:#678071;font-size:12px;font-weight:700;background:#f0f7f2;padding:7px 12px;border-radius:30px}
+main{max-width:1100px;margin:0 auto;padding:34px 24px 80px}
+.hero{background:linear-gradient(115deg,#e7f5eb,#f5faf6 70%);border:1px solid #d8ebde;border-radius:18px;padding:31px 34px;margin-bottom:25px;position:relative;overflow:hidden}
+.hero:after{content:"理";position:absolute;right:34px;top:-36px;font-size:180px;font-weight:900;color:rgba(22,131,74,.055);pointer-events:none}
+.eyebrow{font-size:11px;letter-spacing:.14em;color:var(--green);font-weight:850}
+h1{font-size:clamp(25px,4vw,35px);line-height:1.35;margin:8px 0 8px;letter-spacing:.015em}
+.hero p{margin:0;color:#617168;font-size:14px}
+.stats{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.stat{background:#fff;border:1px solid #e1eee4;border-radius:9px;padding:8px 13px;font-size:12px;color:#65736a}
+.stat b{font-size:17px;color:var(--green);margin-right:4px}
+.toolbar{display:flex;gap:12px;align-items:center;margin:22px 0 16px;flex-wrap:wrap}
+.search-wrap{flex:1;min-width:220px;position:relative}
+.search-wrap span{position:absolute;left:14px;top:9px;color:#849188;font-size:18px}
+#search{width:100%;height:44px;border:1px solid #dce5de;border-radius:10px;background:white;padding:0 14px 0 42px;font:inherit;font-size:14px;outline:none}
+#search:focus{border-color:var(--green);box-shadow:0 0 0 3px #16834a18}
+.filters{display:flex;gap:7px;flex-wrap:wrap}
+.filter{border:1px solid #dce6df;background:#fff;color:#647269;border-radius:30px;padding:8px 13px;font:inherit;font-size:12px;font-weight:750;cursor:pointer;transition:.15s}
+.filter:hover,.filter.active{background:var(--green);border-color:var(--green);color:white}
+.section-heading{display:flex;align-items:end;justify-content:space-between;margin:27px 0 13px}
+.section-heading h2{font-size:19px;margin:0}
+#count{font-size:12px;color:#7a877e}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.term-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:17px 19px;transition:transform .15s,border-color .15s}
+.term-card:hover{transform:translateY(-2px);border-color:#b9d9c3}
+.term-top{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.category{font-size:10px;font-weight:800;color:var(--green);background:var(--green-pale);padding:3px 8px;border-radius:5px}
+.term-card h3{font-size:17px;margin:0;letter-spacing:.01em}
+.term-card p{font-size:13px;color:#59665e;margin:0}
+.no-results{grid-column:1/-1;text-align:center;padding:45px 15px;color:#7b887f;background:white;border:1px dashed #d8e3db;border-radius:12px}
+.study-note{margin-top:25px;padding:16px 19px;border-radius:11px;background:#fff;border:1px solid var(--line);font-size:12px;color:#6c796f}
+.study-note b{color:#385744}
+footer{background:#fff;border-top:1px solid var(--line);color:#8a968e}
+.footer-inner{max-width:1100px;margin:auto;padding:22px 24px;display:flex;align-items:center;gap:12px;font-size:11px}
+.footer-mark{font-weight:800;color:#61756a}
+.secret-button{margin-left:auto;width:23px;height:23px;border:0;background:transparent;color:#d5ded7;border-radius:50%;cursor:pointer;font-size:11px;opacity:.55;transition:.2s}
+.secret-button:hover,.secret-button:focus-visible{opacity:1;background:#eaf6ee;color:var(--green);outline:2px solid #b7ddc3}
+.secret-screen{position:fixed;inset:0;background:rgba(12,28,18,.96);z-index:10;display:none;align-items:center;justify-content:center;padding:24px;color:white;text-align:center}
+.secret-screen.show{display:flex}
+.secret-panel{max-width:440px}
+.secret-panel .mark{width:58px;height:58px;margin:0 auto 18px;background:var(--green);display:grid;place-items:center;font-size:35px;font-weight:900;border-radius:7px}
+.secret-panel h2{font-size:27px;margin:0 0 8px}
+.secret-panel p{color:#c5d5ca;font-size:14px;margin:0 0 22px}
+.close-secret{background:#fff;color:#174b2e;border:0;border-radius:8px;padding:10px 22px;font:inherit;font-weight:800;cursor:pointer}
+@media(max-width:650px){.header-inner{padding:13px 17px}.header-tag{font-size:10px;padding:6px 9px}main{padding:22px 16px 55px}.hero{padding:24px 21px}.hero:after{right:8px;font-size:130px}.cards{grid-template-columns:1fr}.footer-inner{padding:18px 16px}}
+</style>
 </head>
 <body>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo" aria-label="理">理</div>
+    <div class="brand">理科キッズ<small>SCIENCE KIDS</small></div>
+    <div class="header-tag">中学3年生・理科用語集</div>
+  </div>
+</header>
+<main>
+  <section class="hero">
+    <div class="eyebrow">WELCOME TO SCIENCE KIDS</div>
+    <h1>理科の言葉を、<br>わかりやすく。</h1>
+    <p>中学3年生で学ぶ理科の重要用語と意味をまとめました。</p>
+    <div class="stats">
+      <div class="stat"><b>12</b>掲載用語</div>
+      <div class="stat"><b>4</b>学習分野</div>
+      <div class="stat">いつでも復習できる</div>
+    </div>
+  </section>
+  <div class="toolbar">
+    <div class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="用語や説明から検索…" autocomplete="off" aria-label="用語を検索"></div>
+    <div class="filters" aria-label="分野で絞り込み">
+      <button class="filter active" data-category="すべて">すべて</button>
+      <button class="filter" data-category="化学">化学</button>
+      <button class="filter" data-category="物理">物理</button>
+      <button class="filter" data-category="生物">生物</button>
+      <button class="filter" data-category="地学">地学</button>
+    </div>
+  </div>
+  <div class="section-heading"><h2>理科用語一覧</h2><span id="count">12件の用語</span></div>
+  <section class="cards" id="cards" aria-live="polite">
+    <article class="term-card" data-category="化学"><div class="term-top"><span class="category">化学</span><h3>原子</h3></div><p>物質をつくる基本的な粒子。原子核と、そのまわりにある電子からできている。</p></article>
+    <article class="term-card" data-category="化学"><div class="term-top"><span class="category">化学</span><h3>イオン</h3></div><p>原子や原子の集まりが電子を失ったり受け取ったりして、電気を帯びた粒子。</p></article>
+    <article class="term-card" data-category="化学"><div class="term-top"><span class="category">化学</span><h3>電解質</h3></div><p>水に溶けると電流が流れる水溶液になる物質。</p></article>
+    <article class="term-card" data-category="化学"><div class="term-top"><span class="category">化学</span><h3>中和</h3></div><p>酸性の水溶液とアルカリ性の水溶液を混ぜたとき、互いの性質を打ち消し合う反応。</p></article>
+    <article class="term-card" data-category="物理"><div class="term-top"><span class="category">物理</span><h3>仕事</h3></div><p>物体に力を加えて、その力の向きに物体を動かしたときの量。</p></article>
+    <article class="term-card" data-category="物理"><div class="term-top"><span class="category">物理</span><h3>仕事率</h3></div><p>一定時間あたりにする仕事の大きさ。単位はワット（W）。</p></article>
+    <article class="term-card" data-category="物理"><div class="term-top"><span class="category">物理</span><h3>位置エネルギー</h3></div><p>高いところにある物体が、落下するときにほかの物体に仕事をする能力。</p></article>
+    <article class="term-card" data-category="物理"><div class="term-top"><span class="category">物理</span><h3>運動エネルギー</h3></div><p>運動している物体がもつエネルギー。物体が速いほど大きくなる。</p></article>
+    <article class="term-card" data-category="生物"><div class="term-top"><span class="category">生物</span><h3>遺伝</h3></div><p>親の形質が子や孫の世代へ受け継がれること。</p></article>
+    <article class="term-card" data-category="生物"><div class="term-top"><span class="category">生物</span><h3>DNA</h3></div><p>遺伝情報を記録している物質。細胞の核などに存在する。</p></article>
+    <article class="term-card" data-category="地学"><div class="term-top"><span class="category">地学</span><h3>プレート</h3></div><p>地球の表面をおおう、十数枚に分かれた厚い岩石の板。</p></article>
+    <article class="term-card" data-category="地学"><div class="term-top"><span class="category">地学</span><h3>前線</h3></div><p>性質の異なる暖かい気団と冷たい気団が接している境界面と、その地表との交線。</p></article>
+  </section>
+  <div class="study-note"><b>学習のポイント</b><br>用語の意味を読んだら、自分の言葉でも説明できるか確認してみましょう。</div>
+</main>
+<footer>
+  <div class="footer-inner">
+    <span class="footer-mark">■ 理科キッズ</span>
+    <span>中学3年 理科 学習用サイト</span>
+    <button class="secret-button" id="secretButton" aria-label="隠しボタン" title="">●</button>
+  </div>
+</footer>
+<div class="secret-screen" id="secretScreen" role="dialog" aria-modal="true" aria-labelledby="secretTitle">
+  <div class="secret-panel">
+    <div class="mark">理</div>
+    <h2 id="secretTitle">秘密の入口を発見！</h2>
+    <p>ここから先には、まだ誰も知らない世界がある……。<br>ゲームエリアは準備中です。</p>
+    <button class="close-secret" id="closeSecret">学習ページに戻る</button>
+  </div>
+</div>
+<script>
+const search=document.getElementById('search');
+const cards=[...document.querySelectorAll('.term-card')];
+const filters=[...document.querySelectorAll('.filter')];
+const count=document.getElementById('count');
+let category='すべて';
+function update(){
+ const q=search.value.trim().toLowerCase();let visible=0;
+ cards.forEach(card=>{
+  const matchCategory=category==='すべて'||card.dataset.category===category;
+  const matchText=card.textContent.toLowerCase().includes(q);
+  const show=matchCategory&&matchText;card.hidden=!show;if(show)visible++;
+ });
+ count.textContent=visible+'件の用語';
+}
+search.addEventListener('input',update);
+filters.forEach(button=>button.addEventListener('click',()=>{
+ category=button.dataset.category;
+ filters.forEach(item=>item.classList.toggle('active',item===button));update();
+}));
+const secretScreen=document.getElementById('secretScreen');
+document.getElementById('secretButton').addEventListener('click',()=>secretScreen.classList.add('show'));
+document.getElementById('closeSecret').addEventListener('click',()=>secretScreen.classList.remove('show'));
+document.addEventListener('keydown',event=>{if(event.key==='Escape')secretScreen.classList.remove('show')});
+</script>
 </body>
 </html>
