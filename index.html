@@ -423,13 +423,15 @@ function setAuthMode(mode){authMode=mode;document.querySelectorAll('.auth-tab').
 document.querySelectorAll('.auth-tab').forEach(b=>b.addEventListener('click',()=>setAuthMode(b.dataset.authTab)));
 function usernameEmail(username){return username.toLowerCase()+'@accounts.rikakids.invalid';}
 async function refreshAccount(){
- if(!supabaseClient){authView.hidden=false;profileView.hidden=true;document.getElementById('accountSetup').hidden=false;return;}
+ const accountOpen=document.getElementById('accountOpen');
+ if(!supabaseClient){accountOpen.textContent='ログイン・プロフィール';authView.hidden=false;profileView.hidden=true;document.getElementById('accountSetup').hidden=false;return;}
  document.getElementById('accountSetup').hidden=true;
  const {data:{session}}=await supabaseClient.auth.getSession();
- if(!session){authView.hidden=false;profileView.hidden=true;return;}
+ if(!session){accountOpen.textContent='ログイン・プロフィール';authView.hidden=false;profileView.hidden=true;return;}
  authView.hidden=true;profileView.hidden=false;
  const {data:profile,error}=await supabaseClient.from('profiles').select('username,correct_count').eq('id',session.user.id).single();
- if(error){document.getElementById('profileMessage').textContent='プロフィールを読み込めません。';return;}
+ if(error){accountOpen.textContent=(session.user.user_metadata?.username||session.user.email?.split('@')[0]||'ユーザー')+'（ログイン中）';document.getElementById('profileMessage').textContent='プロフィールを読み込めません。';return;}
+ accountOpen.textContent=profile.username+'（ログイン中）';
  document.getElementById('profileUsername').textContent=profile.username;
  document.getElementById('profileCorrect').textContent=Number(profile.correct_count||0).toLocaleString('ja-JP');
 }
