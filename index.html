@@ -452,11 +452,24 @@ render();
 const quizBox=document.getElementById('quizBox'),quizQuestion=document.getElementById('quizQuestion'),quizOptions=document.getElementById('quizOptions'),quizFeedback=document.getElementById('quizFeedback'),quizNext=document.getElementById('quizNext'),quizProgress=document.getElementById('quizProgress'),quizScore=document.getElementById('quizScore'),quizPlay=document.getElementById('quizPlay'),quizResult=document.getElementById('quizResult');
 let quizQuestions=[],quizIndex=0,quizCorrect=0,answered=false,selectedUnit='すべて';
 function shuffle(items){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function definitionSimilarity(a,b){
+ const grams=s=>{const v=s.replace(/[、。！？・（）「」]/g,'').replace(/(である|です|ます|する|している|など|もの|こと)/g,'');const out=new Set();for(let i=0;i<v.length-1;i++)out.add(v.slice(i,i+2));return out;};
+ const aa=grams(a),bb=grams(b);let common=0;for(const g of aa)if(bb.has(g))common++;
+ return common/(aa.size+bb.size-common||1);
+}
+function makeChallengingChoices(target,pool){
+ const sameCategory=pool.filter(x=>x[0]===target[0]&&x[1]!==target[1]);
+ const candidates=sameCategory.length>=3?sameCategory:pool.filter(x=>x[1]!==target[1]);
+ const ranked=candidates.map(x=>({term:x[1],score:definitionSimilarity(target[2],x[2])}))
+  .sort((a,b)=>b.score-a.score);
+ const challenging=ranked.slice(0,Math.min(10,ranked.length)).map(x=>x.term);
+ return shuffle([target[1],...shuffle(challenging).slice(0,3)]);
+}
 function startQuiz(){
  const allUnique=[...new Map(terms.filter(t=>t[1]&&t[2]).map(t=>[t[0]+'|'+t[1],t])).values()];
  const pool=selectedUnit==='すべて'?allUnique:allUnique.filter(t=>t[0]===selectedUnit);
  if(pool.length<4){quizFeedback.textContent='この分野の問題数が足りません。';return;}
- quizQuestions=shuffle(pool).slice(0,5).map(t=>({term:t[1],category:t[0],definition:t[2],choices:shuffle([t[1],...shuffle(pool.filter(x=>x[1]!==t[1]).map(x=>x[1])).slice(0,3)])}));
+ quizQuestions=shuffle(pool).slice(0,5).map(t=>({term:t[1],category:t[0],definition:t[2],choices:makeChallengingChoices(t,pool)}));
  quizIndex=0;quizCorrect=0;answered=false;
  document.getElementById('startQuiz').style.display='none';quizBox.classList.add('show');quizPlay.hidden=false;quizResult.hidden=true;showQuestion();
 }
