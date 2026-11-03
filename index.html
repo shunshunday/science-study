@@ -475,6 +475,7 @@ document.getElementById('startQuiz').addEventListener('click',startQuiz);
 let playtimeUserId=null;
 let playtimeTimer=null;
 let lastPlaytimeTick=0;
+let playtimeWasActive=false;
 let pendingPlaytimeSeconds=0;
 let playtimeSyncPromise=null;
 function playtimePendingKey(userId){return "rikakids-playtime-pending-"+userId;}
@@ -498,10 +499,11 @@ async function syncPendingPlaytime(){
  })();
  try{await playtimeSyncPromise;}finally{playtimeSyncPromise=null;}
 }
-function flushPlaytime(){
+function flushPlaytime(forcePreviousActive=false){
  if(!playtimeUserId||!lastPlaytimeTick)return;
  const now=Date.now();
- if(pageIsActivelyViewed()){
+ const activeNow=pageIsActivelyViewed();
+ if(activeNow||(forcePreviousActive&&playtimeWasActive)){
   const elapsed=Math.min(30,Math.max(0,Math.floor((now-lastPlaytimeTick)/1000)));
   if(elapsed>0){
    pendingPlaytimeSeconds+=elapsed;
@@ -510,6 +512,7 @@ function flushPlaytime(){
   }
  }
  lastPlaytimeTick=now;
+ playtimeWasActive=activeNow;
 }
 function stopPlaytimeTracking(){
  flushPlaytime();
@@ -537,16 +540,17 @@ async function startPlaytimeTracking(userId){
   }
  }catch(e){console.error("以前のプレイ時間の移行に失敗:",e);}
  lastPlaytimeTick=Date.now();
+ playtimeWasActive=pageIsActivelyViewed();
  syncPendingPlaytime();
  playtimeTimer=setInterval(flushPlaytime,10000);
 }
 document.addEventListener("visibilitychange",()=>{
- if(document.visibilityState==="hidden")flushPlaytime();
- else lastPlaytimeTick=Date.now();
+ if(document.visibilityState==="hidden")flushPlaytime(true);
+ else{lastPlaytimeTick=Date.now();playtimeWasActive=pageIsActivelyViewed();}
 });
-window.addEventListener("focus",()=>{lastPlaytimeTick=Date.now();});
-window.addEventListener("blur",flushPlaytime);
-window.addEventListener("pagehide",flushPlaytime);
+window.addEventListener("focus",()=>{lastPlaytimeTick=Date.now();playtimeWasActive=pageIsActivelyViewed();});
+window.addEventListener("blur",()=>flushPlaytime(true));
+window.addEventListener("pagehide",()=>flushPlaytime(true));
 
 let authMode='login';
 const accountModal=document.getElementById('accountModal');

@@ -187,10 +187,72 @@ function showAvatar(url){
  const fallback=document.getElementById("avatarFallback");
  if(url){img.src=url;img.hidden=false;fallback.hidden=true;}else{img.removeAttribute("src");img.hidden=true;fallback.hidden=false;}
 }
+let profilePlaytimeUserId=null;
+let profilePlaytimeTimer=null;
+let profilePlaytimeLastTick=0;
+let profilePlaytimeWasActive=false;
+let profilePendingSeconds=0;
+let profileSyncPromise=null;
+function profilePageActive(){return document.visibilityState==="visible"&&document.hasFocus();}
+function profilePendingKey(id){return "rikakids-playtime-pending-"+id;}
+async function syncProfilePlaytime(){
+ if(!profilePlaytimeUserId||profileSyncPromise)return;
+ const id=profilePlaytimeUserId;
+ profileSyncPromise=(async()=>{
+  while(profilePlaytimeUserId===id&&profilePendingSeconds>0){
+   const chunk=Math.min(30,profilePendingSeconds);
+   try{await api("/rest/v1/rpc/increment_playtime",{method:"POST",body:JSON.stringify({p_seconds:chunk})});}
+   catch(error){console.error("プレイ時間の保存に失敗:",error);break;}
+   profilePendingSeconds-=chunk;
+   try{localStorage.setItem(profilePendingKey(id),String(profilePendingSeconds));}catch(e){}
+  }
+ })();
+ try{await profileSyncPromise;}finally{profileSyncPromise=null;}
+}
+function flushProfilePlaytime(forcePreviousActive=false){
+ if(!profilePlaytimeUserId||!profilePlaytimeLastTick)return;
+ const now=Date.now(),activeNow=profilePageActive();
+ if(activeNow||(forcePreviousActive&&profilePlaytimeWasActive)){
+  const elapsed=Math.min(30,Math.max(0,Math.floor((now-profilePlaytimeLastTick)/1000)));
+  if(elapsed>0){
+   profilePendingSeconds+=elapsed;
+   try{localStorage.setItem(profilePendingKey(profilePlaytimeUserId),String(profilePendingSeconds));}catch(e){}
+   syncProfilePlaytime();
+  }
+ }
+ profilePlaytimeLastTick=now;
+ profilePlaytimeWasActive=activeNow;
+}
+async function startProfilePlaytime(id){
+ profilePlaytimeUserId=id;
+ try{profilePendingSeconds=Math.max(0,Math.floor(Number(localStorage.getItem(profilePendingKey(id))||0)));}catch(e){profilePendingSeconds=0;}
+ try{
+  const legacyKey="rikakids-playtime-"+id;
+  const legacySeconds=Number(localStorage.getItem(legacyKey)||0);
+  if(legacySeconds>0){
+   await api("/rest/v1/rpc/import_legacy_playtime",{method:"POST",body:JSON.stringify({p_seconds:Math.min(604800,Math.floor(legacySeconds))})});
+   localStorage.removeItem(legacyKey);
+  }
+ }catch(error){console.error("以前のプレイ時間の移行に失敗:",error);}
+ profilePlaytimeLastTick=Date.now();
+ profilePlaytimeWasActive=profilePageActive();
+ syncProfilePlaytime();
+ if(profilePlaytimeTimer)clearInterval(profilePlaytimeTimer);
+ profilePlaytimeTimer=setInterval(flushProfilePlaytime,10000);
+}
+document.addEventListener("visibilitychange",()=>{
+ if(document.visibilityState==="hidden")flushProfilePlaytime(true);
+ else{profilePlaytimeLastTick=Date.now();profilePlaytimeWasActive=profilePageActive();}
+});
+window.addEventListener("focus",()=>{profilePlaytimeLastTick=Date.now();profilePlaytimeWasActive=profilePageActive();});
+window.addEventListener("blur",()=>flushProfilePlaytime(true));
+window.addEventListener("pagehide",()=>flushProfilePlaytime(true));
+
 async function refreshProfile(){
  try{
   showStatus("ログイン状態を確認しています…");
   const session=await ensureSession();
+  startProfilePlaytime(session.user.id);
   const rows=await api("/rest/v1/profiles?select=username,correct_count,avatar_url,playtime_seconds&id=eq."+encodeURIComponent(session.user.id),{method:"GET",cache:"no-store",headers:{"Cache-Control":"no-cache"}});
   const data=Array.isArray(rows)?rows[0]:null;
   if(!data)throw new Error("プロフィール情報が見つかりません。");
