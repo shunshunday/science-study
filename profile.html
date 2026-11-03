@@ -74,7 +74,130 @@ button:disabled{opacity:.55;cursor:wait}
   <a class="action secondary" href="./">理科キッズに戻る</a>
  </section>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://tmgfcmzufamxuzsuedza.supabase.co";
+const SUPABASE_KEY="sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng";
+const STORAGE_KEY="sb-tmgfcmzufamxuzsuedza-auth-token";
+const statusElement=document.getElementById("status");
+let currentUser=null;
+let accessToken=null;
+let currentSession=null;
+
+function titleFor(n){
+ if(n>=1000)return "覇者";
+ if(n>=500)return "ノーベル賞";
+ if(n>=200)return "伝説の科学者";
+ if(n>=100)return "科学の天才";
+ if(n>=60)return "理科博士";
+ if(n>=30)return "理科マスター";
+ if(n>=10)return "理科チャレンジャー";
+ return "理科ビギナー";
+}
+function showStatus(message){statusElement.hidden=false;statusElement.textContent=message;}
+function saveSession(session){
+ currentSession=session;
+ accessToken=session?.access_token||null;
+ currentUser=session?.user||null;
+ if(session)localStorage.setItem(STORAGE_KEY,JSON.stringify(session));
+}
+function readSession(){
+ try{
+  const raw=localStorage.getItem(STORAGE_KEY);
+  if(!raw)return null;
+  const parsed=JSON.parse(raw);
+  return parsed?.currentSession||parsed;
+ }catch(e){console.error("セッションの読み込みに失敗",e);return null;}
+}
+async function api(path,options={},token=accessToken){
+ const headers={"apikey":SUPABASE_KEY,"Content-Type":"application/json",...(options.headers||{})};
+ if(token)headers.Authorization="Bearer "+token;
+ const response=await fetch(SUPABASE_URL+path,{...options,headers});
+ const body=await response.text();
+ let data={};
+ try{data=body?JSON.parse(body):{};}catch{data={message:body};}
+ if(!response.ok)throw new Error(data.msg||data.message||data.error_description||data.error||("通信エラー ("+response.status+")"));
+ return data;
+}
+async function ensureSession(){
+ let session=readSession();
+ if(!session?.access_token||!session?.user)throw new Error("ログイン情報が見つかりません。ホーム画面からログインしてください。");
+ if(session.expires_at&&session.expires_at*1000<Date.now()+60000){
+  if(!session.refresh_token)throw new Error("ログイン期限が切れています。ホーム画面から再ログインしてください。");
+  const refreshed=await api("/auth/v1/token?grant_type=refresh_token",{method:"POST",body:JSON.stringify({refresh_token:session.refresh_token})},null);
+  saveSession(refreshed);
+  session=refreshed;
+ }else saveSession(session);
+ return session;
+}
+async function refreshProfile(){
+ try{
+  showStatus("ログイン状態を確認しています…");
+  const session=await ensureSession();
+  const rows=await api("/rest/v1/profiles?select=username,correct_count&id=eq."+encodeURIComponent(session.user.id),{method:"GET"});
+  const data=Array.isArray(rows)?rows[0]:null;
+  if(!data)throw new Error("プロフィール情報が見つかりません。");
+  document.getElementById("username").textContent=data.username||"ユーザー";
+  const count=Number(data.correct_count||0);
+  document.getElementById("correct").textContent=count.toLocaleString("ja-JP");
+  document.getElementById("rank").textContent=titleFor(count);
+  statusElement.hidden=true;
+  document.getElementById("profile").hidden=false;
+ }catch(error){
+  console.error("Profile loading failed:",error);
+  showStatus(error.message||"ログイン情報を確認できません。ホーム画面からログインし直してください。");
+ }
+}
+async function verifyPassword(password){
+ const email=currentUser?.email;
+ if(!email)throw new Error("ログイン情報にメールアドレスがありません。");
+ const session=await api("/auth/v1/token?grant_type=password",{method:"POST",body:JSON.stringify({email,password})},null);
+ saveSession(session);
+ return session;
+}
+document.getElementById("passwordForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const current=document.getElementById("currentPassword").value;
+ const next=document.getElementById("newPassword").value;
+ const confirmValue=document.getElementById("confirmPassword").value;
+ const message=document.getElementById("passwordMessage");
+ const button=document.getElementById("passwordButton");
+ if(next.length<8){message.textContent="新しいパスワードは8文字以上にしてください。";return;}
+ if(next!==confirmValue){message.textContent="新しいパスワードが一致しません。";return;}
+ if(next===current){message.textContent="現在と異なるパスワードを設定してください。";return;}
+ button.disabled=true;message.textContent="本人確認中…";
+ try{
+  await verifyPassword(current);
+  await api("/auth/v1/user",{method:"PUT",body:JSON.stringify({password:next})});
+  e.target.reset();message.textContent="パスワードを変更しました。";
+ }catch(err){message.textContent=err.message||"変更できませんでした。";}
+ finally{button.disabled=false;}
+});
+document.getElementById("deleteButton").addEventListener("click",async()=>{
+ const password=document.getElementById("deletePassword").value;
+ const confirmation=document.getElementById("deleteConfirm").value.trim();
+ const message=document.getElementById("deleteMessage");
+ const button=document.getElementById("deleteButton");
+ if(!password){message.textContent="現在のパスワードを入力してください。";return;}
+ if(confirmation!=="削除する"){message.textContent="確認欄に「削除する」と正確に入力してください。";return;}
+ if(!confirm("本当にアカウントを削除しますか？この操作は取り消せません。"))return;
+ button.disabled=true;message.textContent="本人確認中…";
+ try{
+  const session=await verifyPassword(password);
+  message.textContent="アカウントを削除しています…";
+  const result=await api("/functions/v1/delete-account",{method:"POST",body:JSON.stringify({})},session.access_token);
+  if(!result?.success)throw new Error(result?.error||"削除できませんでした。");
+  localStorage.removeItem(STORAGE_KEY);
+  alert("アカウントを削除しました。ご利用ありがとうございました。");
+  location.replace("./");
+ }catch(err){message.textContent=err.message||"削除できませんでした。";button.disabled=false;}
+});
+document.getElementById("logout").addEventListener("click",async()=>{
+ try{if(accessToken)await api("/auth/v1/logout",{method:"POST"},accessToken);}catch(e){console.warn("ログアウトAPI:",e);}
+ localStorage.removeItem(STORAGE_KEY);
+ location.replace("./");
+});
+refreshProfile();
+</script>
 <script>
 let supabase=null;
 const statusElement=document.getElementById("status");
