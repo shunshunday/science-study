@@ -26,10 +26,6 @@ footer{background:#fff;border-top:1px solid var(--line);color:#8a968e}.footer-in
 <body>
 <header class="site-header"><div class="header-inner"><div class="logo" aria-label="理">理</div><div class="brand">理科キッズ<small>SCIENCE KIDS</small></div><div class="header-tag">中学1〜3年生・理科用語集</div></div></header>
 <main>
-<section class="hero"><div class="eyebrow">WELCOME TO SCIENCE KIDS</div><h1>理科の言葉を、<br>わかりやすく。</h1><p>中学1〜3年生で学ぶ理科の重要用語・意味・化学式をまとめました。</p><div class="stats"><div class="stat"><b id="total">70</b>掲載用語</div><div class="stat"><b>4</b>学習分野</div><div class="stat">検索・分野別表示に対応</div></div></section>
-<div class="toolbar"><div class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="用語・化学式・説明から検索…" autocomplete="off" aria-label="用語を検索"></div><div class="filters" aria-label="分野で絞り込み"><button class="filter active" data-category="すべて">すべて</button><button class="filter" data-category="化学">化学</button><button class="filter" data-category="物理">物理</button><button class="filter" data-category="生物">生物</button><button class="filter" data-category="地学">地学</button></div></div>
-<div class="section-heading"><h2>理科用語一覧</h2><span id="count"></span></div><section class="cards" id="cards" aria-live="polite"></section>
-<div class="note"><b>学習のポイント</b><br>用語の意味だけでなく、化学式や実験での使い方も確認してみましょう。中学1〜3年の学習範囲を学年をまたいでまとめています。※学校や教科書によって学習する順番・扱う範囲は異なります。</div>
 <section class="quiz-section" id="quiz" aria-labelledby="secretTitle">
 <div class="quiz-panel">
 <div class="mark">理</div>
@@ -40,6 +36,12 @@ footer{background:#fff;border-top:1px solid var(--line);color:#8a968e}.footer-in
 <div class="quiz-box" id="quizBox"><div class="quiz-meta"><span id="quizProgress">第1問 / 5問</span><span id="quizScore">正解 0</span></div><div id="quizPlay"><p class="quiz-question" id="quizQuestion"></p><div class="quiz-options" id="quizOptions"></div><p class="quiz-feedback" id="quizFeedback" aria-live="polite"></p><button class="quiz-next" id="quizNext">次の問題へ</button></div><div class="quiz-result" id="quizResult" hidden></div></div>
 </div>
 </section>
+
+<section class="hero"><div class="eyebrow">WELCOME TO SCIENCE KIDS</div><h1>理科の言葉を、<br>わかりやすく。</h1><p>中学1〜3年生で学ぶ理科の重要用語・意味・化学式をまとめました。</p><div class="stats"><div class="stat"><b id="total">70</b>掲載用語</div><div class="stat"><b>4</b>学習分野</div><div class="stat">検索・分野別表示に対応</div></div></section>
+<div class="toolbar"><div class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="用語・化学式・説明から検索…" autocomplete="off" aria-label="用語を検索"></div><div class="filters" aria-label="分野で絞り込み"><button class="filter active" data-category="すべて">すべて</button><button class="filter" data-category="化学">化学</button><button class="filter" data-category="物理">物理</button><button class="filter" data-category="生物">生物</button><button class="filter" data-category="地学">地学</button></div></div>
+<div class="section-heading"><h2>理科用語一覧</h2><span id="count"></span></div><section class="cards" id="cards" aria-live="polite"></section>
+<div class="note"><b>学習のポイント</b><br>用語の意味だけでなく、化学式や実験での使い方も確認してみましょう。中学1〜3年の学習範囲を学年をまたいでまとめています。※学校や教科書によって学習する順番・扱う範囲は異なります。</div>
+
 </main>
 <footer><div class="footer-inner"><span class="footer-mark">■ 理科キッズ</span><span>中学理科 学習用サイト</span></div></footer>
 <div class="secret-screen" id="secretScreen" role="dialog" aria-modal="true" aria-labelledby="secretTitle"><div class="secret-panel"><div class="mark">理</div><h2 id="secretTitle">理科キッズ チャレンジ</h2><p>中学理科の用語から、ランダムで5問出題！<br>全問正解を目指そう。</p><div class="quiz-units" id="quizUnits" aria-label="出題範囲"><button class="quiz-unit active" data-unit="すべて">全分野</button><button class="quiz-unit" data-unit="化学">化学</button><button class="quiz-unit" data-unit="物理">物理</button><button class="quiz-unit" data-unit="生物">生物</button><button class="quiz-unit" data-unit="地学">地学</button></div><button class="quiz-start" id="startQuiz">選んだ範囲から5問出題</button><div class="quiz-box" id="quizBox"><div class="quiz-meta"><span id="quizProgress">第1問 / 5問</span><span id="quizScore">正解 0</span></div><div id="quizPlay"><p class="quiz-question" id="quizQuestion"></p><div class="quiz-options" id="quizOptions"></div><p class="quiz-feedback" id="quizFeedback" aria-live="polite"></p><button class="quiz-next" id="quizNext">次の問題へ</button></div><div class="quiz-result" id="quizResult" hidden></div></div><button class="quiz-back" id="closeSecret">学習ページに戻る</button></div></div>
