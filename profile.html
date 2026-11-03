@@ -201,7 +201,10 @@ async function ensureSession(){
 function showAvatar(url){
  const img=document.getElementById("avatarPreview");
  const fallback=document.getElementById("avatarFallback");
- if(url){img.src=url;img.hidden=false;fallback.hidden=true;}else{img.removeAttribute("src");img.hidden=true;fallback.hidden=false;}
+ const imageUrl=typeof url==="string"?url.trim():"";
+ img.onerror=()=>{img.removeAttribute("src");img.hidden=true;fallback.hidden=false;};
+ if(imageUrl){fallback.hidden=true;img.hidden=false;img.src=imageUrl;}
+ else{img.onerror=null;img.removeAttribute("src");img.hidden=true;fallback.hidden=false;}
 }
 let profilePlaytimeUserId=null;
 let profilePlaytimeTimer=null;
