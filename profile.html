@@ -34,7 +34,7 @@ button{background:var(--green);color:#fff}a{background:#eef5f0;color:#28613d}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const supabase = window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
-function titleFor(n){if(n>=200)return "伝説の科学者";if(n>=100)return "科学の天才";if(n>=60)return "理科博士";if(n>=30)return "理科マスター";if(n>=10)return "理科チャレンジャー";return "理科ビギナー";}\n(async()=>{
+function titleFor(n){if(n>=500)return "ノーベル賞";if(n>=200)return "伝説の科学者";if(n>=100)return "科学の天才";if(n>=60)return "理科博士";if(n>=30)return "理科マスター";if(n>=10)return "理科チャレンジャー";return "理科ビギナー";}\n(async()=>{
  const {data:{user},error:authError}=await supabase.auth.getUser();
  if(authError||!user){location.replace("./?login=1");return;}
  const {data,error}=await supabase.from("profiles").select("username,correct_count").eq("id",user.id).single();
