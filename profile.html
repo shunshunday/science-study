@@ -9,14 +9,14 @@
 :root{--green:#16834a;--ink:#203128;--muted:#69776e;--line:#e2ebe4}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#fff8df 0,transparent 34%),#f4f8f5;color:var(--ink);font-family:"Noto Sans JP","Yu Gothic",Meiryo,system-ui,sans-serif;display:grid;place-items:center;padding:20px}
 main{width:min(100%,480px);background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:0 12px 35px #153d2510;transition:.25s}
-main.nobel{background:linear-gradient(155deg,#fffdf5,#fff 48%,#fff9e8);border:2px solid #c6a34c;box-shadow:0 18px 55px #8c6b242b, inset 0 0 0 5px #f7edcf}
+main.haki{background:radial-gradient(circle at 50% 0,#54216e 0,transparent 45%),linear-gradient(155deg,#100d1d,#21102f 55%,#3a1230);border:2px solid #8d42c4;box-shadow:0 0 35px #852dce88,inset 0 0 0 5px #54216e;color:#fff}main.haki h1{color:#f5d9ff}main.haki .sub{color:#d8c1e8}main.haki .user{background:#321746;border:1px solid #74409a}main.haki .score{background:linear-gradient(135deg,#28113e,#45163f);border-color:#9b4ad0;box-shadow:0 0 18px #b42cff55}main.haki .score strong{color:#f2caff;text-shadow:0 0 12px #d82cff}main.haki .score span{color:#e5c9f5}main.haki .rank{background:linear-gradient(120deg,#29113e,#481638);border:1px solid #b44be0;box-shadow:0 0 20px #a42dce66}main.haki .rank strong{color:#ffd4f0;font-size:25px;text-shadow:0 0 10px #ff2995}main.haki .logo{background:linear-gradient(135deg,#6b2aa0,#250d38);box-shadow:0 0 15px #c22cff}main.nobel{background:linear-gradient(155deg,#fffdf5,#fff 48%,#fff9e8);border:2px solid #c6a34c;box-shadow:0 18px 55px #8c6b242b, inset 0 0 0 5px #f7edcf}
 main.nobel .logo{background:linear-gradient(145deg,#f7e5a5,#a87b24);color:#49350d;box-shadow:0 3px 12px #a87b2440}
 main.nobel h1{color:#72531b}
 main.nobel .score{background:linear-gradient(135deg,#fff8df,#f3e3b5);border-color:#d5b65f;box-shadow:inset 0 1px #fff}
 main.nobel .score strong{color:#9b711e;text-shadow:0 2px #fff}
 main.nobel .rank{background:linear-gradient(120deg,#fff8df,#f1dfaa);border:1px solid #c6a34c;box-shadow:0 5px 18px #a9822a22}
 main.nobel .rank strong{color:#755315;font-size:23px}
-.laurel{display:none;text-align:center;color:#a27a28;font-size:13px;font-weight:900;letter-spacing:.18em;margin:-12px 0 14px}
+.haki-aura{display:none;text-align:center;color:#efbaff;font-size:13px;font-weight:950;letter-spacing:.2em;margin:-12px 0 14px;text-shadow:0 0 12px #e22cff}.rank-seal.haki-seal{display:none;border:2px solid #d18cff;background:radial-gradient(circle,#8e39c6 0%,#37104f 58%,#100d1d 100%);color:#fff;box-shadow:0 0 25px #b52cff,0 0 45px #e00070;font-size:34px}.haki-aura.show{display:block}main.haki .rank-seal.haki-seal{display:grid}.laurel{display:none;text-align:center;color:#a27a28;font-size:13px;font-weight:900;letter-spacing:.18em;margin:-12px 0 14px}
 main.nobel .laurel{display:block}
 .rank-seal{display:none;width:76px;height:76px;border-radius:50%;margin:0 auto 12px;place-items:center;background:radial-gradient(circle,#fff8dc 35%,#e8cb7d 36%,#a67b26 72%,#f7e9bd 74%);color:#735116;font-size:34px;box-shadow:0 5px 18px #9c772d40;border:3px double #fff3c6}
 main.nobel .rank-seal{display:grid}
@@ -34,7 +34,8 @@ button{background:var(--green);color:#fff}a{background:#eef5f0;color:#28613d}
  <a class="brand home-brand" href="./" aria-label="理科キッズ ホーム"><span class="logo">理</span><span>理科キッズ</span></a>
  <h1>マイプロフィール</h1>
  <div class="laurel">✦ SCIENCE HONORS ✦</div>
- <div class="rank-seal" aria-label="ノーベル賞">♛</div>
+ <div class="haki-aura" id="hakiAura">⚡ 覇王色の覇気 ⚡</div>
+ <div class="rank-seal" aria-label="ノーベル賞">♛</div><div class="rank-seal haki-seal" aria-label="覇者">👑</div>
  <p class="sub">ログイン中のアカウント情報です。</p>
  <p id="status">ログイン状態を確認しています…</p>
  <section id="profile" hidden>
@@ -49,7 +50,7 @@ button{background:var(--green);color:#fff}a{background:#eef5f0;color:#28613d}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const supabase = window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
-function titleFor(n){if(n>=500)return "ノーベル賞";if(n>=200)return "伝説の科学者";if(n>=100)return "科学の天才";if(n>=60)return "理科博士";if(n>=30)return "理科マスター";if(n>=10)return "理科チャレンジャー";return "理科ビギナー";}
+function titleFor(n){if(n>=1000)return "覇者";if(n>=500)return "ノーベル賞";if(n>=200)return "伝説の科学者";if(n>=100)return "科学の天才";if(n>=60)return "理科博士";if(n>=30)return "理科マスター";if(n>=10)return "理科チャレンジャー";return "理科ビギナー";}
 async function refreshProfile(){
  const {data:{user},error:authError}=await supabase.auth.getUser();
  if(authError||!user){location.replace("./?login=1");return;}
@@ -59,7 +60,7 @@ async function refreshProfile(){
  const count=Number(data.correct_count||0);
  document.getElementById("correct").textContent=count.toLocaleString("ja-JP");
  document.getElementById("rank").textContent=titleFor(count);
- document.querySelector("main").classList.toggle("nobel",count>=500);
+ document.querySelector("main").classList.toggle("nobel",count>=500&&count<1000);document.querySelector("main").classList.toggle("haki",count>=1000);document.getElementById("hakiAura").classList.toggle("show",count>=1000);
  document.getElementById("status").hidden=true;
  document.getElementById("profile").hidden=false;
 }
