@@ -457,12 +457,55 @@ function definitionSimilarity(a,b){
  const aa=grams(a),bb=grams(b);let common=0;for(const g of aa)if(bb.has(g))common++;
  return common/(aa.size+bb.size-common||1);
 }
+// 分野だけでなく、同じ単元・同じ仕組みの用語を誤答候補にする
+const quizTopicGroups=[
+ {category:'生物',terms:['血液','赤血球','白血球','血小板','血しょう','動脈','静脈','毛細血管','心臓']},
+ {category:'生物',terms:['肺','肺胞','呼吸','血液','赤血球','毛細血管']},
+ {category:'生物',terms:['消化','消化酵素','だ液','胃液','小腸','柔毛','肝臓']},
+ {category:'生物',terms:['腎臓','尿','血液','血しょう']},
+ {category:'生物',terms:['神経系','中枢神経','末しょう神経','反射','感覚器官','刺激']},
+ {category:'生物',terms:['細胞','細胞膜','細胞質','核','植物細胞','動物細胞','細胞壁','葉緑体','液胞']},
+ {category:'生物',terms:['光合成','葉緑体','気孔','蒸散','光合成の原料']},
+ {category:'生物',terms:['根毛','維管束','道管','師管','蒸散','気孔']},
+ {category:'生物',terms:['生殖','有性生殖','無性生殖','精子','卵','受精','受精卵','胚','生殖細胞','減数分裂']},
+ {category:'生物',terms:['遺伝','形質','遺伝子','DNA','染色体','体細胞分裂']},
+ {category:'生物',terms:['生態系','食物連鎖','生産者','消費者','分解者','食物網']},
+ {category:'化学',terms:['原子','原子核','陽子','中性子','電子','同位体','電子配置','分子']},
+ {category:'化学',terms:['イオン','陽イオン','陰イオン','水素イオン','ナトリウムイオン','銅イオン','亜鉛イオン','銀イオン','アンモニウムイオン','塩化物イオン','水酸化物イオン','硫酸イオン','硝酸イオン','炭酸イオン']},
+ {category:'化学',terms:['電離','電解質','非電解質','塩化ナトリウム','塩化銅','塩酸','水酸化ナトリウム']},
+ {category:'化学',terms:['溶質','溶媒','溶液','水溶液','溶解度','飽和水溶液','再結晶','ろ過','蒸留']},
+ {category:'化学',terms:['酸','アルカリ','中和','中和反応','指示薬','BTB溶液','フェノールフタレイン溶液','リトマス紙','沈殿']},
+ {category:'化学',terms:['化学変化','化学反応式','電気分解','分解','化合','酸化','還元','酸化銅','酸化銀','質量保存の法則','触媒']},
+ {category:'化学',terms:['水素','酸素','水','二酸化炭素','アンモニア','窒素','塩化水素','硫酸','酢酸','水素の発生','酸素の発生']},
+ {category:'化学',terms:['物質','純粋な物質','混合物','有機物','無機物','金属','非金属','密度']},
+ {category:'化学',terms:['状態変化','融解','凝固','蒸発','沸騰','凝縮','昇華']},
+ {category:'物理',terms:['電流','電圧','抵抗','オームの法則','直列回路','並列回路','電流計','電圧計','電力','電力量','交流','直流']},
+ {category:'物理',terms:['磁界','磁力線','電磁石','電磁誘導','誘導電流','モーター','発電機']},
+ {category:'物理',terms:['光','光の直進','反射','入射角','反射角','屈折','凸レンズ','焦点','実像','虚像']},
+ {category:'物理',terms:['音','振幅','振動数','音の速さ']},
+ {category:'物理',terms:['力','摩擦力','重力','垂直抗力','力のつり合い','合力','分力','作用・反作用']},
+ {category:'物理',terms:['圧力','水圧','浮力','密度']},
+ {category:'物理',terms:['仕事','仕事率','仕事の原理','仕事の単位','エネルギー','位置エネルギー','運動エネルギー','力学的エネルギー','エネルギー保存','エネルギー保存の法則']},
+ {category:'物理',terms:['運動エネルギー','等速直線運動','自由落下','慣性の法則','作用・反作用','力','重力']},
+ {category:'物理',terms:['熱量','電力','電力量','放射線','放射能','原子力発電']},
+ {category:'地学',terms:['地震','震源','震央','初期微動','主要動','P波','S波','震度','マグニチュード','断層','液状化']},
+ {category:'地学',terms:['火山','マグマ','火成岩','火山岩','深成岩']},
+ {category:'地学',terms:['地層','堆積','堆積岩','れき岩','砂岩','泥岩','石灰岩','チャート','化石','示準化石','示相化石','風化','侵食','運搬','堆積作用']},
+ {category:'地学',terms:['地殻','マントル','外核','内核','プレート']},
+ {category:'地学',terms:['気団','シベリア気団','小笠原気団','オホーツク海気団','揚子江気団','前線','温暖前線','寒冷前線','停滞前線','閉そく前線','寒気','暖気','前線面','温帯低気圧','梅雨前線','秋雨前線']},
+ {category:'地学',terms:['低気圧','高気圧','偏西風','風','気圧','海風','陸風','季節風','湿度','飽和水蒸気量','露点','雲','水蒸気']},
+ {category:'地学',terms:['自転','公転','地軸','日本の四季','太陽系','惑星','恒星','衛星','月の満ち欠け','日食','月食','金星','太陽']}
+];
 function makeChallengingChoices(target,pool){
  const sameCategory=pool.filter(x=>x[0]===target[0]&&x[1]!==target[1]);
- const candidates=sameCategory.length>=3?sameCategory:pool.filter(x=>x[1]!==target[1]);
+ const topic=quizTopicGroups.find(g=>g.category===target[0]&&g.terms.includes(target[1]));
+ const topicCandidates=topic?sameCategory.filter(x=>topic.terms.includes(x[1])):[];
+ // 同じ単元に3つ以上の誤答候補があれば必ずその中から選ぶ
+ const candidates=topicCandidates.length>=3?topicCandidates:sameCategory;
  const ranked=candidates.map(x=>({term:x[1],score:definitionSimilarity(target[2],x[2])}))
   .sort((a,b)=>b.score-a.score);
- const challenging=ranked.slice(0,Math.min(10,ranked.length)).map(x=>x.term);
+ // 類似度の高い候補に絞り、正解と紛らわしい選択肢を出す
+ const challenging=ranked.slice(0,Math.min(6,ranked.length)).map(x=>x.term);
  return shuffle([target[1],...shuffle(challenging).slice(0,3)]);
 }
 function startQuiz(){
