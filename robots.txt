@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shunshunday.github.io/science-study/sitemap.xml
