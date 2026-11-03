@@ -15,22 +15,31 @@ main{width:min(100%,620px);margin:0 auto;background:#fff;border:1px solid var(--
 .logo{width:42px;height:42px;display:grid;place-items:center;background:var(--green);color:#fff;border-radius:8px;font-size:27px}
 h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:0 0 22px}
 .panel{border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:14px}
-.member-card{position:relative;overflow:hidden;margin-top:18px;padding:22px;border-radius:18px;color:#f8fbff;background:linear-gradient(135deg,#123b59 0%,#126b78 52%,#173e63 100%);box-shadow:0 14px 32px #102f4930;border:1px solid #b8d9df}
-.member-card:before{content:"";position:absolute;width:230px;height:230px;border:1px solid #ffffff25;border-radius:50%;right:-80px;top:-105px;box-shadow:0 0 0 18px #ffffff08,0 0 0 38px #ffffff06}
-.member-top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:17px;border-bottom:1px solid #ffffff35}
-.member-brand{font-size:12px;font-weight:900;letter-spacing:.14em;color:#d7f4f3}
-.member-mark{width:48px;height:48px;display:grid;place-items:center;border:1px solid #e8d59b;border-radius:50%;background:linear-gradient(145deg,#fff1c4,#b88b3b);color:#173b50;font-size:25px;font-weight:1000;box-shadow:0 3px 12px #0003}
-.member-label{position:relative;margin:18px 0 5px;color:#c7e9e8;font-size:10px;font-weight:900;letter-spacing:.2em}
-.member-name{position:relative;font-size:clamp(23px,6vw,31px);font-weight:950;letter-spacing:.04em;overflow-wrap:anywhere}
-.member-sub{position:relative;margin-top:4px;color:#d1e5eb;font-size:11px}
+.member-card{position:relative;overflow:hidden;margin-top:18px;padding:22px;border-radius:18px;color:#263238;background:linear-gradient(145deg,#fff 0%,#f7f8fa 58%,#e9edf1 100%);box-shadow:0 14px 32px #172b3a18;border:1px solid #d7dde3}
+.member-card:before{content:"";position:absolute;width:230px;height:230px;border:1px solid #aeb8c225;border-radius:50%;right:-80px;top:-105px;box-shadow:0 0 0 18px #aeb8c208,0 0 0 38px #aeb8c206}
+.member-card.gold{color:#513b08;background:linear-gradient(135deg,#fff8cf 0%,#f4d45b 48%,#d9a91c 100%);border:1px solid #c89413;box-shadow:0 14px 32px #9b741d35}
+.member-card.gold:before{border-color:#fff8d966;box-shadow:0 0 0 18px #fff8d922,0 0 0 38px #fff8d914}
+.member-top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:17px;border-bottom:1px solid #26323830}
+.member-brand{font-size:12px;font-weight:900;letter-spacing:.14em;color:#35434b}
+.member-mark{width:48px;height:48px;display:grid;place-items:center;border:1px solid #b9c2ca;border-radius:50%;background:linear-gradient(145deg,#fff,#dce2e8);color:#34434c;font-size:25px;font-weight:1000;box-shadow:0 3px 12px #0002}
+.member-card.gold .member-top{border-color:#8e6a183d}.member-card.gold .member-brand{color:#624609}
+.member-card.gold .member-mark{border-color:#fff0a8;background:linear-gradient(145deg,#fff7c9,#c58c08);color:#684800}
+.member-label{position:relative;margin:18px 0 5px;color:#697781;font-size:10px;font-weight:900;letter-spacing:.2em}
+.member-name{position:relative;font-size:clamp(23px,6vw,31px);font-weight:950;letter-spacing:.04em;overflow-wrap:anywhere;color:#1f2d35}
+.member-sub{position:relative;margin-top:4px;color:#65737b;font-size:11px}
 .member-stats{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
-.member-stat{padding:12px;border:1px solid #ffffff35;border-radius:11px;background:#ffffff12;backdrop-filter:blur(4px)}
-.member-stat span{display:block;color:#c7e9e8;font-size:10px;font-weight:800}
-.member-stat strong{display:block;margin-top:5px;color:#fff4cf;font-size:23px;font-weight:950;line-height:1.2;overflow-wrap:anywhere}
-.member-rank{position:relative;margin-top:12px;padding:13px 14px;border:1px solid #e8d59b;border-radius:11px;background:linear-gradient(100deg,#fff0bd,#d5b66c);color:#423317}
-.member-rank span{display:block;font-size:10px;font-weight:900;letter-spacing:.12em;color:#725a2c}
-.member-rank strong{display:block;margin-top:3px;font-size:20px;font-weight:950}
-.member-footer{position:relative;display:flex;justify-content:space-between;gap:10px;margin-top:17px;padding-top:12px;border-top:1px solid #ffffff35;color:#cce2e8;font-size:9px;font-weight:800;letter-spacing:.08em}
+.member-stat{padding:12px;border:1px solid #cbd3da;border-radius:11px;background:#ffffffb8}
+.member-stat span{display:block;color:#687680;font-size:10px;font-weight:800}
+.member-stat strong{display:block;margin-top:5px;color:#25343c;font-size:23px;font-weight:950;line-height:1.2;overflow-wrap:anywhere}
+.member-card.gold .member-stat{border-color:#9a741d66;background:#fff8d6a8}
+.member-card.gold .member-stat span{color:#755719}.member-card.gold .member-stat strong{color:#513b08}
+.member-rank{position:relative;margin-top:12px;padding:13px 14px;border:1px solid #cbd3da;border-radius:11px;background:linear-gradient(100deg,#f8fafb,#e5eaf0);color:#26343b}
+.member-rank span{display:block;font-size:10px;font-weight:900;letter-spacing:.12em;color:#687680}
+.member-rank strong{display:block;margin-top:3px;font-size:20px;font-weight:950;color:#26343b}
+.member-card.gold .member-rank{border-color:#a77a17;background:linear-gradient(100deg,#fff4bd,#e6bd42);color:#513b08}
+.member-card.gold .member-rank span{color:#795a16}.member-card.gold .member-rank strong{color:#513b08}
+.member-footer{position:relative;display:flex;justify-content:space-between;gap:10px;margin-top:17px;padding-top:12px;border-top:1px solid #26323830;color:#65737b;font-size:9px;font-weight:800;letter-spacing:.08em}
+.member-card.gold .member-footer{border-color:#8e6a183d;color:#755719}
 @media(max-width:390px){.member-card{padding:17px}.member-stat strong{font-size:20px}}
 .panel h2{font-size:16px;margin:0 0 13px}
 .user{background:#f3f8f4;padding:14px;border-radius:10px;margin-bottom:12px}.user strong{font-size:18px}
@@ -61,14 +70,14 @@ button:disabled{opacity:.55;cursor:wait}
  <section id="profile">
   <div class="panel">
    <h2>理科キッズ会員証</h2>
-   <div class="member-card">
+   <div class="member-card normal" id="memberCard">
     <div class="member-top"><div class="member-brand">RIKA KIDS<br><span style="font-size:10px;letter-spacing:.08em;font-weight:700">OFFICIAL MEMBER CARD</span></div><div class="member-mark">理</div></div>
     <div class="member-label">MEMBER NAME</div>
     <div class="member-name" id="username"></div>
     <div class="member-sub">理科キッズ メンバー</div>
     <div class="member-stats">
      <div class="member-stat"><span>累計正解数</span><strong><span id="correct" style="display:inline;color:inherit;font-size:inherit">0</span><small style="font-size:12px;margin-left:3px">問</small></strong></div>
-     <div class="member-stat"><span>MEMBER STATUS</span><strong style="font-size:18px">ACTIVE</strong></div>
+     <div class="member-stat"><span>MEMBER STATUS</span><strong id="memberStatus" style="font-size:18px">通常会員</strong></div>
     </div>
     <div class="member-rank"><span>CURRENT TITLE / 現在の称号</span><strong id="rank">理科ビギナー</strong></div>
     <div class="member-footer"><span>RIKA KIDS MEMBERSHIP</span><span>LEARN • DISCOVER • GROW</span></div>
@@ -163,9 +172,14 @@ async function refreshProfile(){
   const data=Array.isArray(rows)?rows[0]:null;
   if(!data)throw new Error("プロフィール情報が見つかりません。");
   document.getElementById("username").textContent=data.username||"ユーザー";
-  const count=Number(data.correct_count||0);
+  const count=Math.max(0,Number(data.correct_count)||0);
   document.getElementById("correct").textContent=count.toLocaleString("ja-JP");
   document.getElementById("rank").textContent=titleFor(count);
+  const isGold=count>=100;
+  const card=document.getElementById("memberCard");
+  card.classList.toggle("gold",isGold);
+  card.classList.toggle("normal",!isGold);
+  document.getElementById("memberStatus").textContent=isGold?"ゴールド会員":"通常会員";
   statusElement.hidden=true;
   document.getElementById("profile").hidden=false;
  }catch(error){
