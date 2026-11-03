@@ -201,8 +201,10 @@ async function syncProfilePlaytime(){
  profileSyncPromise=(async()=>{
   while(profilePlaytimeUserId===id&&profilePendingSeconds>0){
    const chunk=Math.min(30,profilePendingSeconds);
-   try{await api("/rest/v1/rpc/increment_playtime",{method:"POST",body:JSON.stringify({p_seconds:chunk})});}
-   catch(error){console.error("プレイ時間の保存に失敗:",error);break;}
+   try{
+    const total=await api("/rest/v1/rpc/increment_playtime",{method:"POST",body:JSON.stringify({p_seconds:chunk})});
+    if(Number.isFinite(Number(total)))document.getElementById("playtime").textContent=formatPlaytime(Number(total));
+   }catch(error){console.error("プレイ時間の保存に失敗:",error);break;}
    profilePendingSeconds-=chunk;
    try{localStorage.setItem(profilePendingKey(id),String(profilePendingSeconds));}catch(e){}
   }
