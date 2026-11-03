@@ -401,7 +401,22 @@ document.getElementById("deleteButton").addEventListener("click",async()=>{
   if(profilePlaytimeTimer){clearInterval(profilePlaytimeTimer);profilePlaytimeTimer=null;}
   alert("アカウントを削除しました。ログアウトしました。ご利用ありがとうございました。");
   location.replace("./");
- }catch(err){message.textContent=err.message||"削除できませんでした。";button.disabled=false;}
+ }catch(err){
+  const errorMessage=err.message||"削除できませんでした。";
+  if(errorMessage.includes("アカウントは削除されましたが、一部データの整理に失敗しました。")){
+   try{
+    localStorage.removeItem(STORAGE_KEY);
+    if(currentUser?.id)localStorage.removeItem(profilePendingKey(currentUser.id));
+   }catch(e){console.warn("削除済みアカウントのローカルデータ整理:",e);}
+   currentSession=null;accessToken=null;currentUser=null;profilePlaytimeUserId=null;
+   if(profilePlaytimeTimer){clearInterval(profilePlaytimeTimer);profilePlaytimeTimer=null;}
+   message.textContent="アカウントは削除済みです。ホームへ移動します…";
+   alert("アカウントは削除されました。ホーム画面へ移動します。");
+   location.replace("./");
+   return;
+  }
+  message.textContent=errorMessage;button.disabled=false;
+ }
 });
 document.getElementById("logout").addEventListener("click",async()=>{
  try{if(accessToken)await api("/auth/v1/logout",{method:"POST"},accessToken);}catch(e){console.warn("ログアウトAPI:",e);}
