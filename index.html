@@ -496,17 +496,30 @@ const quizTopicGroups=[
  {category:'地学',terms:['低気圧','高気圧','偏西風','風','気圧','海風','陸風','季節風','湿度','飽和水蒸気量','露点','雲','水蒸気']},
  {category:'地学',terms:['自転','公転','地軸','日本の四季','太陽系','惑星','恒星','衛星','月の満ち欠け','日食','月食','金星','太陽']}
 ];
+// 意味が対になる用語は、必ず誤答候補に含める
+const quizOppositePairs=[
+ ['動脈','静脈'],
+ ['高気圧','低気圧'],
+ ['温暖前線','寒冷前線'],
+ ['陽イオン','陰イオン'],
+ ['酸','アルカリ'],
+ ['有性生殖','無性生殖'],
+ ['融解','凝固'],
+ ['蒸発','凝縮']
+];
 function makeChallengingChoices(target,pool){
  const sameCategory=pool.filter(x=>x[0]===target[0]&&x[1]!==target[1]);
  const topic=quizTopicGroups.find(g=>g.category===target[0]&&g.terms.includes(target[1]));
  const topicCandidates=topic?sameCategory.filter(x=>topic.terms.includes(x[1])):[];
- // 同じ単元に3つ以上の誤答候補があれば必ずその中から選ぶ
+ // まず同じ単元を優先し、反対の意味を持つ用語は必ず候補に入れる
  const candidates=topicCandidates.length>=3?topicCandidates:sameCategory;
- const ranked=candidates.map(x=>({term:x[1],score:definitionSimilarity(target[2],x[2])}))
+ const oppositeNames=quizOppositePairs.filter(pair=>pair.includes(target[1])).flat().filter(name=>name!==target[1]);
+ const forced=candidates.filter(x=>oppositeNames.includes(x[1]));
+ const ranked=candidates.filter(x=>!forced.some(f=>f[1]===x[1]))
+  .map(x=>({term:x[1],score:definitionSimilarity(target[2],x[2])}))
   .sort((a,b)=>b.score-a.score);
- // 類似度の高い候補に絞り、正解と紛らわしい選択肢を出す
- const challenging=ranked.slice(0,Math.min(6,ranked.length)).map(x=>x.term);
- return shuffle([target[1],...shuffle(challenging).slice(0,3)]);
+ const distractors=[...forced.slice(0,1).map(x=>x[1]),...shuffle(ranked.slice(0,6).map(x=>x.term))].slice(0,3);
+ return shuffle([target[1],...distractors]);
 }
 function startQuiz(){
  const allUnique=[...new Map(terms.filter(t=>t[1]&&t[2]).map(t=>[t[0]+'|'+t[1],t])).values()];
