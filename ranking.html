@@ -56,7 +56,7 @@ function titleMarkFor(n){if(n>=1000)return "👑";if(n>=500)return "♛";if(n>=2
   const scoreValue=Number(item.correct_count||0);const isHaki=scoreValue>=1000;const isNobel=scoreValue>=500&&scoreValue<1000;if(isHaki)row.classList.add("haki-row");else if(isNobel)row.classList.add("nobel-row");
   const pos=document.createElement("div");pos.className="pos";pos.textContent=i===0?"🥇":i===1?"🥈":i===2?"🥉":String(i+1);
   const name=document.createElement("div");name.className="name";name.textContent=item.username;const mark=document.createElement("span");mark.className="title-mark";mark.textContent=titleMarkFor(Number(item.correct_count||0));name.appendChild(mark);
-  const title=document.createElement("span");title.className="rank";title.textContent=titleFor(Number(item.correct_count||0))+(isHaki?"　⚡ 覇王色 ⚡":isNobel?"　✦ NOBEL LAUREATE ✦":"");name.appendChild(title);
+  const title=document.createElement("span");title.className="rank";title.textContent=titleFor(Number(item.correct_count||0));name.appendChild(title);
   const score=document.createElement("div");score.className="score";score.textContent=Number(item.correct_count||0).toLocaleString("ja-JP");
   const small=document.createElement("small");small.textContent="問正解";score.appendChild(small);
   row.append(pos,name,score);list.appendChild(row);
