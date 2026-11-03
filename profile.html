@@ -41,7 +41,7 @@ button:disabled{opacity:.55;cursor:wait}
  <p id="status">ログイン状態を確認しています…</p>
  <a class="action secondary" href="./">ホームに戻る</a>
  <button class="secondary" type="button" onclick="location.reload()">再読み込み</button>
- <section id="profile" hidden>
+ <section id="profile">
   <div class="panel">
    <h2>プロフィール</h2>
    <div class="user"><strong id="username"></strong><div>理科キッズ メンバー</div></div>
@@ -74,27 +74,17 @@ button:disabled{opacity:.55;cursor:wait}
   <a class="action secondary" href="./">理科キッズに戻る</a>
  </section>
 </main>
-<!-- Supabaseライブラリは下のスクリプトから非同期で読み込みます -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 let supabase=null;
 const statusElement=document.getElementById("status");
-function loadSupabaseLibrary(url){
- return new Promise((resolve,reject)=>{
-  const script=document.createElement("script");
-  script.src=url;
-  script.onload=()=>resolve();
-  script.onerror=()=>reject(new Error("ライブラリの読み込みに失敗"));
-  document.head.appendChild(script);
- });
-}
-async function initializeSupabase(){
- statusElement.textContent="認証システムを読み込んでいます…";
+function initializeSupabase(){
  try{
-  try{await withTimeout(loadSupabaseLibrary("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"),7000);}
-  catch(firstError){await withTimeout(loadSupabaseLibrary("https://unpkg.com/@supabase/supabase-js@2"),7000);}
-  if(!window.supabase?.createClient)throw new Error("認証ライブラリを利用できません。");
+  if(!window.supabase || typeof window.supabase.createClient!=="function"){
+   throw new Error("認証ライブラリを読み込めません。通信環境またはブラウザの拡張機能をご確認ください。");
+  }
   supabase=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
-  await refreshProfile();
+  refreshProfile();
  }catch(error){
   console.error("Supabase initialization failed:",error);
   statusElement.textContent=error.message||"認証システムに接続できません。";
@@ -108,7 +98,7 @@ function withTimeout(promise,ms){
 async function refreshProfile(){
  statusElement.hidden=false;
  statusElement.textContent="ログイン状態を確認しています…";
- if(!supabase){statusElement.textContent="認証システムを読み込めませんでした。ページを再読み込みしてください。";return;}
+ if(!supabase){statusElement.textContent="認証システムを読み込めませんでした。設定欄は表示していますが、操作にはログイン接続が必要です。";return;}
  try{
   const {data:{session},error:sessionError}=await withTimeout(supabase.auth.getSession(),12000);
   if(sessionError)throw sessionError;
