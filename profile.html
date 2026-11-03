@@ -12,7 +12,7 @@ main{width:min(100%,480px);background:#fff;border:1px solid var(--line);border-r
 .brand{display:flex;align-items:center;gap:10px;font-weight:900;margin-bottom:22px}.logo{width:42px;height:42px;display:grid;place-items:center;background:var(--green);color:#fff;border-radius:7px;font-size:27px}
 h1{font-size:24px;margin:0 0 8px}.sub{font-size:13px;color:var(--muted);margin:0 0 22px}
 .user{padding:15px;background:#f3f8f4;border-radius:12px;margin-bottom:14px}.user strong{font-size:18px}
-.score{padding:22px;background:#edf7ef;border:1px solid #dceee1;border-radius:13px;text-align:center}.score strong{display:block;font-size:44px;line-height:1.2;color:var(--green)}.score span{font-size:13px;font-weight:800;color:#486451}
+.score{padding:22px;background:#edf7ef;border:1px solid #dceee1;border-radius:13px;text-align:center}.score strong{display:block;font-size:44px;line-height:1.2;color:var(--green)}.score span{font-size:13px;font-weight:800;color:#486451}.rank{margin:14px 0 18px;padding:13px;border:1px solid #e8dfb8;background:#fffaf0;border-radius:11px;text-align:center}.rank span{display:block;color:#8a7131;font-size:12px;font-weight:800}.rank strong{display:block;color:#6e5316;font-size:20px;margin-top:3px}
 button,a{display:block;width:100%;text-align:center;border:0;border-radius:9px;padding:12px;margin-top:12px;font:inherit;font-weight:800;text-decoration:none;cursor:pointer}
 button{background:var(--green);color:#fff}a{background:#eef5f0;color:#28613d}
 #status{color:var(--muted);font-size:13px;text-align:center}
@@ -26,7 +26,7 @@ button{background:var(--green);color:#fff}a{background:#eef5f0;color:#28613d}
  <p id="status">ログイン状態を確認しています…</p>
  <section id="profile" hidden>
   <div class="user"><strong id="username"></strong><div>理科キッズ メンバー</div></div>
-  <div class="score"><strong id="correct">0</strong><span>累計正解数</span></div>
+  <div class="score"><strong id="correct">0</strong><span>累計正解数</span></div>\n  <div class="rank"><span>現在の称号</span><strong id="rank">理科ビギナー</strong></div>
   <button id="logout" type="button">ログアウト</button>
   <a href="./">理科キッズに戻る</a>
  </section>
@@ -34,13 +34,13 @@ button{background:var(--green);color:#fff}a{background:#eef5f0;color:#28613d}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const supabase = window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
-(async()=>{
+function titleFor(n){if(n>=200)return "伝説の科学者";if(n>=100)return "科学の天才";if(n>=60)return "理科博士";if(n>=30)return "理科マスター";if(n>=10)return "理科チャレンジャー";return "理科ビギナー";}\n(async()=>{
  const {data:{user},error:authError}=await supabase.auth.getUser();
  if(authError||!user){location.replace("./?login=1");return;}
  const {data,error}=await supabase.from("profiles").select("username,correct_count").eq("id",user.id).single();
  if(error){document.getElementById("status").textContent="プロフィールを読み込めませんでした。";return;}
  document.getElementById("username").textContent=data.username;
- document.getElementById("correct").textContent=Number(data.correct_count||0).toLocaleString("ja-JP");
+ const count=Number(data.correct_count||0);\n document.getElementById("correct").textContent=count.toLocaleString("ja-JP");\n document.getElementById("rank").textContent=titleFor(count);
  document.getElementById("status").hidden=true;
  document.getElementById("profile").hidden=false;
 })();
