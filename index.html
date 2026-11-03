@@ -559,7 +559,7 @@ const profileView=document.getElementById('profileView');
 const authMessage=document.getElementById('authMessage');
 function showAccount(){accountModal.classList.add('open');accountModal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';refreshAccount();}
 function closeAccount(){accountModal.classList.remove('open');accountModal.setAttribute('aria-hidden','true');document.body.style.overflow='';}
-document.getElementById('accountOpen').addEventListener('click',showAccount);
+// アカウントボタンは account.html へ通常遷移する
 document.getElementById('accountClose').addEventListener('click',closeAccount);
 document.getElementById('accountBackdrop').addEventListener('click',closeAccount);
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAccount();});
