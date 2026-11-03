@@ -5,70 +5,134 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#16834a">
 <meta name="robots" content="noindex,follow">
-<title>マイプロフィール｜理科キッズ</title>
+<title>アカウント設定｜理科キッズ</title>
 <style>
-:root{--green:#16834a;--ink:#203128;--muted:#69776e;--line:#e2ebe4}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#fff8df 0,transparent 34%),#f4f8f5;color:var(--ink);font-family:"Noto Sans JP","Yu Gothic",Meiryo,system-ui,sans-serif;display:grid;place-items:center;padding:20px}
-main{width:min(100%,480px);background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:0 12px 35px #153d2510;transition:.25s}
-main.haki{background:radial-gradient(circle at 50% 0,#54216e 0,transparent 45%),linear-gradient(155deg,#100d1d,#21102f 55%,#3a1230);border:2px solid #8d42c4;box-shadow:0 0 35px #852dce88,inset 0 0 0 5px #54216e;color:#fff}main.haki h1{color:#f5d9ff}main.haki .sub{color:#d8c1e8}main.haki .user{background:#321746;border:1px solid #74409a}main.haki .score{background:linear-gradient(135deg,#28113e,#45163f);border-color:#9b4ad0;box-shadow:0 0 18px #b42cff55}main.haki .score strong{color:#f2caff;text-shadow:0 0 12px #d82cff}main.haki .score span{color:#e5c9f5}main.haki .rank{background:linear-gradient(120deg,#29113e,#481638);border:1px solid #b44be0;box-shadow:0 0 20px #a42dce66}main.haki .rank strong{color:#ffd4f0;font-size:25px;text-shadow:0 0 10px #ff2995}main.haki .logo{background:linear-gradient(135deg,#6b2aa0,#250d38);box-shadow:0 0 15px #c22cff}main.nobel{background:linear-gradient(155deg,#fffdf5,#fff 48%,#fff9e8);border:2px solid #c6a34c;box-shadow:0 18px 55px #8c6b242b, inset 0 0 0 5px #f7edcf}
-main.nobel .logo{background:linear-gradient(145deg,#f7e5a5,#a87b24);color:#49350d;box-shadow:0 3px 12px #a87b2440}
-main.nobel h1{color:#72531b}
-main.nobel .score{background:linear-gradient(135deg,#fff8df,#f3e3b5);border-color:#d5b65f;box-shadow:inset 0 1px #fff}
-main.nobel .score strong{color:#9b711e;text-shadow:0 2px #fff}
-main.nobel .rank{background:linear-gradient(120deg,#fff8df,#f1dfaa);border:1px solid #c6a34c;box-shadow:0 5px 18px #a9822a22}
-main.nobel .rank strong{color:#755315;font-size:23px}
-.haki-aura{display:none;text-align:center;color:#efbaff;font-size:13px;font-weight:950;letter-spacing:.2em;margin:-12px 0 14px;text-shadow:0 0 12px #e22cff}.rank-seal.haki-seal{display:none;border:2px solid #d18cff;background:radial-gradient(circle,#8e39c6 0%,#37104f 58%,#100d1d 100%);color:#fff;box-shadow:0 0 25px #b52cff,0 0 45px #e00070;font-size:34px}.haki-aura.show{display:block}main.haki .rank-seal.haki-seal{display:grid}.laurel{display:none;text-align:center;color:#a27a28;font-size:13px;font-weight:900;letter-spacing:.18em;margin:-12px 0 14px}
-main.nobel .laurel{display:block}
-.rank-seal{display:none;width:76px;height:76px;border-radius:50%;margin:0 auto 12px;place-items:center;background:radial-gradient(circle,#fff8dc 35%,#e8cb7d 36%,#a67b26 72%,#f7e9bd 74%);color:#735116;font-size:34px;box-shadow:0 5px 18px #9c772d40;border:3px double #fff3c6}
-main.nobel .rank-seal{display:grid}
-.brand{display:flex;align-items:center;gap:10px;font-weight:900;margin-bottom:22px}.home-brand{color:inherit;text-decoration:none}.logo{width:42px;height:42px;display:grid;place-items:center;background:var(--green);color:#fff;border-radius:7px;font-size:27px}
-h1{font-size:24px;margin:0 0 8px}.sub{font-size:13px;color:var(--muted);margin:0 0 22px}
-.user{padding:15px;background:#f3f8f4;border-radius:12px;margin-bottom:14px}.user strong{font-size:18px}
-.score{padding:22px;background:#edf7ef;border:1px solid #dceee1;border-radius:13px;text-align:center}.score strong{display:block;font-size:44px;line-height:1.2;color:var(--green)}.score span{font-size:13px;font-weight:800;color:#486451}.rank{margin:14px 0 18px;padding:13px;border:1px solid #e8dfb8;background:#fffaf0;border-radius:11px;text-align:center}.rank span{display:block;color:#8a7131;font-size:12px;font-weight:800}.rank strong{display:block;color:#6e5316;font-size:20px;margin-top:3px}
-button,a{display:block;width:100%;text-align:center;border:0;border-radius:9px;padding:12px;margin-top:12px;font:inherit;font-weight:800;text-decoration:none;cursor:pointer}
-button{background:var(--green);color:#fff}a{background:#eef5f0;color:#28613d}
-#status{color:var(--muted);font-size:13px;text-align:center}
+:root{--green:#16834a;--ink:#203128;--muted:#69776e;--line:#e2ebe4;--red:#b83232}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#fff8df 0,transparent 34%),#f4f8f5;color:var(--ink);font-family:"Noto Sans JP","Yu Gothic",Meiryo,system-ui,sans-serif;padding:28px 16px}
+main{width:min(100%,620px);margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:20px;padding:clamp(20px,5vw,34px);box-shadow:0 12px 35px #153d2510}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;margin-bottom:24px;color:inherit;text-decoration:none}
+.logo{width:42px;height:42px;display:grid;place-items:center;background:var(--green);color:#fff;border-radius:8px;font-size:27px}
+h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:0 0 22px}
+.panel{border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:14px}
+.panel h2{font-size:16px;margin:0 0 13px}
+.user{background:#f3f8f4;padding:14px;border-radius:10px;margin-bottom:12px}.user strong{font-size:18px}
+.score{padding:17px;background:#edf7ef;border:1px solid #dceee1;border-radius:11px;text-align:center}
+.score strong{display:block;font-size:38px;line-height:1.2;color:var(--green)}.score span{font-size:12px;font-weight:800;color:#486451}
+.rank{margin-top:10px;padding:12px;border:1px solid #e8dfb8;background:#fffaf0;border-radius:10px;text-align:center}
+.rank span{display:block;color:#8a7131;font-size:11px;font-weight:800}.rank strong{display:block;color:#6e5316;font-size:18px;margin-top:3px}
+label{display:block;font-size:12px;font-weight:800;margin:12px 0 6px}
+input{width:100%;height:44px;border:1px solid #dce6df;border-radius:9px;padding:0 12px;font:inherit;font-size:14px;outline:none}
+input:focus{border-color:var(--green);box-shadow:0 0 0 3px #168b4a18}
+button,a.action{display:block;width:100%;text-align:center;border:0;border-radius:9px;padding:12px;margin-top:12px;font:inherit;font-size:13px;font-weight:850;text-decoration:none;cursor:pointer}
+.primary{background:var(--green);color:#fff}.secondary{background:#eef5f0;color:#28613d}
+.danger-panel{border-color:#f0d8d8;background:#fffdfd}.danger-panel h2{color:var(--red)}
+.danger-button{background:var(--red);color:white}.warning{font-size:12px;line-height:1.7;color:#8a4444;margin:0}
+#status,#passwordMessage,#deleteMessage{font-size:12px;text-align:center;color:var(--muted);margin:12px 0 0;min-height:18px}
+#profile[hidden]{display:none}
+button:disabled{opacity:.55;cursor:wait}
 </style>
 </head>
 <body>
 <main>
- <a class="brand home-brand" href="./" aria-label="理科キッズ ホーム"><span class="logo">理</span><span>理科キッズ</span></a>
- <h1>マイプロフィール</h1>
- <div class="laurel">✦ SCIENCE HONORS ✦</div>
- <div class="haki-aura" id="hakiAura">⚡ 覇王色の覇気 ⚡</div>
- <div class="rank-seal" aria-label="ノーベル賞">♛</div><div class="rank-seal haki-seal" aria-label="覇者">👑</div>
- <p class="sub">ログイン中のアカウント情報です。</p>
+ <a class="brand" href="./" aria-label="理科キッズ ホーム"><span class="logo">理</span><span>理科キッズ</span></a>
+ <h1>アカウント設定</h1>
+ <p class="lead">プロフィールの確認、パスワードの変更、アカウントの削除ができます。</p>
  <p id="status">ログイン状態を確認しています…</p>
  <section id="profile" hidden>
-  <div class="user"><strong id="username"></strong><div>理科キッズ メンバー</div></div>
-  <div class="score"><strong id="correct">0</strong><span>累計正解数</span></div>
-  <div class="rank"><span>現在の称号</span><strong id="rank">理科ビギナー</strong></div>
-  <a href="./titles.html" style="display:block;text-align:center;margin:0 0 12px;padding:10px;border-radius:9px;background:#fff8df;color:#805d1d;text-decoration:none;font-size:13px;font-weight:800;border:1px solid #d8bd72">🎖️ 称号の条件・一覧を見る</a>
-  <button id="logout" type="button">ログアウト</button>
-  <a href="./">理科キッズに戻る</a>
+  <div class="panel">
+   <h2>プロフィール</h2>
+   <div class="user"><strong id="username"></strong><div>理科キッズ メンバー</div></div>
+   <div class="score"><strong id="correct">0</strong><span>累計正解数</span></div>
+   <div class="rank"><span>現在の称号</span><strong id="rank">理科ビギナー</strong></div>
+   <a class="action secondary" href="./titles.html">称号の条件・一覧を見る</a>
+  </div>
+  <form class="panel" id="passwordForm">
+   <h2>パスワードの変更</h2>
+   <label for="currentPassword">現在のパスワード</label>
+   <input id="currentPassword" type="password" autocomplete="current-password" required>
+   <label for="newPassword">新しいパスワード（8文字以上）</label>
+   <input id="newPassword" type="password" autocomplete="new-password" minlength="8" required>
+   <label for="confirmPassword">新しいパスワード（確認）</label>
+   <input id="confirmPassword" type="password" autocomplete="new-password" minlength="8" required>
+   <button class="primary" id="passwordButton" type="submit">パスワードを変更</button>
+   <p id="passwordMessage" role="status"></p>
+  </form>
+  <section class="panel danger-panel">
+   <h2>アカウント削除</h2>
+   <p class="warning">アカウントを削除すると、プロフィール・累計正解数・ランキング情報・学習履歴が削除されます。この操作は取り消せません。</p>
+   <label for="deletePassword">本人確認のため、現在のパスワードを入力</label>
+   <input id="deletePassword" type="password" autocomplete="current-password">
+   <label for="deleteConfirm">確認のため「削除する」と入力</label>
+   <input id="deleteConfirm" type="text" autocomplete="off" placeholder="削除する">
+   <button class="danger-button" id="deleteButton" type="button">アカウントを完全に削除</button>
+   <p id="deleteMessage" role="status"></p>
+  </section>
+  <button class="secondary" id="logout" type="button">ログアウト</button>
+  <a class="action secondary" href="./">理科キッズに戻る</a>
  </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const supabase = window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
+const supabase=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
+let currentUser=null;
 function titleFor(n){if(n>=1000)return "覇者";if(n>=500)return "ノーベル賞";if(n>=200)return "伝説の科学者";if(n>=100)return "科学の天才";if(n>=60)return "理科博士";if(n>=30)return "理科マスター";if(n>=10)return "理科チャレンジャー";return "理科ビギナー";}
 async function refreshProfile(){
  const {data:{user},error:authError}=await supabase.auth.getUser();
  if(authError||!user){location.replace("./?login=1");return;}
+ currentUser=user;
  const {data,error}=await supabase.from("profiles").select("username,correct_count").eq("id",user.id).single();
- if(error){document.getElementById("status").textContent="プロフィールを読み込めませんでした。";return;}
+ if(error){document.getElementById("status").textContent="プロフィールを読み込めませんでした。時間をおいて再読み込みしてください。";return;}
  document.getElementById("username").textContent=data.username;
  const count=Number(data.correct_count||0);
  document.getElementById("correct").textContent=count.toLocaleString("ja-JP");
  document.getElementById("rank").textContent=titleFor(count);
- document.querySelector("main").classList.toggle("nobel",count>=500&&count<1000);document.querySelector("main").classList.toggle("haki",count>=1000);document.getElementById("hakiAura").classList.toggle("show",count>=1000);
  document.getElementById("status").hidden=true;
  document.getElementById("profile").hidden=false;
 }
-refreshProfile();
-window.addEventListener("focus",refreshProfile);
-document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshProfile();});
+document.getElementById("passwordForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const current=document.getElementById("currentPassword").value;
+ const next=document.getElementById("newPassword").value;
+ const confirm=document.getElementById("confirmPassword").value;
+ const message=document.getElementById("passwordMessage");
+ const button=document.getElementById("passwordButton");
+ if(next.length<8){message.textContent="新しいパスワードは8文字以上にしてください。";return;}
+ if(next!==confirm){message.textContent="新しいパスワードが一致しません。";return;}
+ if(next===current){message.textContent="現在と異なるパスワードを設定してください。";return;}
+ button.disabled=true;message.textContent="本人確認中…";
+ try{
+  const {error:loginError}=await supabase.auth.signInWithPassword({email:currentUser.email,password:current});
+  if(loginError)throw new Error("現在のパスワードが正しくありません。");
+  const {error}=await supabase.auth.updateUser({password:next});
+  if(error)throw error;
+  e.target.reset();message.textContent="パスワードを変更しました。";
+ }catch(err){message.textContent=err.message||"変更できませんでした。";}
+ finally{button.disabled=false;}
+});
+document.getElementById("deleteButton").addEventListener("click",async()=>{
+ const password=document.getElementById("deletePassword").value;
+ const confirmation=document.getElementById("deleteConfirm").value.trim();
+ const message=document.getElementById("deleteMessage");
+ const button=document.getElementById("deleteButton");
+ if(!password){message.textContent="現在のパスワードを入力してください。";return;}
+ if(confirmation!=="削除する"){message.textContent="確認欄に「削除する」と正確に入力してください。";return;}
+ if(!confirm("本当にアカウントを削除しますか？この操作は取り消せません。"))return;
+ button.disabled=true;message.textContent="本人確認中…";
+ try{
+  const {error:loginError}=await supabase.auth.signInWithPassword({email:currentUser.email,password});
+  if(loginError)throw new Error("現在のパスワードが正しくありません。");
+  message.textContent="アカウントを削除しています…";
+  const {data,error}=await supabase.functions.invoke("delete-account",{body:{}});
+  if(error)throw error;
+  if(!data?.success)throw new Error(data?.error||"削除できませんでした。");
+  await supabase.auth.signOut();
+  alert("アカウントを削除しました。ご利用ありがとうございました。");
+  location.replace("./");
+ }catch(err){message.textContent=err.message||"削除できませんでした。もう一度お試しください。";button.disabled=false;}
+});
 document.getElementById("logout").addEventListener("click",async()=>{await supabase.auth.signOut();location.replace("./");});
+refreshProfile();
 </script>
 </body>
 </html>
