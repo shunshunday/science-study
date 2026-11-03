@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#16834a">
+<title>マイプロフィール｜理科キッズ</title>
+<style>
+:root{--green:#16834a;--ink:#203128;--muted:#69776e;--line:#e2ebe4}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#f4f8f5;color:var(--ink);font-family:"Noto Sans JP","Yu Gothic",Meiryo,system-ui,sans-serif;display:grid;place-items:center;padding:20px}
+main{width:min(100%,480px);background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:0 12px 35px #153d2510}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;margin-bottom:22px}.logo{width:42px;height:42px;display:grid;place-items:center;background:var(--green);color:#fff;border-radius:7px;font-size:27px}
+h1{font-size:24px;margin:0 0 8px}.sub{font-size:13px;color:var(--muted);margin:0 0 22px}
+.user{padding:15px;background:#f3f8f4;border-radius:12px;margin-bottom:14px}.user strong{font-size:18px}
+.score{padding:22px;background:#edf7ef;border:1px solid #dceee1;border-radius:13px;text-align:center}.score strong{display:block;font-size:44px;line-height:1.2;color:var(--green)}.score span{font-size:13px;font-weight:800;color:#486451}
+button,a{display:block;width:100%;text-align:center;border:0;border-radius:9px;padding:12px;margin-top:12px;font:inherit;font-weight:800;text-decoration:none;cursor:pointer}
+button{background:var(--green);color:#fff}a{background:#eef5f0;color:#28613d}
+#status{color:var(--muted);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<main>
+ <div class="brand"><span class="logo">理</span><span>理科キッズ</span></div>
+ <h1>マイプロフィール</h1>
+ <p class="sub">ログイン中のアカウント情報です。</p>
+ <p id="status">ログイン状態を確認しています…</p>
+ <section id="profile" hidden>
+  <div class="user"><strong id="username"></strong><div>理科キッズ メンバー</div></div>
+  <div class="score"><strong id="correct">0</strong><span>累計正解数</span></div>
+  <button id="logout" type="button">ログアウト</button>
+  <a href="./">理科キッズに戻る</a>
+ </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const supabase = window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
+(async()=>{
+ const {data:{user},error:authError}=await supabase.auth.getUser();
+ if(authError||!user){location.replace("./?login=1");return;}
+ const {data,error}=await supabase.from("profiles").select("username,correct_count").eq("id",user.id).single();
+ if(error){document.getElementById("status").textContent="プロフィールを読み込めませんでした。";return;}
+ document.getElementById("username").textContent=data.username;
+ document.getElementById("correct").textContent=Number(data.correct_count||0).toLocaleString("ja-JP");
+ document.getElementById("status").hidden=true;
+ document.getElementById("profile").hidden=false;
+})();
+document.getElementById("logout").addEventListener("click",async()=>{await supabase.auth.signOut();location.replace("./");});
+</script>
+</body>
+</html>
