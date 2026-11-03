@@ -69,7 +69,7 @@ button:disabled{opacity:.55;cursor:wait}
  <p id="status">ログイン状態を確認しています…</p>
  <a class="action secondary" href="./">ホームに戻る</a>
  <button class="secondary" type="button" onclick="location.reload()">再読み込み</button>
- <section id="profile">
+ <section id="profile" hidden>
   <div class="panel">
    <h2>理科キッズ会員証</h2>
    <div class="member-card normal" id="memberCard">
@@ -190,9 +190,10 @@ function showAvatar(url){
 }
 async function refreshProfile(){
  try{
+  document.getElementById("profile").hidden=true;
   showStatus("ログイン状態を確認しています…");
   const session=await ensureSession();
-  const rows=await api("/rest/v1/profiles?select=username,correct_count,avatar_url&id=eq."+encodeURIComponent(session.user.id),{method:"GET"});
+  const rows=await api("/rest/v1/profiles?select=username,correct_count,avatar_url&id=eq."+encodeURIComponent(session.user.id),{method:"GET",cache:"no-store",headers:{"Cache-Control":"no-cache"}},null);
   const data=Array.isArray(rows)?rows[0]:null;
   if(!data)throw new Error("プロフィール情報が見つかりません。");
   document.getElementById("username").textContent=data.username||"ユーザー";
