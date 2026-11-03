@@ -387,7 +387,7 @@ document.getElementById("deleteButton").addEventListener("click",async()=>{
  try{
   const session=await ensureSession();
   message.textContent="アカウントを削除しています…";
-  const result=await api("/functions/v1/delete-account",{method:"POST",body:JSON.stringify({})},session.access_token);
+  const result=await api("/functions/v1/delete-account",{method:"POST",body:JSON.stringify({}),headers:{"Authorization":"Bearer\\s"+session.access_token}},null);
   if(!result?.success)throw new Error(result?.error||"削除できませんでした。");
   // 削除成功後は、この画面のメモリ上のセッションも破棄してログアウト状態にする
   try{
