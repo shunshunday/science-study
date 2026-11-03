@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10182d">
+<title>理科キッズ｜理科を遊びつくせ！</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;600;700;800;900&display=swap');
+:root{--bg:#0b1224;--panel:#131f38;--panel2:#1a2947;--line:#2a3a5d;--text:#f4f7ff;--muted:#9eafd0;--cyan:#45d7ef;--violet:#9277ff;--green:#4de0a2;--yellow:#ffd66b;--pink:#ff7da8}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% -10%,#243b68 0,transparent 38%),radial-gradient(ellipse at 0% 30%,#18294b 0,transparent 34%),var(--bg);color:var(--text);font-family:Nunito,"Noto Sans JP",sans-serif;min-height:100vh}button{font:inherit;cursor:pointer;color:inherit;border:0}.wrap{max-width:1180px;margin:auto;padding:0 24px}.top{height:76px;border-bottom:1px solid #ffffff14;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;gap:12px;align-items:center;font-weight:900;font-size:22px;letter-spacing:.02em}.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:grid;place-items:center;color:#0b1730;font-size:24px;box-shadow:0 7px 25px #45d7ef33}.nav{display:flex;gap:8px}.nav button{background:transparent;color:var(--muted);padding:10px 14px;border-radius:10px;font-weight:800}.nav button.active,.nav button:hover{background:#ffffff12;color:white}.profile{display:flex;align-items:center;gap:12px;background:#ffffff0c;border:1px solid var(--line);padding:8px 13px;border-radius:14px}.avatar{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#ffcc70,#ff7da8);display:grid;place-items:center;color:#311c35}.small{font-size:12px;color:var(--muted)}.hero{padding:46px 0 30px;display:grid;grid-template-columns:1.3fr .7fr;gap:25px;align-items:center}.eyebrow{color:var(--cyan);font-weight:900;letter-spacing:.16em;font-size:12px}.hero h1{font-size:clamp(32px,5vw,56px);line-height:1.2;margin:12px 0}.hero h1 span{background:linear-gradient(90deg,var(--cyan),#b4a4ff);background-clip:text;color:transparent}.hero p{color:var(--muted);line-height:1.8;margin:0 0 22px}.primary{background:linear-gradient(100deg,#36cde7,#8b78ff);color:#071329;padding:14px 22px;border-radius:13px;font-weight:900;box-shadow:0 9px 25px #45d7ef2b;transition:.2s}.primary:hover{transform:translateY(-2px);filter:brightness(1.08)}.hero-art{height:220px;border:1px solid #ffffff18;border-radius:24px;background:linear-gradient(145deg,#1a3156,#17203b);display:grid;place-items:center;position:relative;overflow:hidden}.orbit{width:160px;height:160px;border:1px solid #6ce7ff66;border-radius:50%;position:absolute;animation:spin 18s linear infinite}.orbit:before{content:"";position:absolute;width:15px;height:15px;border-radius:50%;background:var(--cyan);top:10px;left:18px;box-shadow:0 0 22px var(--cyan)}.planet{font-size:86px;filter:drop-shadow(0 0 24px #9277ff66);z-index:1}@keyframes spin{to{transform:rotate(360deg)}}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin:10px 0 32px}.stat,.panel,.subject{background:linear-gradient(145deg,#172541,#111c33);border:1px solid var(--line);border-radius:17px}.stat{padding:17px 19px}.stat label{font-size:12px;color:var(--muted);font-weight:800}.stat strong{display:block;font-size:25px;margin-top:4px}.stat strong em{font-style:normal;color:var(--cyan);font-size:13px}.section-head{display:flex;align-items:end;justify-content:space-between;margin:32px 0 16px}.section-head h2{font-size:22px;margin:0}.section-head p{margin:5px 0 0;color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.subject{padding:18px;transition:.2s;cursor:pointer;text-align:left;position:relative;overflow:hidden}.subject:hover{transform:translateY(-4px);border-color:#657cae}.subject .emoji{font-size:35px}.subject h3{font-size:17px;margin:12px 0 5px}.subject p{font-size:12px;line-height:1.6;color:var(--muted);min-height:39px;margin:0 0 14px}.bar{height:6px;border-radius:8px;background:#ffffff12;overflow:hidden}.bar i{display:block;height:100%;border-radius:8px;background:var(--accent);width:0}.progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:7px}.subject .go{position:absolute;right:16px;top:22px;color:var(--muted)}.bottom-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin:28px 0 55px}.panel{padding:20px}.panel h3{margin:0 0 16px;font-size:16px}.quest{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #ffffff10}.quest-icon{width:38px;height:38px;border-radius:12px;background:#ffffff0c;display:grid;place-items:center;font-size:18px}.quest-info{flex:1}.quest-info b{font-size:13px}.quest-info div{font-size:11px;color:var(--muted);margin-top:3px}.reward{color:var(--yellow);font-size:12px;font-weight:900}.ranking-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid #ffffff10}.rank{font-weight:900;color:var(--yellow);width:20px}.rank-name{flex:1;font-size:13px}.rank-xp{font-size:12px;color:var(--cyan);font-weight:900}.footer{text-align:center;padding:24px;color:#7283a6;font-size:11px;border-top:1px solid #ffffff12}
+.view{display:none;padding:32px 0 70px}.view.show{display:block}.back{background:#ffffff10;padding:9px 13px;border-radius:10px;margin-bottom:20px;color:var(--muted)}.quiz-card{max-width:760px;margin:18px auto;background:linear-gradient(145deg,#1b2d4e,#121d34);border:1px solid var(--line);border-radius:22px;padding:clamp(20px,4vw,34px)}.quiz-meta{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;font-weight:800}.quiz-card h2{font-size:clamp(20px,3vw,27px);line-height:1.6;margin:26px 0}.answers{display:grid;gap:10px}.answer{padding:15px 17px;text-align:left;border:1px solid var(--line);border-radius:12px;background:#ffffff08;font-weight:700}.answer:hover:not(:disabled){border-color:var(--cyan);background:#45d7ef12}.answer.correct{border-color:var(--green);background:#4de0a21c}.answer.wrong{border-color:var(--pink);background:#ff7da81c}.feedback{margin-top:17px;padding:15px;border-radius:12px;background:#ffffff0c;line-height:1.7;font-size:14px}.hidden{display:none}.quiz-actions{display:flex;justify-content:space-between;align-items:center;margin-top:18px}.tag{display:inline-block;border:1px solid #ffffff22;border-radius:30px;padding:5px 10px;color:var(--cyan);font-size:11px;font-weight:900}.complete{text-align:center;padding:45px 15px}.complete .trophy{font-size:65px}.complete h2{font-size:28px}.complete p{color:var(--muted);line-height:1.8}
+@media(max-width:760px){.wrap{padding:0 16px}.nav{display:none}.hero{grid-template-columns:1fr;padding-top:32px}.hero-art{height:155px}.planet{font-size:65px}.orbit{width:125px;height:125px}.stats{gap:8px}.stat{padding:13px}.stat strong{font-size:20px}.grid{grid-template-columns:repeat(2,1fr);gap:10px}.subject{padding:14px}.bottom-grid{grid-template-columns:1fr}.profile .small{display:none}}
+</style>
+</head>
+<body>
+<header class="top wrap">
+ <div class="brand"><div class="logo">⚗</div>理科キッズ</div>
+ <nav class="nav"><button class="active" data-nav="home">ホーム</button><button data-nav="subjects">学習する</button><button data-nav="quests">クエスト</button></nav>
+ <div class="profile"><div class="avatar">🧑‍🔬</div><div><b>理科ビギナー</b><div class="small">LEVEL <span id="mini-level">1</span></div></div></div>
+</header>
+<main class="wrap">
+<section id="home-view" class="view show">
+ <div class="hero">
+  <div><div class="eyebrow">YOUR SCIENCE ADVENTURE STARTS HERE</div><h1>理科を遊びつくせ！<br><span>キミの知識が武器になる。</span></h1><p>クイズに挑戦してXPを集めよう。<br>学んで、クリアして、理科マスターを目指せ！</p><button class="primary" onclick="startRandom()">▶ クエストに挑戦する</button></div>
+  <div class="hero-art"><div class="orbit"></div><div class="planet">🪐</div></div>
+ </div>
+ <div class="stats">
+  <div class="stat"><label>⭐ TOTAL XP</label><strong id="xp">0 <em>XP</em></strong></div>
+  <div class="stat"><label>🏆 LEVEL</label><strong id="level">1</strong></div>
+  <div class="stat"><label>🎯 正解数</label><strong id="correct-total">0</strong></div>
+ </div>
+ <div class="section-head"><div><h2>⚡ 学習ステージ</h2><p>好きな分野を選んで冒険を始めよう！</p></div><span class="tag">GRADE 9</span></div>
+ <div class="grid" id="subjects"></div>
+ <div class="bottom-grid">
+  <div class="panel" id="quests"><h3>📜 デイリークエスト</h3><div class="quest"><div class="quest-icon">🧠</div><div class="quest-info"><b>クイズに1問正解しよう</b><div>知識をひとつ積み重ねよう</div></div><span class="reward">+20 XP</span></div><div class="quest"><div class="quest-icon">🚀</div><div class="quest-info"><b>3問連続で挑戦しよう</b><div>集中力を発揮しよう</div></div><span class="reward">+30 XP</span></div><div class="quest"><div class="quest-icon">🔭</div><div class="quest-info"><b>2つの分野を学ぼう</b><div>幅広い知識を手に入れよう</div></div><span class="reward">+40 XP</span></div></div>
+  <div class="panel"><h3>🏅 ランクアップへの道</h3><div style="font-size:12px;color:var(--muted)">次のレベルまで</div><div style="display:flex;justify-content:space-between;margin:9px 0;font-weight:900"><span id="level-label">LEVEL 1</span><span id="next-xp">100 XP</span></div><div class="bar"><i id="level-bar" style="background:linear-gradient(90deg,var(--cyan),var(--violet))"></i></div><p style="font-size:12px;color:var(--muted);line-height:1.7;margin-top:17px">クイズに正解するとXPを獲得！たくさん学んでレベルを上げよう。</p></div>
+ </div>
+</section>
+<section id="quiz-view" class="view">
+ <button class="back" onclick="goHome()">← ホームに戻る</button>
+ <div class="quiz-card" id="quiz-content"></div>
+</section>
+<section id="subjects-view" class="view"><button class="back" onclick="goHome()">← ホームに戻る</button><h2>学習ステージ</h2><p style="color:var(--muted)">挑戦したい分野を選ぼう。</p><div class="grid" id="subjects2"></div></section>
+</main>
+<footer class="footer">理科キッズ © 2026 · 楽しく学んで、未来の科学者へ。</footer>
+<script>
+const subjects=[
+{id:"physics",name:"物理",emoji:"⚡",color:"#45d7ef",desc:"運動・力・仕事・エネルギー",questions:[
+["物体に力がはたらかず、合力が0のとき、静止している物体はどうなる？",["静止し続ける","必ず動き出す","加速する","回転し始める"],0,"合力が0なら、静止している物体は静止し続ける。これを慣性の法則と関係づけて考えよう。"],
+["物体にはたらく仕事を求める式はどれ？",["力÷距離","力×力","力×力の向きに動いた距離","質量×速さ"],2,"仕事[J]＝力[N]×力の向きに動いた距離[m] だよ。"],
+["位置エネルギーが大きくなる条件として正しいものは？",["高さが低くなる","質量が大きく、高い位置にある","速さだけが大きくなる","温度が上がる"],1,"位置エネルギーは、物体の質量と高さが大きいほど大きくなるよ。"]]},
+{id:"chemistry",name:"化学",emoji:"🧪",color:"#a58aff",desc:"イオン・酸とアルカリ・中和",questions:[
+["塩酸に含まれる陽イオンはどれ？",["塩化物イオン","水素イオン","水酸化物イオン","銅イオン"],1,"塩酸は水に溶けると水素イオン H⁺ と塩化物イオン Cl⁻ に電離するよ。"],
+["酸性の水溶液に共通して含まれるイオンは？",["水酸化物イオン","ナトリウムイオン","水素イオン","塩化物イオン"],2,"酸性の水溶液には水素イオン H⁺ が含まれているよ。"],
+["中和で水ができるとき、結びつくイオンは？",["H⁺ と OH⁻","Na⁺ と Cl⁻","Cu²⁺ と SO₄²⁻","H⁺ と Cl⁻"],0,"水素イオン H⁺ と水酸化物イオン OH⁻ が結びついて水 H₂O になるよ。"]]},
+{id:"biology",name:"生物",emoji:"🧬",color:"#4de0a2",desc:"遺伝・細胞分裂・生命の連続性",questions:[
+["親の形質が子に伝わることを何という？",["進化","遺伝","消化","呼吸"],1,"親の形質が子や孫に伝わることを遺伝というよ。"],
+["遺伝子の本体である物質は？",["タンパク質","脂肪","DNA","デンプン"],2,"遺伝子の本体はDNA（デオキシリボ核酸）だよ。"],
+["体細胞分裂で、分裂後の細胞の染色体数はどうなる？",["半分になる","2倍になる","元の細胞と同じ","0になる"],2,"体細胞分裂では、分裂後の細胞は元の細胞と同じ数の染色体を受け継ぐよ。"]]},
+{id:"earth",name:"地学",emoji:"🌌",color:"#ffbb68",desc:"天体・太陽系・地球と宇宙",questions:[
+["太陽のように自ら光を出す天体を何という？",["惑星","衛星","恒星","小惑星"],2,"自ら光を出す天体を恒星というよ。太陽は恒星だね。"],
+["地球が太陽のまわりを1周するのにかかる時間は？",["約1日","約1か月","約1年","約10年"],2,"地球の公転周期は約1年。地球は太陽のまわりを公転しているよ。"],
+["月が満ち欠けして見える主な理由は？",["月の形が変わるから","太陽・地球・月の位置関係が変わるから","月が光を出すから","雲が動くから"],1,"月は太陽の光を反射して光っているよ。太陽・地球・月の位置関係によって見える明るい部分が変わるんだ。"]]}
+];
+let xp=Number(localStorage.getItem("rikakids_xp")||0),total=Number(localStorage.getItem("rikakids_correct")||0),answered=0,current=null,index=0,score=0,locked=false,visited=new Set();
+const $=id=>document.getElementById(id);
+function level(){return Math.floor(xp/100)+1}
+function updateStats(){$("xp").innerHTML=xp+' <em>XP</em>';$("level").textContent=level();$("mini-level").textContent=level();$("correct-total").textContent=total;$("level-label").textContent="LEVEL "+level();$("next-xp").textContent=(100-(xp%100))+" XP";$("level-bar").style.width=(xp%100)+"%";localStorage.setItem("rikakids_xp",xp);localStorage.setItem("rikakids_correct",total)}
+function renderSubjects(target){$(target).innerHTML=subjects.map(s=>'<button class="subject" style="--accent:'+s.color+'" onclick="startSubject(\''+s.id+'\')"><span class="go">↗</span><div class="emoji">'+s.emoji+'</div><h3>'+s.name+'分野</h3><p>'+s.desc+'</p><div class="bar"><i style="width:'+(visited.has(s.id)?100:0)+'%"></i></div><div class="progress-label"><span>チャレンジ状況</span><span>'+(visited.has(s.id)?'挑戦済み':'未挑戦')+'</span></div></button>').join("")}
+function show(id){document.querySelectorAll(".view").forEach(v=>v.classList.remove("show"));$(id+"-view").classList.add("show");window.scrollTo({top:0,behavior:"smooth"})}
+function goHome(){show("home");renderSubjects("subjects");renderSubjects("subjects2")}
+function startRandom(){startSubject(subjects[Math.floor(Math.random()*subjects.length)].id)}
+function startSubject(id){current=subjects.find(s=>s.id===id);index=0;score=0;locked=false;visited.add(id);show("quiz");renderQuestion()}
+function renderQuestion(){const q=current.questions[index];$("quiz-content").innerHTML='<div class="quiz-meta"><span>'+current.emoji+' '+current.name+'分野</span><span>QUESTION '+(index+1)+' / '+current.questions.length+'</span></div><div class="bar" style="margin-top:13px"><i style="width:'+((index/current.questions.length)*100)+'%;background:'+current.color+'"></i></div><h2>'+q[0]+'</h2><div class="answers">'+q[1].map((a,i)=>'<button class="answer" data-answer="'+i+'">'+String.fromCharCode(65+i)+'. '+a+'</button>').join("")+'</div><div id="feedback" class="feedback hidden"></div><div class="quiz-actions"><span class="small">正解で +20 XP</span><button id="next" class="primary hidden" onclick="nextQuestion()">次へ進む →</button></div>';document.querySelectorAll("[data-answer]").forEach(b=>b.addEventListener("click",()=>answer(Number(b.dataset.answer))))}
+function answer(n){if(locked)return;locked=true;const q=current.questions[index];const ok=n===q[2];document.querySelectorAll("[data-answer]").forEach((b,i)=>{b.disabled=true;if(i===q[2])b.classList.add("correct");else if(i===n)b.classList.add("wrong")});const f=$("feedback");f.classList.remove("hidden");f.innerHTML=(ok?"<b style='color:var(--green)'>✨ 正解！ +20 XP</b>":"<b style='color:var(--pink)'>惜しい！正解は "+String.fromCharCode(65+q[2])+" だよ</b>")+'<br>'+q[3];if(ok){xp+=20;total++;score++;updateStats()}$("next").classList.remove("hidden");$("next").textContent=index===current.questions.length-1?"結果を見る →":"次の問題へ →"}
+function nextQuestion(){index++;locked=false;if(index<current.questions.length)renderQuestion();else finish()}
+function finish(){$("quiz-content").innerHTML='<div class="complete"><div class="trophy">🏆</div><span class="tag">STAGE CLEAR</span><h2>クエストクリア！</h2><p>'+current.name+'分野に挑戦したよ。<br>3問中 '+score+' 問正解！</p><h2 style="color:var(--yellow)">+'+(score*20)+' XP</h2><button class="primary" onclick="goHome()">ホームに戻る</button></div>';renderSubjects("subjects");renderSubjects("subjects2")}
+document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.nav==="home")goHome();else if(b.dataset.nav==="subjects")show("subjects");else{show("home");$("quests").scrollIntoView({behavior:"smooth"})}document.querySelectorAll("[data-nav]").forEach(x=>x.classList.toggle("active",x===b))}));
+updateStats();renderSubjects("subjects");renderSubjects("subjects2");
+</script>
+</body>
+</html>
