@@ -117,6 +117,38 @@ trunks.castShadow=true;trunks.receiveShadow=true;environment.add(trunks);leaves.
 const water=new THREE.Mesh(new THREE.PlaneGeometry(260,34),new THREE.MeshStandardMaterial({color:0x397f9b,roughness:.25,metalness:.12}));water.rotation.x=-Math.PI/2;water.position.set(0,-.2,-119);environment.add(water);
 const grid=new THREE.GridHelper(100,50,0x2a7187,0x1a4054);grid.position.y=.015;grid.material.transparent=true;grid.material.opacity=.12;scene.add(grid);
 const starGeometry=new THREE.BufferGeometry(),starPositions=[];for(let i=0;i<260;i++){const a=rand()*Math.PI*2,r=35+rand()*100,y=35+rand()*60;starPositions.push(Math.cos(a)*r,y,Math.sin(a)*r);}starGeometry.setAttribute("position",new THREE.Float32BufferAttribute(starPositions,3));const stars=new THREE.Points(starGeometry,new THREE.PointsMaterial({color:0xeaf5ff,size:.65,transparent:true,opacity:.0,sizeAttenuation:true}));scene.add(stars);
+let climateState={day:-1,seasonIndex:0,season:"春",weather:"晴れ",temperature:14,solarFactor:1,trafficFactor:1,happinessPenalty:0};
+const seasonNames=["春","夏","秋","冬"],seasonGroundColors=[0x547b48,0x64844a,0x8b7950,0x9ba6a8];
+const snowCover=new THREE.Mesh(new THREE.PlaneGeometry(190,190),new THREE.MeshBasicMaterial({color:0xeaf4fb,transparent:true,opacity:.28,depthWrite:false}));
+snowCover.rotation.x=-Math.PI/2;snowCover.position.set(0,-.105,0);snowCover.visible=false;scene.add(snowCover);
+const rainPositions=new Float32Array(520*6),snowPositions=new Float32Array(360*3);
+const rainGeometry=new THREE.BufferGeometry();rainGeometry.setAttribute("position",new THREE.BufferAttribute(rainPositions,3));
+const rainParticles=new THREE.LineSegments(rainGeometry,new THREE.LineBasicMaterial({color:0xa8d8f0,transparent:true,opacity:.58}));rainParticles.frustumCulled=false;rainParticles.visible=false;scene.add(rainParticles);
+const snowGeometry=new THREE.BufferGeometry();snowGeometry.setAttribute("position",new THREE.BufferAttribute(snowPositions,3));
+const snowParticles=new THREE.Points(snowGeometry,new THREE.PointsMaterial({color:0xffffff,size:.22,transparent:true,opacity:.88}));snowParticles.frustumCulled=false;snowParticles.visible=false;scene.add(snowParticles);
+let weatherParticleSeed=713;
+function weatherRand(){weatherParticleSeed=(weatherParticleSeed*1664525+1013904223)>>>0;return weatherParticleSeed/4294967296;}
+function updateClimateState(){
+ const day=Math.floor(gameElapsedMinutes/1440);if(day===climateState.day)return;
+ climateState.day=day;const seasonIndex=Math.floor((day%360)/90);climateState.seasonIndex=seasonIndex;climateState.season=seasonNames[seasonIndex];
+ const seed=(day*9301+49297)%233280,r=seed/233280;
+ if(seasonIndex===3&&r<.48)climateState.weather="雪";else if(r<(seasonIndex===3?.64:.23))climateState.weather="雨";else if(r<(seasonIndex===3?.84:.52))climateState.weather="曇り";else climateState.weather="晴れ";
+ const base=[13,28,17,3][seasonIndex],adjust={晴れ:2,曇り:-1,雨:-3,雪:-6};
+ climateState.temperature=base+adjust[climateState.weather]+Math.round(Math.sin(day*.31)*3);
+ climateState.solarFactor=(climateState.weather==="雪"?.48:climateState.weather==="雨"?.68:climateState.weather==="曇り"?.82:1)*([.82,1.08,.92,.68][seasonIndex]);
+ climateState.trafficFactor=climateState.weather==="雪"?1.48:climateState.weather==="雨"?1.2:climateState.weather==="曇り"?1.02:1;
+ climateState.happinessPenalty=(climateState.weather==="雪"?7:climateState.weather==="雨"?3:0)+(climateState.temperature>=32?5:climateState.temperature<=-2?6:0);
+ weatherParticleSeed=(day+1)*7919>>>0;const wet=climateState.weather==="雨",snow=climateState.weather==="雪";
+ rainParticles.visible=wet;snowParticles.visible=snow;snowCover.visible=seasonIndex===3;
+ for(let i=0;i<520;i++){const x=(weatherRand()-.5)*110,y=weatherRand()*38+2,z=(weatherRand()-.5)*110,k=i*6;rainPositions[k]=x;rainPositions[k+1]=y;rainPositions[k+2]=z;rainPositions[k+3]=x-.22;rainPositions[k+4]=y-.95;rainPositions[k+5]=z+.08;}
+ for(let i=0;i<360;i++){const k=i*3;snowPositions[k]=(weatherRand()-.5)*110;snowPositions[k+1]=weatherRand()*35+2;snowPositions[k+2]=(weatherRand()-.5)*110;}
+ rainGeometry.attributes.position.needsUpdate=true;snowGeometry.attributes.position.needsUpdate=true;
+ leafMats.forEach((m,i)=>{const colors=seasonIndex===0?[0x285d3b,0x347448,0x477f45]:seasonIndex===1?[0x24643a,0x3d8747,0x57934a]:seasonIndex===2?[0xa35b28,0xc18a36,0x80633a]:[0x596b61,0x718078,0x87938b];m.color.setHex(colors[i]);});
+}
+function animateWeather(delta){
+ if(rainParticles.visible){const p=rainGeometry.attributes.position.array;for(let i=0;i<520;i++){const k=i*6;p[k+1]-=delta*29;p[k+4]-=delta*29;if(p[k+1]<0){const y=35+weatherRand()*8,x=(weatherRand()-.5)*110,z=(weatherRand()-.5)*110;p[k]=x;p[k+1]=y;p[k+2]=z;p[k+3]=x-.22;p[k+4]=y-.95;p[k+5]=z+.08;}}rainGeometry.attributes.position.needsUpdate=true;}
+ if(snowParticles.visible){const p=snowGeometry.attributes.position.array;for(let i=0;i<360;i++){const k=i*3;p[k+1]-=delta*(1+weatherRand());p[k]+=(weatherRand()-.5)*delta*1.6;if(p[k+1]<0){p[k]=(weatherRand()-.5)*110;p[k+1]=30+weatherRand()*8;p[k+2]=(weatherRand()-.5)*110;}}snowGeometry.attributes.position.needsUpdate=true;}
+}
 function updateDayNight(){const h=getCityHour(),stops=[{t:0,c:0x08152b,f:0x08152b,hemi:0x25364f,ground:0x263d31,light:0x91b9ff,intensity:.18},{t:5,c:0x4b6482,f:0x4b6482,hemi:0x7d8190,ground:0x405b3c,light:0xffb47d,intensity:.8},{t:8,c:0x9bc9e8,f:0x9bc9e8,hemi:0xc7e7ff,ground:0x547b48,light:0xffe4bf,intensity:2.2},{t:12,c:0x83c3ec,f:0x83c3ec,hemi:0xd5efff,ground:0x5d854c,light:0xfff1d8,intensity:2.65},{t:17,c:0xf0a477,f:0xf0a477,hemi:0xffc49a,ground:0x596f43,light:0xffa36d,intensity:1.35},{t:20,c:0x182943,f:0x182943,hemi:0x3c4b65,ground:0x304634,light:0x8baeff,intensity:.35},{t:24,c:0x08152b,f:0x08152b,hemi:0x25364f,ground:0x263d31,light:0x91b9ff,intensity:.18}];let j=0;while(j<stops.length-2&&h>stops[j+1].t)j++;const a=stops[j],b=stops[j+1],q=Math.max(0,Math.min(1,(h-a.t)/(b.t-a.t)));const smooth=q*q*(3-2*q);const mix=(x,y)=>new THREE.Color(x).lerp(new THREE.Color(y),smooth);const sky=mix(a.c,b.c);scene.background.copy(sky);scene.fog.color.copy(mix(a.f,b.f));hemiLight.color.copy(mix(a.hemi,b.hemi));groundMaterial.color.copy(mix(a.ground,b.ground));keyLight.color.copy(mix(a.light,b.light));keyLight.intensity=a.intensity+(b.intensity-a.intensity)*smooth;hemiLight.intensity=.45+(a.intensity+(b.intensity-a.intensity)*smooth)*.7;const angle=(h-6)/24*Math.PI*2;keyLight.position.set(Math.cos(angle)*48,Math.max(5,Math.sin(angle)*55),Math.sin(angle)*48);stars.material.opacity=h<5||h>=21?Math.min(1,(h>=21?(h-21)/2:(5-h)/2))*.85:0;renderer.toneMappingExposure=h<5||h>=21?.78:h<7?1.0:h<18?1.15:.95;}
 updateDayNight();
 const floor=new THREE.Mesh(new THREE.PlaneGeometry(100,100),new THREE.MeshBasicMaterial({visible:false,side:THREE.DoubleSide}));floor.rotation.x=-Math.PI/2;floor.position.y=.02;scene.add(floor);
