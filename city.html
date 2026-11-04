@@ -39,7 +39,7 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
 <aside class="panel left">
  <h2>都市建設メニュー</h2>
  <div class="hint">施設を選び、地面をクリックして配置。道路は道路ツールを選んでマスをクリック。</div>
- <h3>道路・交通</h3><div class="tools">
+ <h3>他プレイヤーの都市見学</h3><div class="metric"><span>プレイヤー名</span><input id="visitUsername" type="text" placeholder="ユーザー名" style="width:55%;padding:6px;background:#102235;color:#e8f3fa;border:1px solid #38536a;border-radius:6px"></div><button class="wide" id="visitCityBtn">🔎 都市を見学する</button><button class="wide" id="returnOwnCityBtn" style="display:none">自分の都市に戻る</button><div class="hint">公開保存されている都市を見学できます。見学中は建設・購入・保存はできません。</div><h3>道路・交通</h3><div class="tools">
   <button class="tool" data-tool="select"><strong>↖ 選択</strong><em>施設を選ぶ</em></button><button class="tool active" data-tool="road"><strong>▰ 道路</strong><em>$250 / マス</em></button>
   <button class="tool" data-tool="remove"><strong>⌫ 撤去</strong><em>道路・施設</em></button><button class="tool" data-tool="move"><strong>✥ 移動・回転</strong><em>位置と向きを変更</em></button><div id="placementRotateControls" class="move-controls hidden"><strong>設置する建物の向き</strong><div class="move-actions"><button type="button" id="rotatePlacementBtn">↻ 90°回転</button></div><small id="placementAngle">向き：0°</small></div><div id="moveControls" class="move-controls hidden"><strong id="moveTargetName">移動先を設定中</strong><div class="move-actions"><button type="button" id="rotateMoveBtn">↻ 90°回転</button><button type="button" id="confirmMoveBtn">✓ 決定</button><button type="button" id="cancelMoveBtn">キャンセル</button></div><small id="moveAngle">向き：0°</small><div id="moveProgress" class="move-progress">施設を選択すると、移動プレビューを表示します。</div></div>
  </div>
@@ -1455,7 +1455,7 @@ $("resetBtn").onclick=async()=>{
  updateUI();await saveCity();
  notice("都市を初期化しました。"+(user&&refund>0?" $"+refund.toLocaleString("en-US")+"（50%）を返金しました。":""));
 };
-$("homeBtn").onclick=()=>location.href="./";
+$("homeBtn").onclick=()=>location.href="./";$("visitCityBtn").onclick=()=>{const name=$("visitUsername").value.trim();if(!name)return notice("見学したいプレイヤー名を入力してください。");location.href="./city.html?view=1&user="+encodeURIComponent(name);};if(publicView){$("returnOwnCityBtn").style.display="block";$("returnOwnCityBtn").onclick=()=>location.href="./city.html";$("visitCityBtn").disabled=true;$("visitUsername").disabled=true;}
 const buildModeBtn=$("buildModeBtn");
 buildModeBtn.onclick=()=>{
  const opening=!document.body.classList.contains("build-open");
