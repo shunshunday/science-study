@@ -679,11 +679,11 @@ function renderMovePreview(){
  const rotation=pendingMove?pendingMove.rotation:(Number(selectedObject.rotation)||0);
  const problem=moveValidation(selectedObject,p.x,p.z);movePreviewValid=!problem;
  moveGhost.position.set(p.x,.65,p.z);moveGhost.rotation.y=rotation;
- moveMarker.position.set(p.x,.055,p.z);moveMarker.rotation.z=-rotation;
+ moveMarker.position.set(p.x,.055,p.z);moveMarker.rotation.z=0;
  moveMarker.material.color.set(movePreviewValid?0x35e58a:0xff4055);
- moveMarkerOutline.position.set(p.x,.065,p.z);moveMarkerOutline.rotation.z=-rotation;moveMarkerOutline.material.color.set(movePreviewValid?0x35e58a:0xff4055);
+ moveMarkerOutline.position.set(p.x,.065,p.z);moveMarkerOutline.rotation.z=0;moveMarkerOutline.material.color.set(movePreviewValid?0x35e58a:0xff4055);
  const status=$("moveProgress");status.className="move-progress "+(movePreviewValid?"good":"bad");
- status.textContent="移動先 X："+p.x+" / Z："+p.z+"｜"+(movePreviewValid?"✓ 設置可能":"✕ 設置不可："+problem);
+ status.textContent="移動先 X："+p.x+" / Z："+p.z+"｜"+(movePreviewValid?"✓ 設置可能":"✕ 設置不可："+problem);$("confirmMoveBtn").disabled=!pendingMove||!movePreviewValid;
 }
 function updateMovePreviewPointer(e){
  if(!selectedObject||selected!=="move"||pendingMove)return;
