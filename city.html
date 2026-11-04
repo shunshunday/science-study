@@ -103,6 +103,16 @@ const grid=new THREE.GridHelper(100,50,0x2a7187,0x1a4054);grid.position.y=.015;s
 const floor=new THREE.Mesh(new THREE.PlaneGeometry(100,100),new THREE.MeshBasicMaterial({visible:false,side:THREE.DoubleSide}));floor.rotation.x=-Math.PI/2;floor.position.y=.02;scene.add(floor);
 const moveMarkerMaterial=new THREE.MeshBasicMaterial({color:0x35e58a,transparent:true,opacity:.28,depthWrite:false,side:THREE.DoubleSide});moveMarker=new THREE.Mesh(new THREE.PlaneGeometry(4.05,4.05),moveMarkerMaterial);moveMarker.rotation.x=-Math.PI/2;moveMarker.position.y=.055;moveMarker.visible=false;scene.add(moveMarker);moveMarkerOutline=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(4.05,4.05)),new THREE.LineBasicMaterial({color:0x35e58a,transparent:true,opacity:.95}));moveMarkerOutline.rotation.x=-Math.PI/2;moveMarkerOutline.position.y=.065;moveMarkerOutline.visible=false;scene.add(moveMarkerOutline);
 const raycaster=new THREE.Raycaster(),mouse=new THREE.Vector2();const cell=4;
+const constructionGroundPlane=new THREE.Plane(new THREE.Vector3(0,1,0),-.02),constructionGroundHit=new THREE.Vector3();
+function pointerGroundPoint(e){
+ const rect=renderer.domElement.getBoundingClientRect();
+ if(!rect.width||!rect.height)return null;
+ mouse.x=(e.clientX-rect.left)/rect.width*2-1;
+ mouse.y=-(e.clientY-rect.top)/rect.height*2+1;
+ raycaster.setFromCamera(mouse,camera);
+ const hit=raycaster.ray.intersectPlane(constructionGroundPlane,constructionGroundHit);
+ return hit?hit.clone():null;
+}
 const keyLights=[];
 function gridPos(p){return {x:Math.round(p.x/cell)*cell,z:Math.round(p.z/cell)*cell};}
 function mat(color,metal=.25,rough=.35,emissive=0){return new THREE.MeshStandardMaterial({color,metalness:metal,roughness:rough,emissive,emissiveIntensity:.6});}
@@ -713,9 +723,8 @@ function roadPlacementProblem(x,z){
 }
 function updatePlacementPreviewPointer(e){
  if(publicView||!document.body.classList.contains("build-open")||!["road","rail","station","busstop",...Object.keys(defs)].includes(selected))return;
- const rect=renderer.domElement.getBoundingClientRect();mouse.x=(e.clientX-rect.left)/rect.width*2-1;mouse.y=-(e.clientY-rect.top)/rect.height*2+1;
- raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObject(floor);if(!hits.length)return;
- const p=gridPos(hits[0].point);preparePlacementGhost();if(!placementGhost)return;
+ const groundPoint=pointerGroundPoint(e);if(!groundPoint)return;
+ const p=gridPos(groundPoint);preparePlacementGhost();if(!placementGhost)return;
  placementPreviewPoint=p;
  let problem="",bounds;
  if(selected==="road"){problem=roadPlacementProblem(p.x,p.z);bounds=roadBounds(p.x,p.z);}
@@ -803,9 +812,8 @@ function renderMovePreview(){
 }
 function updateMovePreviewPointer(e){
  if(!selectedObject||selected!=="move"||pendingMove)return;
- const rect=renderer.domElement.getBoundingClientRect();mouse.x=(e.clientX-rect.left)/rect.width*2-1;mouse.y=-(e.clientY-rect.top)/rect.height*2+1;
- raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObject(floor);if(!hits.length)return;
- movePreviewPoint=gridPos(hits[0].point);renderMovePreview();
+ const groundPoint=pointerGroundPoint(e);if(!groundPoint)return;
+ movePreviewPoint=gridPos(groundPoint);renderMovePreview();
 }
 renderer.domElement.addEventListener("pointermove",updateMovePreviewPointer);
 renderer.domElement.addEventListener("pointermove",updatePlacementPreviewPointer);
@@ -868,9 +876,8 @@ renderer.domElement.addEventListener("pointerup",e=>{
  if(!placementPointer||placementPointer.id!==e.pointerId)return;
  const start=placementPointer;placementPointer=null;
  if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>6)return;
- const rect=renderer.domElement.getBoundingClientRect();mouse.x=(e.clientX-rect.left)/rect.width*2-1;mouse.y=-(e.clientY-rect.top)/rect.height*2+1;
- raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObject(floor);if(!hits.length)return;
- const p=gridPos(hits[0].point);
+ const groundPoint=pointerGroundPoint(e);if(!groundPoint)return;
+ const p=gridPos(groundPoint);
  if(selected==="move"){
   const clickedBuilding=buildingAtPoint(p.x,p.z);
   if(pendingMove){
