@@ -320,7 +320,7 @@ function makeBuilding(type,x,z,level=1){
  g.position.set(x,terrainHeightAt(x,z),z);g.userData={type,level};g.scale.setScalar(1+(level-1)*.08);
  const body=mat(d.color,.28,.42),wall=mat(0xe5edf1,.12,.68),dark=mat(0x172b3b,.48,.38),glass=mat(0x6ebbd0,.58,.2,0x123d50),windowMat=mat(0x9be8ff,.42,.16,0x28758e),roofMat=mat(0x334b5b,.35,.48),white=mat(0xf4f7f7,.08,.5),green=mat(0x4e9b68,.08,.8);
  const add=(w,h,dep,m,px,py,pz)=>{
-  const bevel=Math.min(.075,Math.max(.018,Math.min(w,dep,h)*.045));
+  const bevel=Math.min(.065,Math.min(w,dep,h)*.16);
   const key=[w,h,dep,bevel].map(v=>v.toFixed(3)).join(":");
   let geo=buildingRoundedGeometryCache.get(key);
   if(!geo){
