@@ -1109,12 +1109,12 @@ async function addBuilding(type,x,z,rotation=0){
 }
 let placementPointer=null;
 window.addEventListener("pointerdown",e=>{
- if(publicView||!document.body.classList.contains("build-open")||e.button!==0||!isGamePointer(e))return;
+ if(publicView||e.button!==0||!isGamePointer(e))return;
  placementPointer={id:e.pointerId,x:e.clientX,y:e.clientY};
  updatePlacementPreviewPointer(e);
 },true);
 window.addEventListener("pointerup",e=>{
- if(publicView||!document.body.classList.contains("build-open")){placementPointer=null;return;}
+ if(publicView){placementPointer=null;return;}
  if(!placementPointer||placementPointer.id!==e.pointerId||!isGamePointer(e))return;
  const start=placementPointer;placementPointer=null;
  if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>6)return;
