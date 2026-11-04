@@ -106,7 +106,11 @@ footer{background:#fff;border-top:1px solid var(--line);color:#8a968e}.footer-in
 const SUPABASE_URL = "https://tmgfcmzufamxuzsuedza.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng";
 const supabaseReady = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("YOUR_") && !SUPABASE_ANON_KEY.includes("YOUR_");
-const supabaseClient = supabaseReady ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+// Supabase CDN が読み込めなくても、用語一覧とクイズ本体は止めない
+const supabaseClient = supabaseReady && typeof window.supabase?.createClient === 'function'
+ ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+ : null;
+if(supabaseReady && !supabaseClient) console.warn('Supabase SDK unavailable: account features are temporarily disabled.');
 const terms=[
 ["化学","原子","物質をつくる基本的な粒子。原子核と電子からできている。"],
 ["化学","原子核","原子の中心にある部分。陽子と中性子からできている。"],
@@ -551,15 +555,21 @@ function makeChallengingChoices(target,pool){
  const sameCategory=pool.filter(x=>x[0]===target[0]&&x[1]!==target[1]);
  const topic=quizTopicGroups.find(g=>g.category===target[0]&&g.terms.includes(target[1]));
  const topicCandidates=topic?sameCategory.filter(x=>topic.terms.includes(x[1])):[];
- // まず同じ単元を優先し、反対の意味を持つ用語は必ず候補に入れる
- // 単元グループが設定されている用語は、同じグループ以外を混ぜない
- const candidates=topic?topicCandidates:sameCategory;
+ // 同じ単元を優先しつつ、候補が足りない場合は同分野、全分野の順で補う
+ const preferred=topicCandidates.length>=3?topicCandidates:sameCategory;
+ const candidates=[...new Map([...preferred,...sameCategory,...pool.filter(x=>x[1]!==target[1])]
+  .map(x=>[x[1],x])).values()].filter(x=>x[1]!==target[1]);
  const oppositeNames=quizOppositePairs.filter(pair=>pair.includes(target[1])).flat().filter(name=>name!==target[1]);
  const forced=candidates.filter(x=>oppositeNames.includes(x[1]));
  const ranked=candidates.filter(x=>!forced.some(f=>f[1]===x[1]))
   .map(x=>({term:x[1],score:definitionSimilarity(target[2],x[2])}))
   .sort((a,b)=>b.score-a.score);
- const distractors=[...forced.slice(0,1).map(x=>x[1]),...shuffle(ranked.slice(0,6).map(x=>x.term))].slice(0,3);
+ const distractors=[];
+ for(const x of forced)if(!distractors.includes(x[1])&&distractors.length<3)distractors.push(x[1]);
+ for(const x of ranked)if(!distractors.includes(x.term)&&distractors.length<3)distractors.push(x.term);
+ if(distractors.length<3){
+  for(const x of shuffle(candidates))if(!distractors.includes(x[1])&&distractors.length<3)distractors.push(x[1]);
+ }
  return shuffle([target[1],...distractors]);
 }
 function startQuiz(){
