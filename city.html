@@ -1426,12 +1426,11 @@ function simulateMonthlyEconomy(){
  const base=calc(),salary={shop:1900,doctor:3400,teacher:2800,engineer:3600,utilityworker:2900,officeworker:3300,factoryworker:2500,firefighter:3000,policeofficer:3000,chef:2200,hotelstaff:2100,researcher:3800,sportsstaff:2300,airportstaff:2900};
  const customersByShop=new Map();let householdTax=0,privateWages=0,publicWages=0,welfare=0,householdSpending=0;
  people.forEach(p=>{const wage=p.workplace?(salary[p.job]||2200):0;if(wage){p.money=(Number(p.money)||0)+wage;const publicJob=["hospital","school","university","firestation","police","water","sewage","waste"].includes(p.workplace.type);if(publicJob)publicWages+=wage;else privateWages+=wage;householdTax+=wage*taxRates.res/100;}else{p.money=(Number(p.money)||0)+280;welfare+=280;}
-  const spend=Math.min(Math.max(0,p.money),Math.round(170+(p.education||0)*18));p.money-=spend;householdSpending+=spend;
-  const shops=buildings.filter(b=>b.type==="shop"||b.type==="restaurant");if(shops.length){const shop=shops.reduce((best,b)=>!best||Math.hypot(b.x-p.x,b.z-p.z)<Math.hypot(best.x-p.x,best.z-p.z)?b:best,null);customersByShop.set(shop,(customersByShop.get(shop)||0)+1);}
+  householdSpending+=Number(p.monthlyShoppingSpend)||0;p.monthlyShoppingSpend=0;
  });
  const factories=buildings.filter(b=>b.type==="factory");let goodsSupply=0,goodsDemand=0,imports=0,exports=0,businessTax=0,companyCount=0;
  factories.forEach(b=>{const c=b.company||(b.company={cash:12000,inventory:0,profit:0,revenue:0,efficiency:1});const staff=people.filter(p=>p.workplace===b).length,produced=Math.max(0,Math.round(staff*7*(c.efficiency||1)));c.inventory=(c.inventory||0)+produced;goodsSupply+=produced;c.produced=produced;});
- const shops=buildings.filter(b=>b.type==="shop");const demandByShop=new Map();shops.forEach(b=>{const q=(customersByShop.get(b)||0)*2.4;demandByShop.set(b,q);goodsDemand+=q;});
+ const shops=buildings.filter(b=>b.type==="shop"||b.type==="restaurant");shops.forEach(b=>{const c=b.company||(b.company={cash:12000,inventory:0,profit:0,revenue:0,efficiency:1});const customers=Number(c.pendingCustomers)||0;c.pendingCustomers=0;customersByShop.set(b,customers);if(b.type==="shop")goodsDemand+=customers*2.4;});const demandByShop=new Map(shops.map(b=>[b,(customersByShop.get(b)||0)*2.4]));
  let localGoods=Math.min(goodsSupply,goodsDemand),remainingLocal=localGoods;factories.forEach(b=>{const take=Math.min(b.company.inventory||0,remainingLocal);b.company.inventory=Math.max(0,(b.company.inventory||0)-take);remainingLocal-=take;});
  imports=Math.max(0,Math.ceil(goodsDemand-localGoods));
  let totalBusinessProfit=0;
@@ -1440,9 +1439,9 @@ function simulateMonthlyEconomy(){
   const c=b.company||(b.company={cash:12000,inventory:0,profit:0,revenue:0,efficiency:1}),staff=people.filter(p=>p.workplace===b),payroll=staff.reduce((n,p)=>n+(salary[p.job]||2200),0),rent=450+(b.level||1)*120;
   let revenue=0,cost=payroll+rent;
   if(b.type==="factory"){const produced=c.produced||0,sold=goodsSupply?Math.min(produced,localGoods*produced/Math.max(1,goodsSupply)):0,surplus=Math.max(0,produced-sold);revenue=sold*62+surplus*42;cost+=produced*22;exports+=Math.round(surplus);}
-  else if(b.type==="shop"){const customers=customersByShop.get(b)||0,units=demandByShop.get(b)||0;revenue=customers*210;cost+=units*82+Math.max(0,units-localGoods/Math.max(1,shops.length))*35;}
+  else if(b.type==="shop"){const customers=customersByShop.get(b)||0,units=demandByShop.get(b)||0;revenue=Number(c.pendingSales)||0;c.pendingSales=0;cost+=units*82+Math.max(0,units-localGoods/Math.max(1,shops.length))*35;}
   else if(b.type==="office"){revenue=staff.length*610;cost+=staff.length*65;}
-  else{const customers=customersByShop.get(b)||0;revenue=customers*195+staff.length*95;cost+=revenue*.42;}
+  else{const customers=customersByShop.get(b)||0;revenue=(Number(c.pendingSales)||0)+staff.length*95;c.pendingSales=0;cost+=revenue*.42;}
   const profit=Math.round(revenue-cost);c.revenue=Math.round(revenue);c.costs=Math.round(cost);c.profit=profit;c.cash=Math.max(-50000,Math.min(500000,(c.cash||0)+profit));c.efficiency=Math.max(.35,Math.min(1.35,(c.efficiency||1)+(profit>=0?.015:-.025)));totalBusinessProfit+=profit;
   const rate=b.type==="factory"?taxRates.ind:b.type==="office"?taxRates.office:taxRates.com;businessTax+=Math.max(0,profit)*rate/100;companyCount++;
  });
@@ -1469,20 +1468,21 @@ function animate(){requestAnimationFrame(animate);controls.update();updateDayNig
  people.forEach(p=>{
   p.walkTimer-=1/60;
   const arrived=Math.hypot(p.targetX-p.x,p.targetZ-p.z)<.38;
-  if(p.job!=="unemployed"&&p.workplace){
+  if(p.routine==="toShop"&&arrived&&p.walkTimer<=0){
+   const shop=p.shop;if(shop){const purchase=Math.min(Math.max(0,p.money||0),90+Math.floor(Math.random()*150));p.money=Math.max(0,(p.money||0)-purchase);p.monthlyShoppingSpend=(p.monthlyShoppingSpend||0)+purchase;shop.company=shop.company||{cash:12000,inventory:0,profit:0,revenue:0,efficiency:1};shop.company.pendingSales=(shop.company.pendingSales||0)+purchase;shop.company.pendingCustomers=(shop.company.pendingCustomers||0)+1;p.routine="shopping";p.walkTimer=3+Math.random()*4;}else p.routine="home";
+  }else if(p.routine==="shopping"&&p.walkTimer<=0){
+   const h=p.home||nearestHome(p.x,p.z);if(h){p.targetX=h.x+1.8;p.targetZ=h.z+2.3;p.routine="toHome";}else p.routine="home";
+  }else if(p.job!=="unemployed"&&p.workplace){
    if(!p.routine)p.routine="home";
    if(arrived&&p.walkTimer<=0){
-    if(p.routine==="home"||p.routine==="toHome"){
-     const spot=workplacePoint(p.workplace,p.id||0);p.targetX=spot.x;p.targetZ=spot.z;p.routine="toWork";p.walkTimer=0;
-    }else if(p.routine==="toWork"){
-     p.routine="working";p.working=true;p.walkTimer=7+Math.random()*8;
-    }else if(p.routine==="working"){
-     p.working=false;const h=p.home||nearestHome(p.x,p.z);if(h){p.targetX=h.x+1.8;p.targetZ=h.z+2.3;p.routine="toHome";p.walkTimer=0;}else{p.routine="toWork";p.walkTimer=0;}
-    }
+    if(p.routine==="home"||p.routine==="toHome"){const spot=workplacePoint(p.workplace,p.id||0);p.targetX=spot.x;p.targetZ=spot.z;p.routine="toWork";p.walkTimer=0;}
+    else if(p.routine==="toWork"){p.routine="working";p.working=true;p.walkTimer=7+Math.random()*8;}
+    else if(p.routine==="working"){p.working=false;const shops=buildings.filter(b=>b.type==="shop"||b.type==="restaurant"),shop=shops.length?shops.reduce((best,b)=>!best||Math.hypot(b.x-p.x,b.z-p.z)<Math.hypot(best.x-p.x,best.z-p.z)?b:best,null):null;if(shop&&Math.random()<.58){p.shop=shop;p.targetX=shop.x+2.2;p.targetZ=shop.z+2.1;p.routine="toShop";p.walkTimer=0;}else{const h=p.home||nearestHome(p.x,p.z);if(h){p.targetX=h.x+1.8;p.targetZ=h.z+2.3;p.routine="toHome";p.walkTimer=0;}}}
    }
   }else if(p.walkTimer<=0||arrived){
-   const cx=p.home?p.home.x:p.x,cz=p.home?p.home.z:p.z;
-   p.targetX=cx+(Math.random()-.5)*7;p.targetZ=cz+(Math.random()-.5)*7;p.walkTimer=2.5+Math.random()*4;p.routine="home";
+   const shops=buildings.filter(b=>b.type==="shop"||b.type==="restaurant"),shop=shops.length?shops.reduce((best,b)=>!best||Math.hypot(b.x-p.x,b.z-p.z)<Math.hypot(best.x-p.x,best.z-p.z)?b:best,null):null;
+   if(shop&&Math.random()<.24){p.shop=shop;p.targetX=shop.x+2.2;p.targetZ=shop.z+2.1;p.routine="toShop";p.walkTimer=0;}
+   else{const cx=p.home?p.home.x:p.x,cz=p.home?p.home.z:p.z;p.targetX=cx+(Math.random()-.5)*7;p.targetZ=cz+(Math.random()-.5)*7;p.walkTimer=2.5+Math.random()*4;p.routine="home";}
   }
   const dx=p.targetX-p.x,dz=p.targetZ-p.z,dist=Math.hypot(dx,dz);
   if(dist>.05){const step=Math.min(dist,p.speed/60);p.x+=dx/dist*step;p.z+=dz/dist*step;p.group.rotation.y=Math.atan2(dx,dz);p.phase+=.16;for(let i=0;i<p.limbs.length;i++){const isArm=i%2===0;p.limbs[i].rotation.x=isArm?Math.sin(p.phase+(i%4)*Math.PI)*.62:Math.sin(p.phase+(i%2)*Math.PI)*.62;}}
