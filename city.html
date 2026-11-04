@@ -43,16 +43,7 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
   <button class="tool" data-tool="select"><strong>↖ 選択</strong><em>施設を選ぶ</em></button><button class="tool active" data-tool="road"><strong>▰ 道路</strong><em>$250 / マス</em></button>
   <button class="tool" data-tool="remove"><strong>⌫ 撤去</strong><em>道路・施設</em></button><button class="tool" data-tool="move"><strong>✥ 移動・回転</strong><em>位置と向きを変更</em></button><div id="placementRotateControls" class="move-controls hidden"><strong>設置する建物の向き</strong><div class="move-actions"><button type="button" id="rotatePlacementBtn">↻ 90°回転</button></div><small id="placementAngle">向き：0°</small></div><div id="moveControls" class="move-controls hidden"><strong id="moveTargetName">移動先を設定中</strong><div class="move-actions"><button type="button" id="rotateMoveBtn">↻ 90°回転</button><button type="button" id="confirmMoveBtn">✓ 決定</button><button type="button" id="cancelMoveBtn">キャンセル</button></div><small id="moveAngle">向き：0°</small><div id="moveProgress" class="move-progress">施設を選択すると、移動プレビューを表示します。</div></div>
  </div>
- <h3>土地の用途指定</h3><div class="tools" id="zoneTools"><button class="tool" data-tool="zone-res"><strong>🏠 住宅地区</strong><em>$100 / 区画</em></button><button class="tool" data-tool="zone-com"><strong>🛍️ 商業地区</strong><em>$100 / 区画</em></button><button class="tool" data-tool="zone-ind"><strong>🏭 工業地区</strong><em>$100 / 区画</em></button><button class="tool" data-tool="zone-office"><strong>🏢 オフィス地区</strong><em>$100 / 区画</em></button><button class="tool" data-tool="zone-erase"><strong>⌫ 用途指定を消去</strong><em>区画だけ解除</em></button></div><p class="hint">道路沿いの土地をドラッグして四角く塗れます。クリックなら1区画。用途指定を消去すると地区と自動建物を解除します。</p><h3>居住・都市施設</h3><div class="tools" id="buildingTools">
-  <button class="tool" data-tool="home"><strong>⌂ 未来住宅</strong><em>$4,000</em></button>
-  <button class="tool" data-tool="tower"><strong>▥ 超高層住宅</strong><em>$14,000</em></button>
-  <button class="tool" data-tool="shop"><strong>◇ 商業プラザ</strong><em>$6,000</em></button>
-  <button class="tool" data-tool="hospital"><strong>✚ 先端医療センター</strong><em>$12,000</em></button>
-  <button class="tool" data-tool="school"><strong>⌑ 科学アカデミー</strong><em>$9,000</em></button>
-  <button class="tool" data-tool="park"><strong>✿ バイオドーム</strong><em>$4,500</em></button>
- </div>
- <h3>商業・産業・公共施設</h3><div class="tools">
-<button class="tool" data-tool="office"><strong>🏙️ 未来型オフィス</strong><em>$18,000</em></button><button class="tool" data-tool="factory"><strong>🏭 先端ロボット工場</strong><em>$22,000</em></button><button class="tool" data-tool="firestation"><strong>🚒 スマート消防署</strong><em>$8,500</em></button><button class="tool" data-tool="police"><strong>🚓 近未来警察署</strong><em>$9,500</em></button><button class="tool" data-tool="restaurant"><strong>🍽️ ガラスドームレストラン</strong><em>$7,500</em></button><button class="tool" data-tool="hotel"><strong>🏨 ラグジュアリーホテル</strong><em>$16,000</em></button><button class="tool" data-tool="university"><strong>🎓 未来総合大学</strong><em>$20,000</em></button><button class="tool" data-tool="stadium"><strong>🏟️ メガスタジアム</strong><em>$24,000</em></button><button class="tool" data-tool="airport"><strong>✈️ 都市型空港ターミナル</strong><em>最初の1か所は無料</em></button></div>
+ <h3>土地の用途指定</h3><div class="tools" id="zoneTools"><button class="tool" data-tool="zone-res"><strong>🏠 住宅地区</strong><em>$100 / 区画</em></button><button class="tool" data-tool="zone-com"><strong>🛍️ 商業地区</strong><em>$100 / 区画</em></button><button class="tool" data-tool="zone-ind"><strong>🏭 工業地区</strong><em>$100 / 区画</em></button><button class="tool" data-tool="zone-office"><strong>🏢 オフィス地区</strong><em>$100 / 区画</em></button><button class="tool" data-tool="zone-erase"><strong>⌫ 用途指定を消去</strong><em>区画だけ解除</em></button></div><p class="hint">道路沿いの土地をドラッグして四角く塗れます。クリックなら1区画。用途指定を消去すると地区と自動建物を解除します。</p><p class="hint">住宅・店舗・工場・オフィスなどの一般建物は、地区指定と需要に応じて自動的に建設されます。建物を1棟ずつ購入・配置する操作はありません。</p>
  <h3>次世代エネルギー</h3><div class="tools">
   <button class="tool" data-tool="fusion"><strong>⚛ 核融合炉</strong><em>$27,500 / 180 MW</em></button>
   <button class="tool" data-tool="fission"><strong>☢ 原子力発電所</strong><em>$19,000 / 110 MW</em></button>
@@ -951,7 +942,7 @@ function tintPlacementGhost(valid){
  placementGhost.traverse(o=>{if(o.isMesh){o.renderOrder=999;const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{m.transparent=true;m.opacity=.72;m.depthWrite=false;m.depthTest=false;m.color.set(color);m.emissive?.set(color);m.emissiveIntensity=.45;});}else if(o.isSprite){o.renderOrder=1000;o.material.depthTest=false;}});
 }
 function preparePlacementGhost(){
- const type=selected==="road"?"road":defs[selected]?selected:["rail","station","busstop"].includes(selected)?selected:null;
+ const type=selected==="road"?"road":["rail","station","busstop","fusion","fission","hydrogen","solar"].includes(selected)?selected:null;
  if(!type){disposePlacementGhost();return;}
  if(placementGhostType===type&&placementGhost)return;
  disposePlacementGhost();placementGhostType=type;
@@ -976,7 +967,7 @@ function roadPlacementProblem(x,z){
  return "";
 }
 function updatePlacementPreviewPointer(e){
- if(publicView||!document.body.classList.contains("build-open")||!["road","rail","station","busstop",...Object.keys(defs)].includes(selected))return;
+ if(publicView||!document.body.classList.contains("build-open")||!["road","rail","station","busstop","fusion","fission","hydrogen","solar"].includes(selected))return;
  const groundPoint=pointerGroundPoint(e);if(!groundPoint)return;
  const p=gridPos(groundPoint);preparePlacementGhost();if(!placementGhost)return;
  placementPreviewPoint=p;
@@ -999,7 +990,7 @@ function setTool(t){const zoneType=t.startsWith("zone-")?t.slice(5):null,validZo
  disposePlacementGhost();selected=t;placementRotation=0;
  document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));
  const rotateControls=$("placementRotateControls");
- if(rotateControls)rotateControls.classList.toggle("hidden",!defs[t]);
+ if(rotateControls)rotateControls.classList.add("hidden");
  if($("placementAngle"))$("placementAngle").textContent="向き：0°";
  const labels={rail:"線路",station:"駅",busstop:"バス停"};
  notice(t==="move"?"移動：施設を選択→移動先をクリック→「決定」。↻で90°回転。":t==="road"?"道路をドラッグして連続敷設。":t==="remove"?"撤去したい道路・建物・交通施設・用途区画をクリック。":t==="zone-erase"?"消したい用途区画をクリック。":validZone?validZone.name+"：地面をドラッグして四角く指定。":t==="select"?"選択したい施設をクリック。":(defs[t]?.name||labels[t]||"施設")+"を配置する場所をクリック。");
