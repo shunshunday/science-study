@@ -725,12 +725,18 @@ function showMoveControls(){
 function cancelPendingMove(){
  pendingMove=null;selectedObject=null;hideMovePreview();showMoveControls();
 }
+function commitPendingMove(showMessage=true){
+ if(!pendingMove)return false;
+ const {building,x,z,rotation}=pendingMove,problem=moveValidation(building,x,z,rotation);
+ if(problem){notice(problem);return false;}
+ building.x=x;building.z=z;building.rotation=rotation;building.group.position.set(x,0,z);building.group.rotation.y=rotation;
+ pendingMove=null;selectedObject=null;moveDraftRotation=0;hideMovePreview();showMoveControls();assignWorkplaces();updateUI();scheduleSave();
+ if(showMessage)notice("施設の位置と向きを変更しました。続けて別の施設を選べます。");
+ return true;
+}
 function confirmPendingMove(){
  if(!pendingMove)return notice("先に移動先をクリックしてください。");
- const {building,x,z,rotation}=pendingMove,problem=moveValidation(building,x,z,rotation);
- if(problem)return notice(problem);
- building.x=x;building.z=z;building.rotation=rotation;building.group.position.set(x,0,z);building.group.rotation.y=rotation;
- pendingMove=null;selectedObject=null;moveDraftRotation=0;hideMovePreview();showMoveControls();assignWorkplaces();updateUI();scheduleSave();notice("施設の位置と向きを変更しました。続けて別の施設も移動できます。");
+ commitPendingMove(true);
 }
 $("rotateMoveBtn").onclick=()=>{if(!selectedObject)return notice("先に向きを変える施設を選択してください。");moveDraftRotation=((pendingMove?pendingMove.rotation:moveDraftRotation)+Math.PI/2)%(Math.PI*2);if(pendingMove)pendingMove.rotation=moveDraftRotation;showMoveControls();renderMovePreview();};
 $("confirmMoveBtn").onclick=confirmPendingMove;
@@ -769,8 +775,19 @@ renderer.domElement.addEventListener("pointerup",e=>{
  raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObject(floor);if(!hits.length)return;
  const p=gridPos(hits[0].point);
  if(selected==="move"){
-  if(pendingMove){notice("先に「決定」または「キャンセル」を押してください。");return;}
-  if(!selectedObject){selectedObject=buildingAtPoint(p.x,p.z);if(selectedObject){moveDraftRotation=Number(selectedObject.rotation)||0;prepareMovePreview(selectedObject);showMoveControls();notice(defs[selectedObject.type].name+"を選択しました。移動先をクリックするか、↻で向きを変更できます。");}else notice("移動したい施設をクリックしてください。");return;}
+  const clickedBuilding=buildingAtPoint(p.x,p.z);
+  if(pendingMove){
+   if(clickedBuilding&&clickedBuilding!==pendingMove.building){
+    if(!commitPendingMove(false))return;
+    selectedObject=clickedBuilding;moveDraftRotation=Number(clickedBuilding.rotation)||0;prepareMovePreview(clickedBuilding);showMoveControls();
+    notice("前の建物を移動しました。続けて"+defs[clickedBuilding.type].name+"を移動できます。");return;
+   }
+   if(clickedBuilding===pendingMove.building){notice("この建物の移動先をクリックするか、「決定」で確定してください。");return;}
+   const problem=moveValidation(pendingMove.building,p.x,p.z,pendingMove.rotation);if(problem)return notice(problem);
+   pendingMove.x=p.x;pendingMove.z=p.z;movePreviewPoint={x:p.x,z:p.z};showMoveControls();notice("移動先を更新しました。「決定」で確定できます。");return;
+  }
+  if(!selectedObject){selectedObject=clickedBuilding;if(selectedObject){moveDraftRotation=Number(selectedObject.rotation)||0;prepareMovePreview(selectedObject);showMoveControls();notice(defs[selectedObject.type].name+"を選択しました。移動先をクリックするか、↻で向きを変更できます。");}else notice("移動したい施設をクリックしてください。");return;}
+  if(clickedBuilding&&clickedBuilding!==selectedObject){notice("先に現在選択中の建物の移動先をクリックしてください。");return;}
   const problem=moveValidation(selectedObject,p.x,p.z,moveDraftRotation);if(problem)return notice(problem);
   pendingMove={building:selectedObject,x:p.x,z:p.z,rotation:moveDraftRotation};movePreviewPoint={x:p.x,z:p.z};showMoveControls();notice("移動先を仮設定しました。半透明の建物と地面の色を確認して「決定」を押してください。");return;
  }
