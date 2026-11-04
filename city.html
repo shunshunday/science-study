@@ -54,7 +54,7 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
   <button class="tool" data-tool="rail"><strong>▤ 線路</strong><em>$600 / マス</em></button>
   <button class="tool" data-tool="station"><strong>🚉 駅</strong><em>$7,500</em></button>
   <button class="tool" data-tool="busstop"><strong>🚏 バス停</strong><em>$1,500</em></button>
- </div><p class="hint">電車：4マス間隔で連続する線路を2区間以上＋線路の近くに駅。バス：2か所のバス停＋両方を結ぶ連続した道路。車：住宅・住民・住宅から6マス以内の道路が必要です。</p>
+ </div><p class="hint">電車：線路を上下左右につなぎ、カーブも作成。つながった線路の近くに駅。バス：2か所のバス停＋両方を結ぶ連続した道路。車：住宅・住民・住宅から6マス以内の道路が必要です。</p>
  <h3>車両ショップ</h3><div class="tools"><button class="tool" id="buyTrainBtn"><strong>🚆 電車を購入</strong><em>$25,000 / 編成</em></button><button class="tool" id="buyBusBtn"><strong>🚌 バスを購入</strong><em>$6,000 / 台</em></button><button class="tool" id="buyCarBtn"><strong>🚘 電動セダンを購入</strong><em>$9,000 / 台</em></button><select id="jobSelect" class="tool" style="width:100%;margin-top:8px;padding:10px"><option value="unemployed">仕事なし（無職）</option><option value="shop">🏪 店員</option><option value="doctor">🏥 医師</option><option value="teacher">🏫 教師</option><option value="engineer">⚡ 発電技術者</option><option value="officeworker">💼 会社員</option><option value="factoryworker">🏭 工場技術者</option><option value="firefighter">🚒 消防士</option><option value="policeofficer">🚓 警察官</option><option value="chef">👨‍🍳 料理人</option><option value="hotelstaff">🛎️ ホテルスタッフ</option><option value="researcher">🔬 研究者</option><option value="sportsstaff">🏟️ スポーツ職員</option><option value="airportstaff">✈️ 空港職員</option></select><label class="recruit-count-label" for="recruitCount">募集する人数</label><input id="recruitCount" class="recruit-count" type="number" min="1" max="100" step="1" value="1" inputmode="numeric"><button class="tool" id="recruitBtn"><strong>🧑 選んだ職業の住民を募集</strong><em>$500 / 人</em></button></div><p class="hint">車は購入後、つながった道路ネットワークを往復走行します。道路を敷いただけでは車は増えません。道路が分断されている場合は、つなげると走行を開始します。</p>
 </aside>
 <aside class="panel right">
@@ -516,7 +516,7 @@ function makeBus(){
  scene.add(g);return g;
 }
 function transitDimensions(type){
- return type==="rail"?{w:4,d:2.1}:type==="station"?{w:4.2,d:3.1}:{w:3.3,d:2.0};
+ return type==="rail"?{w:4,d:4}:type==="station"?{w:4.2,d:3.1}:{w:3.3,d:2.0};
 }
 function transitBounds(type,x,z){
  const d=transitDimensions(type);
@@ -529,18 +529,42 @@ function transitPlacementProblem(type,x,z){
  if(roadsOverlapBuilding(candidate))return "道路と重なっています。";
  if(buildings.some(b=>b.type==="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";
  if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),.05)))return "ほかの交通施設と重なっています。";
- if(type==="rail"&&transit.some(t=>t.type==="rail"&&Math.abs(t.z-z)<.1&&Math.abs(t.x-x)<3.9))return "線路が重なっています。線路は4マスずつつなげてください。";
+ if(type==="rail"&&transit.some(t=>t.type==="rail"&&Math.hypot(t.x-x,t.z-z)<3.9))return "線路が重なっています。1マスずつ隣につなげてください。";
  if(type!=="rail"&&transit.some(t=>t.type===type&&Math.hypot(t.x-x,t.z-z)<4))return "同じ交通施設が近すぎます。";
  return "";
 }
 function buildTrainPath(){
- const rows=new Map();
- transit.filter(t=>t.type==="rail").forEach(t=>{const key=Math.round(t.z*100)/100;if(!rows.has(key))rows.set(key,[]);rows.get(key).push(t);});
- let best=null;
- for(const [z,items] of rows){
-  items.sort((a,b)=>a.x-b.x);let run=[];
-  const check=()=>{if(run.length<2)return;const station=transit.some(s=>s.type==="station"&&run.some(r=>Math.hypot(s.x-r.x,s.z-r.z)<=5.5));if(station&&(!best||run.length>best.length))best=run.map(r=>({x:r.x,z:r.z}));};
-  for(const rail of items){if(run.length&&Math.abs(rail.x-run[run.length-1].x-4)>0.15){check();run=[];}run.push(rail);}check();
+ const rails=transit.filter(t=>t.type==="rail");
+ if(rails.length<2)return null;
+ const key=p=>Math.round(p.x/4)+","+Math.round(p.z/4);
+ const byKey=new Map(rails.map(r=>[key(r),r]));
+ const neighbors=r=>[[4,0],[-4,0],[0,4],[0,-4]].map(([dx,dz])=>byKey.get(key({x:r.x+dx,z:r.z+dz}))).filter(Boolean);
+ const seen=new Set();let best=null;
+ for(const seed of rails){
+  if(seen.has(key(seed)))continue;
+  const component=[],queue=[seed];seen.add(key(seed));
+  for(let i=0;i<queue.length;i++){const r=queue[i];component.push(r);for(const next of neighbors(r)){if(!seen.has(key(next))){seen.add(key(next));queue.push(next);}}}
+  if(component.length<2||!transit.some(s=>s.type==="station"&&component.some(r=>Math.hypot(s.x-r.x,s.z-r.z)<=6)))continue;
+  const ends=component.filter(r=>neighbors(r).length===1);
+  if(component.some(r=>neighbors(r).length>2)||(ends.length!==0&&ends.length!==2))continue;
+  const start=ends[0]||component[0],ordered=[],visited=new Set();let current=start,previous=null;
+  while(current&&!visited.has(key(current))){
+   ordered.push(current);visited.add(key(current));
+   const next=neighbors(current).find(v=>(!previous||key(v)!==key(previous))&&!visited.has(key(v)));
+   previous=current;current=next||null;
+  }
+  const closed=ends.length===0&&ordered.length===component.length&&neighbors(ordered[ordered.length-1]).some(v=>key(v)===key(start));
+  if(ordered.length!==component.length)continue;
+  const points=ordered.map(r=>({x:r.x,z:r.z}));
+  if(closed)points.push({...points[0]});
+  if(!best||points.length>best.length)best=points;
+ }
+ if(!best||best.length<2)return null;
+ if(best.length>=3){
+  const vectors=best.map(p=>new THREE.Vector3(p.x,.06,p.z));
+  const closed=best[0].x===best[best.length-1].x&&best[0].z===best[best.length-1].z;
+  const curve=new THREE.CatmullRomCurve3(vectors,closed,"centripetal",.35);
+  return curve.getPoints(Math.max(24,(best.length-1)*12)).map(p=>({x:p.x,z:p.z}));
  }
  return best;
 }
@@ -583,7 +607,7 @@ function cacheVehiclePath(path){
  function rebuildTransitVehicles(){
   transitVehicles.forEach(v=>scene.remove(v.group));transitVehicles=[];
   const trainPath=buildTrainPath();
-  if(trainCount>0&&trainPath?.length>=2){const data=cacheVehiclePath(trainPath);for(let i=0;i<trainCount;i++){const group=makeTrain();transitVehicles.push({kind:"train",group,...data,distance:(i*2.5)%data.total,direction:1,speed:2.8});}}
+  if(trainCount>0&&trainPath?.length>=2){const data=cacheVehiclePath(trainPath);for(let i=0;i<trainCount;i++){const group=makeTrain();transitVehicles.push({kind:"train",group,...data,distance:(i*2.5)%data.total,direction:1,speed:2.8,loop:trainPath[0].x===trainPath[trainPath.length-1].x&&trainPath[0].z===trainPath[trainPath.length-1].z});}}
   const busPath=buildBusPath();
   if(busCount>0&&busPath?.length>=2){const data=cacheVehiclePath(busPath);for(let i=0;i<busCount;i++){const group=makeBus();transitVehicles.push({kind:"bus",group,...data,distance:(i*2)%data.total,direction:1,speed:2.1});}}
  }
@@ -591,7 +615,8 @@ function cacheVehiclePath(path){
   const data=v.path? v : (v.pathData||((v.route?.length>1)?cacheVehiclePath(v.route):null));
   if(!data?.path||data.path.length<2||data.total<=0)return;
   v.distance+=v.speed*dt*v.direction;
-  if(v.distance>=data.total){v.distance=data.total;v.direction=-1;}else if(v.distance<=0){v.distance=0;v.direction=1;}
+  if(v.loop&&data.total>0){v.distance=((v.distance%data.total)+data.total)%data.total;}
+  else if(v.distance>=data.total){v.distance=data.total;v.direction=-1;}else if(v.distance<=0){v.distance=0;v.direction=1;}
   let remain=v.distance;
   for(let i=0;i<data.lengths.length;i++){
    const len=data.lengths[i];if(remain<=len||i===data.lengths.length-1){
@@ -1098,7 +1123,7 @@ async function saveCity(showNotice=true){if(!user){if(showNotice)notice("クラ�
 function scheduleSave(){if(publicView||!user)return;saveQueue=saveQueue.then(()=>saveCity(false)).catch(err=>notice("自動保存に失敗しました: "+err.message));}
 
 $("buyTrainBtn").onclick=async()=>{
- if(!buildTrainPath()){notice("電車を走らせるには、4マス間隔で連続した線路を2区間以上つなぎ、その近くに駅を設置してください。");return;}
+ if(!buildTrainPath()){notice("電車を走らせるには、線路を上下左右につないで2区間以上のルートを作り、その近くに駅を設置してください。分岐のある線路網はまだ走行ルートにできません。");return;}
  if(!(await charge(25000)))return;trainCount++;rebuildTransitVehicles();notice("電車を購入しました。線路上を走ります。");scheduleSave();
 };
 $("buyBusBtn").onclick=async()=>{
