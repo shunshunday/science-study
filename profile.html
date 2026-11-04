@@ -21,7 +21,7 @@ h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:
 .member-card.gold:before{border-color:#fff8d966;box-shadow:0 0 0 18px #fff8d922,0 0 0 38px #fff8d914}
 .member-top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid #26323830}
 .member-brand{font-size:11px;font-weight:900;letter-spacing:.14em;color:#35434b;line-height:1.5}
-.member-mark{width:38px;height:38px;display:grid;place-items:center;border:1px solid #116b39;border-radius:7px;background:#16834a;color:#fff;font-size:21px;font-weight:1000;box-shadow:0 3px 12px #0002;flex:none}
+.member-mark{width:38px;height:38px;display:grid;place-items:center;border:1px solid #116b39;border-radius:7px;background:#16834a;color:#fff;font-size:21px;font-weight:10000;box-shadow:0 3px 12px #0002;flex:none}
 .member-card.gold .member-top{border-color:#8e6a183d}.member-card.gold .member-brand{color:#624609}
 .member-card.gold .member-mark{border-color:#116b39;background:#16834a;color:#fff}
 .member-body{position:relative;display:grid;grid-template-columns:minmax(0, .9fr) minmax(0,1.5fr);align-items:center;gap:14px;padding:13px 0 10px}
@@ -157,13 +157,13 @@ function loadPlaytime(seconds){
  }catch(e){document.getElementById("playtime").textContent="—";}
 }
 function titleFor(n){
- if(n>=100000)return "覇者";
- if(n>=50000)return "ノーベル賞";
- if(n>=20000)return "伝説の科学者";
- if(n>=10000)return "科学の天才";
- if(n>=6000)return "理科博士";
- if(n>=3000)return "理科マスター";
- if(n>=1000)return "理科チャレンジャー";
+ if(n>=1000000)return "覇者";
+ if(n>=500000)return "ノーベル賞";
+ if(n>=200000)return "伝説の科学者";
+ if(n>=100000)return "科学の天才";
+ if(n>=60000)return "理科博士";
+ if(n>=30000)return "理科マスター";
+ if(n>=10000)return "理科チャレンジャー";
  return "理科ビギナー";
 }
 function showStatus(message){statusElement.hidden=false;statusElement.textContent=message;}
@@ -194,7 +194,7 @@ async function api(path,options={},token=accessToken){
 async function ensureSession(){
  let session=readSession();
  if(!session?.access_token||!session?.user)throw new Error("ログイン情報が見つかりません。ホーム画面からログインしてください。");
- if(session.expires_at&&session.expires_at*1000<Date.now()+60000){
+ if(session.expires_at&&session.expires_at*10000<Date.now()+60000){
   if(!session.refresh_token)throw new Error("ログイン期限が切れています。ホーム画面から再ログインしてください。");
   const refreshed=await api("/auth/v1/token?grant_type=refresh_token",{method:"POST",body:JSON.stringify({refresh_token:session.refresh_token})},null);
   saveSession(refreshed);
@@ -250,7 +250,7 @@ function flushProfilePlaytime(forcePreviousActive=false){
  if(!profilePlaytimeUserId||!profilePlaytimeLastTick)return;
  const now=Date.now(),activeNow=profilePageActive();
  if(activeNow||(forcePreviousActive&&profilePlaytimeWasActive)){
-  const elapsed=Math.min(30,Math.max(0,Math.floor((now-profilePlaytimeLastTick)/1000)));
+  const elapsed=Math.min(30,Math.max(0,Math.floor((now-profilePlaytimeLastTick)/10000)));
   if(elapsed>0){
    profilePendingSeconds+=elapsed;
    try{localStorage.setItem(profilePendingKey(profilePlaytimeUserId),String(profilePendingSeconds));}catch(e){}
@@ -275,7 +275,7 @@ async function startProfilePlaytime(id){
  profilePlaytimeWasActive=profilePageActive();
  syncProfilePlaytime();
  if(profilePlaytimeTimer)clearInterval(profilePlaytimeTimer);
- profilePlaytimeTimer=setInterval(flushProfilePlaytime,10000);
+ profilePlaytimeTimer=setInterval(flushProfilePlaytime,100000);
 }
 document.addEventListener("visibilitychange",()=>{
  if(document.visibilityState==="hidden")flushProfilePlaytime(true);
@@ -304,9 +304,9 @@ async function refreshProfile(){
   if(!profileAssetTimer)profileAssetTimer=setInterval(refreshProfileAsset,5000);
   document.getElementById("rank").textContent=titleFor(assets);
   const titleBar=document.querySelector(".member-rank");
-  titleBar.classList.toggle("nobel",assets>=50000&&assets<100000);
-  titleBar.classList.toggle("haisha",assets>=100000);
-  const isGold=assets>=10000;
+  titleBar.classList.toggle("nobel",assets>=500000&&assets<1000000);
+  titleBar.classList.toggle("haisha",assets>=1000000);
+  const isGold=assets>=100000;
   const card=document.getElementById("memberCard");
   card.classList.toggle("gold",isGold);
   card.classList.toggle("normal",!isGold);
