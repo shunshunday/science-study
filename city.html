@@ -655,9 +655,9 @@ async function refreshWallet(){if(!user)return;const {data,error}=await supabase
 async function addRoad(x,z){if(roads.some(r=>r.x===x&&r.z===z))return;if(!(await charge(250)))return;roads.push(makeRoad(x,z));updateUI();scheduleSave();}
 async function addBuilding(type,x,z){const d=defs[type];if(buildings.some(b=>Math.abs(b.x-x)<3.2&&Math.abs(b.z-z)<3.2))return notice("そこには別の施設があります。");const count=buildings.filter(b=>b.type===type).length;if(!(await charge(d.cost)))return;buildings.push(makeBuilding(type,x,z));assignWorkplaces();notice(d.name+"を建設しました。");updateUI();scheduleSave();}
 let placementPointer=null;
-renderer.domElement.addEventListener("pointerdown",e=>{if(publicView||e.button!==0)return;placementPointer={id:e.pointerId,x:e.clientX,y:e.clientY};});
+renderer.domElement.addEventListener("pointerdown",e=>{if(publicView||!document.body.classList.contains("build-open")||e.button!==0)return;placementPointer={id:e.pointerId,x:e.clientX,y:e.clientY};});
 renderer.domElement.addEventListener("pointerup",e=>{
- if(publicView)return;
+ if(publicView||!document.body.classList.contains("build-open")){placementPointer=null;return;}
  if(!placementPointer||placementPointer.id!==e.pointerId)return;
  const start=placementPointer;placementPointer=null;
  if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>6)return;
@@ -712,6 +712,7 @@ buildModeBtn.onclick=()=>{
  const opening=!document.body.classList.contains("build-open");
  document.body.classList.toggle("build-open",opening);
  buildModeBtn.textContent=opening?"✕ 建設モード終了":"🏗️ 建設モード";
+ if(!opening){placementPointer=null;setTool("select");}
  if(opening)notice("建設モード：左のメニューから施設や道路を選んで編集できます。");
 };
 function calc(){const sum=k=>buildings.reduce((a,b)=>a+(defs[b.type][k]||0)*b.level,0);const generation=sum("generation"),demand=sum("power")+Math.ceil(population()*.12),homes=sum("housing"),pop=people.length,hosp=sum("service"),schools=sum("education");const traffic=roads.length?Math.min(100,Math.round(cars.length*12/Math.max(1,roads.length)*20)):0;const powerOk=generation>=demand;const services=Math.min(100,Math.round(Math.min(hosp/Math.max(1,pop*.025),schools/Math.max(1,pop*.035),1)*100));const happiness=Math.max(8,Math.min(100,Math.round(45+(powerOk?18:-28)+(homes>=pop?10:-18)+services*.22-traffic*.28+sum("happy"))));return {generation,demand,homes,pop,hosp,schools,traffic,powerOk,services,happiness};}
