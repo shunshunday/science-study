@@ -612,7 +612,7 @@ function advanceConstructions(){
 function advancePopulationLife(){
  if(gameElapsedMinutes%1440!==0||publicView)return;const cityHappiness=calc().happiness;
  for(const p of [...people]){
-  p.age=(Number(p.age)||18)+1/365;p.group.scale.setScalar(p.age<13?.58:p.age<18?.78:1);
+  p.age=(Number.isFinite(Number(p.age))?Number(p.age):18)+1/365;p.group.scale.setScalar(p.age<13?.58:p.age<18?.78:1);
   if(p.age>78&&Math.random()<Math.min(.045,(p.age-75)*.001)){scene.remove(p.group);people=people.filter(x=>x!==p);addNews("住民が高齢のため亡くなりました。");continue;}
   if(p.age<25&&buildings.some(b=>["school","university"].includes(b.type)))p.education=Math.min(4,(p.education||0)+.006);
   if(p.age>=18&&p.job==="unemployed"&&p.home){const available=Object.entries(jobFacilityTypes).filter(([job,types])=>buildings.some(b=>types.includes(b.type)&&people.filter(x=>x.job===job).length<buildings.filter(v=>types.includes(v.type)).reduce((n,v)=>n+(defs[v.type].jobs||0),0))).map(([job])=>job);if(available.length)p.job=available[Math.floor(Math.random()*available.length)];}
