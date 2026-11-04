@@ -32,7 +32,7 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
  <div class="hint">施設を選び、地面をクリックして配置。道路は道路ツールを選んでマスをクリック。</div>
  <h3>道路・交通</h3><div class="tools">
   <button class="tool" data-tool="select"><strong>↖ 選択</strong><em>施設を選ぶ</em></button><button class="tool active" data-tool="road"><strong>▰ 道路</strong><em>$250 / マス</em></button>
-  <button class="tool" data-tool="remove"><strong>⌫ 撤去</strong><em>道路・施設</em></button>
+  <button class="tool" data-tool="remove"><strong>⌫ 撤去</strong><em>道路・施設</em></button><button class="tool" data-tool="move"><strong>✥ 移動</strong><em>建設済み施設の位置変更</em></button>
  </div>
  <h3>居住・都市施設</h3><div class="tools" id="buildingTools">
   <button class="tool" data-tool="home"><strong>⌂ 未来住宅</strong><em>$4,000</em></button>
@@ -43,7 +43,7 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
   <button class="tool" data-tool="park"><strong>✿ バイオドーム</strong><em>$4,500</em></button>
  </div>
  <h3>商業・産業・公共施設</h3><div class="tools">
-<button class="tool" data-tool="office"><strong>🏙️ 未来型オフィス</strong><em>$18,000</em></button><button class="tool" data-tool="factory"><strong>🏭 先端ロボット工場</strong><em>$22,000</em></button><button class="tool" data-tool="firestation"><strong>🚒 スマート消防署</strong><em>$8,500</em></button><button class="tool" data-tool="police"><strong>🚓 近未来警察署</strong><em>$9,500</em></button><button class="tool" data-tool="restaurant"><strong>🍽️ ガラスドームレストラン</strong><em>$7,500</em></button><button class="tool" data-tool="hotel"><strong>🏨 ラグジュアリーホテル</strong><em>$16,000</em></button><button class="tool" data-tool="university"><strong>🎓 未来総合大学</strong><em>$20,000</em></button><button class="tool" data-tool="stadium"><strong>🏟️ メガスタジアム</strong><em>$24,000</em></button><button class="tool" data-tool="airport"><strong>✈️ 都市型空港ターミナル</strong><em>$30,000</em></button></div>
+<button class="tool" data-tool="office"><strong>🏙️ 未来型オフィス</strong><em>$18,000</em></button><button class="tool" data-tool="factory"><strong>🏭 先端ロボット工場</strong><em>$22,000</em></button><button class="tool" data-tool="firestation"><strong>🚒 スマート消防署</strong><em>$8,500</em></button><button class="tool" data-tool="police"><strong>🚓 近未来警察署</strong><em>$9,500</em></button><button class="tool" data-tool="restaurant"><strong>🍽️ ガラスドームレストラン</strong><em>$7,500</em></button><button class="tool" data-tool="hotel"><strong>🏨 ラグジュアリーホテル</strong><em>$16,000</em></button><button class="tool" data-tool="university"><strong>🎓 未来総合大学</strong><em>$20,000</em></button><button class="tool" data-tool="stadium"><strong>🏟️ メガスタジアム</strong><em>$24,000</em></button><button class="tool" data-tool="airport"><strong>✈️ 都市型空港ターミナル</strong><em>最初の1か所は無料</em></button></div>
  <h3>次世代エネルギー</h3><div class="tools">
   <button class="tool" data-tool="fusion"><strong>⚛ 核融合炉</strong><em>$27,500 / 180 MW</em></button>
   <button class="tool" data-tool="fission"><strong>☢ 原子力発電所</strong><em>$19,000 / 110 MW</em></button>
@@ -650,7 +650,15 @@ function staffingReport(){
 function setTool(t){selected=t;document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));const labels={rail:"線路",station:"駅",busstop:"バス停"};notice(t==="road"?"道路をクリックして敷設。":t==="remove"?"撤去したい道路・建物・交通施設をクリック。":t==="select"?"選択したい施設をクリック。":(defs[t]?.name||labels[t]||"施設")+"を配置する場所をクリック。");}
 function notice(s){$("notice").textContent=s;$("notice").classList.remove("hidden");clearTimeout(notice.timer);notice.timer=setTimeout(()=>$("notice").classList.add("hidden"),3000);}
 document.querySelectorAll("[data-tool]").forEach(b=>b.addEventListener("click",()=>setTool(b.dataset.tool)));
-function findAt(x,z){return buildings.find(b=>Math.abs(b.x-x)<1&&Math.abs(b.z-z)<1)||roads.find(r=>r.x===x&&r.z===z)||transit.find(t=>Math.abs(t.x-x)<1&&Math.abs(t.z-z)<1);}
+function findAt(x,z){return buildings.find(b=>Math.abs(b.x-x)<2&&Math.abs(b.z-z)<2)||roads.find(r=>r.x===x&&r.z===z)||transit.find(t=>Math.abs(t.x-x)<2&&Math.abs(t.z-z)<2);}
+function moveBuildingTo(building,x,z){
+ if(!building||!buildings.includes(building))return notice("移動する施設を先に選択してください。");
+ if(buildings.some(b=>b!==building&&Math.abs(b.x-x)<3.2&&Math.abs(b.z-z)<3.2))return notice("そこには別の施設があります。");
+ if(building.type==="airport"){
+  if(buildings.some(b=>b!==building&&b.type!=="airport"&&overlapsAirportRunway(b.x,b.z,x,z)))return notice("滑走路に既存の建物が重なります。別の場所を選んでください。");
+ }else if(isAirportRunwayBlocked(x,z))return notice("滑走路内には移動できません。");
+ building.x=x;building.z=z;building.group.position.set(x,0,z);selectedObject=null;assignWorkplaces();updateUI();scheduleSave();notice("施設を移動しました。");
+}
 async function charge(cost){if(!user){notice("ログインしてから購入してください。");return false;}const {data,error}=await supabase.rpc("spend_city_cash",{p_amount:cost});if(error){notice(error.message==="資金が足りません"?"資金が足りません。":"購入処理に失敗しました: "+error.message);await refreshWallet();return false;}cash=Number(data);updateUI();return true;}
 async function refreshWallet(){if(!user)return;const {data,error}=await supabase.rpc("get_city_wallet");if(error){notice("所持金を読み込めません: "+error.message);return;}const wallet=Array.isArray(data)?data[0]:data;cash=Number(wallet?.balance||0);updateUI();}
 async function addRoad(x,z){if(roads.some(r=>r.x===x&&r.z===z))return;if(!(await charge(250)))return;roads.push(makeRoad(x,z));updateUI();scheduleSave();}
@@ -664,11 +672,12 @@ function isAirportRunwayBlocked(x,z){
 }
 async function addBuilding(type,x,z){
  const d=defs[type];
+ if(type==="airport"&&buildings.some(b=>b.type==="airport"))return notice("空港は都市に1か所だけ設置できます。");
  if(type!=="airport"&&isAirportRunwayBlocked(x,z))return notice("滑走路内には建物を建設できません。");
  if(type==="airport"&&buildings.some(b=>b.type!=="airport"&&overlapsAirportRunway(b.x,b.z,x,z)))return notice("建設予定の滑走路に既存の建物があります。別の場所を選んでください。");
  if(buildings.some(b=>Math.abs(b.x-x)<3.2&&Math.abs(b.z-z)<3.2))return notice("そこには別の施設があります。");
- const count=buildings.filter(b=>b.type===type).length;
- if(!(await charge(d.cost)))return;
+ const isFreeAirport=type==="airport"&&!buildings.some(b=>b.type==="airport");
+ if(!isFreeAirport&&!(await charge(d.cost)))return;
  buildings.push(makeBuilding(type,x,z));assignWorkplaces();notice(d.name+"を建設しました。");updateUI();scheduleSave();
 }
 let placementPointer=null;
@@ -681,12 +690,16 @@ renderer.domElement.addEventListener("pointerup",e=>{
  const rect=renderer.domElement.getBoundingClientRect();mouse.x=(e.clientX-rect.left)/rect.width*2-1;mouse.y=-(e.clientY-rect.top)/rect.height*2+1;
  raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObject(floor);if(!hits.length)return;
  const p=gridPos(hits[0].point);
- if(selected==="select"){selectedObject=buildings.find(b=>Math.abs(b.x-p.x)<2&&Math.abs(b.z-p.z)<2)||transit.find(t=>Math.abs(t.x-p.x)<2&&Math.abs(t.z-p.z)<2)||null;notice(selectedObject?(selectedObject.type in defs?defs[selectedObject.type].name:({rail:"線路",station:"駅",busstop:"バス停"})[selectedObject.type])+"を選択中":"施設を選択してください。");return;}
+ if(selected==="move"){
+  if(!selectedObject){selectedObject=buildings.find(b=>Math.abs(b.x-p.x)<3&&Math.abs(b.z-p.z)<3)||null;if(selectedObject)notice(defs[selectedObject.type].name+"を選択しました。移動先をクリックしてください。");else notice("移動したい施設をクリックしてください。");return;}
+  moveBuildingTo(selectedObject,p.x,p.z);return;
+ }
+ if(selected==="select"){selectedObject=buildings.find(b=>Math.abs(b.x-p.x)<3&&Math.abs(b.z-p.z)<3)||transit.find(t=>Math.abs(t.x-p.x)<2&&Math.abs(t.z-p.z)<2)||null;notice(selectedObject?(selectedObject.type in defs?defs[selectedObject.type].name:({rail:"線路",station:"駅",busstop:"バス停"})[selectedObject.type])+"を選択中":"施設を選択してください。");return;}
  if(selected==="road"){addRoad(p.x,p.z);return;}
  if(["rail","station","busstop"].includes(selected)){addTransit(selected,p.x,p.z);return;}
  if(selected==="remove"){
   const item=findAt(p.x,p.z);if(!item)return;
-  const refund=item.type?(defs[item.type]?Math.floor(defs[item.type].cost/2):Math.floor(transitCosts[item.type]/2)):250;
+  const refund=item.type?(defs[item.type]?Math.floor((item.type==="airport"?0:defs[item.type].cost)/2):Math.floor(transitCosts[item.type]/2)):250;
   (async()=>{if(user){try{const {data,error}=await supabase.rpc("refund_city_cash",{p_amount:refund});if(error)throw error;cash=Number(data);}catch(err){notice("返金に失敗したため撤去を中止しました: "+err.message);await refreshWallet();return;}}else{notice("返金・撤去にはログインが必要です。");return;}
    if(item.group)scene.remove(item.group);if(item.type&&item.type in defs)buildings=buildings.filter(b=>b!==item);else if(item.type)transit=transit.filter(t=>t!==item);else roads=roads.filter(r=>r!==item);
    if(selectedObject===item)selectedObject=null;rebuildTransitVehicles();updateUI();scheduleSave();notice("撤去しました。$"+refund.toLocaleString("en-US")+"（費用の50%）を返金しました。");
@@ -697,7 +710,7 @@ renderer.domElement.addEventListener("pointerup",e=>{
 renderer.domElement.addEventListener("pointercancel",()=>{placementPointer=null;});
 $("resetBtn").onclick=async()=>{
  const buildingCost=buildings.reduce((total,b)=>{
-  const base=defs[b.type].cost;
+  const base=b.type==="airport"?0:defs[b.type].cost;
   const upgrades=Array.from({length:Math.max(0,b.level-1)},(_,i)=>Math.round(base*(.55+(i+1)*.35))).reduce((a,v)=>a+v,0);
   return total+base+upgrades;
  },0);
