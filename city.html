@@ -118,8 +118,8 @@ function terrainNoise(x,z){const ix=Math.floor(x),iz=Math.floor(z),tx=x-ix,tz=z-
 function terrainFbm(x,z,octaves=4){let sum=0,amp=.5,freq=1,norm=0;for(let i=0;i<octaves;i++){sum+=terrainNoise(x*freq,z*freq)*amp;norm+=amp;freq*=2.03;amp*=.49;}return sum/norm;}
 function coastlineRadiusAt(x,z){const a=Math.atan2(z,x);return 226+19*Math.sin(a*3+.4)+12*Math.sin(a*7-.8)+7*Math.sin(a*13+1.2)-55*Math.exp(-Math.pow(a/.31,2))+22*Math.exp(-Math.pow((a-Math.PI)/.5,2));}
 const riverNetworks=[
- {width:4.7,depth:4.6,points:[[-22,-318],[-54,-280],[-88,-244],[-122,-210],[-157,-176],[-194,-143],[-229,-111],[-267,-83]]},
- {width:3.1,depth:3.1,points:[[92,-315],[112,-280],[137,-247],[164,-215],[192,-185],[224,-157],[259,-135]]}
+ {width:4.7,depth:4.6,points:[[-12,-208],[-42,-187],[-76,-166],[-110,-147],[-145,-126],[-180,-102],[-218,-80]]},
+ {width:3.1,depth:3.1,points:[[65,-165],[90,-154],[116,-140],[144,-125],[173,-108],[204,-92]]}
 ];
 const riverSegments=[];
 for(const river of riverNetworks)for(let i=0;i<river.points.length-1;i++)riverSegments.push({a:river.points[i],b:river.points[i+1],width:river.width,depth:river.depth});
