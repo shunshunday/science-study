@@ -1165,6 +1165,17 @@ function findRoadPath(from,to){
  }
  if(!prev.has(key(end)))return null;const path=[];for(let r=end;r;r=prev.get(key(r)))path.push({x:r.x,z:r.z});path.reverse();return path.length>1?path:null;
 }
+function spawnEmergencyServiceVehicle(type,route,station,parkedModel){
+ const g=new THREE.Group(),fire=type==="fire",paint=mat(fire?0xc92f2b:0xf3f5f4,.28,.42),dark=mat(0x17232c,.12,.78),glass=mat(0x8ed8e8,.5,.16),chrome=mat(0xb9c8ce,.78,.24),red=mat(0xd82f3c,.18,.25,0x8b1720),blue=mat(0x258cff,.16,.2,0x176dff),white=mat(0xf7f8f5,.08,.55);
+ box(g,1.32,.58,2.85,paint,0,.68,-.05);box(g,1.18,.88,1.0,paint,0,1.32,.82);box(g,1.02,.58,.07,glass,0,1.36,1.34);box(g,1.08,.08,.08,chrome,0,1.02,1.39);
+ for(const sx of [-.68,.68])for(const sz of [-.94,.91]){const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,.15,18),dark);wheel.rotation.z=Math.PI/2;wheel.position.set(sx,.34,sz);g.add(wheel);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.095,.095,.16,14),chrome);hub.rotation.z=Math.PI/2;hub.position.copy(wheel.position);g.add(hub);}
+ for(const sx of [-.42,.42]){box(g,.22,.14,.05,white,sx,.73,1.47);box(g,.2,.13,.05,red,sx,.72,-1.51);}
+ box(g,.92,.12,.34,blue,0,1.86,.22);box(g,.22,.12,.34,red,-.34,1.86,.22);box(g,.22,.12,.34,red,.34,1.86,.22);
+ if(fire){box(g,1.16,.72,1.45,paint,0,1.34,-.58);for(let i=0;i<3;i++)box(g,.08,.12,1.25,chrome,-.38+i*.38,1.78,-.58);box(g,.1,.65,.1,chrome,.48,1.55,-.62);box(g,.13,.13,1.25,white,-.69,1.25,-.58);}
+ else{box(g,.12,.75,.05,red,0,1.32,-.62);box(g,.78,.12,.05,red,0,1.32,-.62);box(g,.22,.5,.05,red,-.48,1.2,-.62);box(g,.22,.5,.05,red,.48,1.2,-.62);}
+ g.position.set(route[0].x,terrainHeightAt(route[0].x,route[0].z)+.04,route[0].z);scene.add(g);
+ return {kind:"car",group:g,route,pathData:cacheVehiclePath(route),distance:0,direction:1,speed:fire?5.8:5.6,loop:false,station,parkedModel};
+}
 function dispatchServiceVehicle(type,target){
  if(publicView||!target)return false;const config={fire:{station:"firestation",budget:"fire",color:0xe33d35},ambulance:{station:"hospital",budget:"health",color:0xf1f4f5},police:{station:"police",budget:"police",color:0x2879dc},waste:{station:"waste",budget:"waste",color:0x79a85e}}[type];if(!config)return false;
  const stations=buildings.filter(b=>b.type===config.station&&(b.damage||0)<.7&&people.filter(p=>p.workplace===b).length>=(defs[b.type].staffNeed||1)*.5);if(!stations.length)return false;
