@@ -79,7 +79,7 @@ const $=id=>document.getElementById(id);
 const supabase=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
 const publicView=new URLSearchParams(location.search).get("view")==="1";if(publicView)document.body.classList.add("public-view");
 let user=null, cash=0, selected="road", buildings=[], roads=[], cars=[], people=[], transit=[], transitVehicles=[], trainCount=0, busCount=0, aircraftArrivals=[], parkedAircraft=0, cityTick=0, saveTimer=null, selectedObject=null, pendingMove=null;
-let moveGhost=null,moveMarker=null,moveMarkerOutline=null,movePreviewPoint=null,movePreviewValid=false,moveDraftRotation=0;
+let moveGhost=null,moveMarker=null,moveMarkerOutline=null,movePreviewPoint=null,movePreviewValid=false,moveDraftRotation=0,placementGhost=null,placementGhostType=null,placementPreviewValid=false;
 const defs={
  home:{name:"未来住宅",cost:4000,power:2,housing:12,color:0x35b8d5,kind:"res"},
  tower:{name:"超高層住宅",cost:14000,power:12,housing:65,color:0x357bd5,kind:"res"},
@@ -532,6 +532,60 @@ function spawnCar(i,home=nearestHome()){
  return car;
 }
 // ===== 公共交通システム v1 終了 =====
+function disposePlacementGhost(){
+ if(placementGhost){scene.remove(placementGhost);placementGhost.traverse(o=>{if(o.isMesh){o.geometry?.dispose();const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>m.dispose());}});placementGhost=null;}
+ placementGhostType=null;moveMarker.visible=false;moveMarkerOutline.visible=false;
+}
+function preparePlacementGhost(){
+ if(placementGhost&&placementGhostType===selected)return;
+ disposePlacementGhost();placementGhostType=selected;
+ if(selected==="road")placementGhost=makeRoad(0,0).group;
+ else if(["rail","station","busstop"].includes(selected))placementGhost=makeTransit(selected,0,0).group;
+ else if(defs[selected])placementGhost=makeBuilding(selected,0,0).group;
+ if(!placementGhost)return;
+ placementGhost.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false;if(Array.isArray(o.material))o.material=o.material.map(m=>{const q=m.clone();q.transparent=true;q.opacity=.68;q.depthWrite=false;q.depthTest=false;return q;});else{const q=o.material.clone();q.transparent=true;q.opacity=.68;q.depthWrite=false;q.depthTest=false;o.material=q;}}});
+ placementGhost.renderOrder=999;moveMarker.visible=true;moveMarkerOutline.visible=true;
+}
+function buildingPlacementProblem(type,x,z){
+ if(type==="airport"&&buildings.some(b=>b.type==="airport"))return "空港は都市に1か所だけ設置できます。";
+ const candidate=buildingBounds(type,x,z,0,1);
+ if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物同士が重なっています。";
+ if(roadsOverlapBuilding(candidate))return "道路と重なっています。";
+ if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),0)))return "線路・駅・バス停と重なっています。";
+ if(buildings.some(b=>b.type==="airport"&&type!=="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";
+ return "";
+}
+function roadPlacementProblem(x,z){
+ if(roads.some(r=>r.x===x&&r.z===z))return "すでに道路があります。";
+ const candidate=roadBounds(x,z);
+ if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b),0)))return "建物と重なっています。";
+ if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),0)))return "線路・駅・バス停と重なっています。";
+ if(buildings.some(b=>b.type==="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z),0)))return "空港の滑走路と重なっています。";
+ return "";
+}
+function updatePlacementPreviewPointer(e){
+ if(publicView||!document.body.classList.contains("build-open")||!["road","rail","station","busstop",...Object.keys(defs)].includes(selected))return;
+ const hit=pointerGroundPoint(e);if(!hit)return;
+ const p=gridPos(hit);preparePlacementGhost();if(!placementGhost)return;
+ let problem="",bounds;
+ if(selected==="road"){problem=roadPlacementProblem(p.x,p.z);bounds=roadBounds(p.x,p.z);}
+ else if(["rail","station","busstop"].includes(selected)){problem=transitPlacementProblem(selected,p.x,p.z);bounds=transitBounds(selected,p.x,p.z);}
+ else{problem=buildingPlacementProblem(selected,p.x,p.z);bounds=buildingBounds(selected,p.x,p.z,0,1);}
+ placementPreviewValid=!problem;
+ placementGhost.position.set(p.x,selected==="road"?.1:.68,p.z);
+ placementGhost.traverse(o=>{if(o.isMesh){const color=placementPreviewValid?0x35e58a:0xff4055;const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{m.color.set(color);m.emissive?.set(color);m.emissiveIntensity=.35;});}});
+ const size=bounds.getSize(new THREE.Vector3()),center=bounds.getCenter(new THREE.Vector3());
+ moveMarker.scale.set(Math.max(4,size.x)/4.05,Math.max(4,size.z)/4.05,1);moveMarkerOutline.scale.copy(moveMarker.scale);
+ moveMarker.position.set(center.x,.055,center.z);moveMarkerOutline.position.set(center.x,.065,center.z);
+ moveMarker.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarkerOutline.material.color.set(placementPreviewValid?0x35e58a:0xff4055);
+}
+function setTool(tool){
+ selected=tool;disposePlacementGhost();placementPreviewValid=false;
+ if(tool!=="move"){if(selectedObject||pendingMove)cancelPendingMove();}
+ document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===tool));
+ if(tool==="move")notice("移動したい建物をクリックしてください。");
+}
+document.querySelectorAll("[data-tool]").forEach(b=>b.addEventListener("click",()=>setTool(b.dataset.tool)));
 function findAt(x,z){return buildings.find(b=>Math.abs(b.x-x)<2&&Math.abs(b.z-z)<2)||roads.find(r=>r.x===x&&r.z===z)||transit.find(t=>Math.abs(t.x-x)<2&&Math.abs(t.z-z)<2);}
 function buildingBounds(type,x,z,rotation=0,level=1,source=null){
  const group=source?source.group.clone(true):makeBuilding(type,x,z,level).group;
