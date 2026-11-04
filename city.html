@@ -49,7 +49,7 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
   <button class="tool" data-tool="solar"><strong>☀ 太陽光発電所</strong><em>$12,000 / 22 MW</em></button>
  </div>
  <button class="wide" id="upgradeBtn">選択した施設をアップグレード</button>
- <h3>車両ショップ</h3><div class="tools"><button class="tool" id="buyCarBtn"><strong>🚘 電動セダンを購入</strong><em>$18,000 / 台</em></button><button class="tool" id="recruitBtn"><strong>🧑 住民を1人募集</strong><em>$1,000 / 人</em></button></div><p class="hint">道路を敷いただけでは車は出現しません。車両と住民はここから購入・募集します。</p>
+ <h3>車両ショップ</h3><div class="tools"><button class="tool" id="buyCarBtn"><strong>🚘 電動セダンを購入</strong><em>$18,000 / 台</em></button><button class="tool" id="recruitBtn"><strong>🧑 住民を1人募集</strong><em>$1,000 / 人</em></button></div><p class="hint">車の購入条件：道路・住民・住宅がすべて必要。さらに住宅から6マス以内に道路をつなぐと、購入した車が家の前に駐車します。道路を敷いても車は増えません。</p>
 </aside>
 <aside class="panel right">
  <h2>都市の状況</h2>
@@ -147,15 +147,17 @@ function makeBuilding(type,x,z,level=1){
  scene.add(g);return {type,x,z,level,group:g};
 }
 function makeRoad(x,z){const g=new THREE.Group();g.position.set(x,.035,z);const road=new THREE.Mesh(new THREE.BoxGeometry(cell,.12,cell),mat(0x263b4d,.35,.7));road.position.y=.02;g.add(road);const stripe=box(g,.12,.025,3.2,mat(0x8edbe8,.2,.5,0x22505b),0,.1,0);scene.add(g);return {x,z,group:g};}
-function spawnCar(i){
+function spawnCar(i,home=nearestHome()){
  const g=new THREE.Group(),paint=mat([0x29b9d9,0x8a70df,0xe4b95c,0x64d5aa][i%4],.78,.2),glass=mat(0x9cecff,.65,.12),rubber=mat(0x080e16,.05,.8),chrome=mat(0xc9e5ef,.85,.18);
  const lower=new THREE.Mesh(new THREE.CapsuleGeometry(.55,.95,5,10),paint);lower.rotation.x=Math.PI/2;lower.scale.set(1,.48,1.55);lower.position.y=.52;g.add(lower);
  const cabin=new THREE.Mesh(new THREE.BoxGeometry(.82,.48,1.05),glass);cabin.position.set(0,.91,-.12);g.add(cabin);
  const roof=new THREE.Mesh(new THREE.BoxGeometry(.7,.09,.8),paint);roof.position.set(0,1.18,-.12);g.add(roof);
  for(const x of [-.48,.48])for(const z of [-.62,.62]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.14,20),rubber);w.rotation.z=Math.PI/2;w.position.set(x,.28,z);g.add(w);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,.145,16),chrome);hub.rotation.z=Math.PI/2;hub.position.copy(w.position);g.add(hub);}
  for(const x of [-.34,.34]){const head=new THREE.Mesh(new THREE.BoxGeometry(.22,.12,.04),mat(0xf4fff0,.2,.15,0xb9eaff));head.position.set(x,.55,-1.02);g.add(head);const tail=new THREE.Mesh(new THREE.BoxGeometry(.2,.12,.04),mat(0xff334f,.1,.25,0x8f1020));tail.position.set(x,.55,1.02);g.add(tail);}
- scene.add(g);return {group:g,edge:0,t:Math.random(),speed:.12+Math.random()*.1};
+ if(home)g.position.set(home.x+2.25,.05,home.z+1.7);
+ scene.add(g);return {group:g,home,parked:true};
 }
+function nearestHome(x=0,z=0){const homes=buildings.filter(b=>defs[b.type]?.kind==="res");if(!homes.length)return null;return homes.reduce((a,b)=>Math.hypot(b.x-x,b.z-z)<Math.hypot(a.x-x,a.z-z)?b:a);}
 function spawnPerson(i){
  const g=new THREE.Group(),skin=mat([0xf1c6a5,0xd9a27e,0x9a674f,0xf0d0b3][i%4]),shirt=mat([0x286ca8,0x7b4aa8,0xd45f75,0x3b9277,0xc38b37][i%5]),pants=mat([0x26384e,0x343c54,0x53616c][i%3]),hair=mat([0x241a18,0x493024,0x171a22,0x79543a][i%4]),shoe=mat(0x17212c);
  const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.19,.42,5,10),shirt);torso.position.y=1.03;g.add(torso);
@@ -174,7 +176,8 @@ function spawnPerson(i){
   const leg=new THREE.Mesh(new THREE.CapsuleGeometry(.075,.29,4,8),pants);leg.position.y=-.19;legPivot.add(leg);
   const foot=new THREE.Mesh(new THREE.BoxGeometry(.13,.09,.23),shoe);foot.position.set(0,-.39,.055);legPivot.add(foot);limbs.push(legPivot);
  }
- scene.add(g);return {group:g,x:(Math.random()-.5)*22,z:(Math.random()-.5)*22,angle:Math.random()*6,speed:.35+Math.random()*.25,limbs,phase:Math.random()*6};
+ const home=nearestHome();const x=home?home.x+(Math.random()-.5)*2:(Math.random()-.5)*12,z=home?home.z+2+(Math.random()-.5)*2:(Math.random()-.5)*12;
+ scene.add(g);return {group:g,x,z,home,angle:Math.random()*6,speed:.9+Math.random()*.45,limbs,phase:Math.random()*6,targetX:x,targetZ:z,walkTimer:0};
 }
 function setTool(t){selected=t;document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));notice(t==="road"?"道路をクリックして敷設。":t==="remove"?"撤去したい道路・建物をクリック。":defs[t].name+"を配置する場所をクリック。");}
 function notice(s){$("notice").textContent=s;$("notice").classList.remove("hidden");clearTimeout(notice.timer);notice.timer=setTimeout(()=>$("notice").classList.add("hidden"),3000);}
@@ -195,17 +198,39 @@ function updateUI(){const s=calc();$("money").textContent="$"+cash.toLocaleStrin
 function addNews(msg){const el=document.createElement("div");el.className="log";el.textContent=new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"})+" "+msg;$("news").prepend(el);while($("news").children.length>6)$("news").lastChild.remove();}
 function simulation(){const s=calc();if(cityTick%5===0){if(!s.powerOk)addNews("電力不足により都市の一部で停電が発生！");if(s.homes<s.pop+10&&s.homes>0)addNews("住宅不足で移住希望者が定着できません。");if(s.services<45&&s.pop>20)addNews("病院・学校の不足が住民の不満につながっています。");if(s.traffic>65)addNews("幹線道路で渋滞が発生しています。");if(buildings.length===3)addNews("都市レベル2！核融合炉などの先端施設が解放されました。");updateUI();}cityTick++;}
 function routePoints(){return roads.map(r=>new THREE.Vector3(r.x,.15,r.z));}
-function animate(){requestAnimationFrame(animate);controls.update();const pts=routePoints();cars.forEach(c=>{if(pts.length<2){c.group.visible=false;return;}c.group.visible=true;c.t+=c.speed*.0008;const idx=Math.floor(c.t*pts.length)%pts.length,next=(idx+1)%pts.length;const a=pts[idx],b=pts[next];c.group.position.lerpVectors(a,b,(c.t*pts.length)%1);c.group.lookAt(b.x,.15,b.z);});people.forEach(p=>{p.angle+=(Math.random()-.5)*.025;p.x+=Math.cos(p.angle)*p.speed*.006;p.z+=Math.sin(p.angle)*p.speed*.006;if(Math.abs(p.x)>26||Math.abs(p.z)>26)p.angle+=Math.PI;p.group.position.set(p.x,0,p.z);p.phase+=.09;for(let i=0;i<p.limbs.length;i++)p.limbs[i].rotation.x=Math.sin(p.phase+(i%2)*Math.PI)*.35;});renderer.render(scene,camera);}
+function animate(){requestAnimationFrame(animate);controls.update();
+ people.forEach(p=>{
+  p.walkTimer-=1/60;
+  if(p.walkTimer<=0||Math.hypot(p.targetX-p.x,p.targetZ-p.z)<.35){
+   const cx=p.home?p.home.x:p.x,cz=p.home?p.home.z:p.z;
+   p.targetX=cx+(Math.random()-.5)*9;p.targetZ=cz+(Math.random()-.5)*9;p.walkTimer=2.5+Math.random()*4;
+  }
+  const dx=p.targetX-p.x,dz=p.targetZ-p.z,dist=Math.hypot(dx,dz);
+  if(dist>.05){const step=Math.min(dist,p.speed/60);p.x+=dx/dist*step;p.z+=dz/dist*step;p.group.rotation.y=Math.atan2(dx,dz);p.phase+=.16;for(let i=0;i<p.limbs.length;i++)p.limbs[i].rotation.x=Math.sin(p.phase+(i%2)*Math.PI)*.62;}
+  else{for(const limb of p.limbs)limb.rotation.x*=.8;}
+  p.group.position.set(p.x,0,p.z);
+ });
+ renderer.render(scene,camera);}
 
 const keys={};addEventListener("keydown",e=>{keys[e.key.toLowerCase()]=true;if(["w","a","s","d"].includes(e.key.toLowerCase()))e.preventDefault();});addEventListener("keyup",e=>keys[e.key.toLowerCase()]=false);
 function moveCamera(){const v=new THREE.Vector3();if(keys.w)v.z-=1;if(keys.s)v.z+=1;if(keys.a)v.x-=1;if(keys.d)v.x+=1;if(v.lengthSq()){v.normalize().multiplyScalar(.28);controls.target.add(v);camera.position.add(v);}}
 function loop(){moveCamera();requestAnimationFrame(loop);}loop();animate();setInterval(simulation,1800);
 addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
-async function loadCity(){const {data:{session}}=await supabase.auth.getSession();user=session?.user||null;if(!user){$("login").classList.remove("hidden");return;}await refreshWallet();const {data,error}=await supabase.from("city_saves").select("city_state").eq("user_id",user.id).maybeSingle();if(error){notice("クラウド保存の読み込みに失敗: "+error.message);return;}if(data?.city_state){const st=data.city_state;(st.roads||[]).forEach(r=>roads.push(makeRoad(r.x,r.z)));(st.buildings||[]).forEach(b=>buildings.push(makeBuilding(b.type,b.x,b.z,b.level||1)));for(let i=0;i<Math.min(100,Number(st.cars)||0);i++)cars.push(spawnCar(i));for(let i=0;i<Math.min(500,Number(st.people)||0);i++)people.push(spawnPerson(i));updateUI();notice("前回の都市データを読み込みました。");}else notice("新しい都市を作成しました。");}
-async function saveCity(){if(!user){notice("クラウド保存にはログインが必要です。");return;}const state={roads:roads.map(r=>({x:r.x,z:r.z})),buildings:buildings.map(b=>({type:b.type,x:b.x,z:b.z,level:b.level})),cars:cars.length,people:people.length,version:2};const {error}=await supabase.from("city_saves").upsert({user_id:user.id,city_state:state,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(error){notice("保存に失敗しました: "+error.message);return;}notice("都市データをクラウドに保存しました。");}
+async function loadCity(){const {data:{session}}=await supabase.auth.getSession();user=session?.user||null;if(!user){$("login").classList.remove("hidden");return;}await refreshWallet();const {data,error}=await supabase.from("city_saves").select("city_state").eq("user_id",user.id).maybeSingle();if(error){notice("クラウド保存の読み込みに失敗: "+error.message);return;}if(data?.city_state){const st=data.city_state;(st.roads||[]).forEach(r=>roads.push(makeRoad(r.x,r.z)));(st.buildings||[]).forEach(b=>buildings.push(makeBuilding(b.type,b.x,b.z,b.level||1)));for(let i=0;i<Math.min(100,Number(st.cars)||0);i++)cars.push(spawnCar(i,nearestHome()));for(let i=0;i<Math.min(500,Number(st.people)||0);i++)people.push(spawnPerson(i));updateUI();notice("前回の都市データを読み込みました。");}else notice("新しい都市を作成しました。");}
+async function saveCity(){if(!user){notice("クラウド保存にはログインが必要です。");return;}const state={roads:roads.map(r=>({x:r.x,z:r.z})),buildings:buildings.map(b=>({type:b.type,x:b.x,z:b.z,level:b.level})),cars:cars.length,people:people.length,version:3};const {error}=await supabase.from("city_saves").upsert({user_id:user.id,city_state:state,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(error){notice("保存に失敗しました: "+error.message);return;}notice("都市データをクラウドに保存しました。");}
 function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveCity,1200);}
 $("saveBtn").onclick=saveCity;
-$("buyCarBtn").onclick=async()=>{if(!(await charge(18000)))return;const car=spawnCar(cars.length);car.group.position.set(0,0.2,0);cars.push(car);notice("電動セダンを購入しました。道路がつながると走行します。");scheduleSave();};
+$("buyCarBtn").onclick=async()=>{
+ const home=nearestHome();
+ if(!roads.length){notice("車を購入するには、まず道路が必要です。");return;}
+ if(!people.length){notice("車を購入するには、住民を1人以上募集してください。");return;}
+ if(!home){notice("車を購入するには、住民の家（住宅）が必要です。");return;}
+ const nearRoad=roads.some(r=>Math.hypot(r.x-home.x,r.z-home.z)<=6);
+ if(!nearRoad){notice("家の近くに道路をつないでください（家から6マス以内）。");return;}
+ if(!(await charge(18000)))return;
+ const car=spawnCar(cars.length,home);cars.push(car);
+ notice("電動セダンを購入しました。住民の家の前に駐車しました。");scheduleSave();
+};
 $("recruitBtn").onclick=async()=>{const capacity=buildings.reduce((a,b)=>a+(defs[b.type].housing||0)*b.level,0);if(people.length>=capacity){notice("住宅が不足しています。先に住宅を建設してください。");return;}if(!(await charge(1000)))return;const person=spawnPerson(people.length);people.push(person);notice("住民を1人募集しました。");updateUI();scheduleSave();};
 addEventListener("focus",refreshWallet);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refreshWallet();});setInterval(refreshWallet,12000);
 await loadCity();updateUI(); 
