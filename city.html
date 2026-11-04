@@ -100,52 +100,141 @@ function gridPos(p){return {x:Math.round(p.x/cell)*cell,z:Math.round(p.z/cell)*c
 function mat(color,metal=.25,rough=.35,emissive=0){return new THREE.MeshStandardMaterial({color,metalness:metal,roughness:rough,emissive,emissiveIntensity:.6});}
 function box(parent,w,h,d,material,x=0,y=h/2,z=0){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
 function makeBuilding(type,x,z,level=1){
- const d=defs[type],g=new THREE.Group();g.position.set(x,0,z);g.userData={type,level};g.scale.setScalar(1+(level-1)*.08);const body=mat(d.color,.48,.27),glass=mat(0x9cecff,.7,.16,0x164d69),dark=mat(0x132d43,.6,.3),glow=mat(0x38ddff,.3,.2,0x21bddd);
- box(g,3.1,.35,3.1,dark,0,.18,0);
+ const d=defs[type],g=new THREE.Group();
+ g.position.set(x,0,z);g.userData={type,level};g.scale.setScalar(1+(level-1)*.08);
+ const body=mat(d.color,.28,.42),wall=mat(0xe5edf1,.12,.68),dark=mat(0x172b3b,.48,.38),glass=mat(0x6ebbd0,.58,.2,0x123d50),windowMat=mat(0x9be8ff,.42,.16,0x28758e),trim=mat(0x263e50,.35,.42),roofMat=mat(0x334b5b,.35,.48),white=mat(0xf4f7f7,.08,.5),green=mat(0x4e9b68,.08,.8);
+ const add=(w,h,dep,m,px,py,pz)=>box(g,w,h,dep,m,px,py,pz);
+ const win=(px,py,pz,w=.34,h=.48,side="front")=>{
+  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,.075),windowMat);
+  if(side==="front")m.position.set(px,py,pz);
+  else {m.rotation.y=Math.PI/2;m.position.set(px,py,pz);}
+  m.castShadow=true;g.add(m);
+  const frame=new THREE.Mesh(new THREE.BoxGeometry(w+.09,h+.09,.045),trim);
+  if(side==="front")frame.position.set(px,py,pz-.035);
+  else {frame.rotation.y=Math.PI/2;frame.position.set(px-.035,py,pz);}
+  g.add(frame);
+ };
+ const base=()=>{add(3.8,.22,3.8,dark,0,.11,0);add(3.35,.12,3.35,white,0,.28,0);};
+ const facade=(width,floors,floorH,frontZ,spacing=.65)=>{
+  for(let f=0;f<floors;f++)for(let i=0;i<Math.floor(width/spacing);i++){
+   const px=-width/2+spacing*.55+i*spacing;
+   win(px,.65+f*floorH,frontZ,.34,.48);
+  }
+ };
+ base();
  if(type==="home"){
-  const shell=new THREE.Mesh(new THREE.CylinderGeometry(1.35,1.58,3.35,16),glass);shell.position.y=2.05;g.add(shell);
-  const base=new THREE.Mesh(new THREE.CylinderGeometry(1.68,1.68,.24,16),body);base.position.y=.48;g.add(base);
-  const roof=new THREE.Mesh(new THREE.ConeGeometry(1.62,.8,16),body);roof.position.y=4.12;g.add(roof);
-  for(let y=1.25;y<3.4;y+=.72){const balcony=new THREE.Mesh(new THREE.TorusGeometry(1.42,.045,6,32),glow);balcony.rotation.x=Math.PI/2;balcony.position.y=y;g.add(balcony);}
-  for(let i=0;i<12;i++){const a=i*Math.PI/6;const win=new THREE.Mesh(new THREE.BoxGeometry(.32,.48,.08),glow);win.position.set(Math.sin(a)*1.39,2.1,Math.cos(a)*1.39);win.lookAt(Math.sin(a)*3,2.1,Math.cos(a)*3);g.add(win);}
+  // Two-storey contemporary detached house with a recessed entrance and pitched roof
+  add(3.05,2.35,2.75,wall,0,1.47,0);
+  add(3.12,.16,2.82,body,0,2.72,0);
+  add(3.12,2.15,.12,glass,0,1.48,1.39);
+  for(let f=0;f<2;f++)for(let i=0;i<3;i++){
+   const px=-1.05+i*1.05,py=.95+f*1.18;
+   win(px,py,1.47,.56,.68);
+  }
+  add(.72,1.35,.12,dark,.48,.98,1.48);
+  add(.82,.12,.18,trim,.48,1.7,1.5);
+  add(3.45,.16,3.05,roofMat,0,2.86,0);
+  const roof=new THREE.Mesh(new THREE.ConeGeometry(2.25,1.35,4),body);roof.rotation.y=Math.PI/4;roof.position.y=3.58;roof.scale.z=.78;roof.castShadow=true;g.add(roof);
+  add(3.25,.12,.12,white,0,2.77,1.52);
+  for(let x=-1.25;x<=1.26;x+=2.5){add(.09,2.5,.1,trim,x,1.42,1.54);}
+  add(1.05,.12,.5,dark,0,.38,1.9);
+  const lamp= new THREE.Mesh(new THREE.SphereGeometry(.09,12,8),windowMat);lamp.position.set(1.25,2.25,1.52);g.add(lamp);
  }else if(type==="tower"){
-  const levels=[{r:1.35,h:4,y:2.35},{r:1.08,h:4.1,y:6.55},{r:.82,h:4.4,y:10.8}];
-  levels.forEach((v,i)=>{const shaft=new THREE.Mesh(new THREE.CylinderGeometry(v.r*.82,v.r,v.h,20),glass);shaft.position.y=v.y;g.add(shaft);const rim=new THREE.Mesh(new THREE.TorusGeometry(v.r,.07,8,36),i===2?glow:body);rim.rotation.x=Math.PI/2;rim.position.y=v.y+v.h/2;g.add(rim);for(let k=0;k<16;k++){const a=k*Math.PI/8;const w=new THREE.Mesh(new THREE.BoxGeometry(.09,v.h*.72,.06),glow);w.position.set(Math.sin(a)*(v.r*.87),v.y,Math.cos(a)*(v.r*.87));w.lookAt(Math.sin(a)*3,v.y,Math.cos(a)*3);g.add(w);}});
-  const crown=new THREE.Mesh(new THREE.SphereGeometry(.78,24,14),glow);crown.scale.y=1.6;crown.position.y=13.4;g.add(crown);
+  // Tall rectangular apartment tower, floor-by-floor window grid and rooftop machinery
+  add(3.0,14.8,3.0,glass,0,7.7,0);
+  for(let f=0;f<12;f++){
+   const y=.9+f*1.18;
+   add(3.12,.075,3.12,body,0,y,0);
+   for(let i=0;i<5;i++){const px=-1.12+i*.56;win(px,y+.48,1.54,.34,.72);win(px,y+.48,-1.54,.34,.72);}
+   for(let i=0;i<5;i++){const pz=-1.12+i*.56;win(1.54,y+.48,pz,.34,.72,"side");win(-1.54,y+.48,pz,.34,.72,"side");}
+  }
+  for(const px of [-1.62,1.62])for(const pz of [-1.62,1.62])add(.16,15.2,.16,body,px,7.75,pz);
+  add(3.35,.28,3.35,roofMat,0,15.25,0);
+  add(1.65,1.0,1.5,body,0,15.85,0);
+  add(.12,2.2,.12,trim,0,17.45,0);
+  const beacon=new THREE.Mesh(new THREE.SphereGeometry(.2,16,12),windowMat);beacon.position.y=18.65;g.add(beacon);
+  add(1.05,.08,3.35,white,0,.5,1.75);
  }else if(type==="shop"){
-  const hall=new THREE.Mesh(new THREE.CylinderGeometry(2.1,2.25,3.6,32),glass);hall.position.y=2.25;g.add(hall);
-  const lower=new THREE.Mesh(new THREE.CylinderGeometry(2.35,2.35,.3,32),body);lower.position.y=.5;g.add(lower);
-  const roof=new THREE.Mesh(new THREE.CylinderGeometry(2.5,2.1,.35,32),body);roof.position.y=4.15;g.add(roof);
-  const dome=new THREE.Mesh(new THREE.SphereGeometry(1.18,24,14,0,Math.PI*2,0,Math.PI/2),glow);dome.position.y=4.35;g.add(dome);
-  for(let i=0;i<16;i++){const a=i*Math.PI/8;const pillar=new THREE.Mesh(new THREE.CylinderGeometry(.055,.055,3.1,8),glow);pillar.position.set(Math.sin(a)*2.12,2.2,Math.cos(a)*2.12);g.add(pillar);}
+  // Two-level shopping centre with glazed storefront, canopy and rooftop sign
+  add(4.35,3.45,3.35,wall,0,2.0,0);
+  add(4.4,2.45,.12,glass,0,1.55,1.7);
+  for(let i=0;i<5;i++)add(.055,2.35,.08,white,-1.75+i*.875,1.55,1.79);
+  add(4.65,.18,.42,body,0,2.9,1.88);
+  add(4.7,.12,3.65,roofMat,0,3.82,0);
+  add(4.25,.72,.18,dark,0,3.45,1.91);
+  for(let i=0;i<7;i++)win(-1.65+i*.55,2.55,1.78,.36,.55);
+  add(1.2,.1,.5,trim,0,.4,2.05);
+  for(const px of [-2,2])add(.16,3.35,.16,body,px,1.95,1.83);
+  const canopy=new THREE.Mesh(new THREE.BoxGeometry(4.55,.12,.72),body);canopy.position.set(0,2.85,2.05);g.add(canopy);
+  const roofBox=add(1.65,.72,1.1,body,0,4.25,-.65);
+  add(1.35,.08,.08,windowMat,0,4.28,1.93);
  }else if(type==="hospital"){
-  const core=new THREE.Mesh(new THREE.CylinderGeometry(1.25,1.55,6.2,20),glass);core.position.y=3.45;g.add(core);
-  const wing1=new THREE.Mesh(new THREE.CapsuleGeometry(.72,2.7,6,12),body);wing1.rotation.z=Math.PI/2;wing1.scale.set(1,.75,1);wing1.position.set(0,2.8,0);g.add(wing1);
-  const roof=new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.15,.35,20),body);roof.position.y=6.65;g.add(roof);
-  const crossV=new THREE.Mesh(new THREE.BoxGeometry(.34,1.3,.2),mat(0xffffff,.1,.3));crossV.position.set(0,5.1,1.22);g.add(crossV);
-  const crossH=new THREE.Mesh(new THREE.BoxGeometry(1.05,.34,.2),mat(0xffffff,.1,.3));crossH.position.set(0,5.1,1.22);g.add(crossH);
+  // Main clinical block and two lower wings, with clear medical signage
+  add(2.45,6.8,2.65,glass,0,3.75,0);
+  for(let f=0;f<5;f++){add(2.55,.08,2.78,white,0,.65+f*1.25,0);for(let i=0;i<3;i++)win(-.72+i*.72,.98+f*1.25,1.36,.43,.62);}
+  add(4.7,3.0,1.45,wall,0,1.9,1.45);
+  add(4.7,.14,1.55,body,0,3.48,1.45);
+  for(let i=0;i<6;i++)win(-1.9+i*.76,2.1,2.2,.48,.82);
+  add(1.5,.18,.2,white,0,4.2,1.43);
+  add(.34,1.25,.16,mat(0xe74b55,.05,.35),0,4.2,1.56);
+  add(1.05,.34,.16,mat(0xe74b55,.05,.35),0,4.2,1.56);
+  add(1.2,.1,1.2,roofMat,0,7.25,0);
+  add(.12,1.15,.12,trim,0,7.85,0);
  }else if(type==="school"){
-  const hall=new THREE.Mesh(new THREE.CylinderGeometry(1.8,2.1,3.8,24),glass);hall.position.y=2.3;g.add(hall);
-  const wing=new THREE.Mesh(new THREE.CylinderGeometry(1.0,1.25,3.1,18),body);wing.scale.set(1,1,1.25);wing.position.set(1.65,1.95,0);g.add(wing);
-  const dome=new THREE.Mesh(new THREE.SphereGeometry(1.7,24,16,0,Math.PI*2,0,Math.PI/2),body);dome.position.y=4.2;g.add(dome);
-  const skylight=new THREE.Mesh(new THREE.SphereGeometry(.92,24,12,0,Math.PI*2,0,Math.PI/2),glow);skylight.position.y=4.24;g.add(skylight);
-  for(let i=0;i<10;i++){const a=i*Math.PI/5;const col=new THREE.Mesh(new THREE.CylinderGeometry(.045,.06,3.2,8),body);col.position.set(Math.sin(a)*1.84,2.2,Math.cos(a)*1.84);g.add(col);}
+  // Low campus building with classroom wings, entrance portico and clock
+  add(4.25,2.8,1.45,wall,0,1.75,0);
+  add(1.35,2.8,3.0,wall,-1.48,1.75,-.65);
+  add(1.35,2.8,3.0,wall,1.48,1.75,-.65);
+  add(4.45,.18,1.62,body,0,3.22,0);
+  add(1.5,.18,3.15,body,-1.48,3.22,-.65);
+  add(1.5,.18,3.15,body,1.48,3.22,-.65);
+  for(let i=0;i<6;i++)win(-1.72+i*.69,2.05,.76,.43,.65);
+  for(const px of [-1.48,1.48])for(let i=0;i<3;i++)win(px,2.0,-1.55+i*.82,.62,.65,"side");
+  add(1.05,2.1,.22,glass,0,1.35,.82);
+  add(2.1,.16,.75,roofMat,0,2.95,1.05);
+  for(const px of [-.85,.85])add(.13,2.2,.13,body,px,1.3,1.25);
+  const clock=new THREE.Mesh(new THREE.CylinderGeometry(.32,.32,.12,24),white);clock.rotation.x=Math.PI/2;clock.position.set(0,3.15,.86);g.add(clock);
+  add(.08,.25,.15,dark,0,3.15,.96);
  }else if(type==="park"){
-  const ring=new THREE.Mesh(new THREE.CylinderGeometry(2.05,2.2,.35,32),body);ring.position.y=.35;g.add(ring);
-  const dome=new THREE.Mesh(new THREE.SphereGeometry(2.0,32,20,0,Math.PI*2,0,Math.PI/2),new THREE.MeshPhysicalMaterial({color:0x73e5c0,metalness:.12,roughness:.12,transparent:true,opacity:.72,transmission:.35}));dome.position.y=.55;g.add(dome);
-  for(let i=0;i<10;i++){const a=i*Math.PI/5;const rib=new THREE.Mesh(new THREE.TorusGeometry(1.98,.035,6,48,Math.PI),glow);rib.rotation.set(Math.PI/2,0,a);rib.position.y=.58;g.add(rib);}
-  for(let i=0;i<5;i++){const tree=new THREE.Group();const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.07,.11,.8,8),mat(0x79553a));trunk.position.y=.45;tree.add(trunk);const crown=new THREE.Mesh(new THREE.SphereGeometry(.38,12,10),mat(0x4fcb83));crown.position.y=.95;tree.add(crown);tree.position.set(Math.cos(i*1.25)*1.05,0,Math.sin(i*1.25)*1.05);g.add(tree);}
+  // Landscaped public garden with glass conservatory, paths and trees
+  add(4.2,.18,4.2,green,0,.35,0);
+  add(2.15,.16,2.15,white,0,.48,0);
+  const dome=new THREE.Mesh(new THREE.SphereGeometry(1.78,32,18,0,Math.PI*2,0,Math.PI/2),new THREE.MeshPhysicalMaterial({color:0x73e5c0,metalness:.08,roughness:.14,transparent:true,opacity:.62,transmission:.35}));dome.position.y=.52;g.add(dome);
+  for(let i=0;i<8;i++){const a=i*Math.PI/4;const tree=new THREE.Group();const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.07,.12,.8,8),mat(0x79553a));trunk.position.y=.75;tree.add(trunk);const crown=new THREE.Mesh(new THREE.SphereGeometry(.42,14,10),green);crown.position.y=1.28;tree.add(crown);tree.position.set(Math.cos(a)*1.7,0,Math.sin(a)*1.7);g.add(tree);}
+  add(.16,.08,3.5,white,0,.47,0);
  }else{
-  const h=type==="fusion"?7:type==="fission"?5:type==="hydrogen"?4:2.4;
-  box(g,2.4,h,2.4,body,0,h/2+.35,0);
-  if(type==="fusion"){const ring=new THREE.Mesh(new THREE.TorusGeometry(1.25,.16,12,40),glow);ring.rotation.x=Math.PI/2;ring.position.y=4.2;g.add(ring);const core=new THREE.Mesh(new THREE.SphereGeometry(.62,20,16),mat(0xc8fbff,.2,.1,0x6beaff));core.position.y=4.2;g.add(core);box(g,.15,2.4,.15,glow,0,h+1.2,0);}
-  if(type==="fission"){for(let i=-1;i<=1;i+=2){const c=new THREE.Mesh(new THREE.CylinderGeometry(.5,.7,4,12),mat(0xd7e8e5,.45,.3));c.position.set(i*.75,4,0);g.add(c);}}
-  if(type==="hydrogen"){for(let i=-1;i<=1;i++)box(g,.45,2.6,.45,glass,i*.75,2,0);}
-  if(type==="solar"){for(let i=-1;i<=1;i++){const p=new THREE.Mesh(new THREE.BoxGeometry(.9,.08,1.5),mat(0x2456a1,.7,.2));p.position.set(i*.85,1.4,0);p.rotation.x=-.22;g.add(p);}}
-  const beacon=new THREE.PointLight(d.color,1.8,9);beacon.position.y=h+1;g.add(beacon);keyLights.push(beacon);
+  const h=type==="fusion"?6.8:type==="fission"?5.2:type==="hydrogen"?4.2:1.3;
+  if(type==="solar"){
+   add(3.6,.35,3.1,wall,0,.42,0);
+   for(let ix=-1;ix<=1;ix++)for(let iz=-1;iz<=1;iz++){
+    const p=new THREE.Mesh(new THREE.BoxGeometry(.92,.09,.9),mat(0x2456a1,.72,.2));p.position.set(ix*1.08,1.25,iz*.92);p.rotation.x=-.2;g.add(p);
+    for(let k=1;k<3;k++)add(.025,.02,.9,windowMat,ix*1.08-.31+k*.31,1.31,iz*.92);
+   }
+  }else{
+   add(3.1,h,2.8,body,0,h/2+.35,0);
+   add(3.25,.2,2.95,roofMat,0,h+.45,0);
+   for(let i=0;i<4;i++)win(-1.05+i*.7,1.15,1.43,.38,.55);
+   add(1.1,1.25,.16,glass,0,.98,1.48);
+   if(type==="fusion"){
+    for(let i=0;i<2;i++){const ring=new THREE.Mesh(new THREE.TorusGeometry(1.35+i*.18,.13,12,40),windowMat);ring.rotation.x=Math.PI/2;ring.position.y=4.15+i*.45;g.add(ring);}
+    const core=new THREE.Mesh(new THREE.SphereGeometry(.58,24,18),mat(0xc8fbff,.2,.1,0x6beaff));core.position.y=4.55;g.add(core);
+    add(.16,2.2,.16,windowMat,0,8.0,0);
+   }else if(type==="fission"){
+    for(let i=-1;i<=1;i+=2){const stack=new THREE.Mesh(new THREE.CylinderGeometry(.38,.58,4.5,16),white);stack.position.set(i*.85,5.1,0);g.add(stack);add(.75,.12,.75,trim,i*.85,7.45,0);}
+   }else{
+    for(let i=-1;i<=1;i++)add(.55,2.8,.55,glass,i*.85,2.05,0);
+    add(3.2,.12,2.9,white,0,4.65,0);
+   }
+  }
+  const beacon=new THREE.PointLight(d.color,1.2,10);beacon.position.y=h+1.2;g.add(beacon);keyLights.push(beacon);
  }
- const labelCanvas=document.createElement("canvas");labelCanvas.width=256;labelCanvas.height=64;const ctx=labelCanvas.getContext("2d");ctx.fillStyle="#071a2b";ctx.fillRect(0,0,256,64);ctx.fillStyle="#a9f4ff";ctx.font="bold 25px sans-serif";ctx.textAlign="center";ctx.fillText(d.name,128,40);const tex=new THREE.CanvasTexture(labelCanvas);const label=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));label.scale.set(4.2,1.05,1);label.position.y=(type==="tower"?14:type==="fusion"?10:8);g.add(label);
- scene.add(g);return {type,x,z,level,group:g};
+ const labelCanvas=document.createElement("canvas");labelCanvas.width=512;labelCanvas.height=96;
+ const ctx=labelCanvas.getContext("2d");ctx.fillStyle="#071a2b";ctx.fillRect(0,0,512,96);
+ ctx.fillStyle="#b9f5ff";ctx.font="bold 34px sans-serif";ctx.textAlign="center";ctx.fillText(d.name,256,60);
+ const tex=new THREE.CanvasTexture(labelCanvas);
+ const label=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));
+ label.scale.set(4.6,.86,1);label.position.y=type==="tower"?19:type==="fusion"?10:type==="hospital"?8:type==="home"?5.1:6;
+ g.add(label);scene.add(g);return {type,x,z,level,group:g};
 }
 function makeRoad(x,z){const g=new THREE.Group();g.position.set(x,.035,z);const road=new THREE.Mesh(new THREE.BoxGeometry(cell,.12,cell),mat(0x263b4d,.35,.7));road.position.y=.02;g.add(road);const stripe=box(g,.12,.025,3.2,mat(0x8edbe8,.2,.5,0x22505b),0,.1,0);scene.add(g);return {x,z,group:g};}
 function spawnCar(i,home=nearestHome()){
