@@ -103,6 +103,7 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
 <div class="login hidden" id="login"><div class="login-card"><h1>都市データを保存するには</h1><p>理科キッズのアカウントでログインしてください。ログインしていない場合も、お試しプレイはできますが、クラウド保存はできません。</p><button onclick="location.href='./account.html'">ログイン・新規登録</button><button onclick="location.reload()">ログイン済みなら再読み込み</button></div></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./playtime.js"></script>
 <script type="module">
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -142,7 +143,7 @@ virtualPad.addEventListener("click",e=>{const b=e.target.closest("[data-pan]");i
 /* 右側の財政パネルはイベント委譲で確実に操作できるようにする。 */
 const financePanel=document.querySelector(".panel.right");
 if(financePanel){financePanel.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const actions={loan50000:()=>takeCityLoan(50000),loan100000:()=>takeCityLoan(100000),repay10000:()=>repayCityLoan(10000),repayAll:()=>repayCityLoan(cityDebt)};if(actions[b.id]){e.preventDefault();e.stopPropagation();actions[b.id]();}});financePanel.addEventListener("input",e=>{const el=e.target;if(!el.matches("input[type=range]"))return;const id=el.id;let match;if((match=id.match(/^tax(Res|Com|Ind|Office)$/))){const key={Res:"res",Com:"com",Ind:"ind",Office:"office"}[match[1]];taxRates[key]=Number(el.value);const out=$(id+"Value");if(out)out.textContent=el.value+"%";updateUI();scheduleSave();return;}if((match=id.match(/^budget(Electricity|Water|Health|Fire|Police|Education|Waste|Roads)$/))){const key=match[1].toLowerCase();serviceBudgets[key]=Number(el.value);const out=$(id+"Value");if(out)out.textContent=el.value+"%";updateUI();scheduleSave();return;}if(id==="feeElectricity"||id==="feeWater"){const key=id==="feeElectricity"?"electricity":"water";serviceFees[key]=Number(el.value);const out=$(id+"Value");if(out)out.textContent=el.value;updateUI();scheduleSave();}});}
-const supabase=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
+const supabase=window.rikakidsSupabaseClient||window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");window.rikakidsSupabaseClient=supabase;
 const publicView=new URLSearchParams(location.search).get("view")==="1";if(publicView)document.body.classList.add("public-view");
 let roadConfig={lanes:2,speedLimit:50,oneWay:false},roadCurveEnabled=true;
 let user=null, cash=0, cashLoaded=false, selected="select", buildings=[], roads=[], cars=[], people=[], transit=[], transitVehicles=[], serviceVehicles=[], zones=[], districts=[], constructions=[], trainCount=0, busCount=0, aircraftArrivals=[], parkedAircraft=0, cityTick=0, saveTimer=null, selectedObject=null, pendingMove=null, economyBusy=false, utilityLines=[];
