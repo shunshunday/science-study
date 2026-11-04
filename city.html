@@ -789,7 +789,7 @@ function updatePlacementPreviewPointer(e){
  else if(["rail","station","busstop"].includes(selected)){
   // 交通施設のプレビュー判定では実モデルを毎フレーム生成しない（シーンへの残留・描画干渉を防ぐ）
   const dims=transitDimensions(selected);
-  bounds=new THREE.Box3(new THREE.Vector3(p.x-dims.w/2,0,p.z-dims.d/2),new THREE.Vector3(p.x+dims.w/2,3,p.z+d.d/2));
+  bounds=new THREE.Box3(new THREE.Vector3(p.x-dims.w/2,0,p.z-dims.d/2),new THREE.Vector3(p.x+dims.w/2,3,p.z+dims.d/2));
   problem=transitPlacementProblem(selected,p.x,p.z);
  }
  else{problem=buildingPlacementProblem(selected,p.x,p.z);bounds=buildingBounds(selected,p.x,p.z,0,1);}
