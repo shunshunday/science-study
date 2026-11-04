@@ -433,6 +433,10 @@ function makeTransit(type,x,z){
   for(const px of [-1.85,1.85])add(.12,1.9,.12,steel,px,1.35,-.05);
   add(1.55,.42,.12,dark,0,2.9,1.02);
   add(1.38,.23,.035,white,0,2.92,1.1);
+  // Platform extension reaches the adjacent rail tile; tactile strip faces the track.
+  add(4.05,.22,1.95,concrete,0,.3,2.45);
+  add(3.95,.07,.22,yellow,0,.46,3.25);
+  for(const px of [-1.85,1.85])add(.12,.8,.12,steel,px,.72,2.25);
   add(.12,1.2,.12,steel,-1.45,.9,1.45);add(.12,1.2,.12,steel,1.45,.9,1.45);
   const stair=new THREE.Mesh(new THREE.BoxGeometry(1.1,.12,1.3),concrete);stair.position.set(0,.3,1.8);stair.rotation.x=-.22;g.add(stair);
  }else if(type==="busstop"){
@@ -498,6 +502,10 @@ function makeTransit(type,x,z){
  if(type==="stadium"){sign("MEGA ARENA",0x176340,0x9effc1,0,3.65,2.5);for(const sx of [-2.35,2.35]){add(.12,6,.12,buildingTrimMaterial,sx,3,-1.8);const flood=new THREE.Mesh(new THREE.BoxGeometry(.85,.18,.3),white);flood.position.set(sx,6.1,-1.8);g.add(flood);}}
  if(type==="airport"){sign("INTERNATIONAL AIRPORT",0x15516a,0x9df2ff,0,3.2,1.42);for(const sx of [-2.8,2.8]){add(.18,1.8,.18,buildingTrimMaterial,sx,1,-1.1);add(.7,.12,.7,white,sx,1.95,-1.1);}}
 
+ if(type==="station"){
+  const nearbyRail=transit.filter(t=>t.type==="rail").sort((a,b)=>Math.hypot(a.x-x,a.z-z)-Math.hypot(b.x-x,b.z-z))[0];
+  if(nearbyRail){const dx=nearbyRail.x-x,dz=nearbyRail.z-z;g.rotation.y=Math.atan2(dx,dz);}
+ }
  scene.add(g);return {type,x,z,group:g};
 }
 function makeTrain(){
