@@ -1311,6 +1311,6 @@ $("recruitBtn").onclick=async()=>{
 };
 addEventListener("focus",refreshWallet);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refreshWallet();});setInterval(refreshWallet,12000);
 for(const [k,id] of [["res","taxRes"],["com","taxCom"],["ind","taxInd"],["office","taxOffice"]]){$(id).value=taxRates[k];$(id+"Value").textContent=taxRates[k]+"%";$(id).addEventListener("input",()=>{taxRates[k]=Number($(id).value);$(id+"Value").textContent=taxRates[k]+"%";updateUI();scheduleSave();});}
-await loadCity();updateUI(); 
+await loadCity();for(const [k,id] of [["res","taxRes"],["com","taxCom"],["ind","taxInd"],["office","taxOffice"]]){$(id).value=taxRates[k];$(id+"Value").textContent=taxRates[k]+"%";}updateUI(); 
 </script>
 </body></html>
