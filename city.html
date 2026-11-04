@@ -64,7 +64,7 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
   <button class="tool" data-tool="station"><strong>🚉 駅</strong><em>$7,500</em></button>
   <button class="tool" data-tool="busstop"><strong>🚏 バス停</strong><em>$1,500</em></button>
  </div><p class="hint">電車：線路を上下左右につなぎ、カーブも作成。つながった線路の近くに駅。バス：2か所のバス停＋両方を結ぶ連続した道路。車：住宅・住民・住宅から6マス以内の道路が必要です。</p>
- <h3>車両ショップ</h3><div class="tools"><button class="tool" id="buyTrainBtn"><strong>🚆 電車を購入</strong><em>$25,000 / 編成</em></button><button class="tool" id="buyBusBtn"><strong>🚌 バスを購入</strong><em>$6,000 / 台</em></button><button class="tool" id="buyCarBtn"><strong>🚘 電動セダンを購入</strong><em>$9,000 / 台</em></button><select id="jobSelect" class="tool" style="width:100%;margin-top:8px;padding:10px"><option value="unemployed">仕事なし（無職）</option><option value="shop">🏪 店員</option><option value="doctor">🏥 医師</option><option value="teacher">🏫 教師</option><option value="engineer">⚡ 発電技術者</option><option value="officeworker">💼 会社員</option><option value="factoryworker">🏭 工場技術者</option><option value="firefighter">🚒 消防士</option><option value="policeofficer">🚓 警察官</option><option value="chef">👨‍🍳 料理人</option><option value="hotelstaff">🛎️ ホテルスタッフ</option><option value="researcher">🔬 研究者</option><option value="sportsstaff">🏟️ スポーツ職員</option><option value="airportstaff">✈️ 空港職員</option></select><label class="recruit-count-label" for="recruitCount">募集する人数</label><input id="recruitCount" class="recruit-count" type="number" min="1" max="100" step="1" value="1" inputmode="numeric"><button class="tool" id="recruitBtn"><strong>🧑 選んだ職業の住民を募集</strong><em>$500 / 人</em></button></div><p class="hint">車は購入後、つながった道路ネットワークを往復走行します。道路を敷いただけでは車は増えません。道路が分断されている場合は、つなげると走行を開始します。</p>
+ <h3>車両ショップ</h3><div class="tools"><button class="tool" id="buyTrainBtn"><strong>🚆 電車を購入</strong><em>$25,000 / 編成</em></button><button class="tool" id="buyBusBtn"><strong>🚌 バスを購入</strong><em>$6,000 / 台</em></button><button class="tool" id="buyCarBtn"><strong>🚘 電動セダンを購入</strong><em>$9,000 / 台</em></button><div class="hint" style="margin-top:8px">住民は購入・募集しません。住宅に空きがあり、仕事・電力・生活環境が整うと、移住希望者が自動的に引っ越してきます。</div></div><p class="hint">車は購入後、つながった道路ネットワークを往復走行します。道路を敷いただけでは車は増えません。道路が分断されている場合は、つなげると走行を開始します。</p>
 </aside>
 <aside class="panel right">
  <h2>都市の状況</h2>
@@ -73,7 +73,7 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
  <div class="metric"><span>医療・教育</span><b id="services">不足</b></div><div class="meter"><i id="serviceBar"></i></div>
  <div class="metric"><span>交通状況</span><b id="traffic">道路なし</b></div><div class="meter"><i id="trafficBar"></i></div>
  <h3>都市の開発段階</h3><div id="levelText">開拓前</div><div class="meter"><i id="levelBar"></i></div>
- <h3>住民の暮らし</h3><div class="hint" id="lifeText">住民は募集した場合のみ増えます。車両もショップで購入した場合のみ出現します。</div>
+ <h3>住民の暮らし</h3><div class="hint" id="lifeText">住民は住宅の空き・雇用・幸福度に応じて自動的に移住します。</div>
  <h3>都市経済</h3><div class="metric"><span>税収 / 維持費</span><b id="economyNet">$0 / 月</b></div><h3>税率設定</h3><div class="metric"><label for="taxRes">住宅税</label><input id="taxRes" type="range" min="0" max="20" value="10"><b id="taxResValue">10%</b></div><div class="metric"><label for="taxCom">商業税</label><input id="taxCom" type="range" min="0" max="20" value="10"><b id="taxComValue">10%</b></div><div class="metric"><label for="taxInd">工業税</label><input id="taxInd" type="range" min="0" max="20" value="10"><b id="taxIndValue">10%</b></div><div class="metric"><label for="taxOffice">オフィス税</label><input id="taxOffice" type="range" min="0" max="20" value="10"><b id="taxOfficeValue">10%</b></div><div class="metric"><span>失業率</span><b id="unemployment">--%</b></div><div class="metric"><span>用途指定区画</span><b id="zoneCount">0区画</b></div><h3>都市ニュース</h3><div id="news"><div class="log">自分の都市の建設を始めよう。</div></div>
  <button class="wide" id="resetBtn">都市データを初期化</button>
 </aside>
@@ -447,7 +447,40 @@ function eraseZoneAt(x,z){
  const b=buildings.find(v=>v.zoneId===zone.x+":"+zone.z);if(b){scene.remove(b.group);buildings=buildings.filter(v=>v!==b);}
  scene.remove(zone.group);zones=zones.filter(v=>v!==zone);assignWorkplaces();updateUI();scheduleSave();notice("用途指定を解除しました。");
 }
- function growOneZone(){if(publicView||zones.length===0||buildings.length>=80)return false;const zone=zones.find(z=>!z.developed&&zoneRoadConnected(z));if(!zone)return false;const type=zoneInfo[zone.zoneType].building;const candidate=buildingBounds(type,zone.x,zone.z,0,1);if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b)))||transit.some(t=>footprintsOverlap(candidate,transitMoveBounds(t,t.x,t.z,t.rotation||0),0))||isAirportRunwayBlocked(zone.x,zone.z))return false;const building=makeBuilding(type,zone.x,zone.z,1);if(!building?.group)return false;building.rotation=0;building.zoneId=zone.x+":"+zone.z;building.autoBuilt=true;buildings.push(building);zone.developed=true;zone.group.visible=false;assignWorkplaces();addNews(zoneInfo[zone.zoneType].name+"に"+defs[type].name+"が建設されました。");updateUI();scheduleSave();return true;} function growResidents(){if(publicView||people.length>=50)return false;const capacity=buildings.reduce((n,b)=>n+(defs[b.type]?.housing||0)*(b.level||1),0);if(people.length>=capacity)return false;const home=nearestHome();if(!home)return false;const p=spawnPerson(people.length,"unemployed",{x:home.x,z:home.z+2.1});people.push(p);assignWorkplaces();return true;}
+ function growOneZone(){if(publicView||zones.length===0||buildings.length>=80)return false;const zone=zones.find(z=>!z.developed&&zoneRoadConnected(z));if(!zone)return false;const type=zoneInfo[zone.zoneType].building;const candidate=buildingBounds(type,zone.x,zone.z,0,1);if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b)))||transit.some(t=>footprintsOverlap(candidate,transitMoveBounds(t,t.x,t.z,t.rotation||0),0))||isAirportRunwayBlocked(zone.x,zone.z))return false;const building=makeBuilding(type,zone.x,zone.z,1);if(!building?.group)return false;building.rotation=0;building.zoneId=zone.x+":"+zone.z;building.autoBuilt=true;buildings.push(building);zone.developed=true;zone.group.visible=false;assignWorkplaces();addNews(zoneInfo[zone.zoneType].name+"に"+defs[type].name+"が建設されました。");updateUI();scheduleSave();return true;} function growResidents(){
+ if(publicView||people.length>=50)return false;
+ const homes=buildings.filter(b=>(defs[b.type]?.housing||0)>0);
+ const capacity=homes.reduce((n,b)=>n+(defs[b.type].housing||0)*(b.level||1),0);
+ const vacancy=capacity-people.length;
+ if(vacancy<=0||!homes.length)return false;
+ const state=calc();
+ const occupancy=people.length/Math.max(1,capacity);
+ const jobCapacity=buildings.reduce((n,b)=>n+(defs[b.type]?.jobs||0),0);
+ const unemployed=people.filter(p=>!p.workplace).length;
+ const jobVacancy=Math.max(0,jobCapacity-(people.length-unemployed));
+ const powerRatio=state.demand?state.generation/state.demand:0;
+ let chance=.08;
+ if(occupancy<.92)chance+=.22;
+ if(jobVacancy>0)chance+=Math.min(.28,jobVacancy/Math.max(1,capacity)*.35);
+ else chance-=.12;
+ if(state.happiness>=65)chance+=.16;else if(state.happiness<40)chance-=.18;
+ if(powerRatio<1)chance-=.3;
+ if(state.services<35&&people.length>10)chance-=.12;
+ if(state.monthlyNet<0)chance-=.08;
+ chance=Math.max(.01,Math.min(.72,chance));
+ if(Math.random()>chance)return false;
+ const home=homes.reduce((best,b)=>{const residents=people.filter(p=>p.home===b).length;const score=residents/Math.max(1,defs[b.type].housing*b.level);return !best||score<best.score?{building:b,score}:best;},null)?.building||nearestHome();
+ if(!home)return false;
+ const availableJobs=Object.entries(jobFacilityTypes).filter(([job,types])=>{
+  const capacity=buildings.filter(b=>types.includes(b.type)).reduce((n,b)=>n+(defs[b.type].jobs||0),0);
+  return people.filter(p=>p.job===job).length<capacity;
+ }).map(([job])=>job);
+ const job=availableJobs.length?availableJobs[Math.floor(Math.random()*availableJobs.length)]:"unemployed";
+ const p=spawnPerson(people.length,job,{x:home.x+(Math.random()-.5)*1.4,z:home.z+2.1+(Math.random()-.5)*1.4});
+ p.home=home;people.push(p);assignWorkplaces();
+ addNews("新しい住民が"+(job==="unemployed"?"仕事を探しながら":jobLabels[job]+"として")+"街に引っ越してきました。");
+ updateUI();scheduleSave();return true;
+}
 const transitCosts={rail:600,station:7500,busstop:1500};
 function makeTransit(type,x,z){
  const g=new THREE.Group();g.position.set(x,0,z);g.userData={type};
@@ -1326,21 +1359,6 @@ $("buyCarBtn").onclick=async()=>{
  if(!(await charge(9000)))return;
  const car=spawnCar(cars.length,home);cars.push(car);
  notice(car.route?.length?"電動セダンを購入しました。道路ネットワークを走行します。":"電動セダンを購入しました。道路がつながると走行を開始します。");scheduleSave();
-};
-$("recruitBtn").onclick=async()=>{
- const count=Math.max(1,Math.min(100,Math.floor(Number($("recruitCount").value)||1)));$("recruitCount").value=count;
- const capacity=buildings.reduce((a,b)=>a+(defs[b.type].housing||0)*b.level,0),pending=aircraftArrivals.reduce((n,a)=>n+a.count,0);
- if(people.length+pending+count>capacity){notice("住宅の空きが足りません。あと"+Math.max(0,capacity-people.length-pending)+"人まで募集できます。");return;}
- const job=$("jobSelect").value,limits=Object.fromEntries(Object.entries(jobFacilityTypes).map(([j,types])=>[j,buildings.filter(b=>types.includes(b.type)).reduce((n,b)=>n+(defs[b.type].jobs||0),0)]));
- if(job!=="unemployed"){
-  const used=people.filter(p=>p.job===job).length+aircraftArrivals.filter(a=>a.job===job).reduce((n,a)=>n+a.count,0);
-  if(used+count>limits[job]){notice("その職業の求人枠が不足しています。あと"+Math.max(0,limits[job]-used)+"人まで募集できます。");return;}
- }
- if(!(await charge(count*500)))return;
- const airport=buildings.find(b=>b.type==="airport");
- if(airport){beginAirportArrival(job,people.length+pending,airport,count);notice(count+"人分の乗客を乗せた航空機が到着中です。");}
- else{for(let n=0;n<count;n++)people.push(spawnPerson(people.length,job));assignWorkplaces();updateUI();notice(count+"人の"+(jobLabels[job]||"住民")+"を募集しました。");scheduleSave();}
- updateUI();
 };
 addEventListener("focus",refreshWallet);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refreshWallet();});setInterval(refreshWallet,12000);
 for(const [k,id] of [["res","taxRes"],["com","taxCom"],["ind","taxInd"],["office","taxOffice"]]){$(id).value=taxRates[k];$(id+"Value").textContent=taxRates[k]+"%";$(id).addEventListener("input",()=>{taxRates[k]=Number($(id).value);$(id+"Value").textContent=taxRates[k]+"%";updateUI();scheduleSave();});}
