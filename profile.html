@@ -250,7 +250,7 @@ function flushProfilePlaytime(forcePreviousActive=false){
  if(!profilePlaytimeUserId||!profilePlaytimeLastTick)return;
  const now=Date.now(),activeNow=profilePageActive();
  if(activeNow||(forcePreviousActive&&profilePlaytimeWasActive)){
-  const elapsed=Math.min(30,Math.max(0,Math.floor((now-profilePlaytimeLastTick)/10000)));
+  const elapsed=Math.min(30,Math.max(0,Math.floor((now-profilePlaytimeLastTick)/1000)));
   if(elapsed>0){
    profilePendingSeconds+=elapsed;
    try{localStorage.setItem(profilePendingKey(profilePlaytimeUserId),String(profilePendingSeconds));}catch(e){}
@@ -275,7 +275,7 @@ async function startProfilePlaytime(id){
  profilePlaytimeWasActive=profilePageActive();
  syncProfilePlaytime();
  if(profilePlaytimeTimer)clearInterval(profilePlaytimeTimer);
- profilePlaytimeTimer=setInterval(flushProfilePlaytime,100000);
+ profilePlaytimeTimer=setInterval(flushProfilePlaytime,10000);
 }
 document.addEventListener("visibilitychange",()=>{
  if(document.visibilityState==="hidden")flushProfilePlaytime(true);
