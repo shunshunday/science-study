@@ -728,7 +728,7 @@ async function beginZoneConstruction(zone,type,remainingSeconds=null){
 }
 async function growOneZone(){
  if(publicView||zones.length===0||buildings.length+constructions.length>=250)return false;
- const demand=calculateZoneDemand(),candidates=zones.filter(z=>!z.developed&&!z.constructing&&zoneRoadConnected(z)&&demand[z.zoneType]>=1).sort((a,b)=>(demand[b.zoneType]-zoneRoadDistance(b)*3)-(demand[a.zoneType]-zoneRoadDistance(a)*3));
+ const demand=calculateZoneDemand(),candidates=zones.filter(z=>!z.developed&&!z.constructing&&demand[z.zoneType]>0).sort((a,b)=>demand[b.zoneType]-demand[a.zoneType]);
  for(const zone of candidates){const type=zoneInfo[zone.zoneType].building,candidate=buildingBounds(type,zone.x,zone.z,0,1);if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b)))||constructions.some(c=>Math.abs(c.x-zone.x)<4&&Math.abs(c.z-zone.z)<4)||transit.some(t=>footprintsOverlap(candidate,transitMoveBounds(t,t.x,t.z,t.rotation||0),0))||isAirportRunwayBlocked(zone.x,zone.z))continue;zone.constructing=true;return await beginZoneConstruction(zone,type);}
  return false;
 }
