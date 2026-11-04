@@ -649,7 +649,53 @@ function staffingReport(){
  buildings.forEach(b=>{const d=defs[b.type];if(!d.staffNeed)return;const job=Object.keys(jobFacilityTypes).find(j=>jobFacilityTypes[j].includes(b.type));const count=people.filter(p=>p.workplace===b).length;const missing=Math.max(0,d.staffNeed-count);if(missing>0)reports.push({building:b,name:d.name,job:jobLabels[job],count,need:d.staffNeed,missing});});
  return reports;
 }
-function setTool(t){if(t!=="move"){cancelPendingMove();}selected=t;document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));const labels={rail:"線路",station:"駅",busstop:"バス停"};notice(t==="move"?"移動：施設を選択→移動先をクリック→「決定」。↻で90°回転。":t==="road"?"道路をクリックして敷設。":t==="remove"?"撤去したい道路・建物・交通施設をクリック。":t==="select"?"選択したい施設をクリック。":(defs[t]?.name||labels[t]||"施設")+"を配置する場所をクリック。");}
+let placementGhost=null,placementGhostType=null,placementPreviewPoint=null,placementPreviewValid=false;
+function disposePlacementGhost(){
+ if(placementGhost){scene.remove(placementGhost);placementGhost.traverse(o=>{if(o.isMesh){const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>m.dispose());}});placementGhost=null;}
+ placementGhostType=null;placementPreviewPoint=null;moveMarker.visible=false;moveMarkerOutline.visible=false;
+}
+function tintPlacementGhost(valid){
+ if(!placementGhost)return;
+ const color=valid?0x35e58a:0xff4055;
+ placementGhost.traverse(o=>{if(o.isMesh){o.renderOrder=999;const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{m.transparent=true;m.opacity=.72;m.depthWrite=false;m.depthTest=false;m.color.set(color);m.emissive?.set(color);m.emissiveIntensity=.45;});}else if(o.isSprite){o.renderOrder=1000;o.material.depthTest=false;}});
+}
+function preparePlacementGhost(){
+ const type=selected==="road"?"road":defs[selected]?selected:null;
+ if(!type){disposePlacementGhost();return;}
+ if(placementGhostType===type&&placementGhost)return;
+ disposePlacementGhost();placementGhostType=type;
+ placementGhost=type==="road"?makeRoad(0,0).group:makeBuilding(type,0,0).group;
+ placementGhost.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false;const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{m=m.clone();m.transparent=true;m.opacity=.72;m.depthWrite=false;m.depthTest=false;});if(Array.isArray(o.material))o.material=o.material.map(m=>{const q=m.clone();q.transparent=true;q.opacity=.72;q.depthWrite=false;q.depthTest=false;return q;});else{o.material=o.material.clone();o.material.transparent=true;o.material.opacity=.72;o.material.depthWrite=false;o.material.depthTest=false;}}});
+ placementGhost.renderOrder=999;moveMarker.visible=true;moveMarkerOutline.visible=true;
+}
+function buildingPlacementProblem(type,x,z){
+ if(type==="airport"&&buildings.some(b=>b.type==="airport"))return "空港は都市に1か所だけ設置できます。";
+ const candidate=buildingBounds(type,x,z,0,1);
+ if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港の敷地と重なっています。";
+ if(roadsOverlapBuilding(candidate))return "道路と重なっています。";
+ return "";
+}
+function roadPlacementProblem(x,z){
+ if(roads.some(r=>r.x===x&&r.z===z))return "すでに道路があります。";
+ if(buildings.some(b=>roadOverlapsBounds(x,z,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港の敷地と重なっています。";
+ if(isAirportRunwayBlocked(x,z))return "空港の滑走路と重なっています。";
+ return "";
+}
+function updatePlacementPreviewPointer(e){
+ if(publicView||!document.body.classList.contains("build-open")||!["road",...Object.keys(defs)].includes(selected))return;
+ const rect=renderer.domElement.getBoundingClientRect();mouse.x=(e.clientX-rect.left)/rect.width*2-1;mouse.y=-(e.clientY-rect.top)/rect.height*2+1;
+ raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObject(floor);if(!hits.length)return;
+ const p=gridPos(hits[0].point);preparePlacementGhost();if(!placementGhost)return;
+ placementPreviewPoint=p;
+ let problem="",bounds;
+ if(selected==="road"){problem=roadPlacementProblem(p.x,p.z);bounds=roadBounds(p.x,p.z);}
+ else{problem=buildingPlacementProblem(selected,p.x,p.z);bounds=buildingBounds(selected,p.x,p.z,0,1);}
+ placementPreviewValid=!problem;placementGhost.position.set(p.x,.72,p.z);placementGhost.rotation.y=0;tintPlacementGhost(placementPreviewValid);
+ const w=Math.max(4,bounds.max.x-bounds.min.x),d=Math.max(4,bounds.max.z-bounds.min.z);
+ moveMarker.position.set(p.x,.12,p.z);moveMarker.scale.set(w/4.05,d/4.05,1);moveMarker.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarker.material.depthTest=false;moveMarker.renderOrder=998;
+ moveMarkerOutline.position.set(p.x,.13,p.z);moveMarkerOutline.scale.set(w/4.05,d/4.05,1);moveMarkerOutline.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarkerOutline.material.depthTest=false;moveMarkerOutline.renderOrder=998;
+}
+function setTool(t){if(t!=="move"){cancelPendingMove();}disposePlacementGhost();selected=t;document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));const labels={rail:"線路",station:"駅",busstop:"バス停"};notice(t==="move"?"移動：施設を選択→移動先をクリック→「決定」。↻で90°回転。":t==="road"?"道路をクリックして敷設。":t==="remove"?"撤去したい道路・建物・交通施設をクリック。":t==="select"?"選択したい施設をクリック。":(defs[t]?.name||labels[t]||"施設")+"を配置する場所をクリック。");}
 function notice(s){$("notice").textContent=s;$("notice").classList.remove("hidden");clearTimeout(notice.timer);notice.timer=setTimeout(()=>$("notice").classList.add("hidden"),3000);}
 document.querySelectorAll("[data-tool]").forEach(b=>b.addEventListener("click",()=>setTool(b.dataset.tool)));
 function findAt(x,z){return buildings.find(b=>Math.abs(b.x-x)<2&&Math.abs(b.z-z)<2)||roads.find(r=>r.x===x&&r.z===z)||transit.find(t=>Math.abs(t.x-x)<2&&Math.abs(t.z-z)<2);}
@@ -723,6 +769,7 @@ function updateMovePreviewPointer(e){
  movePreviewPoint=gridPos(hits[0].point);renderMovePreview();
 }
 renderer.domElement.addEventListener("pointermove",updateMovePreviewPointer);
+renderer.domElement.addEventListener("pointermove",updatePlacementPreviewPointer);
 function showMoveControls(){
  const active=!!selectedObject;$("moveControls").classList.toggle("hidden",!active);
  if(!active){$("moveProgress").className="move-progress";$("moveProgress").textContent="施設を選択すると、移動プレビューを表示します。";return;}
@@ -756,10 +803,7 @@ $("cancelMoveBtn").onclick=()=>{cancelPendingMove();notice("移動をキャン�
 async function charge(cost){if(!user){notice("ログインしてから購入してください。");return false;}const {data,error}=await supabase.rpc("spend_city_cash",{p_amount:cost});if(error){notice(error.message==="資金が足りません"?"資金が足りません。":"購入処理に失敗しました: "+error.message);await refreshWallet();return false;}cash=Number(data);updateUI();return true;}
 async function refreshWallet(){if(!user)return;const {data,error}=await supabase.rpc("get_city_wallet");if(error){notice("所持金を読み込めません: "+error.message);return;}const wallet=Array.isArray(data)?data[0]:data;cash=Number(wallet?.balance||0);updateUI();}
 async function addRoad(x,z){
- if(roads.some(r=>r.x===x&&r.z===z))return;
- const tile=roadBounds(x,z);
- if(buildings.some(b=>roadOverlapsBounds(x,z,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return notice("道路が建物・空港の敷地と重なります。別の場所を選んでください。");
- if(isAirportRunwayBlocked(x,z))return notice("滑走路内には道路を敷設できません。");
+ const problem=roadPlacementProblem(x,z);if(problem)return notice(problem);
  if(!(await charge(250)))return;
  roads.push(makeRoad(x,z));updateUI();scheduleSave();
 }
@@ -772,13 +816,7 @@ function isAirportRunwayBlocked(x,z){
  return buildings.some(b=>b.type==="airport"&&overlapsAirportRunway(x,z,b.x,b.z));
 }
 async function addBuilding(type,x,z){
- const d=defs[type];
- if(type==="airport"&&buildings.some(b=>b.type==="airport"))return notice("空港は都市に1か所だけ設置できます。");
- if(type!=="airport"&&isAirportRunwayBlocked(x,z))return notice("滑走路内には建物を建設できません。");
- if(type==="airport"&&buildings.some(b=>b.type!=="airport"&&overlapsAirportRunway(b.x,b.z,x,z)))return notice("建設予定の滑走路に既存の建物があります。別の場所を選んでください。");
- const candidateBounds=buildingBounds(type,x,z,0,1);
- if(buildings.some(b=>footprintsOverlap(candidateBounds,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return notice("建物の敷地が重なっています。別の場所を選んでください。");
- if(roadsOverlapBuilding(candidateBounds))return notice("道路と建物の敷地が重なっています。道路のない場所を選んでください。");
+ const d=defs[type],problem=buildingPlacementProblem(type,x,z);if(problem)return notice(problem);
  const isFreeAirport=type==="airport"&&!buildings.some(b=>b.type==="airport");
  if(!isFreeAirport&&!(await charge(d.cost)))return;
  buildings.push(makeBuilding(type,x,z));assignWorkplaces();notice(d.name+"を建設しました。");updateUI();scheduleSave();
