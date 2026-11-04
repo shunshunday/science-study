@@ -213,6 +213,11 @@ function pointerGroundPoint(e){
  mouse.x=(e.clientX-rect.left)/rect.width*2-1;
  mouse.y=-(e.clientY-rect.top)/rect.height*2+1;
  raycaster.setFromCamera(mouse,camera);
+ // 地形メッシュそのものにレイを当てる。固定高さの平面では斜面・山で位置がずれる。
+ if(typeof ground!=="undefined"&&ground){
+  const hits=raycaster.intersectObject(ground,false);
+  if(hits.length)return hits[0].point.clone();
+ }
  const hit=raycaster.ray.intersectPlane(constructionGroundPlane,constructionGroundHit);
  return hit?hit.clone():null;
 }
@@ -540,15 +545,23 @@ let utilityVisualGroup=new THREE.Group();scene.add(utilityVisualGroup);
 function refreshUtilityVisuals(){
  utilityVisualGroup.clear();const view=$("utilityView")?.value;if(!view||view==="off")return;
  const nodes=utilityLines.filter(v=>v.type===view),nodeMap=new Map(nodes.map(v=>[v.x+","+v.z,v]));
- const makeSpan=(a,b,y,r,material)=>{const start=new THREE.Vector3(a.x,y,a.z),end=new THREE.Vector3(b.x,y,b.z),delta=end.clone().sub(start),mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,delta.length(),7),material);mesh.position.copy(start).add(end).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());utilityVisualGroup.add(mesh);};
- for(const n of nodes){if(view==="electricity"){const pole=new THREE.Mesh(new THREE.CylinderGeometry(.055,.09,4.3,7),signalPoleMaterial);pole.position.set(n.x,2.15,n.z);utilityVisualGroup.add(pole);const arm=new THREE.Mesh(new THREE.BoxGeometry(1.1,.09,.09),roadCurbMaterial);arm.position.set(n.x,4.15,n.z);utilityVisualGroup.add(arm);}
-  for(const [dx,dz] of [[cell,0],[0,cell]]){const next=nodeMap.get((n.x+dx)+","+(n.z+dz));if(next)makeSpan(n,next,view==="electricity"?4.15:view==="water"?.18:.1,view==="electricity"?.035:view==="water"?.085:.09,utilityLineMaterials[view]);}
+ const makeSpan=(a,b,offset,r,material)=>{const start=new THREE.Vector3(a.x,terrainHeightAt(a.x,a.z)+offset,a.z),end=new THREE.Vector3(b.x,terrainHeightAt(b.x,b.z)+offset,b.z),delta=end.clone().sub(start),mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,delta.length(),7),material);mesh.position.copy(start).add(end).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());utilityVisualGroup.add(mesh);};
+ for(const n of nodes){const baseY=terrainHeightAt(n.x,n.z);if(view==="electricity"){const pole=new THREE.Mesh(new THREE.CylinderGeometry(.055,.09,4.3,7),signalPoleMaterial);pole.position.set(n.x,baseY+2.15,n.z);utilityVisualGroup.add(pole);const arm=new THREE.Mesh(new THREE.BoxGeometry(1.1,.09,.09),roadCurbMaterial);arm.position.set(n.x,baseY+4.15,n.z);utilityVisualGroup.add(arm);}
+  // 管・電線を各地点の地表高に追従させ、丘の中に埋もれないようにする。
+  for(const [dx,dz] of [[cell,0],[0,cell]]){const next=nodeMap.get((n.x+dx)+","+(n.z+dz));if(next)makeSpan(n,next,view==="electricity"?4.15:view==="water"?.24:.2,view==="electricity"?.035:view==="water"?.085:.09,utilityLineMaterials[view]);}
  }
 }
 function addUtilityStroke(type,points){
  const clean=[];for(const p of points){const q=gridPos(p);if(!clean.length||clean[clean.length-1].x!==q.x||clean[clean.length-1].z!==q.z)clean.push(q);}
  if(clean.length<2)return notice("配線・配管は2地点以上をドラッグしてつないでください。");
- const nodes=new Map();for(let i=1;i<clean.length;i++){let x0=clean[i-1].x/cell,z0=clean[i-1].z/cell,x1=clean[i].x/cell,z1=clean[i].z/cell,dx=Math.abs(x1-x0),sx=x0<x1?1:-1,dz=-Math.abs(z1-z0),sz=z0<z1?1:-1,err=dx+dz;while(true){const q={x:x0*cell,z:z0*cell};if(!isBuildableLocation(q.x,q.z))return notice("海・湖・丘陵には配線・配管できません。");nodes.set(q.x+","+q.z,q);if(x0===x1&&z0===z1)break;const e2=2*err;if(e2>=dz){err+=dz;x0+=sx;}if(e2<=dx){err+=dx;z0+=sz;}}}
+ const nodes=new Map();for(let i=1;i<clean.length;i++){
+  let x0=clean[i-1].x/cell,z0=clean[i-1].z/cell,x1=clean[i].x/cell,z1=clean[i].z/cell;
+  // ネットワーク判定は上下左右の隣接セル方式なので、斜め移動も必ず直角の連続セルに展開する。
+  const addNode=(gx,gz)=>{const q={x:gx*cell,z:gz*cell};if(!isBuildableLocation(q.x,q.z))return false;nodes.set(q.x+","+q.z,q);return true;};
+  if(!addNode(x0,z0))return notice("海・湖・丘陵には配線・配管できません。");
+  while(x0!==x1){x0+=x0<x1?1:-1;if(!addNode(x0,z0))return notice("海・湖・丘陵には配線・配管できません。");}
+  while(z0!==z1){z0+=z0<z1?1:-1;if(!addNode(x0,z0))return notice("海・湖・丘陵には配線・配管できません。");}
+ }
  const fresh=[...nodes.values()].filter(p=>!utilityLines.some(v=>v.type===type&&v.x===p.x&&v.z===p.z));if(!fresh.length)return notice("この場所にはすでに同じ設備があります。");
  const cost=fresh.length*(type==="electricity"?65:type==="water"?85:80);(async()=>{if(!(await charge(cost)))return;fresh.forEach(p=>utilityLines.push({type,x:p.x,z:p.z}));refreshUtilityVisuals();updateUI();scheduleSave();notice((type==="electricity"?"電線":type==="water"?"水道管":"下水管")+"を"+fresh.length+"地点に敷設しました。");})();
 }
@@ -609,7 +622,12 @@ $("districtSelect").addEventListener("change",e=>{selectedDistrictId=e.target.va
 ["policyHeavy","policySpeed","policyGreen","policyParking"].forEach(id=>$(id).addEventListener("change",updateSelectedDistrictPolicy));
 function makeZone(zoneType,x,z,developed=false){const info=zoneInfo[zoneType];if(!info)return null;const g=new THREE.Group();g.position.set(x,terrainHeightAt(x,z)+.035,z);const fill=new THREE.Mesh(new THREE.PlaneGeometry(3.72,3.72),new THREE.MeshBasicMaterial({color:info.color,transparent:true,opacity:.24,depthWrite:false,side:THREE.DoubleSide}));fill.rotation.x=-Math.PI/2;fill.position.y=.012;g.add(fill);const outline=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(3.72,.035,3.72)),new THREE.LineBasicMaterial({color:info.color,transparent:true,opacity:.9}));outline.position.y=.035;g.add(outline);g.visible=!developed;scene.add(g);return {zoneType,x,z,group:g,developed};} function zoneRoadDistance(start){
  const zoneMap=new Map(zones.map(z=>[z.x+","+z.z,z])),queue=[{x:start.x,z:start.z,d:0}],seen=new Set([start.x+","+start.z]);
- for(let i=0;i<queue.length;i++){const p=queue[i];if(roads.some(r=>Math.abs(r.x-p.x)+Math.abs(r.z-p.z)===cell))return p.d;for(const [dx,dz] of [[cell,0],[-cell,0],[0,cell],[0,-cell]]){const x=p.x+dx,z=p.z+dz,key=x+","+z;if(!seen.has(key)&&zoneMap.has(key)){seen.add(key);queue.push({x,z,d:p.d+1});}}}
+ for(let i=0;i<queue.length;i++){
+  const p=queue[i];
+  // 地区セルの中心と道路セルの中心が隣接していれば道路接続済みとする。
+  if(roads.some(r=>Math.abs(r.x-p.x)+Math.abs(r.z-p.z)<=cell+0.01))return p.d;
+  for(const [dx,dz] of [[cell,0],[-cell,0],[0,cell],[0,-cell]]){const x=p.x+dx,z=p.z+dz,key=x+","+z;if(!seen.has(key)&&zoneMap.has(key)){seen.add(key);queue.push({x,z,d:p.d+1});}}
+ }
  return Infinity;
 }
 function zoneRoadConnected(z){return Number.isFinite(zoneRoadDistance(z));}
@@ -676,7 +694,7 @@ async function beginZoneConstruction(zone,type,remainingSeconds=null){
 }
 async function growOneZone(){
  if(publicView||zones.length===0||buildings.length+constructions.length>=250)return false;
- const demand=calculateZoneDemand(),candidates=zones.filter(z=>!z.developed&&!z.constructing&&zoneRoadConnected(z)&&demand[z.zoneType]>=12).sort((a,b)=>(demand[b.zoneType]-zoneRoadDistance(b)*3)-(demand[a.zoneType]-zoneRoadDistance(a)*3));
+ const demand=calculateZoneDemand(),candidates=zones.filter(z=>!z.developed&&!z.constructing&&zoneRoadConnected(z)&&demand[z.zoneType]>=1).sort((a,b)=>(demand[b.zoneType]-zoneRoadDistance(b)*3)-(demand[a.zoneType]-zoneRoadDistance(a)*3));
  for(const zone of candidates){const type=zoneInfo[zone.zoneType].building,candidate=buildingBounds(type,zone.x,zone.z,0,1);if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b)))||constructions.some(c=>Math.abs(c.x-zone.x)<4&&Math.abs(c.z-zone.z)<4)||transit.some(t=>footprintsOverlap(candidate,transitMoveBounds(t,t.x,t.z,t.rotation||0),0))||isAirportRunwayBlocked(zone.x,zone.z))continue;zone.constructing=true;return await beginZoneConstruction(zone,type);}
  return false;
 }
