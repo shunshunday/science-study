@@ -313,12 +313,27 @@ const keyLights=[];
 function gridPos(p){return {x:Math.round(p.x/cell)*cell,z:Math.round(p.z/cell)*cell};}
 function mat(color,metal=.25,rough=.35,emissive=0){return new THREE.MeshStandardMaterial({color,metalness:metal,roughness:rough,emissive,emissiveIntensity:.6});}
 const buildingTrimMaterial=mat(0x263e50,.35,.42);
+const buildingRoundedGeometryCache=new Map();
 function box(parent,w,h,d,material,x=0,y=h/2,z=0){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
 function makeBuilding(type,x,z,level=1){
  const d=defs[type],g=new THREE.Group();
  g.position.set(x,terrainHeightAt(x,z),z);g.userData={type,level};g.scale.setScalar(1+(level-1)*.08);
  const body=mat(d.color,.28,.42),wall=mat(0xe5edf1,.12,.68),dark=mat(0x172b3b,.48,.38),glass=mat(0x6ebbd0,.58,.2,0x123d50),windowMat=mat(0x9be8ff,.42,.16,0x28758e),roofMat=mat(0x334b5b,.35,.48),white=mat(0xf4f7f7,.08,.5),green=mat(0x4e9b68,.08,.8);
- const add=(w,h,dep,m,px,py,pz)=>box(g,w,h,dep,m,px,py,pz);
+ const add=(w,h,dep,m,px,py,pz)=>{
+  const bevel=Math.min(.075,Math.max(.018,Math.min(w,dep,h)*.045));
+  const key=[w,h,dep,bevel].map(v=>v.toFixed(3)).join(":");
+  let geo=buildingRoundedGeometryCache.get(key);
+  if(!geo){
+   const r=Math.min(bevel*1.8,w*.18,dep*.18),shape=new THREE.Shape();
+   shape.moveTo(-w/2+r,-dep/2);shape.lineTo(w/2-r,-dep/2);shape.quadraticCurveTo(w/2,-dep/2,w/2,-dep/2+r);
+   shape.lineTo(w/2,dep/2-r);shape.quadraticCurveTo(w/2,dep/2,w/2-r,dep/2);
+   shape.lineTo(-w/2+r,dep/2);shape.quadraticCurveTo(-w/2,dep/2,-w/2,dep/2-r);
+   shape.lineTo(-w/2,-dep/2+r);shape.quadraticCurveTo(-w/2,-dep/2,-w/2+r,-dep/2);
+   geo=new THREE.ExtrudeGeometry(shape,{depth:Math.max(.04,h-2*bevel),bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:bevel,bevelThickness:bevel,curveSegments:5});
+   geo.rotateX(-Math.PI/2);geo.translate(0,-(h-2*bevel)/2,0);buildingRoundedGeometryCache.set(key,geo);
+  }
+  const mesh=new THREE.Mesh(geo,m);mesh.position.set(px,py,pz);mesh.castShadow=true;mesh.receiveShadow=true;g.add(mesh);return mesh;
+ };
  const win=(px,py,pz,w=.34,h=.48,side="front")=>{
   const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,.075),windowMat);
   if(side==="front")m.position.set(px,py,pz);
@@ -355,20 +370,29 @@ function makeBuilding(type,x,z,level=1){
   add(1.05,.12,.5,dark,0,.38,1.9);
   const lamp= new THREE.Mesh(new THREE.SphereGeometry(.09,12,8),windowMat);lamp.position.set(1.25,2.25,1.52);g.add(lamp);
  }else if(type==="tower"){
-  // Tall rectangular apartment tower, floor-by-floor window grid and rooftop machinery
-  add(3.0,14.8,3.0,glass,0,7.7,0);
-  for(let f=0;f<12;f++){
-   const y=.9+f*1.18;
-   add(3.12,.075,3.12,body,0,y,0);
-   for(let i=0;i<5;i++){const px=-1.12+i*.56;win(px,y+.48,1.54,.34,.72);win(px,y+.48,-1.54,.34,.72);}
-   for(let i=0;i<5;i++){const pz=-1.12+i*.56;win(1.54,y+.48,pz,.34,.72,"side");win(-1.54,y+.48,pz,.34,.72,"side");}
+  // 曲面ガラスの高層住宅：円形断面、連続バルコニー、縦マリオン、屋上機械室
+  const towerGlass=mat(0x397f98,.62,.19,0x0d2b3b),spandrel=mat(0x243e50,.55,.34),balcony=mat(0xc1d0d5,.62,.3),darkGlass=mat(0x102b3b,.65,.18);
+  const core=new THREE.Mesh(new THREE.CylinderGeometry(2.0,2.18,14.8,48,1,false),towerGlass);core.position.y=7.7;core.castShadow=true;core.receiveShadow=true;g.add(core);
+  for(let floor=0;floor<13;floor++){
+   const y=.55+floor*1.12;
+   const band=new THREE.Mesh(new THREE.TorusGeometry(2.08,.075,8,64),spandrel);band.rotation.x=Math.PI/2;band.position.y=y;g.add(band);
+   const balconyRing=new THREE.Mesh(new THREE.TorusGeometry(2.18,.045,6,64),balcony);balconyRing.rotation.x=Math.PI/2;balconyRing.position.y=y+.12;g.add(balconyRing);
+   for(let n=0;n<24;n++){
+    const ang=n*Math.PI*2/24,rad=2.015;
+    const pane=new THREE.Mesh(new THREE.BoxGeometry(.43,.73,.045),darkGlass);
+    pane.position.set(Math.sin(ang)*rad,y+.53,Math.cos(ang)*rad);pane.rotation.y=ang;g.add(pane);
+   }
   }
-  for(const px of [-1.62,1.62])for(const pz of [-1.62,1.62])add(.16,15.2,.16,body,px,7.75,pz);
-  add(3.35,.28,3.35,roofMat,0,15.25,0);
-  add(1.65,1.0,1.5,body,0,15.85,0);
-  add(.12,2.2,.12,buildingTrimMaterial,0,17.45,0);
-  const beacon=new THREE.Mesh(new THREE.SphereGeometry(.2,16,12),windowMat);beacon.position.y=18.65;g.add(beacon);
-  add(1.05,.08,3.35,white,0,.5,1.75);
+  for(let n=0;n<16;n++){
+   const ang=n*Math.PI*2/16,rad=2.13;
+   const mullion=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,14.8,8),balcony);
+   mullion.position.set(Math.sin(ang)*rad,7.7,Math.cos(ang)*rad);g.add(mullion);
+  }
+  const crown=new THREE.Mesh(new THREE.CylinderGeometry(1.35,1.85,1.25,48),spandrel);crown.position.y=15.65;g.add(crown);
+  const roofGlass=new THREE.Mesh(new THREE.SphereGeometry(1.35,32,16,0,Math.PI*2,0,Math.PI/2),towerGlass);roofGlass.position.y=16.25;g.add(roofGlass);
+  const mast=new THREE.Mesh(new THREE.CylinderGeometry(.045,.08,2.1,10),balcony);mast.position.y=17.85;g.add(mast);
+  const beacon=new THREE.Mesh(new THREE.SphereGeometry(.16,16,12),windowMat);beacon.position.y=18.95;g.add(beacon);
+  const lobby=new THREE.Mesh(new THREE.CylinderGeometry(2.25,2.3,1.25,48),glass);lobby.position.y=.85;g.add(lobby);
  }else if(type==="shop"){
   // Two-level shopping centre with glazed storefront, canopy and rooftop sign
   add(4.35,3.45,3.35,wall,0,2.0,0);
@@ -616,35 +640,6 @@ function makeBuilding(type,x,z,level=1){
   const beacon=new THREE.PointLight(d.color,1.35,12);beacon.position.y=h+1.2;g.add(beacon);keyLights.push(beacon);
  }
  // 共通建築ディテール：曲面ガラスの角柱と、建物の輪郭をなぞる曲線を追加
- const curvedTypes=["home","tower","shop","hospital","school","office","firestation","police","restaurant","hotel","university","factory","farm","forestry","mine","foodplant","lumbermill","steelworks","manufacturer"];
- if(curvedTypes.includes(type)){
-  const tall=type==="tower"?14.8:type==="office"?11.5:type==="hotel"?8:type==="hospital"?6.8:type==="university"?5.2:type==="factory"?3.1:type==="home"?2.35:type==="shop"?3.45:type==="school"?2.8:type==="firestation"?2.65:type==="police"?2.9:type==="restaurant"?2.2:2.4;
-  const cornerGlass=mat(0x83c9d7,.62,.2,0x174b5c),cornerMetal=mat(0x9eb6c0,.72,.27),curveGlow=mat(0x9be8ff,.38,.18,0x28758e);
-  // 円柱状のガラスコーナーで建物の角を丸く見せる
-  for(const px of [-1.62,1.62])for(const pz of [-1.62,1.62]){
-   const pillar=new THREE.Mesh(new THREE.CylinderGeometry(.19,.23,tall,20,1),cornerGlass);
-   pillar.position.set(px,tall/2+.28,pz);pillar.castShadow=true;pillar.receiveShadow=true;g.add(pillar);
-   const cap=new THREE.Mesh(new THREE.TorusGeometry(.2,.045,8,20),cornerMetal);cap.rotation.x=Math.PI/2;cap.position.set(px,tall+.28,pz);g.add(cap);
-  }
-  if(tall<5){
-   const zFront=type==="home"?1.75:type==="hospital"?2.15:type==="school"?1.25:type==="firestation"?1.85:type==="police"?1.82:type==="restaurant"?2.0:1.9;
-   const yCanopy=type==="home"?2.75:type==="shop"?3.05:type==="school"?3.05:type==="firestation"?2.78:type==="restaurant"?2.35:2.65;
-   const curve=new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-2.05,yCanopy-.12,zFront-.12),new THREE.Vector3(-1.35,yCanopy+.02,zFront+.18),
-    new THREE.Vector3(0,yCanopy+.12,zFront+.28),new THREE.Vector3(1.35,yCanopy+.02,zFront+.18),
-    new THREE.Vector3(2.05,yCanopy-.12,zFront-.12)
-   ]);
-   const canopy=new THREE.Mesh(new THREE.TubeGeometry(curve,32,.105,10,false),cornerMetal);canopy.castShadow=true;g.add(canopy);
-   const lightCurve=new THREE.Mesh(new THREE.TubeGeometry(curve,32,.025,8,false),curveGlow);lightCurve.position.y=-.09;g.add(lightCurve);
-  }else{
-   const crownCurve=new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-1.75,tall+.35,0),new THREE.Vector3(-1.25,tall+.72,0),
-    new THREE.Vector3(0,tall+.9,0),new THREE.Vector3(1.25,tall+.72,0),
-    new THREE.Vector3(1.75,tall+.35,0)
-   ]);
-   const crown=new THREE.Mesh(new THREE.TubeGeometry(crownCurve,40,.12,12,false),cornerMetal);crown.castShadow=true;g.add(crown);
-  }
- }
  const labelCanvas=document.createElement("canvas");labelCanvas.width=512;labelCanvas.height=96;
  const ctx=labelCanvas.getContext("2d");ctx.fillStyle="#071a2b";ctx.fillRect(0,0,512,96);
  ctx.fillStyle="#b9f5ff";ctx.font="bold 34px sans-serif";ctx.textAlign="center";ctx.fillText(d.name,256,60);
