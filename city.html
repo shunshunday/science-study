@@ -615,6 +615,36 @@ function makeBuilding(type,x,z,level=1){
   }
   const beacon=new THREE.PointLight(d.color,1.35,12);beacon.position.y=h+1.2;g.add(beacon);keyLights.push(beacon);
  }
+ // 共通建築ディテール：曲面ガラスの角柱と、建物の輪郭をなぞる曲線を追加
+ const curvedTypes=["home","tower","shop","hospital","school","office","firestation","police","restaurant","hotel","university","factory","farm","forestry","mine","foodplant","lumbermill","steelworks","manufacturer"];
+ if(curvedTypes.includes(type)){
+  const tall=type==="tower"?14.8:type==="office"?11.5:type==="hotel"?8:type==="hospital"?6.8:type==="university"?5.2:type==="factory"?3.1:type==="home"?2.35:type==="shop"?3.45:type==="school"?2.8:type==="firestation"?2.65:type==="police"?2.9:type==="restaurant"?2.2:2.4;
+  const cornerGlass=mat(0x83c9d7,.62,.2,0x174b5c),cornerMetal=mat(0x9eb6c0,.72,.27),curveGlow=mat(0x9be8ff,.38,.18,0x28758e);
+  // 円柱状のガラスコーナーで建物の角を丸く見せる
+  for(const px of [-1.62,1.62])for(const pz of [-1.62,1.62]){
+   const pillar=new THREE.Mesh(new THREE.CylinderGeometry(.19,.23,tall,20,1),cornerGlass);
+   pillar.position.set(px,tall/2+.28,pz);pillar.castShadow=true;pillar.receiveShadow=true;g.add(pillar);
+   const cap=new THREE.Mesh(new THREE.TorusGeometry(.2,.045,8,20),cornerMetal);cap.rotation.x=Math.PI/2;cap.position.set(px,tall+.28,pz);g.add(cap);
+  }
+  if(tall<5){
+   const zFront=type==="home"?1.75:type==="hospital"?2.15:type==="school"?1.25:type==="firestation"?1.85:type==="police"?1.82:type==="restaurant"?2.0:1.9;
+   const yCanopy=type==="home"?2.75:type==="shop"?3.05:type==="school"?3.05:type==="firestation"?2.78:type==="restaurant"?2.35:2.65;
+   const curve=new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-2.05,yCanopy-.12,zFront-.12),new THREE.Vector3(-1.35,yCanopy+.02,zFront+.18),
+    new THREE.Vector3(0,yCanopy+.12,zFront+.28),new THREE.Vector3(1.35,yCanopy+.02,zFront+.18),
+    new THREE.Vector3(2.05,yCanopy-.12,zFront-.12)
+   ]);
+   const canopy=new THREE.Mesh(new THREE.TubeGeometry(curve,32,.105,10,false),cornerMetal);canopy.castShadow=true;g.add(canopy);
+   const lightCurve=new THREE.Mesh(new THREE.TubeGeometry(curve,32,.025,8,false),curveGlow);lightCurve.position.y=-.09;g.add(lightCurve);
+  }else{
+   const crownCurve=new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-1.75,tall+.35,0),new THREE.Vector3(-1.25,tall+.72,0),
+    new THREE.Vector3(0,tall+.9,0),new THREE.Vector3(1.25,tall+.72,0),
+    new THREE.Vector3(1.75,tall+.35,0)
+   ]);
+   const crown=new THREE.Mesh(new THREE.TubeGeometry(crownCurve,40,.12,12,false),cornerMetal);crown.castShadow=true;g.add(crown);
+  }
+ }
  const labelCanvas=document.createElement("canvas");labelCanvas.width=512;labelCanvas.height=96;
  const ctx=labelCanvas.getContext("2d");ctx.fillStyle="#071a2b";ctx.fillRect(0,0,512,96);
  ctx.fillStyle="#b9f5ff";ctx.font="bold 34px sans-serif";ctx.textAlign="center";ctx.fillText(d.name,256,60);
