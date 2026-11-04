@@ -992,6 +992,31 @@ function makeTransit(type,x,z){
  if(type==="stadium"){sign("MEGA ARENA",0x176340,0x9effc1,0,3.65,2.5);for(const sx of [-2.35,2.35]){add(.12,6,.12,buildingTrimMaterial,sx,3,-1.8);const flood=new THREE.Mesh(new THREE.BoxGeometry(.85,.18,.3),white);flood.position.set(sx,6.1,-1.8);g.add(flood);}}
  if(type==="airport"){sign("INTERNATIONAL AIRPORT",0x15516a,0x9df2ff,0,3.2,1.42);for(const sx of [-2.8,2.8]){add(.18,1.8,.18,buildingTrimMaterial,sx,1,-1.1);add(.7,.12,.7,white,sx,1.95,-1.1);}}
 
+ // Shared architectural finish: roof plant, parapets, service access and exterior lighting
+ const flatRoofY={tower:15.4,shop:3.9,hospital:7.35,school:3.32,office:12.55,factory:3.48,firestation:3.08,police:3.28,hotel:8.75,university:3.48,stadium:6.25,airport:3.35,water:3.1,sewage:3.1,waste:3.1,farm:2.8,forestry:2.8,mine:3.2,foodplant:3.4,lumbermill:3.4,steelworks:4.2,manufacturer:3.8,cargoRail:2.8,seaport:2.8,cargoAirport:2.8};
+ const roofY=flatRoofY[type];
+ if(roofY!==undefined){
+  const roofUnitMat=mat(0x71818b,.62,.38),ventMat=mat(0x263b49,.48,.5);
+  const units=type==="tower"||type==="hospital"||type==="office"?2:1;
+  for(let i=0;i<units;i++){
+   const px=(i-(units-1)/2)*1.15;
+   add(.72,.42,.68,roofUnitMat,px,roofY+.22,-.72);
+   const fan=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,.055,16),ventMat);fan.position.set(px,roofY+.46,-.72);g.add(fan);
+   for(let k=0;k<4;k++){const blade=new THREE.Mesh(new THREE.BoxGeometry(.035,.025,.36),chrome);blade.position.set(px,roofY+.5,-.72);blade.rotation.y=k*Math.PI/2;g.add(blade);}
+  }
+  if(!["tower","hotel"].includes(type)){
+   for(const px of [-1.85,1.85])add(.1,.32,.1,buildingTrimMaterial,px,roofY+.16,-.9);
+  }
+ }
+ // Building entries receive a lit canopy and a textured approach path.
+ if(["shop","hospital","school","office","factory","firestation","police","restaurant","hotel","university","stadium","airport","water","sewage","waste","farm","forestry","mine","foodplant","lumbermill","steelworks","manufacturer","cargoRail","seaport","cargoAirport"].includes(type)){
+  const canopyY=type==="hospital"?3.48:type==="office"?1.55:type==="hotel"?1.2:2.95;
+  if(!["hospital","firestation"].includes(type))add(2.25,.12,.82,roofMat,0,canopyY,2.05);
+  for(const px of [-.82,.82]){
+   const lamp=new THREE.Mesh(new THREE.SphereGeometry(.075,10,8),mat(0xffe2a2,.1,.2,0xffbd5a));
+   lamp.position.set(px,canopyY-.12,2.42);g.add(lamp);
+  }
+ }
  if(type==="station"){
   const nearbyRail=transit.filter(t=>t.type==="rail").sort((a,b)=>Math.hypot(a.x-x,a.z-z)-Math.hypot(b.x-x,b.z-z))[0];
   if(nearbyRail){const dx=nearbyRail.x-x,dz=nearbyRail.z-z;g.rotation.y=Math.atan2(dx,dz);}
