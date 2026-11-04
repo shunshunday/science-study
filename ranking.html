@@ -62,14 +62,14 @@ function titleMarkFor(n){if(n>=1000)return "";if(n>=500)return "♛";if(n>=200)r
  if(!data||data.length===0){status.hidden=false;status.textContent="まだランキングに参加している人はいません。";return;}
  data.forEach((item,i)=>{
   const row=document.createElement("div");row.className="row";
-  const correctValue=Number(item.correct_count||0);const scoreValue=Number(item.balance||0);const isHaki=correctValue>=1000;const isNobel=correctValue>=500&&correctValue<1000;if(isHaki)row.classList.add("haki-row");else if(isNobel)row.classList.add("nobel-row");
+  const scoreValue=Math.max(0,Number(item.balance)||0);const isHaki=scoreValue>=100000;const isNobel=scoreValue>=50000&&scoreValue<100000;if(isHaki)row.classList.add("haki-row");else if(isNobel)row.classList.add("nobel-row");
   const pos=document.createElement("div");pos.className="pos";pos.textContent=i===0?"🥇":i===1?"🥈":i===2?"🥉":String(i+1);
   const avatar=document.createElement("div");avatar.className="rank-avatar";avatar.setAttribute("aria-label",item.username+"のプロフィール画像");avatar.textContent="理";if(avatarByUsername[item.username]){const img=document.createElement("img");img.src=avatarByUsername[item.username];img.alt="";img.loading="lazy";img.referrerPolicy="no-referrer";img.addEventListener("error",()=>{img.remove();avatar.textContent="理";},{once:true});avatar.textContent="";avatar.appendChild(img);}
   const name=document.createElement("div");name.className="name";name.textContent=item.username;const mark=document.createElement("span");mark.className="title-mark";
-  if(correctValue>=1000){mark.classList.add("haisha-crest");mark.setAttribute("aria-label","覇者の紋章");mark.innerHTML='<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="haishaGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0bd"/><stop offset=".48" stop-color="#d5a34d"/><stop offset="1" stop-color="#8e5525"/></linearGradient></defs><path class="crest-ring" d="M20 2.8 34.8 11.3 34.8 28.7 20 37.2 5.2 28.7 5.2 11.3Z"/><path class="crest-crown" d="m9 24 2.2-11 7 6.1L20 8l2.8 11.1 7-6.1L32 24l-2 5H11Z"/><path class="crest-base" d="M11 31h18"/></svg>';}
-  else mark.textContent=titleMarkFor(correctValue);
+  if(scoreValue>=100000){mark.classList.add("haisha-crest");mark.setAttribute("aria-label","覇者の紋章");mark.innerHTML='<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="haishaGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0bd"/><stop offset=".48" stop-color="#d5a34d"/><stop offset="1" stop-color="#8e5525"/></linearGradient></defs><path class="crest-ring" d="M20 2.8 34.8 11.3 34.8 28.7 20 37.2 5.2 28.7 5.2 11.3Z"/><path class="crest-crown" d="m9 24 2.2-11 7 6.1L20 8l2.8 11.1 7-6.1L32 24l-2 5H11Z"/><path class="crest-base" d="M11 31h18"/></svg>';}
+  else mark.textContent=titleMarkFor(scoreValue);
   name.appendChild(mark);
-  const title=document.createElement("span");title.className="rank";title.textContent=titleFor(correctValue);name.appendChild(title);
+  const title=document.createElement("span");title.className="rank";title.textContent=titleFor(scoreValue);name.appendChild(title);
   const score=document.createElement("div");score.className="score";score.textContent="$"+scoreValue.toLocaleString("en-US");
   const small=document.createElement("small");small.textContent="所持金";score.appendChild(small);
   row.append(pos,avatar,name,score);list.appendChild(row);
