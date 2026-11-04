@@ -712,7 +712,7 @@ function refreshRoadVisuals(){
 function districtAt(x,z){return [...districts].reverse().find(d=>x>=d.minX-cell/2&&x<=d.maxX+cell/2&&z>=d.minZ-cell/2&&z<=d.maxZ+cell/2)||null;}
 function addDistrictArea(x1,z1,x2,z2){
  const minX=Math.min(x1,x2),maxX=Math.max(x1,x2),minZ=Math.min(z1,z2),maxZ=Math.max(z1,z2);
- if(districts.some(d=>!(maxX<d.minX-cell||minX>d.maxX+cell||maxZ<d.minZ-cell||minZ>d.maxZ+cell)))return notice("地区の範囲が既存の地区と重なっています。");
+ if(districts.some(d=>!(maxX<d.minX-.01||minX>d.maxX+.01||maxZ<d.minZ-.01||minZ>d.maxZ+.01)))return notice("地区の範囲が既存の地区と重なっています。重ならない範囲を選んでください。");
  const d={id:"district-"+Date.now()+"-"+districts.length,name:"地区 "+(districts.length+1),minX,maxX,minZ,maxZ,policies:{heavy:false,speed:false,green:false,parking:false}};
  districts.push(makeDistrictOverlay(d));selectedDistrictId=d.id;refreshDistrictUI();updateUI();scheduleSave();notice(d.name+"を作成しました。右側で地区政策を設定できます。");
 }
@@ -751,10 +751,18 @@ function calculateZoneDemand(){
  const shops=buildings.filter(b=>b.type==="shop").length,factories=buildings.filter(b=>b.type==="factory").length,offices=buildings.filter(b=>b.type==="office").length,educated=people.filter(p=>["teacher","researcher","officeworker"].includes(p.job)).length;
  const clamp=v=>Math.max(0,Math.min(100,Math.round(v)));
  return {res:clamp(30+occupancy*62+Math.min(22,jobVacancy*.45)-Math.min(25,unemployed*.7)-Math.max(0,taxRates.res-10)*2+Math.max(0,10-taxRates.res)),com:clamp(28+pop*.72-shops*15+Math.min(18,jobVacancy*.12)-Math.max(0,taxRates.com-10)*2+Math.max(0,10-taxRates.com)),ind:clamp(35+pop*.32+shops*8-factories*18-Math.max(0,taxRates.ind-10)*2+Math.max(0,10-taxRates.ind)),office:clamp(24+pop*.25+educated*.7-offices*17+buildings.filter(b=>b.type==="university").length*8-Math.max(0,taxRates.office-10)*2+Math.max(0,10-taxRates.office))};
-} async function addZone(zoneType,x,z){if(!zoneInfo[zoneType])return;const old=zones.find(q=>q.x===x&&q.z===z);if(old){if(old.zoneType===zoneType)return notice("この区画はすでに同じ用途です。");if(old.developed){const prior=buildings.find(b=>b.zoneId===old.x+":"+old.z);if(prior){scene.remove(prior.group);buildings=buildings.filter(b=>b!==prior);}}old.zoneType=zoneType;old.developed=false;old.group.visible=true;const info=zoneInfo[zoneType];old.group.children[0].material.color.set(info.color);old.group.children[1].material.color.set(info.color);assignWorkplaces();scheduleSave();updateUI();return notice(info.name+"に変更しました。");}if(buildings.some(b=>Math.abs(b.x-x)<3.6&&Math.abs(b.z-z)<3.6)||transit.some(t=>Math.abs(t.x-x)<3.6&&Math.abs(t.z-z)<3.6)||roads.some(r=>r.x===x&&r.z===z))return notice("建物・道路・交通施設のある場所には指定できません。");const zone=makeZone(zoneType,x,z);if(!zone)return;zones.push(zone);updateUI();scheduleSave();notice(zoneInfo[zoneType].name+"を指定しました。");}
+} function zoneCellBlockedByExisting(x,z){
+ const cellBounds=new THREE.Box3(new THREE.Vector3(x-cell/2,0,z-cell/2),new THREE.Vector3(x+cell/2,20,z+cell/2));
+ if(buildings.some(b=>footprintsOverlap(cellBounds,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b),0)))return true;
+ if(constructions.some(c=>footprintsOverlap(cellBounds,buildingBounds(c.type,c.x,c.z,c.building.rotation||0,c.building.level||1,c.building),0)))return true;
+ if(transit.some(t=>footprintsOverlap(cellBounds,transitBounds(t.type,t.x,t.z),0)))return true;
+ if(roads.some(r=>footprintsOverlap(cellBounds,roadBounds(r.x,r.z),0)))return true;
+ return false;
+}
+async function addZone(zoneType,x,z){if(!zoneInfo[zoneType])return;const old=zones.find(q=>q.x===x&&q.z===z);if(old){if(old.zoneType===zoneType)return notice("この区画はすでに同じ用途です。");if(old.developed){const prior=buildings.find(b=>b.zoneId===old.x+":"+old.z);if(prior){scene.remove(prior.group);buildings=buildings.filter(b=>b!==prior);}}old.zoneType=zoneType;old.developed=false;old.group.visible=true;const info=zoneInfo[zoneType];old.group.children[0].material.color.set(info.color);old.group.children[1].material.color.set(info.color);assignWorkplaces();scheduleSave();updateUI();return notice(info.name+"に変更しました。");}if(zoneCellBlockedByExisting(x,z))return notice("建物・道路・交通施設の敷地と重なる場所には指定できません。");const zone=makeZone(zoneType,x,z);if(!zone)return;zones.push(zone);updateUI();scheduleSave();notice(zoneInfo[zoneType].name+"を指定しました。");}
 async function addZoneArea(zoneType,x1,z1,x2,z2){
  const minX=Math.min(x1,x2),maxX=Math.max(x1,x2),minZ=Math.min(z1,z2),maxZ=Math.max(z1,z2),cells=[];
- for(let x=minX;x<=maxX&&cells.length<400;x+=cell)for(let z=minZ;z<=maxZ&&cells.length<400;z+=cell){if(!isBuildableLocation(x,z))continue;const old=zones.find(q=>q.x===x&&q.z===z);if(old?.zoneType===zoneType)continue;if(!old&&(buildings.some(b=>Math.abs(b.x-x)<3.6&&Math.abs(b.z-z)<3.6)||transit.some(t=>Math.abs(t.x-x)<3.6&&Math.abs(t.z-z)<3.6)||roads.some(r=>r.x===x&&r.z===z)))continue;cells.push({x,z,old});}
+ for(let x=minX;x<=maxX&&cells.length<400;x+=cell)for(let z=minZ;z<=maxZ&&cells.length<400;z+=cell){if(!isBuildableLocation(x,z))continue;const old=zones.find(q=>q.x===x&&q.z===z);if(old?.zoneType===zoneType)continue;if(!old&&zoneCellBlockedByExisting(x,z))continue;cells.push({x,z,old});}
  if(!cells.length)return notice("選択範囲に指定できる空き地がありません。");
  
  for(const c of cells){if(c.old){if(c.old.developed){const b=buildings.find(v=>v.zoneId===c.x+":"+c.z);if(b){scene.remove(b.group);buildings=buildings.filter(v=>v!==b);}}c.old.zoneType=zoneType;c.old.developed=false;c.old.group.visible=true;const info=zoneInfo[zoneType];c.old.group.children[0].material.color.set(info.color);c.old.group.children[1].material.color.set(info.color);}else{const z=makeZone(zoneType,c.x,c.z);if(z)zones.push(z);}}
@@ -1508,7 +1516,7 @@ function buildingBounds(type,x,z,rotation=0,level=1,source=null){
  }
  return bounds;
 }
-function footprintsOverlap(a,b,gap=.35){
+function footprintsOverlap(a,b,gap=-.12){
  return a.min.x<b.max.x-gap&&a.max.x>b.min.x+gap&&a.min.z<b.max.z-gap&&a.max.z>b.min.z+gap;
 }
 function roadBounds(x,z){
