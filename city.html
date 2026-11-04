@@ -1143,6 +1143,7 @@ window.addEventListener("pointerup",e=>{
     notice("前の建物を移動しました。続けて"+defs[targetBuilding.type].name+"を移動できます。");return;
    }
    if(targetBuilding===pendingMove.building){notice("この建物の移動先をクリックするか、「決定」で確定してください。");return;}
+   if(!p)return notice("移動先の地面をクリックしてください。");
    const problem=moveValidation(pendingMove.building,p.x,p.z,pendingMove.rotation);if(problem)return notice(problem);
    pendingMove.x=p.x;pendingMove.z=p.z;movePreviewPoint={x:p.x,z:p.z};showMoveControls();notice("移動先を更新しました。「決定」で確定できます。");return;
   }
