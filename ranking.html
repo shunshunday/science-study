@@ -58,8 +58,8 @@ footer{background:#fff;border-top:1px solid var(--line);color:#8a968e}.footer-in
 <script>
 const client=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
 window.rikakidsSupabaseClient=client;
-function titleFor(n){if(n>=100000)return "覇者";if(n>=50000)return "ノーベル賞";if(n>=20000)return "伝説の科学者";if(n>=10000)return "科学の天才";if(n>=6000)return "理科博士";if(n>=3000)return "理科マスター";if(n>=1000)return "理科チャレンジャー";return "理科ビギナー";}
-function titleMarkFor(n){if(n>=100000)return "";if(n>=50000)return "♛";if(n>=20000)return "🌟";if(n>=10000)return "💡";if(n>=6000)return "🧪";if(n>=3000)return "🔬";if(n>=1000)return "⚗️";return "🌱";}
+function titleFor(n){if(n>=1000000)return "覇者";if(n>=500000)return "ノーベル賞";if(n>=200000)return "伝説の科学者";if(n>=100000)return "科学の天才";if(n>=60000)return "理科博士";if(n>=30000)return "理科マスター";if(n>=10000)return "理科チャレンジャー";return "理科ビギナー";}
+function titleMarkFor(n){if(n>=1000000)return "";if(n>=500000)return "♛";if(n>=200000)return "🌟";if(n>=100000)return "💡";if(n>=60000)return "🧪";if(n>=30000)return "🔬";if(n>=10000)return "⚗️";return "🌱";}
 (async()=>{
  const status=document.getElementById("status"),list=document.getElementById("list");
  const {data,error}=await client.from("public_leaderboard").select("username,balance,lifetime_earned").order("balance",{ascending:false}).order("username",{ascending:true}).limit(100);
@@ -70,11 +70,11 @@ function titleMarkFor(n){if(n>=100000)return "";if(n>=50000)return "♛";if(n>=2
  if(!data||data.length===0){status.hidden=false;status.textContent="まだランキングに参加している人はいません。";return;}
  data.forEach((item,i)=>{
   const row=document.createElement("div");row.className="row";
-  const scoreValue=Math.max(0,Number(item.balance)||0);const isHaki=scoreValue>=100000;const isNobel=scoreValue>=50000&&scoreValue<100000;if(isHaki)row.classList.add("haki-row");else if(isNobel)row.classList.add("nobel-row");
+  const scoreValue=Math.max(0,Number(item.balance)||0);const isHaki=scoreValue>=1000000;const isNobel=scoreValue>=500000&&scoreValue<1000000;if(isHaki)row.classList.add("haki-row");else if(isNobel)row.classList.add("nobel-row");
   const pos=document.createElement("div");pos.className="pos";pos.textContent=i===0?"🥇":i===1?"🥈":i===2?"🥉":String(i+1);
   const avatar=document.createElement("a");avatar.className="rank-avatar";avatar.href="./public-profile.html?user="+encodeURIComponent(item.username);avatar.style.textDecoration="none";avatar.style.color="inherit";avatar.setAttribute("aria-label",item.username+"のプロフィールを見る");avatar.textContent="理";if(avatarByUsername[item.username]){const img=document.createElement("img");img.src=avatarByUsername[item.username];img.alt="";img.loading="lazy";img.referrerPolicy="no-referrer";img.addEventListener("error",()=>{img.remove();avatar.textContent="理";},{once:true});avatar.textContent="";avatar.appendChild(img);}
   const name=document.createElement("a");name.className="name";name.href="./public-profile.html?user="+encodeURIComponent(item.username);name.textContent=item.username;name.style.color="inherit";name.style.textDecoration="none";name.title=item.username+"のプロフィールを見る";const mark=document.createElement("span");mark.className="title-mark";
-  if(scoreValue>=100000){mark.classList.add("haisha-crest");mark.setAttribute("aria-label","覇者の紋章");mark.innerHTML='<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="haishaGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0bd"/><stop offset=".48" stop-color="#d5a34d"/><stop offset="1" stop-color="#8e5525"/></linearGradient></defs><path class="crest-ring" d="M20 2.8 34.8 11.3 34.8 28.7 20 37.2 5.2 28.7 5.2 11.3Z"/><path class="crest-crown" d="m9 24 2.2-11 7 6.1L20 8l2.8 11.1 7-6.1L32 24l-2 5H11Z"/><path class="crest-base" d="M11 31h18"/></svg>';}
+  if(scoreValue>=1000000){mark.classList.add("haisha-crest");mark.setAttribute("aria-label","覇者の紋章");mark.innerHTML='<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="haishaGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff4d2"/><stop offset=".48" stop-color="#e0b45e"/><stop offset="1" stop-color="#966022"/></linearGradient></defs><path class="crest-ring" d="M20 2.8 34.8 11.3 34.8 28.7 20 37.2 5.2 28.7 5.2 11.3Z"/><path class="crest-crown" d="M7 25 5.8 13.5l7.3 6.3 2.3-11.1 4.6 8.1 4.6-8.1 2.3 11.1 7.3-6.3L33 25l-2.3 4.3H9.3Z"/><path d="M20 14V6.1m-2.6 2.6L20 5l2.6 3.7" fill="none" stroke="#fff0bd" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 31h20" class="crest-base"/><circle cx="13" cy="24" r="1.1" fill="#fff0bd"/><circle cx="20" cy="25" r="1.4" fill="#fff0bd"/><circle cx="27" cy="24" r="1.1" fill="#fff0bd"/></svg>';}
   else mark.textContent=titleMarkFor(scoreValue);
   name.appendChild(mark);
   const title=document.createElement("span");title.className="rank";title.textContent=titleFor(scoreValue);name.appendChild(title);
