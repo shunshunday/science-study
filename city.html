@@ -418,8 +418,9 @@ const jobFacilityTypes={shop:["shop"],doctor:["hospital"],teacher:["school"],eng
 const jobLabels={unemployed:"無職",shop:"店員",doctor:"医師",teacher:"教師",engineer:"発電技術者"};
 function compatibleBuildings(job){return buildings.filter(b=>(jobFacilityTypes[job]||[]).includes(b.type));}
 function assignWorkplaces(){
+ const previous=new Map(people.map(p=>[p,p.workplace||null]));
  const used=new Map();
- people.forEach(p=>{p.home=nearestHome(p.x,p.z)||p.home||null;p.workplace=null;p.workplaceName="";p.working=false;});
+ people.forEach(p=>{p.home=nearestHome(p.x,p.z)||p.home||null;p.workplace=null;p.workplaceName="";});
  for(const job of Object.keys(jobFacilityTypes)){
   const workers=people.filter(p=>p.job===job);
   const facilities=compatibleBuildings(job);
@@ -427,6 +428,7 @@ function assignWorkplaces(){
    const candidates=facilities.filter(b=>(used.get(b)||0)<(defs[b.type].jobs||0)).sort((a,b)=>Math.hypot(a.x-p.x,a.z-p.z)-Math.hypot(b.x-p.x,b.z-p.z));
    const workplace=candidates[0];
    if(workplace){p.workplace=workplace;p.workplaceName=defs[workplace.type].name;used.set(workplace,(used.get(workplace)||0)+1);}
+   if(previous.get(p)!==p.workplace){p.working=false;p.routine="home";if(p.home){p.targetX=p.home.x+1.8;p.targetZ=p.home.z+2.3;}else{p.targetX=p.x;p.targetZ=p.z;}p.walkTimer=0;}
   });
  }
  return used;
