@@ -478,8 +478,16 @@ function makeTransit(type,x,z){
   if(kind==="hotel"){box(v,.8,.2,.06,mat(0xd9c18c),0,1.05,.24);}
   v.position.set(px,0,pz);g.add(v);
  };
- // 共通のエントランス照明・アプローチ
- for(const sx of [-1.72,1.72]){const pole=new THREE.Group();const stem=new THREE.Mesh(new THREE.CylinderGeometry(.035,.055,1.45,8),buildingTrimMaterial);stem.position.y=.73;pole.add(stem);const lamp=new THREE.Mesh(new THREE.SphereGeometry(.13,12,8),mat(0xffe5a1,.1,.18,0xffcf6a));lamp.position.y=1.5;pole.add(lamp);pole.position.set(sx,0,2.35);g.add(pole);}
+ // 建物・駅だけに外構照明を設置。線路タイルには街灯を付けない。
+ if(type!=="rail"&&type!=="busstop"){
+  for(const sx of [-1.72,1.72]){
+   const pole=new THREE.Group();
+   const stem=new THREE.Mesh(new THREE.CylinderGeometry(.035,.055,1.45,8),buildingTrimMaterial);
+   stem.position.y=.73;pole.add(stem);
+   const lamp=new THREE.Mesh(new THREE.SphereGeometry(.13,12,8),mat(0xffe5a1,.1,.18,0xffcf6a));
+   lamp.position.y=1.5;pole.add(lamp);pole.position.set(sx,0,2.35);g.add(pole);
+  }
+ }
  if(["shop","hospital","school","office","factory","firestation","police","restaurant","hotel","university","stadium","airport"].includes(type)){
   add(3.1,.08,1.15,mat(0x85949c,.1,.85),0,.08,2.55);
   for(let n=0;n<5;n++)add(.16,.035,.14,white,-.72+n*.36,.14,2.55);
@@ -682,6 +690,7 @@ function cacheVehiclePath(path){
  }
  function rebuildTransitVehicles(){
   transitVehicles.forEach(v=>scene.remove(v.group));transitVehicles=[];
+  refreshRailVisuals();
   const trainPath=buildTrainPath();
   if(trainCount>0&&trainPath?.length>=2){const data=cacheVehiclePath(trainPath);for(let i=0;i<trainCount;i++){const group=makeTrain();const vehicle={kind:"train",group,...data,distance:(i*2.5)%data.total,direction:1,speed:2.8,loop:trainPath[0].x===trainPath[trainPath.length-1].x&&trainPath[0].z===trainPath[trainPath.length-1].z};transitVehicles.push(vehicle);updateRouteVehicle(vehicle,0);}}
   const busPath=buildBusPath();
