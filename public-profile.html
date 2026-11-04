@@ -14,6 +14,50 @@ h1{font-size:25px;margin:0 0 5px}.lead{font-size:13px;color:#718077;margin:0 0 2
 a.action{display:block;text-align:center;text-decoration:none;border-radius:10px;padding:13px;margin-top:13px;font-size:14px;font-weight:850}.primary{background:#16834a;color:#fff}.secondary{background:#eef5f0;color:#28613d}
 #status{text-align:center;color:#69776e;padding:28px 8px;font-size:13px}.error{color:#a33}
 @media(max-width:420px){.card{padding:20px}.avatar{width:66px;height:66px}.username{font-size:19px}}
+
+/* 公開プロフィール用会員証：マイプロフィールと同じデザイン */
+.member-card{position:relative;overflow:hidden;margin-top:18px;padding:20px;border-radius:16px;color:#263238;background:linear-gradient(145deg,#fff 0%,#f7f8fa 58%,#e9edf1 100%);box-shadow:0 14px 32px #172b3a18;border:1px solid #d7dde3;min-height:218px}
+.member-card:before{content:"";position:absolute;width:230px;height:230px;border:1px solid #aeb8c225;border-radius:50%;right:-80px;top:-105px;box-shadow:0 0 0 18px #aeb8c208,0 0 0 38px #aeb8c206;pointer-events:none}
+.member-card.gold{color:#513b08;background:linear-gradient(135deg,#fff8cf 0%,#f4d45b 48%,#d9a91c 100%);border:1px solid #c89413;box-shadow:0 14px 32px #9b741d35}
+.member-card.gold:before{border-color:#fff8d966;box-shadow:0 0 0 18px #fff8d922,0 0 0 38px #fff8d914}
+.member-top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid #26323830}
+.member-brand{font-size:11px;font-weight:900;letter-spacing:.14em;color:#35434b;line-height:1.5}
+.member-mark{width:38px;height:38px;display:grid;place-items:center;border:1px solid #116b39;border-radius:7px;background:#16834a;color:#fff;font-size:21px;font-weight:1000;box-shadow:0 3px 12px #0002;flex:none}
+.member-card.gold .member-top{border-color:#8e6a183d}.member-card.gold .member-brand{color:#624609}
+.member-card.gold .member-mark{border-color:#116b39;background:#16834a;color:#fff}
+.member-body{position:relative;display:grid;grid-template-columns:minmax(0, .9fr) minmax(0,1.5fr);align-items:center;gap:14px;padding:13px 0 10px}
+.member-label{margin:0 0 5px;color:#697781;font-size:9px;font-weight:900;letter-spacing:.18em}
+.member-identity{display:flex;align-items:center;gap:11px;min-width:0}.avatar-wrap{width:64px;height:64px;flex:none;border-radius:50%;overflow:hidden;border:2px solid #cbd3da;background:#e9f2eb;display:grid;place-items:center;color:#16834a;font-size:25px;font-weight:950}.avatar-wrap img{width:100%;height:100%;object-fit:cover;display:block}.avatar-wrap img[hidden]{display:none!important}.avatar-wrap{cursor:copy;transition:box-shadow .15s,border-color .15s}.avatar-wrap.avatar-drag-over{border-color:#16834a;box-shadow:0 0 0 5px #16834a35}.member-card.gold .avatar-wrap{border-color:#b88a1b}.member-name{font-size:clamp(18px,3.5vw,25px);font-weight:950;letter-spacing:.02em;overflow-wrap:anywhere;color:#1f2d35;line-height:1.25}
+.member-sub{margin-top:5px;color:#65737b;font-size:10px}
+.member-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.member-stat{min-width:0;padding:10px 8px;border:1px solid #cbd3da;border-radius:9px;background:#ffffffb8}
+.member-stat span{display:block;color:#687680;font-size:9px;font-weight:800;line-height:1.35}
+.member-stat strong{display:block;margin-top:5px;color:#25343c;font-size:17px;font-weight:950;line-height:1.2;overflow-wrap:anywhere}
+.member-stat strong small{font-size:10px}
+.member-card.gold .member-stat{border-color:#9a741d66;background:#fff8d6a8}
+.member-card.gold .member-stat span{color:#755719}.member-card.gold .member-stat strong{color:#513b08}
+.member-rank{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:2px;padding:9px 11px;border:1px solid #cbd3da;border-radius:9px;background:linear-gradient(100deg,#f8fafb,#e5eaf0);color:#26343b}
+.member-rank span{font-size:9px;font-weight:900;letter-spacing:.08em;color:#687680}
+.member-rank strong{font-size:15px;font-weight:950;color:#26343b;text-align:right}
+.member-card.gold .member-rank{border-color:#a77a17;background:linear-gradient(100deg,#fff4bd,#e6bd42);color:#513b08}
+.member-card.gold .member-rank span{color:#795a16}.member-card.gold .member-rank strong{color:#513b08}
+.member-card .member-rank{background:#fff;border-color:#d7dde3;color:#26343b}
+.member-card .member-rank span{color:#687680}
+.member-card .member-rank strong{color:#26343b}
+.member-card.gold .member-rank:not(.nobel):not(.haisha){background:#fff;border-color:#d7dde3;color:#26343b}
+.member-card.gold .member-rank:not(.nobel):not(.haisha) span{color:#687680}
+.member-card.gold .member-rank:not(.nobel):not(.haisha) strong{color:#26343b}
+.member-card .member-rank.nobel{border-color:#c8a44e;background:linear-gradient(110deg,#fff8df,#f5e7bd 48%,#fffaf0);box-shadow:0 5px 14px #9c77251c;color:#6d4d12}
+.member-card .member-rank.nobel span{color:#987020}
+.member-card .member-rank.nobel strong{color:#916719}
+.member-card .member-rank.haisha{border:1px solid #542b79;background:linear-gradient(110deg,#100d1d,#28113e 48%,#42132f);box-shadow:0 0 16px #7d2cff55,inset 0 0 16px #d0006b22;color:#f1d9ff}
+.member-card .member-rank.haisha span{color:#d9b9f3}
+.member-card .member-rank.haisha strong{color:#f1d9ff}
+.member-footer{position:relative;display:flex;justify-content:space-between;gap:8px;margin-top:9px;padding-top:8px;border-top:1px solid #26323830;color:#65737b;font-size:8px;font-weight:800;letter-spacing:.06em}
+.member-card.gold .member-footer{border-color:#8e6a183d;color:#755719}
+@media(max-width:480px){.member-card{padding:14px;min-height:0}.member-body{grid-template-columns:minmax(0,.8fr) minmax(0,1.3fr);gap:8px}.member-stats{gap:5px}.member-stat{padding:8px 5px}.member-stat span{font-size:8px}.member-stat strong{font-size:14px}.member-rank{padding:8px}.member-rank strong{font-size:13px}.member-name{font-size:18px}.avatar-wrap{width:48px;height:48px;font-size:20px}.member-identity{gap:7px}.member-footer{font-size:7px}}
+.public-member-wrap{margin-top:18px}
+.public-member-heading{font-size:16px;font-weight:900;margin:0 0 10px}
 </style>
 </head>
 <body>
@@ -23,10 +67,21 @@ a.action{display:block;text-align:center;text-decoration:none;border-radius:10px
 <h1>プレイヤープロフィール</h1><p class="lead">ランキングからプレイヤーのプロフィールを見ています。</p>
 <div id="status">プロフィールを読み込んでいます…</div>
 <div id="profile" hidden>
- <div class="identity"><div class="avatar" id="avatar">理</div><div><div class="username" id="username"></div><div class="title" id="title"></div></div></div>
- <div class="stats">
-  <div class="stat"><span>現在の資産</span><strong id="balance">$0</strong></div>
-  <div class="stat"><span>累計プレイ時間</span><strong id="playtime">0分</strong></div>
+ <div class="public-member-wrap">
+  <h2 class="public-member-heading">理科キッズ会員証</h2>
+  <div class="member-card normal" id="memberCard">
+   <div class="member-top"><div class="member-brand">RIKA KIDS<br><span style="font-size:10px;letter-spacing:.08em;font-weight:700">OFFICIAL MEMBER CARD</span></div><div class="member-mark">理</div></div>
+   <div class="member-body">
+    <div class="member-identity"><div class="avatar-wrap"><img id="avatarImage" alt="プロフィール写真" hidden><span id="avatarFallback">理</span></div><div style="min-width:0"><div class="member-label">MEMBER NAME</div><div class="member-name" id="username"></div><div class="member-sub">理科キッズ メンバー</div></div></div>
+    <div class="member-stats">
+     <div class="member-stat"><span>現在の資産</span><strong id="balance">$0</strong></div>
+     <div class="member-stat"><span>会員ランク</span><strong id="memberStatus" style="font-size:13px">通常会員</strong></div>
+     <div class="member-stat"><span>累計プレイ時間</span><strong id="playtime">0分</strong></div>
+    </div>
+   </div>
+   <div class="member-rank" id="memberRank"><span>CURRENT TITLE / 現在の称号</span><strong id="title">理科ビギナー</strong></div>
+   <div class="member-footer"><span>RIKA KIDS MEMBERSHIP</span><span>LEARN • DISCOVER • GROW</span></div>
+  </div>
  </div>
  <a class="action primary" id="cityLink" href="#">🌆 このプレイヤーの都市を見る</a>
  <a class="action secondary" href="./ranking.html">ランキングに戻る</a>
@@ -65,9 +120,20 @@ function playtime(s){const m=Math.floor(Math.max(0,Number(s)||0)/60),h=Math.floo
  document.getElementById("username").textContent=data.username;
  const assets=Math.max(0,Number(data.balance)||0);
  document.getElementById("balance").textContent="$"+assets.toLocaleString("en-US");
- document.getElementById("title").textContent=titleFor(assets);
+ const title=titleFor(assets);
+ document.getElementById("title").textContent=title;
+ document.getElementById("memberStatus").textContent=assets>=10000?"ゴールド会員":"通常会員";
+ document.getElementById("memberCard").classList.toggle("gold",assets>=10000);
+ const rank=document.getElementById("memberRank");
+ rank.classList.toggle("nobel",assets>=50000&&assets<100000);
+ rank.classList.toggle("haisha",assets>=100000);
  document.getElementById("playtime").textContent=playtime(data.playtime_seconds);
- if(data.avatar_url){const img=document.createElement("img");img.src=data.avatar_url;img.alt="";img.onerror=()=>img.remove();document.getElementById("avatar").textContent="";document.getElementById("avatar").appendChild(img);}
+ const avatar=document.getElementById("avatarImage"),fallback=document.getElementById("avatarFallback");
+ if(data.avatar_url){
+  avatar.onload=()=>{avatar.hidden=false;fallback.hidden=true;};
+  avatar.onerror=()=>{avatar.hidden=true;fallback.hidden=false;};
+  avatar.src=data.avatar_url;
+ }
  const cityLink=document.getElementById("cityLink");
  cityLink.href="./city.html?view=1&user="+encodeURIComponent(data.username);
  if(!data.city_state){cityLink.textContent="まだ都市が作られていません";cityLink.removeAttribute("href");cityLink.style.opacity=".55";cityLink.style.pointerEvents="none";}
