@@ -76,6 +76,7 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
 <script type="module">
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 const $=id=>document.getElementById(id);
 const supabase=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
 const publicView=new URLSearchParams(location.search).get("view")==="1";if(publicView)document.body.classList.add("public-view");
@@ -102,6 +103,8 @@ const defs={
 const scene=new THREE.Scene();const skyColor=new THREE.Color(0x9bc9e8);scene.background=skyColor;scene.fog=new THREE.Fog(skyColor,190,980);
 const camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,.1,1800);camera.position.set(85,95,110);
 const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.domElement.style.width="100%";renderer.domElement.style.height="100%";renderer.domElement.style.display="block";renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;$("game").appendChild(renderer.domElement);
+const cityGLTFLoader=new GLTFLoader(),cityGLTFCache=new Map();
+async function loadCityGLTF(url,options={}){let promise=cityGLTFCache.get(url);if(!promise){promise=cityGLTFLoader.loadAsync(url);cityGLTFCache.set(url,promise);promise.catch(()=>cityGLTFCache.delete(url));}const gltf=await promise,model=gltf.scene.clone(true);model.traverse(node=>{if(node.isMesh){node.castShadow=true;node.receiveShadow=true;}});const p=options.position||[0,0,0],r=options.rotation||[0,0,0];model.position.set(p[0]||0,p[1]||0,p[2]||0);model.rotation.set(r[0]||0,r[1]||0,r[2]||0);model.scale.setScalar(options.scale??1);scene.add(model);return model;}
 const controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,0,0);controls.enableDamping=true;controls.maxPolarAngle=Math.PI*.47;controls.minDistance=9;controls.maxDistance=280;controls.mouseButtons.LEFT=THREE.MOUSE.PAN;controls.mouseButtons.RIGHT=THREE.MOUSE.ROTATE;controls.mouseButtons.MIDDLE=THREE.MOUSE.DOLLY;renderer.domElement.addEventListener("contextmenu",e=>e.preventDefault());
 const hemiLight=new THREE.HemisphereLight(0xc7e7ff,0x40503a,2.05);scene.add(hemiLight);
 const keyLight=new THREE.DirectionalLight(0xffe4bf,2.2);keyLight.position.set(-30,50,25);keyLight.castShadow=true;keyLight.shadow.mapSize.set(2048,2048);scene.add(keyLight);
