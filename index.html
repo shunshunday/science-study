@@ -757,12 +757,7 @@ async function saveCorrectAnswer(unit){
   if(walletError)throw walletError;
   const wallet=Array.isArray(walletData)?walletData[0]:walletData;
   const assets=Math.max(0,Number(wallet?.balance)||0);
-  document.getElementById('profileMoney').textContent='
-if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else stopPlaytimeTracking();if(accountModal.classList.contains('open'))refreshAccount();});}
-if(new URLSearchParams(location.search).get('login')==='1') showAccount();
-
-</script>
-</body></html>+assets.toLocaleString('en-US');
+  document.getElementById('profileMoney').textContent='$'+assets.toLocaleString('en-US');
   document.getElementById('profileRank').textContent=scienceTitle(assets);
   profileView.classList.toggle('profile-view-nobel',assets>=500000&&assets<1000000);
   profileView.classList.toggle('profile-view-haki',assets>=1000000);
