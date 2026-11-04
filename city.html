@@ -384,17 +384,14 @@ function makeBuilding(type,x,z,level=1){
   const roofBox=add(1.65,.72,1.1,body,0,4.25,-.65);
   add(1.35,.08,.08,windowMat,0,4.28,1.93);
  }else if(type==="hospital"){
-  // Main clinical block and two lower wings, with clear medical signage
+  // Medical tower with an ambulance garage opening in its low front wing
+  add(2.4,3.0,1.45,wall,-1.15,1.9,1.45);add(.65,3.0,1.45,wall,2.025,1.9,1.45);
   add(2.45,6.8,2.65,glass,0,3.75,0);
   for(let f=0;f<5;f++){add(2.55,.08,2.78,white,0,.65+f*1.25,0);for(let i=0;i<3;i++)win(-.72+i*.72,.98+f*1.25,1.36,.43,.62);}
-  add(4.7,3.0,1.45,wall,0,1.9,1.45);
-  add(4.7,.14,1.55,body,0,3.48,1.45);
-  for(let i=0;i<6;i++)win(-1.9+i*.76,2.1,2.2,.48,.82);
-  add(1.5,.18,.2,white,0,4.2,1.43);
-  add(.34,1.25,.16,mat(0xe74b55,.05,.35),0,4.2,1.56);
-  add(1.05,.34,.16,mat(0xe74b55,.05,.35),0,4.2,1.56);
-  add(1.2,.1,1.2,roofMat,0,7.25,0);
-  add(.12,1.15,.12,buildingTrimMaterial,0,7.85,0);
+  add(4.7,.55,1.45,wall,0,3.12,1.45);add(4.7,.14,1.55,body,0,3.48,1.45);
+  for(let i=0;i<4;i++)win(-1.9+i*.76,2.1,2.2,.48,.82);
+  add(1.5,.18,.2,white,0,4.2,1.43);add(.34,1.25,.16,mat(0xe74b55,.05,.35),0,4.2,1.56);add(1.05,.34,.16,mat(0xe74b55,.05,.35),0,4.2,1.56);
+  add(1.2,.1,1.2,roofMat,0,7.25,0);add(.12,1.15,.12,buildingTrimMaterial,0,7.85,0);
  }else if(type==="school"){
   // Low campus building with classroom wings, entrance portico and clock
   add(4.25,2.8,1.45,wall,0,1.75,0);
@@ -430,9 +427,10 @@ function makeBuilding(type,x,z,level=1){
   for(let i=0;i<3;i++){add(.72,1.05,.7,body,-1.35+i*1.35,.9,-1.05);add(.16,1.1,.16,buildingTrimMaterial,-1.35+i*1.35,2,-1.05);add(.75,.12,.75,buildingTrimMaterial,-1.35+i*1.35,2.62,-1.05);}
   add(.48,4.2,.48,buildingTrimMaterial,-1.7,2.3,-1.55);add(.72,.18,.72,buildingTrimMaterial,-1.7,4.45,-1.55);add(.42,3.2,.42,buildingTrimMaterial,1.55,1.9,-1.5);
  }else if(type==="firestation"){
-  add(4.45,2.65,3.5,wall,0,1.5,0);add(4.65,.2,3.7,mat(0xc94b48),0,2.95,0);
-  for(const px of [-1.15,1.15]){add(1.65,2.05,.16,mat(0x9b3438),px,1.35,1.8);for(let k=0;k<5;k++)add(1.48,.055,.08,white,px,.55+k*.36,1.91);}
-  add(1.05,3.8,1,body,0,2,-1.15);add(1.15,.15,1.1,roofMat,0,4,-1.15);add(.55,.8,.55,mat(0xf0b83e,.18,.48),0,4.48,-1.15);add(1,.5,.16,white,0,3.15,1.82);
+  // Two open apparatus bays with no doors blocking fire engines
+  add(.45,2.65,3.5,wall,-2.0,1.5,0);add(.85,2.65,3.5,wall,0,1.5,0);add(.45,2.65,3.5,wall,2.0,1.5,0);add(4.65,.2,3.7,mat(0xc94b48),0,2.95,0);
+  for(const px of [-1.15,1.15]){add(1.42,2.25,.12,dark,px,1.22,1.79);for(const dx of [-.78,.78])add(.12,2.5,.18,mat(0x9b3438),px+dx,1.35,1.82);add(1.72,.16,.22,mat(0xc94b48),px,2.53,1.82);add(1.35,.08,.12,white,px,2.35,1.91);}
+  add(1.05,3.8,1,body,0,2,-1.15);add(1.15,.15,1.1,roofMat,0,4,-1.15);add(.55,.8,.55,mat(0xf0b83e,.18,.48),0,4.48,-1.15);
  }else if(type==="police"){
   add(4.25,2.9,3.3,wall,0,1.6,0);add(4.35,.28,3.4,mat(0x285c9a),0,3.12,0);add(4,1.35,.13,glass,0,1.35,1.7);
   for(let i=0;i<5;i++)add(.07,1.3,.08,white,-1.55+i*.78,1.35,1.79);add(1.2,.12,.8,roofMat,0,3.35,-.8);add(.8,.75,.15,white,0,2.35,1.8);
@@ -941,6 +939,7 @@ function makeTransit(type,x,z){
   add(1.95,.055,.045,mat(accent,.2,.25,accent),px,py-.18,pz+.08);
   for(const sx of [-.92,.92]){const bolt=new THREE.Mesh(new THREE.SphereGeometry(.045,8,6),white);bolt.position.set(px+sx,py,pz+.09);g.add(bolt);}
  };
+ g.userData.garageVehicles=[];
  const vehicle=(kind,px,pz)=>{
   const v=new THREE.Group(),isEmergency=["police","fire","ambulance"].includes(kind);
   const paint=mat(kind==="police"?0xf4f7fb:kind==="fire"?0xd9362f:kind==="ambulance"?0xf7f8f8:kind==="bus"?0xe5b43e:kind==="truck"?0x4e718c:kind==="hotel"?0x263e59:0x2d9aaf,.35,.3);
@@ -959,8 +958,9 @@ function makeTransit(type,x,z){
   if(kind==="truck"){box(v,1.03,.76,.95,mat(0xe5e9ed,.2,.55),0,1.12,-.55);box(v,.8,.12,.05,mat(0x28789a),0,1.12,-.04);}
   if(kind==="bus"){box(v,1.02,.58,1.75,paint,0,1.13,-.12);for(let n=0;n<4;n++)box(v,.035,.36,.34,glassM,.55,1.16,-.72+n*.42);}
   if(kind==="hotel"){box(v,.8,.2,.06,mat(0xd9c18c),0,1.05,.24);}
-  v.position.set(px,0,pz);g.add(v);
+  v.position.set(px,0,pz);g.add(v);return v;
  };
+ const garageApron=(centerX=0)=>{add(2.65,.12,4.1,mat(0x78858b,.08,.9),centerX,.08,3.65);for(let n=0;n<5;n++)add(.12,.025,.22,mat(0xe7e4d2,.05,.85),centerX-1+n*.5,.16,3.45);};
  // 建物・駅だけに外構照明を設置。線路タイルには街灯を付けない。
  if(type!=="rail"&&type!=="busstop"){
   for(const sx of [-1.72,1.72]){
@@ -978,13 +978,13 @@ function makeTransit(type,x,z){
  if(type==="home"){sign("HOME",0x24546a,0x78e8ed,0,2.65,1.68);add(.72,.55,.75,green,-1.35,.55,1.4);add(.72,.55,.75,green,1.35,.55,1.4);add(1.1,.08,.75,roofMat,0,.12,2.45);}
  if(type==="tower"){sign("RESIDENCE",0x183d64,0x6ddcff,0,16.3,1.7);for(const sx of [-1.85,1.85])add(.16,1.4,.16,buildingTrimMaterial,sx,.8,1.6);}
  if(type==="shop"){sign("SHOPPING",0x4d287a,0xffd66b,0,3.35,2.02);vehicle("truck",-2.6,2.9);add(.45,.8,.45,green,-2.1,.55,-1.6);add(.45,.8,.45,green,2.1,.55,-1.6);}
- if(type==="hospital"){sign("MEDICAL CENTER",0x176d72,0x8effef,0,3.15,2.28);vehicle("ambulance",-2.35,3.55);add(.12,1.1,.12,white,2.2,.65,2.2);add(.65,.1,.65,mat(0x46c6ac),2.2,1.22,2.2);}
+ if(type==="hospital"){sign("MEDICAL CENTER",0x176d72,0x8effef,0,3.15,2.28);add(.12,1.1,.12,white,2.2,.65,2.2);add(.65,.1,.65,mat(0x46c6ac),2.2,1.22,2.2);garageApron(1.05);g.userData.garageVehicles.push(vehicle("ambulance",1.05,.85));add(.08,2.1,.08,mat(0x8cefff,.15,.2,0x267f91),.28,1.2,2.05);}
  if(type==="school"){sign("SCIENCE ACADEMY",0x795a19,0xffe28b,0,3.35,1.05);vehicle("bus",2.65,2.5);for(const sx of [-2,2]){add(.7,.45,.7,green,sx,.42,1.6);}}
  if(type==="park"){for(const sx of [-1.2,1.2]){add(1.05,.16,.35,buildingTrimMaterial,sx,.65,1.45);for(const dx of [-.38,.38])add(.07,.42,.07,buildingTrimMaterial,sx+dx,.42,1.45);}for(let n=0;n<4;n++){const flower=new THREE.Mesh(new THREE.SphereGeometry(.12,10,8),mat([0xff9ac4,0xffd86b,0x9bcaff,0xffffff][n],.05,.5));flower.position.set(-1.2+n*.8,.58,2.05);g.add(flower);}}
  if(["fusion","fission","hydrogen","solar"].includes(type)){sign("POWER",0x123b4d,0x66e8ff,0,3.1,2.05);for(const sx of [-2.15,2.15]){add(.18,.75,.18,buildingTrimMaterial,sx,.48,1.9);const light=new THREE.Mesh(new THREE.SphereGeometry(.12,10,8),mat(0x5effaa,.1,.15,0x29d879));light.position.set(sx,.95,1.9);g.add(light);}}
  if(type==="office"){sign("INNOVATION HQ",0x174c76,0x8ce6ff,0,11.8,1.84);vehicle("hotel",-2.65,2.8);vehicle("hotel",2.65,2.8);}
  if(type==="factory"){sign("ROBOTICS",0x354c5c,0xffbd4a,0,3.1,2.1);vehicle("truck",2.75,2.9);for(let n=0;n<3;n++){const pipe=new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,2.1,12),chrome);pipe.position.set(-2+n*.6,4.1,-1.7);g.add(pipe);}}
- if(type==="firestation"){sign("FIRE & RESCUE",0x8c2524,0xffd16b,0,3.12,1.98);vehicle("fire",-2.55,3.15);vehicle("fire",2.55,3.15);for(let n=0;n<3;n++)add(.14,.14,.14,mat(0xffb72f,.2,.25,0xff7b17),-1+n,3.4,-1.1);}
+ if(type==="firestation"){sign("FIRE & RESCUE",0x8c2524,0xffd16b,0,3.12,1.98);garageApron();for(const px of [-1.15,1.15])g.userData.garageVehicles.push(vehicle("fire",px,.82));for(let n=0;n<3;n++)add(.14,.14,.14,mat(0xffb72f,.2,.25,0xff7b17),-1+n,3.4,-1.1);}
  if(type==="police"){sign("POLICE HQ",0x173b73,0x8bc9ff,0,3.2,1.95);vehicle("police",-2.55,3.1);vehicle("police",2.55,3.1);add(.18,1.5,.18,buildingTrimMaterial,2.15,.8,-1.1);add(.7,.08,.7,mat(0x3a78c7),2.15,1.6,-1.1);}
  if(type==="restaurant"){sign("RESTAURANT",0x8a4b1e,0xffdc9b,0,1.85,2.2);for(let n=0;n<3;n++){const px=-1.2+n*1.2;add(.55,.08,.55,roofMat,px,.5,2.8);add(.08,.45,.08,buildingTrimMaterial,px,.27,2.8);const umbrella=new THREE.Mesh(new THREE.ConeGeometry(.48,.22,8),mat([0xe76d55,0xe8b34e,0x6cb9a1][n]));umbrella.position.set(px,1.05,2.8);g.add(umbrella);}}
  if(type==="hotel"){sign("GRAND HOTEL",0x50366f,0xf5d48a,0,8.95,1.3);vehicle("hotel",2.8,2.8);for(let n=0;n<3;n++){const lamp=new THREE.Mesh(new THREE.SphereGeometry(.11,10,8),mat(0xffd68b,.1,.2,0xffb84a));lamp.position.set(-1+n,2.4,1.9);g.add(lamp);}}
@@ -996,7 +996,8 @@ function makeTransit(type,x,z){
   const nearbyRail=transit.filter(t=>t.type==="rail").sort((a,b)=>Math.hypot(a.x-x,a.z-z)-Math.hypot(b.x-x,b.z-z))[0];
   if(nearbyRail){const dx=nearbyRail.x-x,dz=nearbyRail.z-z;g.rotation.y=Math.atan2(dx,dz);}
  }
- scene.add(g);return {type,x,z,group:g};
+ if(type==="hospital"||type==="firestation")g.userData.garageExit={x:x+(type==="hospital"?1.05:0),z:z+5.8};
+ scene.add(g);return {type,x,z,group:g,garageExit:g.userData.garageExit||null,garageVehicles:g.userData.garageVehicles||[]};
 }
 function makeTrain(){
  const g=new THREE.Group(),body=mat(0xf0f4f6,.58,.22),blue=mat(0x167bb5,.5,.2),glass=mat(0x102d42,.7,.12),light=mat(0xc8f5ff,.15,.15,0x78dfff),wheel=mat(0x151d26,.55,.5);
