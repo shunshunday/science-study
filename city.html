@@ -1002,7 +1002,7 @@ function makeTransit(type,x,z){
    const px=(i-(units-1)/2)*1.15;
    add(.72,.42,.68,roofUnitMat,px,roofY+.22,-.72);
    const fan=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,.055,16),ventMat);fan.position.set(px,roofY+.46,-.72);g.add(fan);
-   for(let k=0;k<4;k++){const blade=new THREE.Mesh(new THREE.BoxGeometry(.035,.025,.36),chrome);blade.position.set(px,roofY+.5,-.72);blade.rotation.y=k*Math.PI/2;g.add(blade);}
+   for(let k=0;k<4;k++){const blade=new THREE.Mesh(new THREE.BoxGeometry(.035,.025,.36),roofUnitMat);blade.position.set(px,roofY+.5,-.72);blade.rotation.y=k*Math.PI/2;g.add(blade);}
   }
   if(!["tower","hotel"].includes(type)){
    for(const px of [-1.85,1.85])add(.1,.32,.1,buildingTrimMaterial,px,roofY+.16,-.9);
