@@ -1222,7 +1222,7 @@ function cacheVehiclePath(path){
      const phase=Math.floor(cityTick/8)%2,horizontal=Math.abs(dx)>Math.abs(dz),green=horizontal?phase===0:phase===1,distanceToSignal=len-remain;
      if(!green&&distanceToSignal<1.15&&distanceToSignal>=0){const segmentStart=v.distance-remain;v.distance=Math.min(v.distance,segmentStart+Math.max(0,len-1.15));remain=Math.min(remain,Math.max(0,len-1.15));}
     }
-    const t=len?remain/len:0;const laneRoad=road||roads.find(r=>r.x===a.x&&r.z===a.z),laneWidth=laneRoad?Math.min(3.25,1.25+(laneRoad.lanes||2)*.36)/(laneRoad.lanes||2):.8,laneOffset=laneRoad?.oneWay?0:laneWidth*.5,perpX=dz/(len||1),perpZ=-dx/(len||1);const vx=a.x+dx*t+perpX*laneOffset,vz=a.z+dz*t+perpZ*laneOffset;v.group.position.set(vx,terrainHeightAt(vx,vz)+(v.kind==="train"?.06:.04),vz);v.group.rotation.y=Math.atan2(dx,dz)+(v.kind==="train"?Math.PI/2:v.kind==="car"?Math.PI:0);break;
+    const t=len?remain/len:0;const laneRoad=road||roads.find(r=>r.x===a.x&&r.z===a.z),laneWidth=laneRoad?Math.min(3.25,1.25+(laneRoad.lanes||2)*.36)/(laneRoad.lanes||2):.8,laneOffset=laneRoad?.oneWay?0:laneWidth*.5,perpX=dz/(len||1),perpZ=-dx/(len||1);const vx=a.x+dx*t+perpX*laneOffset,vz=a.z+dz*t+perpZ*laneOffset;v.group.position.set(vx,terrainHeightAt(vx,vz)+(v.kind==="train"?.06:.04),vz);v.group.rotation.y=Math.atan2(dx,dz)+(v.kind==="train"?Math.PI/2:v.kind==="car"?Math.PI:0)+(v.direction<0?Math.PI:0);break;
    }remain-=len;
   }
 }
