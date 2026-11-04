@@ -549,52 +549,56 @@ function transitPlacementProblem(type,x,z){
  return "";
 }
 function refreshRailVisuals(){
- const rails=transit.filter(t=>t.type==="rail"),byKey=new Map(rails.map(r=>[Math.round(r.x/4)+","+Math.round(r.z/4),r]));
+ const rails=transit.filter(t=>t.type==="rail");
+ const byKey=new Map(rails.map(r=>[Math.round(r.x/4)+","+Math.round(r.z/4),r]));
+ const railMaterial=new THREE.MeshStandardMaterial({color:0xd9e2e7,metalness:.82,roughness:.2});
+ const sleeperMaterial=new THREE.MeshStandardMaterial({color:0x493b2e,roughness:.96});
+ const ballastMaterial=new THREE.MeshStandardMaterial({color:0x424b50,roughness:1});
+ const add=(group,mesh)=>{mesh.userData.railVisual=true;group.add(mesh);};
+ const directions=[[4,0],[-4,0],[0,4],[0,-4]];
+ const edgeDone=new Set();
  for(const rail of rails){
   const g=rail.group;
   for(const child of [...g.children]){
-   if(child.userData?.railVisual){g.remove(child);child.geometry?.dispose();}
-  }
-  const dirs=[[4,0],[-4,0],[0,4],[0,-4]].filter(([dx,dz])=>byKey.has(Math.round((rail.x+dx)/4)+","+Math.round((rail.z+dz)/4)));
-  let paths=[];
-  if(dirs.length<=1){
-   const d=dirs[0]||[4,0];paths=[[[-d[0],-d[1]],[d[0],d[1]]]];
-  }else if(dirs.length===2&&dirs[0][0]===-dirs[1][0]&&dirs[0][1]===-dirs[1][1]){
-   paths=[[dirs[0],dirs[1]]];
-  }else if(dirs.length===2){
-   paths=[[dirs[0],dirs[1]]];
-  }else{
-   paths=dirs.map(d=>[[0,0],d]);
-  }
-  const addVisual=o=>{o.userData.railVisual=true;g.add(o);};
-  const railMaterial=new THREE.MeshStandardMaterial({color:0xd5e0e5,metalness:.72,roughness:.24});
-  const sleeperMaterial=new THREE.MeshStandardMaterial({color:0x88765d,roughness:.92});
-  const ballastMaterial=new THREE.MeshStandardMaterial({color:0x56616a,roughness:1});
-  for(const pair of paths){
-   const start=new THREE.Vector3(pair[0][0]*.5,.27,pair[0][1]*.5);
-   const end=new THREE.Vector3(pair[1][0]*.5,.27,pair[1][1]*.5);
-   let curve;
-   if(pair[0][0]===0&&pair[0][1]===0)curve=new THREE.LineCurve3(start,end);
-   else if(pair[1][0]===-pair[0][0]&&pair[1][1]===-pair[0][1])curve=new THREE.LineCurve3(start,end);
-   else curve=new THREE.QuadraticBezierCurve3(start,new THREE.Vector3(0,.27,0),end);
-   const samples=curve.getPoints(20),left=[],right=[];
-   for(let i=0;i<samples.length;i++){
-    const p=samples[i],before=samples[Math.max(0,i-1)],after=samples[Math.min(samples.length-1,i+1)];
-    const dx=after.x-before.x,dz=after.z-before.z,len=Math.hypot(dx,dz)||1,nx=dz/len,nz=-dx/len;
-    left.push(new THREE.Vector3(p.x+nx*.58,p.y,p.z+nz*.58));
-    right.push(new THREE.Vector3(p.x-nx*.58,p.y,p.z-nz*.58));
-    if(i<samples.length-1&&i%2===0){
-     const tangent=new THREE.Vector3(dx,0,dz).normalize(),tie=new THREE.Mesh(new THREE.BoxGeometry(.15,.1,1.58),sleeperMaterial);
-     tie.position.set(p.x,.19,p.z);tie.rotation.y=Math.atan2(tangent.x,tangent.z)+Math.PI/2;addVisual(tie);
-    }
-   }
-   for(const points of [left,right]){
-    const railCurve=new THREE.CatmullRomCurve3(points);
-    const mesh=new THREE.Mesh(new THREE.TubeGeometry(railCurve,24,.065,8,false),railMaterial);
-    addVisual(mesh);
+   if(child.userData?.railVisual){
+    g.remove(child);
+    child.geometry?.dispose();
    }
   }
-  const base=new THREE.Mesh(new THREE.BoxGeometry(4,.08,4),ballastMaterial);base.position.y=.13;addVisual(base);
+  // 砕石の路盤はタイル同士が隙間なく接するように敷く
+  const bed=new THREE.Mesh(new THREE.BoxGeometry(4.02,.12,4.02),ballastMaterial);
+  bed.position.y=.12;
+  add(g,bed);
+  const neighbors=directions.map(([dx,dz])=>({dx,dz,key:Math.round((rail.x+dx)/4)+","+Math.round((rail.z+dz)/4)}))
+   .filter(d=>byKey.has(d.key));
+  if(!neighbors.length)neighbors.push({dx:4,dz:0,key:""});
+  for(const d of neighbors){
+   const ownKey=Math.round(rail.x/4)+","+Math.round(rail.z/4);
+   const edgeKey=[ownKey,d.key].sort().join("|");
+   if(d.key&&edgeDone.has(edgeKey))continue;
+   if(d.key)edgeDone.add(edgeKey);
+   const start=new THREE.Vector3(0,.34,0);
+   const finish=new THREE.Vector3(d.dx,.34,d.dz);
+   const dir=new THREE.Vector3(d.dx,0,d.dz).normalize();
+   const side=new THREE.Vector3(dir.z,0,-dir.x);
+   // 隣接タイルの中心までレールを伸ばし、継ぎ目をなくす
+   for(const sign of [-1,1]){
+    const offset=side.clone().multiplyScalar(.58*sign);
+    const curve=new THREE.LineCurve3(start.clone().add(offset),finish.clone().add(offset));
+    const mesh=new THREE.Mesh(new THREE.TubeGeometry(curve,1,.065,8,false),railMaterial);
+    add(g,mesh);
+   }
+   const length=Math.hypot(d.dx,d.dz);
+   const count=Math.ceil(length/.62);
+   for(let i=0;i<=count;i++){
+    const t=i/count;
+    const p=start.clone().lerp(finish,t);
+    const tie=new THREE.Mesh(new THREE.BoxGeometry(.17,.11,1.62),sleeperMaterial);
+    tie.position.set(p.x,.235,p.z);
+    tie.rotation.y=Math.atan2(d.dx,d.dz);
+    add(g,tie);
+   }
+  }
  }
 }
 function buildTrainPath(){
