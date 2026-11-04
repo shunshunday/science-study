@@ -35,25 +35,25 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
   <button class="tool" data-tool="remove"><strong>⌫ 撤去</strong><em>道路・施設</em></button>
  </div>
  <h3>居住・都市施設</h3><div class="tools" id="buildingTools">
-  <button class="tool" data-tool="home"><strong>⌂ 未来住宅</strong><em>$8,000</em></button>
-  <button class="tool" data-tool="tower"><strong>▥ 超高層住宅</strong><em>$28,000</em></button>
-  <button class="tool" data-tool="shop"><strong>◇ 商業プラザ</strong><em>$12,000</em></button>
-  <button class="tool" data-tool="hospital"><strong>✚ 先端医療センター</strong><em>$24,000</em></button>
-  <button class="tool" data-tool="school"><strong>⌑ 科学アカデミー</strong><em>$18,000</em></button>
+  <button class="tool" data-tool="home"><strong>⌂ 未来住宅</strong><em>$4,000</em></button>
+  <button class="tool" data-tool="tower"><strong>▥ 超高層住宅</strong><em>$14,000</em></button>
+  <button class="tool" data-tool="shop"><strong>◇ 商業プラザ</strong><em>$6,000</em></button>
+  <button class="tool" data-tool="hospital"><strong>✚ 先端医療センター</strong><em>$12,000</em></button>
+  <button class="tool" data-tool="school"><strong>⌑ 科学アカデミー</strong><em>$4,500</em></button>
   <button class="tool" data-tool="park"><strong>✿ バイオドーム</strong><em>$9,000</em></button>
  </div>
  <h3>次世代エネルギー</h3><div class="tools">
-  <button class="tool" data-tool="fusion"><strong>⚛ 核融合炉</strong><em>$55,000 / 180 MW</em></button>
-  <button class="tool" data-tool="fission"><strong>☢ 原子力発電所</strong><em>$38,000 / 110 MW</em></button>
-  <button class="tool" data-tool="hydrogen"><strong>H₂ 水素発電所</strong><em>$22,000 / 55 MW</em></button>
-  <button class="tool" data-tool="solar"><strong>☀ 太陽光発電所</strong><em>$12,000 / 22 MW</em></button>
+  <button class="tool" data-tool="fusion"><strong>⚛ 核融合炉</strong><em>$27,500 / 180 MW</em></button>
+  <button class="tool" data-tool="fission"><strong>☢ 原子力発電所</strong><em>$19,000 / 110 MW</em></button>
+  <button class="tool" data-tool="hydrogen"><strong>H₂ 水素発電所</strong><em>$11,000 / 55 MW</em></button>
+  <button class="tool" data-tool="solar"><strong>☀ 太陽光発電所</strong><em>$6,000 / 22 MW</em></button>
  </div>
  <h3>公共交通</h3><div class="tools">
-  <button class="tool" data-tool="rail"><strong>▤ 線路</strong><em>$1,200 / マス</em></button>
-  <button class="tool" data-tool="station"><strong>🚉 駅</strong><em>$15,000</em></button>
-  <button class="tool" data-tool="busstop"><strong>🚏 バス停</strong><em>$3,000</em></button>
+  <button class="tool" data-tool="rail"><strong>▤ 線路</strong><em>$600 / マス</em></button>
+  <button class="tool" data-tool="station"><strong>🚉 駅</strong><em>$7,500</em></button>
+  <button class="tool" data-tool="busstop"><strong>🚏 バス停</strong><em>$1,500</em></button>
  </div><p class="hint">線路・駅・バス停を設置しただけでは、車両は出現しません。車両ショップで別途購入してください。</p>
- <h3>車両ショップ</h3><div class="tools"><button class="tool" id="buyTrainBtn"><strong>🚆 電車を購入</strong><em>$50,000 / 編成</em></button><button class="tool" id="buyBusBtn"><strong>🚌 バスを購入</strong><em>$12,000 / 台</em></button><button class="tool" id="buyCarBtn"><strong>🚘 電動セダンを購入</strong><em>$18,000 / 台</em></button><button class="tool" id="recruitBtn"><strong>🧑 住民を1人募集</strong><em>$1,000 / 人</em></button></div><p class="hint">車の購入条件：道路・住民・住宅がすべて必要。さらに住宅から6マス以内に道路をつなぐと、購入した車が家の前に駐車します。道路を敷いても車は増えません。</p>
+ <h3>車両ショップ</h3><div class="tools"><button class="tool" id="buyTrainBtn"><strong>🚆 電車を購入</strong><em>$25,000 / 編成</em></button><button class="tool" id="buyBusBtn"><strong>🚌 バスを購入</strong><em>$6,000 / 台</em></button><button class="tool" id="buyCarBtn"><strong>🚘 電動セダンを購入</strong><em>$9,000 / 台</em></button><button class="tool" id="recruitBtn"><strong>🧑 住民を1人募集</strong><em>$500 / 人</em></button></div><p class="hint">車の購入条件：道路・住民・住宅がすべて必要。さらに住宅から6マス以内に道路をつなぐと、購入した車が家の前に駐車します。道路を敷いても車は増えません。</p>
 </aside>
 <aside class="panel right">
  <h2>都市の状況</h2>
@@ -78,15 +78,15 @@ const supabase=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supaba
 const publicView=new URLSearchParams(location.search).get("view")==="1";if(publicView)document.body.classList.add("public-view");
 let user=null, cash=0, selected="road", buildings=[], roads=[], cars=[], people=[], transit=[], transitVehicles=[], trainCount=0, busCount=0, cityTick=0, saveTimer=null, selectedObject=null;
 const defs={
- home:{name:"未来住宅",cost:8000,power:2,housing:12,color:0x35b8d5,kind:"res"},
- tower:{name:"超高層住宅",cost:28000,power:12,housing:65,color:0x357bd5,kind:"res"},
- shop:{name:"商業プラザ",cost:12000,power:9,jobs:18,color:0x9c67dc,kind:"shop"},
- hospital:{name:"先端医療センター",cost:24000,power:18,service:45,color:0x46c6ac,kind:"hospital"},
- school:{name:"科学アカデミー",cost:18000,power:14,education:55,color:0xe4b84f,kind:"school"},
+ home:{name:"未来住宅",cost:4000,power:2,housing:12,color:0x35b8d5,kind:"res"},
+ tower:{name:"超高層住宅",cost:14000,power:12,housing:65,color:0x357bd5,kind:"res"},
+ shop:{name:"商業プラザ",cost:6000,power:9,jobs:18,color:0x9c67dc,kind:"shop"},
+ hospital:{name:"先端医療センター",cost:12000,power:18,service:45,color:0x46c6ac,kind:"hospital"},
+ school:{name:"科学アカデミー",cost:4500,power:14,education:55,color:0xe4b84f,kind:"school"},
  park:{name:"バイオドーム",cost:9000,power:3,happy:18,color:0x55bb77,kind:"park"},
- fusion:{name:"核融合炉",cost:55000,generation:180,color:0x42dfff,kind:"power"},
- fission:{name:"原子力発電所",cost:38000,generation:110,color:0x9cdb79,kind:"power"},
- hydrogen:{name:"水素発電所",cost:22000,generation:55,color:0x66c5e8,kind:"power"},
+ fusion:{name:"核融合炉",cost:27500,generation:180,color:0x42dfff,kind:"power"},
+ fission:{name:"原子力発電所",cost:19000,generation:110,color:0x9cdb79,kind:"power"},
+ hydrogen:{name:"水素発電所",cost:11000,generation:55,color:0x66c5e8,kind:"power"},
  solar:{name:"太陽光発電所",cost:12000,generation:22,color:0xe9ca63,kind:"power"}
 };
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x071525);scene.fog=new THREE.Fog(0x071525,55,170);
@@ -305,7 +305,7 @@ function makeBuilding(type,x,z,level=1){
  g.add(label);scene.add(g);return {type,x,z,level,group:g};
 }
 function makeRoad(x,z){const g=new THREE.Group();g.position.set(x,.035,z);const road=new THREE.Mesh(new THREE.BoxGeometry(cell,.12,cell),mat(0x263b4d,.35,.7));road.position.y=.02;g.add(road);const stripe=box(g,.12,.025,3.2,mat(0x8edbe8,.2,.5,0x22505b),0,.1,0);scene.add(g);return {x,z,group:g};}
-const transitCosts={rail:1200,station:15000,busstop:3000};
+const transitCosts={rail:600,station:7500,busstop:1500};
 function makeTransit(type,x,z){
  const g=new THREE.Group();g.position.set(x,0,z);g.userData={type};
  const concrete=mat(0x8b989e,.12,.86),steel=mat(0x566b79,.78,.3),railMat=mat(0x9eabb3,.85,.22),yellow=mat(0xf0c44d,.12,.5),glass=mat(0x83d9ef,.48,.16,0x174b62),blue=mat(0x197db4,.48,.28),white=mat(0xf0f5f7,.12,.5),dark=mat(0x172635,.4,.5);
@@ -420,7 +420,7 @@ document.querySelectorAll("[data-tool]").forEach(b=>b.addEventListener("click",(
 function findAt(x,z){return buildings.find(b=>Math.abs(b.x-x)<1&&Math.abs(b.z-z)<1)||roads.find(r=>r.x===x&&r.z===z)||transit.find(t=>Math.abs(t.x-x)<1&&Math.abs(t.z-z)<1);}
 async function charge(cost){if(!user){notice("ログインしてから購入してください。");return false;}const {data,error}=await supabase.rpc("spend_city_cash",{p_amount:cost});if(error){notice(error.message==="資金が足りません"?"資金が足りません。":"購入処理に失敗しました: "+error.message);await refreshWallet();return false;}cash=Number(data);updateUI();return true;}
 async function refreshWallet(){if(!user)return;const {data,error}=await supabase.rpc("get_city_wallet");if(error){notice("所持金を読み込めません: "+error.message);return;}const wallet=Array.isArray(data)?data[0]:data;cash=Number(wallet?.balance||0);updateUI();}
-async function addRoad(x,z){if(roads.some(r=>r.x===x&&r.z===z))return;if(!(await charge(500)))return;roads.push(makeRoad(x,z));updateUI();scheduleSave();}
+async function addRoad(x,z){if(roads.some(r=>r.x===x&&r.z===z))return;if(!(await charge(250)))return;roads.push(makeRoad(x,z));updateUI();scheduleSave();}
 async function addBuilding(type,x,z){const d=defs[type];if(buildings.some(b=>Math.abs(b.x-x)<3.2&&Math.abs(b.z-z)<3.2))return notice("そこには別の施設があります。");const count=buildings.filter(b=>b.type===type).length;if(!(await charge(d.cost)))return;buildings.push(makeBuilding(type,x,z));notice(d.name+"を建設しました。");updateUI();scheduleSave();}
 let placementPointer=null;
 renderer.domElement.addEventListener("pointerdown",e=>{if(publicView||e.button!==0)return;placementPointer={id:e.pointerId,x:e.clientX,y:e.clientY};});
@@ -453,7 +453,7 @@ $("resetBtn").onclick=async()=>{
   return total+base+upgrades;
  },0);
  const transitCost=transit.reduce((sum,t)=>sum+transitCosts[t.type],0);
- const refund=Math.floor((buildingCost+roads.length*500+cars.length*18000+people.length*1000+transitCost+trainCount*50000+busCount*12000)/2);
+ const refund=Math.floor((buildingCost+roads.length*250+cars.length*9000+people.length*500+transitCost+trainCount*25000+busCount*6000)/2);
  const message="都市データを初期化します。\n建物・道路・線路・駅・バス停・電車・バス・車・住民はすべて削除されます。\n"+(refund>0?"返金額：$"+refund.toLocaleString("en-US")+"（購入費用の50%）\n":"返金対象はありません。\n")+"本当に初期化しますか？";
  if(!confirm(message))return;
  if(user&&refund>0){
@@ -509,12 +509,12 @@ $("buyTrainBtn").onclick=async()=>{
  const rows={};tracks.forEach(t=>{(rows[t.z]||(rows[t.z]=[])).push(t.x);});
  const line=Object.entries(rows).map(([z,xs])=>({z:Number(z),xs:xs.sort((a,b)=>a-b)})).find(r=>r.xs.length>=2&&stations.some(s=>Math.abs(s.z-r.z)<=4));
  if(!line){notice("電車を走らせるには、同じ列の線路を2マス以上と駅が必要です。");return;}
- if(!(await charge(50000)))return;trainCount++;rebuildTransitVehicles();notice("電車を購入しました。線路上を走ります。");scheduleSave();
+ if(!(await charge(25000)))return;trainCount++;rebuildTransitVehicles();notice("電車を購入しました。線路上を走ります。");scheduleSave();
 };
 $("buyBusBtn").onclick=async()=>{
  const stops=transit.filter(t=>t.type==="busstop");
  if(stops.length<2){notice("バスを走らせるには、バス停が2か所以上必要です。");return;}
- if(!(await charge(12000)))return;busCount++;rebuildTransitVehicles();notice("バスを購入しました。バス停の間を走ります。");scheduleSave();
+ if(!(await charge(6000)))return;busCount++;rebuildTransitVehicles();notice("バスを購入しました。バス停の間を走ります。");scheduleSave();
 };
 $("buyCarBtn").onclick=async()=>{
  const home=nearestHome();
@@ -523,11 +523,11 @@ $("buyCarBtn").onclick=async()=>{
  if(!home){notice("車を購入するには、住民の家（住宅）が必要です。");return;}
  const nearRoad=roads.some(r=>Math.hypot(r.x-home.x,r.z-home.z)<=6);
  if(!nearRoad){notice("家の近くに道路をつないでください（家から6マス以内）。");return;}
- if(!(await charge(18000)))return;
+ if(!(await charge(9000)))return;
  const car=spawnCar(cars.length,home);cars.push(car);
  notice("電動セダンを購入しました。住民の家の前に駐車しました。");scheduleSave();
 };
-$("recruitBtn").onclick=async()=>{const capacity=buildings.reduce((a,b)=>a+(defs[b.type].housing||0)*b.level,0);if(people.length>=capacity){notice("住宅が不足しています。先に住宅を建設してください。");return;}if(!(await charge(1000)))return;const person=spawnPerson(people.length);people.push(person);notice("住民を1人募集しました。");updateUI();scheduleSave();};
+$("recruitBtn").onclick=async()=>{const capacity=buildings.reduce((a,b)=>a+(defs[b.type].housing||0)*b.level,0);if(people.length>=capacity){notice("住宅が不足しています。先に住宅を建設してください。");return;}if(!(await charge(500)))return;const person=spawnPerson(people.length);people.push(person);notice("住民を1人募集しました。");updateUI();scheduleSave();};
 addEventListener("focus",refreshWallet);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refreshWallet();});setInterval(refreshWallet,12000);
 await loadCity();updateUI(); 
 </script>
