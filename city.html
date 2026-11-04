@@ -740,12 +740,12 @@ function moveValidation(building,x,z,rotation=moveDraftRotation){
 }
 function hideMovePreview(){
  if(moveGhost){scene.remove(moveGhost);moveGhost.traverse(o=>{if(o.isMesh){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose();}});moveGhost=null;}
- moveMarker.visible=false;moveMarkerOutline.visible=false;movePreviewPoint=null;
+ moveMarker.visible=false;moveMarkerOutline.visible=false;moveMarker.scale.set(1,1,1);moveMarkerOutline.scale.set(1,1,1);movePreviewPoint=null;
 }
 function prepareMovePreview(building){
  hideMovePreview();if(!building)return;
  moveGhost=building.group.clone(true);
- moveGhost.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false;if(Array.isArray(o.material))o.material=o.material.map(m=>{const c=m.clone();c.transparent=true;c.opacity=.42;c.depthWrite=false;return c;});else{const c=o.material.clone();c.transparent=true;c.opacity=.42;c.depthWrite=false;o.material=c;}}});
+ moveGhost.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false;o.renderOrder=999;if(Array.isArray(o.material))o.material=o.material.map(m=>{const c=m.clone();c.transparent=true;c.opacity=.72;c.depthWrite=false;c.depthTest=false;return c;});else{const c=o.material.clone();c.transparent=true;c.opacity=.72;c.depthWrite=false;c.depthTest=false;o.material=c;}}else if(o.isSprite){o.renderOrder=1000;o.material.depthTest=false;}});
  scene.add(moveGhost);moveGhost.position.set(building.x,.65,building.z);moveGhost.rotation.y=Number(building.rotation)||0;
  moveMarker.visible=true;moveMarkerOutline.visible=true;movePreviewPoint={x:building.x,z:building.z};renderMovePreview();
 }
@@ -755,7 +755,9 @@ function renderMovePreview(){
  if(!p)return;
  const rotation=pendingMove?pendingMove.rotation:moveDraftRotation;
  const problem=moveValidation(selectedObject,p.x,p.z,rotation);movePreviewValid=!problem;
- moveGhost.position.set(p.x,.65,p.z);moveGhost.rotation.y=rotation;
+ moveGhost.position.set(p.x,.85,p.z);moveGhost.rotation.y=rotation;
+ moveGhost.traverse(o=>{if(o.isMesh){const color=movePreviewValid?0x35e58a:0xff4055;const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{m.color.set(color);m.emissive?.set(color);m.emissiveIntensity=.45;});}});
+ moveMarker.scale.set(1,1,1);moveMarkerOutline.scale.set(1,1,1);
  moveMarker.position.set(p.x,.055,p.z);moveMarker.rotation.z=0;
  moveMarker.material.color.set(movePreviewValid?0x35e58a:0xff4055);
  moveMarkerOutline.position.set(p.x,.065,p.z);moveMarkerOutline.rotation.z=0;moveMarkerOutline.material.color.set(movePreviewValid?0x35e58a:0xff4055);
