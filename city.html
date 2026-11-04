@@ -41,7 +41,7 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
  <div class="hint">施設を選び、地面をクリックして配置。道路は道路ツールを選んでマスをクリック。</div>
  <h3>道路・交通</h3><div class="tools">
   <button class="tool" data-tool="select"><strong>↖ 選択</strong><em>施設を選ぶ</em></button><button class="tool active" data-tool="road"><strong>▰ 道路</strong><em>$250 / マス</em></button>
-  <button class="tool" data-tool="remove"><strong>⌫ 撤去</strong><em>道路・施設</em></button><button class="tool" data-tool="move"><strong>✥ 移動・回転</strong><em>位置と向きを変更</em></button><div id="moveControls" class="move-controls hidden"><strong id="moveTargetName">移動先を設定中</strong><div class="move-actions"><button type="button" id="rotateMoveBtn">↻ 90°回転</button><button type="button" id="confirmMoveBtn">✓ 決定</button><button type="button" id="cancelMoveBtn">キャンセル</button></div><small id="moveAngle">向き：0°</small><div id="moveProgress" class="move-progress">施設を選択すると、移動プレビューを表示します。</div></div>
+  <button class="tool" data-tool="remove"><strong>⌫ 撤去</strong><em>道路・施設</em></button><button class="tool" data-tool="move"><strong>✥ 移動・回転</strong><em>位置と向きを変更</em></button><div id="placementRotateControls" class="move-controls hidden"><strong>設置する建物の向き</strong><div class="move-actions"><button type="button" id="rotatePlacementBtn">↻ 90°回転</button></div><small id="placementAngle">向き：0°</small></div><div id="moveControls" class="move-controls hidden"><strong id="moveTargetName">移動先を設定中</strong><div class="move-actions"><button type="button" id="rotateMoveBtn">↻ 90°回転</button><button type="button" id="confirmMoveBtn">✓ 決定</button><button type="button" id="cancelMoveBtn">キャンセル</button></div><small id="moveAngle">向き：0°</small><div id="moveProgress" class="move-progress">施設を選択すると、移動プレビューを表示します。</div></div>
  </div>
  <h3>居住・都市施設</h3><div class="tools" id="buildingTools">
   <button class="tool" data-tool="home"><strong>⌂ 未来住宅</strong><em>$4,000</em></button>
@@ -874,7 +874,7 @@ function staffingReport(){
  buildings.forEach(b=>{const d=defs[b.type];if(!d.staffNeed)return;const job=Object.keys(jobFacilityTypes).find(j=>jobFacilityTypes[j].includes(b.type));const count=people.filter(p=>p.workplace===b).length;const missing=Math.max(0,d.staffNeed-count);if(missing>0)reports.push({building:b,name:d.name,job:jobLabels[job],count,need:d.staffNeed,missing});});
  return reports;
 }
-let placementGhost=null,placementGhostType=null,placementPreviewPoint=null,placementPreviewValid=false;
+let placementGhost=null,placementGhostType=null,placementPreviewPoint=null,placementPreviewValid=false,placementRotation=0;
 function disposePlacementGhost(){
  if(placementGhost){scene.remove(placementGhost);placementGhost.traverse(o=>{if(o.isMesh){const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>m.dispose());}});placementGhost=null;}
  placementGhostType=null;placementPreviewPoint=null;moveMarker.visible=false;moveMarkerOutline.visible=false;
@@ -893,9 +893,9 @@ function preparePlacementGhost(){
  placementGhost.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false;const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{m=m.clone();m.transparent=true;m.opacity=.72;m.depthWrite=false;m.depthTest=false;});if(Array.isArray(o.material))o.material=o.material.map(m=>{const q=m.clone();q.transparent=true;q.opacity=.72;q.depthWrite=false;q.depthTest=false;return q;});else{o.material=o.material.clone();o.material.transparent=true;o.material.opacity=.72;o.material.depthWrite=false;o.material.depthTest=false;}}});
  placementGhost.renderOrder=999;moveMarker.visible=true;moveMarkerOutline.visible=true;
 }
-function buildingPlacementProblem(type,x,z){
+function buildingPlacementProblem(type,x,z,rotation=0){
  if(type==="airport"&&buildings.some(b=>b.type==="airport"))return "空港は都市に1か所だけ設置できます。";
- const candidate=buildingBounds(type,x,z,0,1);
+ const candidate=buildingBounds(type,x,z,rotation,1);
  if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港の敷地と重なっています。";
  if(roadsOverlapBuilding(candidate))return "道路と重なっています。";
  if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),0)))return "線路・駅・バス停と重なっています。";
@@ -922,13 +922,22 @@ function updatePlacementPreviewPointer(e){
   bounds=new THREE.Box3(new THREE.Vector3(p.x-dims.w/2,0,p.z-dims.d/2),new THREE.Vector3(p.x+dims.w/2,3,p.z+dims.d/2));
   problem=transitPlacementProblem(selected,p.x,p.z);
  }
- else{problem=buildingPlacementProblem(selected,p.x,p.z);bounds=buildingBounds(selected,p.x,p.z,0,1);}
- placementPreviewValid=!problem;placementGhost.position.set(p.x,.72,p.z);placementGhost.rotation.y=0;tintPlacementGhost(placementPreviewValid);
+ else{problem=buildingPlacementProblem(selected,p.x,p.z,placementRotation);bounds=buildingBounds(selected,p.x,p.z,placementRotation,1);}
+ placementPreviewValid=!problem;placementGhost.position.set(p.x,.72,p.z);placementGhost.rotation.y=defs[selected]?placementRotation:0;tintPlacementGhost(placementPreviewValid);
  const w=Math.max(4,bounds.max.x-bounds.min.x),d=Math.max(4,bounds.max.z-bounds.min.z);
  const markerCenter=bounds.getCenter(new THREE.Vector3());moveMarker.position.set(markerCenter.x,.12,markerCenter.z);moveMarker.scale.set(w/4.05,d/4.05,1);moveMarker.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarker.material.depthTest=false;moveMarker.renderOrder=998;
  moveMarkerOutline.position.set(markerCenter.x,.13,markerCenter.z);moveMarkerOutline.scale.set(w/4.05,d/4.05,1);moveMarkerOutline.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarkerOutline.material.depthTest=false;moveMarkerOutline.renderOrder=998;
 }
-function setTool(t){if(t!=="move"){cancelPendingMove();}disposePlacementGhost();selected=t;document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));const labels={rail:"線路",station:"駅",busstop:"バス停"};notice(t==="move"?"移動：施設を選択→移動先をクリック→「決定」。↻で90°回転。":t==="road"?"道路をクリックして敷設。":t==="remove"?"撤去したい道路・建物・交通施設をクリック。":t==="select"?"選択したい施設をクリック。":(defs[t]?.name||labels[t]||"施設")+"を配置する場所をクリック。");}
+function setTool(t){
+ if(t!=="move")cancelPendingMove();
+ disposePlacementGhost();selected=t;placementRotation=0;
+ document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));
+ const rotateControls=$("placementRotateControls");
+ if(rotateControls)rotateControls.classList.toggle("hidden",!defs[t]);
+ if($("placementAngle"))$("placementAngle").textContent="向き：0°";
+ const labels={rail:"線路",station:"駅",busstop:"バス停"};
+ notice(t==="move"?"移動：施設を選択→移動先をクリック→「決定」。↻で90°回転。":t==="road"?"道路をクリックして敷設。":t==="remove"?"撤去したい道路・建物・交通施設をクリック。":t==="select"?"選択したい施設をクリック。":(defs[t]?.name||labels[t]||"施設")+"を配置する場所をクリック。");
+}
 function notice(s){$("notice").textContent=s;$("notice").classList.remove("hidden");clearTimeout(notice.timer);notice.timer=setTimeout(()=>$("notice").classList.add("hidden"),3000);}
 document.querySelectorAll("[data-tool]").forEach(b=>b.addEventListener("click",()=>setTool(b.dataset.tool)));
 function findAt(x,z){return buildings.find(b=>Math.abs(b.x-x)<2&&Math.abs(b.z-z)<2)||roads.find(r=>r.x===x&&r.z===z)||transit.find(t=>Math.abs(t.x-x)<2&&Math.abs(t.z-z)<2);}
@@ -1042,6 +1051,21 @@ function confirmPendingMove(){
  commitPendingMove(true);
 }
 $("rotateMoveBtn").onclick=()=>{if(!selectedObject)return notice("先に向きを変える施設を選択してください。");moveDraftRotation=((pendingMove?pendingMove.rotation:moveDraftRotation)+Math.PI/2)%(Math.PI*2);if(pendingMove)pendingMove.rotation=moveDraftRotation;showMoveControls();renderMovePreview();};
+$("rotatePlacementBtn").onclick=()=>{
+ if(!defs[selected])return;
+ placementRotation=(placementRotation+Math.PI/2)%(Math.PI*2);
+ $("placementAngle").textContent="向き："+Math.round(placementRotation*180/Math.PI)%360+"°";
+ if(placementPreviewPoint){
+  const p=placementPreviewPoint,problem=buildingPlacementProblem(selected,p.x,p.z,placementRotation);
+  placementPreviewValid=!problem;
+  if(placementGhost)placementGhost.rotation.y=placementRotation;
+  tintPlacementGhost(placementPreviewValid);
+  const bounds=buildingBounds(selected,p.x,p.z,placementRotation,1),center=bounds.getCenter(new THREE.Vector3()),size=bounds.getSize(new THREE.Vector3());
+  moveMarker.position.set(center.x,.12,center.z);moveMarker.scale.set(Math.max(4,size.x)/4.05,Math.max(4,size.z)/4.05,1);
+  moveMarkerOutline.position.set(center.x,.13,center.z);moveMarkerOutline.scale.copy(moveMarker.scale);
+  moveMarker.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarkerOutline.material.color.copy(moveMarker.material.color);
+ }
+};
 $("confirmMoveBtn").onclick=confirmPendingMove;
 $("cancelMoveBtn").onclick=()=>{cancelPendingMove();notice("移動をキャンセルしました。");};
 
@@ -1063,12 +1087,12 @@ function overlapsAirportRunway(x,z,airportX,airportZ){
 function isAirportRunwayBlocked(x,z){
  return buildings.some(b=>b.type==="airport"&&overlapsAirportRunway(x,z,b.x,b.z));
 }
-async function addBuilding(type,x,z){
- const d=defs[type],problem=buildingPlacementProblem(type,x,z);if(problem)return notice(problem);
+async function addBuilding(type,x,z,rotation=0){
+ const d=defs[type],problem=buildingPlacementProblem(type,x,z,rotation);if(problem)return notice(problem);
  const isFreeAirport=type==="airport"&&!buildings.some(b=>b.type==="airport");
  if(!isFreeAirport&&!(await charge(d.cost)))return;
  let building=null;
- try{building=makeBuilding(type,x,z);if(!building?.group)throw new Error("建物モデルを作成できませんでした");buildings.push(building);assignWorkplaces();disposePlacementGhost();placementPreviewPoint=null;notice(d.name+"を建設しました。");updateUI();scheduleSave();}
+ try{building=makeBuilding(type,x,z);if(!building?.group)throw new Error("建物モデルを作成できませんでした");building.rotation=rotation;building.group.rotation.y=rotation;buildings.push(building);assignWorkplaces();disposePlacementGhost();placementPreviewPoint=null;notice(d.name+"を建設しました。");updateUI();scheduleSave();}
  catch(err){if(building?.group)scene.remove(building.group);if(building)buildings=buildings.filter(b=>b!==building);if(!isFreeAirport){try{const {data,error}=await supabase.rpc("refund_city_cash",{p_amount:d.cost});if(error)throw error;cash=Number(data);updateUI();}catch(re){notice("建設失敗。返金にも失敗しました："+re.message);return;}}console.error(err);notice("建設できなかったため、費用を返金しました。"+err.message);}
 }
 let placementPointer=null;
@@ -1112,7 +1136,7 @@ window.addEventListener("pointerup",e=>{
    if(selectedObject===item)selectedObject=null;rebuildTransitVehicles();rebuildCarRoutes();updateUI();scheduleSave();notice("撤去しました。$"+refund.toLocaleString("en-US")+"（費用の50%）を返金しました。");
   })();return;
  }
- addBuilding(selected,p.x,p.z);
+ addBuilding(selected,p.x,p.z,placementRotation);
 });
 window.addEventListener("pointercancel",()=>{placementPointer=null;},true);
 $("resetBtn").onclick=async()=>{
