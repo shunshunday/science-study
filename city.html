@@ -819,7 +819,8 @@ function footprintsOverlap(a,b,gap=.35){
  return a.min.x<b.max.x-gap&&a.max.x>b.min.x+gap&&a.min.z<b.max.z-gap&&a.max.z>b.min.z+gap;
 }
 function roadBounds(x,z){
- const half=0.95;
+ // makeRoad() uses a 4×4 tile, so collision bounds must cover the entire tile.
+ const half=cell/2;
  return new THREE.Box3(new THREE.Vector3(x-half,0,z-half),new THREE.Vector3(x+half,1,z+half));
 }
 function roadOverlapsBounds(x,z,bounds){
