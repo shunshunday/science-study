@@ -1508,7 +1508,7 @@ async function addBuilding(type,x,z,rotation=0){
   console.error(err);notice("建設できなかったため、費用を返金しました。"+err.message);
  }
 }
-let placementPointer=null,roadDragCells=[];
+let placementPointer=null,roadDragCells=[],placementPointerUpHandled=null;
 window.addEventListener("pointerdown",e=>{
  if(publicView||!document.body.classList.contains("build-open")||e.button!==0||!isGamePointer(e))return;
  placementPointer={id:e.pointerId,x:e.clientX,y:e.clientY};roadDragCells=[];try{renderer.domElement.setPointerCapture(e.pointerId);}catch{}if(!["select","move"].includes(selected))controls.enabled=false;if(selected==="road"||selected.startsWith("utility-")){const gp=pointerGroundPoint(e);if(gp)roadDragCells.push(gridPos(gp));}
@@ -1519,7 +1519,7 @@ function smoothRoadStroke(points){if(!roadCurveEnabled||points.length<3)return p
 window.addEventListener("pointerup",e=>{
  if(publicView){placementPointer=null;return;}
  if(!placementPointer||placementPointer.id!==e.pointerId)return;
- const start=placementPointer;const wasDrag=Math.hypot(e.clientX-start.x,e.clientY-start.y)>6;placementPointer=null;controls.enabled=true;const endGround=pointerGroundPoint(e);if(selected==="road"&&wasDrag){if(endGround){const q=gridPos(endGround),last=roadDragCells[roadDragCells.length-1];if(!last||last.x!==q.x||last.z!==q.z)roadDragCells.push(q);}const path=smoothRoadStroke(roadDragCells.slice());roadDragCells=[];if(path.length>1)addRoadStroke(path);else if(path.length===1)addRoad(path[0].x,path[0].z);return;}if(selected.startsWith("utility-")&&wasDrag){if(endGround){const q=gridPos(endGround),last=roadDragCells[roadDragCells.length-1];if(!last||last.x!==q.x||last.z!==q.z)roadDragCells.push(q);}const path=roadDragCells.slice();roadDragCells=[];if(path.length>1)addUtilityStroke(selected.slice(8),path);else notice("配線・配管は左ボタンを押したまま2地点以上をドラッグしてください。");return;}roadDragCells=[];if(!isGamePointer(e))return;
+ const start=placementPointer;const wasDrag=Math.hypot(e.clientX-start.x,e.clientY-start.y)>6;placementPointer=null;controls.enabled=true;const endGround=pointerGroundPoint(e);if(selected==="road"&&wasDrag){if(endGround){const q=gridPos(endGround),last=roadDragCells[roadDragCells.length-1];if(!last||last.x!==q.x||last.z!==q.z)roadDragCells.push(q);}const path=smoothRoadStroke(roadDragCells.slice());roadDragCells=[];placementPointerUpHandled={x:e.clientX,y:e.clientY,time:Date.now()};if(path.length>1)addRoadStroke(path);else if(path.length===1)addRoad(path[0].x,path[0].z);return;}if(selected.startsWith("utility-")&&wasDrag){if(endGround){const q=gridPos(endGround),last=roadDragCells[roadDragCells.length-1];if(!last||last.x!==q.x||last.z!==q.z)roadDragCells.push(q);}const path=roadDragCells.slice();roadDragCells=[];if(path.length>1)addUtilityStroke(selected.slice(8),path);else notice("配線・配管は左ボタンを押したまま2地点以上をドラッグしてください。");return;}roadDragCells=[];if(!isGamePointer(e))return;
  if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>6&&selected==="district"){const a=pointerGroundPoint({clientX:start.x,clientY:start.y});if(a&&endGround){const p1=gridPos(a),p2=gridPos(endGround);addDistrictArea(p1.x,p1.z,p2.x,p2.z);}return;}if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>6&&selected.startsWith("zone-")&&selected!=="zone-erase"){const a=pointerGroundPoint({clientX:start.x,clientY:start.y});if(a&&endGround){const p1=gridPos(a),p2=gridPos(endGround);addZoneArea(selected.slice(5),p1.x,p1.z,p2.x,p2.z);}return;}
  if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>6)return;
  if(selected==="move"){
@@ -1558,15 +1558,19 @@ window.addEventListener("pointerup",e=>{
    if(selectedObject===item)selectedObject=null;rebuildTransitVehicles();rebuildCarRoutes();updateUI();scheduleSave();notice("撤去しました。$"+refund.toLocaleString("en-US")+"（費用の50%）を返金しました。");
   })();return;
  }
+ placementPointerUpHandled={x:e.clientX,y:e.clientY,time:Date.now()};
  addBuilding(selected,p.x,p.z,placementRotation);
 });
-// pointerupイベントを取りこぼした場合の道路クリック配置フォールバック。
+// pointerup処理が失敗した場合も、canvasのclickから道路・建物を配置する。
+// pointerup側で既に処理した同一クリックは二重配置しない。
 renderer.domElement.addEventListener("click",e=>{
- if(publicView||!document.body.classList.contains("build-open")||selected!=="road"||!isGamePointer(e))return;
- const hit=pointerGroundPoint(e);if(!hit){notice("地面を取得できません。画面を再読み込みしてください。");return;}
+ if(publicView||!document.body.classList.contains("build-open")||!(selected==="road"||!!defs[selected]))return;
+ if(placementPointerUpHandled&&Date.now()-placementPointerUpHandled.time<800&&Math.hypot(e.clientX-placementPointerUpHandled.x,e.clientY-placementPointerUpHandled.y)<8){placementPointerUpHandled=null;return;}
+ const hit=pointerGroundPoint(e);if(!hit){notice("地面を取得できません。カメラを地面に向けてクリックしてください。");return;}
  const p=gridPos(hit);
- if(roads.some(r=>r.x===p.x&&r.z===p.z))return;
- addRoad(p.x,p.z);
+ if(selected==="road"){if(roads.some(r=>r.x===p.x&&r.z===p.z))return;addRoad(p.x,p.z);return;}
+ if(buildings.some(b=>b.x===p.x&&b.z===p.z)||constructions.some(c=>c.x===p.x&&c.z===p.z))return;
+ addBuilding(selected,p.x,p.z,placementRotation);
 },true);
 window.addEventListener("pointercancel",()=>{placementPointer=null;roadDragCells=[];controls.enabled=true;},true);
 $("resetBtn").onclick=async()=>{
