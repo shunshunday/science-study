@@ -978,10 +978,22 @@ function buildingAtPointer(e){
  mouse.y=-(e.clientY-rect.top)/rect.height*2+1;
  raycaster.setFromCamera(mouse,camera);
  const hits=raycaster.intersectObjects(buildings.map(b=>b.group),true);
- if(!hits.length)return null;
- let node=hits[0].object;
- while(node&& !buildings.some(b=>b.group===node))node=node.parent;
- return node?buildings.find(b=>b.group===node)||null:null;
+ if(hits.length){
+  let node=hits[0].object;
+  while(node&&!buildings.some(b=>b.group===node))node=node.parent;
+  const found=node?buildings.find(b=>b.group===node):null;
+  if(found)return found;
+ }
+ let nearest=null,nearestDistance=Infinity;
+ for(const b of buildings){
+  b.group.updateWorldMatrix(true,true);
+  const bounds=new THREE.Box3().setFromObject(b.group),hit=new THREE.Vector3();
+  if(raycaster.ray.intersectBox(bounds,hit)){
+   const distance=raycaster.ray.origin.distanceTo(hit);
+   if(distance<nearestDistance){nearest=b;nearestDistance=distance;}
+  }
+ }
+ return nearest;
 }
 function moveValidation(building,x,z,rotation=moveDraftRotation){
  if(!building||!buildings.includes(building))return "移動する施設を選択してください。";
@@ -1118,26 +1130,30 @@ window.addEventListener("pointerup",e=>{
  if(!placementPointer||placementPointer.id!==e.pointerId||!isGamePointer(e))return;
  const start=placementPointer;placementPointer=null;
  if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>6)return;
- const groundPoint=pointerGroundPoint(e);if(!groundPoint)return;
- const p=gridPos(groundPoint);
  if(selected==="move"){
-  // 建物の屋根や壁を直接クリックしても選択できるよう、3Dモデルへレイキャストする。
-  const clickedBuilding=buildingAtPointer(e)||buildingAtPoint(p.x,p.z);
+  // 施設選択は地面との交点に依存させない。
+  const clickedBuilding=buildingAtPointer(e);
+  const groundPoint=pointerGroundPoint(e);
+  const p=groundPoint?gridPos(groundPoint):null;
+  const targetBuilding=clickedBuilding||(p?buildingAtPoint(p.x,p.z):null);
   if(pendingMove){
-   if(clickedBuilding&&clickedBuilding!==pendingMove.building){
+   if(targetBuilding&&targetBuilding!==pendingMove.building){
     if(!commitPendingMove(false))return;
-    selectedObject=clickedBuilding;moveDraftRotation=Number(clickedBuilding.rotation)||0;prepareMovePreview(clickedBuilding);showMoveControls();
-    notice("前の建物を移動しました。続けて"+defs[clickedBuilding.type].name+"を移動できます。");return;
+    selectedObject=targetBuilding;moveDraftRotation=Number(targetBuilding.rotation)||0;prepareMovePreview(targetBuilding);showMoveControls();
+    notice("前の建物を移動しました。続けて"+defs[targetBuilding.type].name+"を移動できます。");return;
    }
-   if(clickedBuilding===pendingMove.building){notice("この建物の移動先をクリックするか、「決定」で確定してください。");return;}
+   if(targetBuilding===pendingMove.building){notice("この建物の移動先をクリックするか、「決定」で確定してください。");return;}
    const problem=moveValidation(pendingMove.building,p.x,p.z,pendingMove.rotation);if(problem)return notice(problem);
    pendingMove.x=p.x;pendingMove.z=p.z;movePreviewPoint={x:p.x,z:p.z};showMoveControls();notice("移動先を更新しました。「決定」で確定できます。");return;
   }
-  if(!selectedObject){selectedObject=clickedBuilding;if(selectedObject){moveDraftRotation=Number(selectedObject.rotation)||0;prepareMovePreview(selectedObject);showMoveControls();notice(defs[selectedObject.type].name+"を選択しました。移動先をクリックするか、↻で向きを変更できます。");}else notice("移動したい施設をクリックしてください。");return;}
+  if(!selectedObject){selectedObject=targetBuilding;if(selectedObject){moveDraftRotation=Number(selectedObject.rotation)||0;prepareMovePreview(selectedObject);showMoveControls();notice(defs[selectedObject.type].name+"を選択しました。移動先をクリックするか、↻で向きを変更できます。");}else notice("移動したい施設をクリックしてください。");return;}
   if(clickedBuilding&&clickedBuilding!==selectedObject){notice("先に現在選択中の建物の移動先をクリックしてください。");return;}
+  if(!p)return notice("移動先の地面をクリックしてください。");
   const problem=moveValidation(selectedObject,p.x,p.z,moveDraftRotation);if(problem)return notice(problem);
   pendingMove={building:selectedObject,x:p.x,z:p.z,rotation:moveDraftRotation};movePreviewPoint={x:p.x,z:p.z};showMoveControls();notice("移動先を仮設定しました。半透明の建物と地面の色を確認して「決定」を押してください。");return;
  }
+ const groundPoint=pointerGroundPoint(e);if(!groundPoint)return;
+ const p=gridPos(groundPoint);
  if(selected==="select"){selectedObject=buildingAtPointer(e)||buildings.find(b=>Math.abs(b.x-p.x)<3&&Math.abs(b.z-p.z)<3)||transit.find(t=>Math.abs(t.x-p.x)<2&&Math.abs(t.z-p.z)<2)||null;notice(selectedObject?(selectedObject.type in defs?defs[selectedObject.type].name:({rail:"線路",station:"駅",busstop:"バス停"})[selectedObject.type])+"を選択中":"施設を選択してください。");return;}
  if(selected==="road"){addRoad(p.x,p.z);return;}
  if(["rail","station","busstop"].includes(selected)){addTransit(selected,p.x,p.z);return;}
