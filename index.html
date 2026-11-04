@@ -69,9 +69,9 @@ footer{background:#fff;border-top:1px solid var(--line);color:#8a968e}.footer-in
    <h2 id="profileHeading">マイプロフィール</h2>
    <div class="profile-honors">✦ SCIENCE HONORS · NOBEL LEVEL ✦</div>
    <div class="profile-user"><div class="profile-avatar">理</div><div><strong id="profileUsername">ユーザー</strong><small>理科キッズ メンバー</small></div></div>
-   <div class="profile-score"><strong id="profileCorrect">0</strong><span>累計正解数</span></div>
+   <div class="profile-score"><strong id="profileMoney">$0</strong><span>累計獲得資金</span></div><div class="profile-score profile-count-score"><strong id="profileCorrect">0</strong><span>累計正解数</span></div>
    <div class="profile-rank"><span>現在の称号</span><strong id="profileRank">理科ビギナー</strong></div>
-   <p class="profile-caption">これまでに正解した問題の合計です。同じ問題に何度正解しても、そのたびに加算されます。</p>
+   <p class="profile-caption">クイズ正解1問につき累計獲得資金が$100増えます。街づくりで使った資金は累計獲得資金から減りません。</p>
    <a class="auth-submit" style="display:block;text-align:center;text-decoration:none" href="profile.html">プロフィールページを開く</a>
    <a class="profile-page-link" href="./profile.html">マイページを開く</a><button class="auth-submit" id="logoutButton" type="button">ログアウト</button>
    <p class="auth-message" id="profileMessage" role="status"></p>
@@ -576,14 +576,16 @@ function showQuestion(){
  q.choices.forEach((choice,i)=>{const b=document.createElement('button');b.type='button';b.className='quiz-option';b.textContent=String.fromCharCode(65+i)+'　'+choice;b.dataset.answer=choice;b.addEventListener('click',()=>answerQuestion(choice,b));quizOptions.appendChild(b);});
  quizFeedback.textContent='';quizNext.classList.remove('show');quizNext.textContent=quizIndex===4?'結果を見る':'次の問題へ';
 }
-function answerQuestion(choice,button){
+async function answerQuestion(choice,button){
  if(answered)return;answered=true;
  const q=quizQuestions[quizIndex],correct=choice===q.term;
  if(correct)quizCorrect++;
- if(correct && supabaseClient) saveCorrectAnswer(q.category);
  [...quizOptions.children].forEach(b=>{b.disabled=true;if(b.dataset.answer===q.term)b.classList.add('correct');});
  if(!correct)button.classList.add('wrong');
- quizFeedback.textContent=correct?'正解！':'不正解。正解は「'+q.term+'」です。';
+ if(correct){
+  const earned=await saveCorrectAnswer(q.category);
+  quizFeedback.textContent=earned?'正解！ +$100 獲得！':(supabaseClient?'正解！資金の保存に失敗しました。再ログインして確認してください。':'正解！ログインすると+$100が貯まります。');
+ }else quizFeedback.textContent='不正解。正解は「'+q.term+'」です。';
  quizScore.textContent='正解 '+quizCorrect;quizNext.classList.add('show');
 }
 quizNext.addEventListener('click',()=>{
@@ -707,6 +709,100 @@ async function refreshAccount(){
  document.getElementById('profileUsername').textContent=profile.username;
  const count=Number(profile.correct_count||0);
  document.getElementById('profileCorrect').textContent=count.toLocaleString('ja-JP');
+ const walletResult=await supabaseClient.rpc('get_city_wallet');
+ if(walletResult.error)throw walletResult.error;
+ const wallet=Array.isArray(walletResult.data)?walletResult.data[0]:walletResult.data;
+ document.getElementById('profileMoney').textContent='
+ document.getElementById('profileRank').textContent=scienceTitle(count);
+ profileView.classList.toggle('profile-view-nobel',count>=500&&count<1000);profileView.classList.toggle('profile-view-haki',count>=1000);
+}
+document.getElementById('authForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(!supabaseClient){authMessage.textContent='現在、アカウント機能の接続設定中です。';return;}
+ const username=document.getElementById('authUsername').value.trim();
+ const password=document.getElementById('authPassword').value;
+ if(!/^[a-zA-Z0-9_-]{3,20}$/.test(username)){authMessage.textContent='ユーザー名は半角英数字・_・-の3〜20文字にしてください。';return;}
+ if(password.length<8){authMessage.textContent='パスワードは8文字以上にしてください。';return;}
+ const submit=document.getElementById('authSubmit');submit.disabled=true;authMessage.textContent='処理しています…';
+ try{
+  if(authMode==='signup'){
+   const {data,error}=await supabaseClient.auth.signUp({email:usernameEmail(username),password,options:{data:{username}}});
+   if(error)throw error;
+   if(!data.session){authMessage.textContent='登録できました。管理者側でメール確認を無効にする必要があります。';return;}
+  }else{
+   const {error}=await supabaseClient.auth.signInWithPassword({email:usernameEmail(username),password});if(error)throw error;
+  }
+  authMessage.textContent='';await refreshAccount();
+ }catch(err){authMessage.textContent=authMode==='signup'?'登録できませんでした。ユーザー名が使用済みか、設定を確認してください。':'ログインできません。ユーザー名とパスワードを確認してください。';}
+ finally{submit.disabled=false;}
+});
+document.getElementById('logoutButton').addEventListener('click',async()=>{if(!supabaseClient)return;stopPlaytimeTracking();await supabaseClient.auth.signOut();await refreshAccount();});
+async function saveCorrectAnswer(unit){
+ if(!supabaseClient)return false;
+ try{
+  const {data:{user},error:authError}=await supabaseClient.auth.getUser();if(authError||!user)return false;
+  const {error}=await supabaseClient.from('quiz_attempts').insert({user_id:user.id,unit,correct_count:1});
+  if(error)throw error;
+  const [{data:profile,error:profileError},{data:walletData,error:walletError}]=await Promise.all([
+   supabaseClient.from('profiles').select('correct_count').eq('id',user.id).single(),
+   supabaseClient.rpc('get_city_wallet')
+  ]);
+  if(profileError)throw profileError;if(walletError)throw walletError;
+  const count=Number(profile?.correct_count||0),wallet=Array.isArray(walletData)?walletData[0]:walletData;
+  document.getElementById('profileCorrect').textContent=count.toLocaleString('ja-JP');
+  document.getElementById('profileMoney').textContent='
+if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else stopPlaytimeTracking();if(accountModal.classList.contains('open'))refreshAccount();});}
+if(new URLSearchParams(location.search).get('login')==='1') showAccount();
+
+</script>
+</body></html>+Number(wallet?.lifetime_earned||count*100).toLocaleString('en-US');
+ document.getElementById('profileRank').textContent=scienceTitle(count);
+ profileView.classList.toggle('profile-view-nobel',count>=500&&count<1000);profileView.classList.toggle('profile-view-haki',count>=1000);
+}
+document.getElementById('authForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(!supabaseClient){authMessage.textContent='現在、アカウント機能の接続設定中です。';return;}
+ const username=document.getElementById('authUsername').value.trim();
+ const password=document.getElementById('authPassword').value;
+ if(!/^[a-zA-Z0-9_-]{3,20}$/.test(username)){authMessage.textContent='ユーザー名は半角英数字・_・-の3〜20文字にしてください。';return;}
+ if(password.length<8){authMessage.textContent='パスワードは8文字以上にしてください。';return;}
+ const submit=document.getElementById('authSubmit');submit.disabled=true;authMessage.textContent='処理しています…';
+ try{
+  if(authMode==='signup'){
+   const {data,error}=await supabaseClient.auth.signUp({email:usernameEmail(username),password,options:{data:{username}}});
+   if(error)throw error;
+   if(!data.session){authMessage.textContent='登録できました。管理者側でメール確認を無効にする必要があります。';return;}
+  }else{
+   const {error}=await supabaseClient.auth.signInWithPassword({email:usernameEmail(username),password});if(error)throw error;
+  }
+  authMessage.textContent='';await refreshAccount();
+ }catch(err){authMessage.textContent=authMode==='signup'?'登録できませんでした。ユーザー名が使用済みか、設定を確認してください。':'ログインできません。ユーザー名とパスワードを確認してください。';}
+ finally{submit.disabled=false;}
+});
+document.getElementById('logoutButton').addEventListener('click',async()=>{if(!supabaseClient)return;stopPlaytimeTracking();await supabaseClient.auth.signOut();await refreshAccount();});
+async function saveCorrectAnswer(unit){
+ if(!supabaseClient)return;
+ try{
+  const {data:{user},error:authError}=await supabaseClient.auth.getUser();if(authError||!user)return;
+  const {error}=await supabaseClient.from('quiz_attempts').insert({user_id:user.id,unit,correct_count:1});
+  if(error)throw error;
+  const {data:profile}=await supabaseClient.from('profiles').select('correct_count').eq('id',user.id).single();
+  if(profile){const count=Number(profile.correct_count||0);document.getElementById('profileCorrect').textContent=count.toLocaleString('ja-JP');document.getElementById('profileRank').textContent=scienceTitle(count);profileView.classList.toggle('profile-view-nobel',count>=500&&count<1000);profileView.classList.toggle('profile-view-haki',count>=1000);}
+ }catch(e){console.error('正解数の保存に失敗しました',e);}
+}
+if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else stopPlaytimeTracking();if(accountModal.classList.contains('open'))refreshAccount();});}
+if(new URLSearchParams(location.search).get('login')==='1') showAccount();
+
+</script>
+</body></html>+Number(wallet?.lifetime_earned||count*100).toLocaleString('en-US');
+  document.getElementById('profileRank').textContent=scienceTitle(count);
+  profileView.classList.toggle('profile-view-nobel',count>=500&&count<1000);profileView.classList.toggle('profile-view-haki',count>=1000);
+  return true;
+ }catch(e){console.error('正解数・資金の保存に失敗しました',e);return false;}
+}
+if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else stopPlaytimeTracking();if(accountModal.classList.contains('open'))refreshAccount();});}
+if(new URLSearchParams(location.search).get('login')==='1') showAccount();
+
+</script>
+</body></html>+Number(wallet?.lifetime_earned||count*100).toLocaleString('en-US');
  document.getElementById('profileRank').textContent=scienceTitle(count);
  profileView.classList.toggle('profile-view-nobel',count>=500&&count<1000);profileView.classList.toggle('profile-view-haki',count>=1000);
 }
