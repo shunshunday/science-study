@@ -526,7 +526,7 @@ function updateAirportArrivals(){
   const a=aircraftArrivals[i],rate=a.phase==="approach"?.0028:a.phase==="taxi"?.004:a.phase==="departTaxi"?.006:.004;
   a.t=Math.min(1,a.t+rate);
   if(a.phase==="approach"){
-   const t=a.t;a.group.position.set(a.airport.x,17-16.35*t,a.airport.z-32+27*t);a.group.rotation.set(.035,0,0);
+   const t=a.t;a.group.position.set(a.airport.x,17-16.35*t,a.airport.z-52+27*t);a.group.rotation.set(.035,0,0);
    if(t>=1){a.phase="taxi";a.t=0;addNews("航空機が滑走路に着陸しました。");}
   }else if(a.phase==="taxi"){
    const t=a.t,sx=a.airport.x,sz=a.airport.z-25,ex=a.airport.x+a.stand*1.3,ez=a.airport.z-3;
