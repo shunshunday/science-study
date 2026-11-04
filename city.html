@@ -901,8 +901,8 @@ function buildTrainPath(){
   }
   if(component.length<2)continue;
   const componentKeys=new Set(component.map(key));
-  const stations=transit.filter(t=>t.type==="station"&&component.some(r=>Math.hypot(t.x-r.x,t.z-r.z)<=8));
-  if(!stations.length)continue;
+  const stations=transit.filter(t=>t.type==="station"&&component.some(r=>Math.hypot(t.x-r.x,t.z-r.z)<=8)),freightTerminals=buildings.filter(b=>b.type==="cargoRail"&&component.some(r=>Math.hypot(b.x-r.x,b.z-r.z)<=8));
+  if(!stations.length&&!freightTerminals.length)continue;
   const degree=r=>neighbors(r).filter(n=>componentKeys.has(key(n))).length;
   if(component.some(r=>degree(r)>2))continue;
   const ends=component.filter(r=>degree(r)===1);
@@ -992,7 +992,7 @@ function cacheVehiclePath(path){
   transitVehicles.forEach(v=>scene.remove(v.group));transitVehicles=[];
   refreshRailVisuals();
   const trainPath=buildTrainPath();
-  if(trainCount>0&&trainPath?.length>=2){const data=cacheVehiclePath(trainPath);for(let i=0;i<trainCount;i++){const group=makeTrain();const vehicle={kind:"train",group,...data,distance:(i*2.5)%data.total,direction:1,speed:2.8,loop:trainPath[0].x===trainPath[trainPath.length-1].x&&trainPath[0].z===trainPath[trainPath.length-1].z};transitVehicles.push(vehicle);updateRouteVehicle(vehicle,0);}}
+  if(trainCount>0&&trainPath?.length>=2){const data=cacheVehiclePath(trainPath);for(let i=0;i<trainCount;i++){const group=makeTrain();const vehicle={kind:"train",group,...data,distance:(i*2.5)%data.total,direction:1,speed:2.8,loop:trainPath[0].x===trainPath[trainPath.length-1].x&&trainPath[0].z===trainPath[trainPath.length-1].z};transitVehicles.push(vehicle);updateRouteVehicle(vehicle,0);}}if(trainPath?.length>=2){const freightCount=Math.min(6,buildings.filter(b=>b.type==="cargoRail"&&people.filter(p=>p.workplace===b).length>=(defs.cargoRail.staffNeed||1)*.5).length);const data=cacheVehiclePath(trainPath);for(let i=0;i<freightCount;i++){const group=makeTrain();for(let car=0;car<3;car++){const container=new THREE.Mesh(new THREE.BoxGeometry(.72,.55,.82),mat([0x2f7185,0xb66b42,0x647f9a][(i+car)%3],.3,.55));container.position.set(0,.78,-1.2-car*.95);container.castShadow=true;group.add(container);}const vehicle={kind:"train",cargo:true,freight:true,group,...data,distance:(i*7+4)%data.total,direction:1,speed:2.25,loop:trainPath[0].x===trainPath[trainPath.length-1].x&&trainPath[0].z===trainPath[trainPath.length-1].z};transitVehicles.push(vehicle);updateRouteVehicle(vehicle,0);}}
   const busPath=buildBusPath();
   if(busCount>0&&busPath?.length>=2){const data=cacheVehiclePath(busPath);for(let i=0;i<busCount;i++){const group=makeBus();transitVehicles.push({kind:"bus",group,...data,distance:(i*2)%data.total,direction:1,speed:2.1});}}
  }
@@ -1584,7 +1584,7 @@ function simulateMonthlyEconomy(){
  const customersByShop=new Map();let householdTax=0,privateWages=0,publicWages=0,welfare=0,householdSpending=0;
  people.forEach(p=>{const wage=p.workplace?(salary[p.job]||2200):0,shopping=Number(p.monthlyShoppingSpend)||0;if(wage){const tax=wage*taxRates.res/100;p.money=(Number(p.money)||0)+wage-tax;householdTax+=tax;const publicJob=["hospital","school","university","firestation","police","water","sewage","waste"].includes(p.workplace.type);if(publicJob)publicWages+=wage;else privateWages+=wage;}else{p.money=(Number(p.money)||0)+280;welfare+=280;}const utilities=(serviceFees.electricity+serviceFees.water)*Math.max(.25,Math.min(2,p.home?1:.5));p.money=(Number(p.money)||0)-utilities-420-shopping;p.monthlyUtilityCost=utilities;p.monthlyRent=420;p.financialStress=p.money<0?1:p.money<250?.75:p.money<600?.4:0;householdSpending+=shopping;p.monthlyShoppingSpend=0;});
  const industrialTypes=["farm","forestry","mine","foodplant","lumbermill","steelworks","factory","manufacturer"],industries=buildings.filter(b=>industrialTypes.includes(b.type));
- const cargoCapacity=(cars.filter(v=>v.cargo).length*24+buildings.reduce((n,b)=>n+(defs[b.type].cargoCapacity||0)*(people.filter(p=>p.workplace===b).length>=(defs[b.type].staffNeed||0)*.5?serviceBudgets.roads/100:0),0))*(unlockedResearch.includes("logistics")?1.35:1);
+ const railRoute=buildTrainPath(),cargoCapacity=(cars.filter(v=>v.cargo).length*24+buildings.reduce((n,b)=>{const staffed=people.filter(p=>p.workplace===b).length>=(defs[b.type].staffNeed||0)*.5,connected=b.type==="cargoRail"?!!railRoute&&transit.some(t=>t.type==="rail"&&Math.hypot(t.x-b.x,t.z-b.z)<=8):["seaport","cargoAirport"].includes(b.type)?roads.some(r=>Math.hypot(r.x-b.x,r.z-b.z)<=8):false;return n+(staffed&&connected?(defs[b.type].cargoCapacity||0)*serviceBudgets.roads/100:0);},0))*(unlockedResearch.includes("logistics")?1.35:1);
  const prices={crops:8,timber:14,ore:19,food:30,boards:35,steel:52,goods:105};
  const ensureStock=b=>{const c=b.company||(b.company={cash:12000,inventory:0,profit:0,revenue:0,efficiency:1});c.stock=c.stock&&typeof c.stock==="object"?c.stock:{};c.monthlyProduced=0;c.monthlySold=0;return c;};
  industries.forEach(b=>ensureStock(b));
