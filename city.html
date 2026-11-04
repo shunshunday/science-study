@@ -503,7 +503,7 @@ function spawnPerson(i,job="unemployed",arrivalStart=null){
   const foot=new THREE.Mesh(new THREE.BoxGeometry(.13,.09,.23),shoe);foot.position.set(0,-.39,.055);legPivot.add(foot);limbs.push(legPivot);
  }
  const home=nearestHome();const x=arrivalStart?arrivalStart.x:(home?home.x+(Math.random()-.5)*2:(Math.random()-.5)*12),z=arrivalStart?arrivalStart.z:(home?home.z+2+(Math.random()-.5)*2:(Math.random()-.5)*12);
- scene.add(g);return {group:g,x,z,home,job,id:i,angle:Math.random()*6,speed:.9+Math.random()*.45,limbs,phase:Math.random()*6,targetX:x,targetZ:z,walkTimer:0,routine:"home",working:false};
+ scene.add(g);return {group:g,x,z,home,job,id:i,angle:Math.random()*6,speed:.9+Math.random()*.45,limbs,phase:Math.random()*6,targetX:arrivalStart&&home?home.x+1.8:x,targetZ:arrivalStart&&home?home.z+2.3:z,walkTimer:0,routine:"home",working:false};
 }
 const jobFacilityTypes={shop:["shop"],doctor:["hospital"],teacher:["school","university"],engineer:["fusion","fission","hydrogen","solar"],officeworker:["office"],factoryworker:["factory"],firefighter:["firestation"],policeofficer:["police"],chef:["restaurant"],hotelstaff:["hotel"],researcher:["university"],sportsstaff:["stadium"],airportstaff:["airport"]};
 const jobLabels={unemployed:"無職",shop:"店員",doctor:"医師",teacher:"教師",engineer:"発電技術者",officeworker:"会社員",factoryworker:"工場技術者",firefighter:"消防士",policeofficer:"警察官",chef:"料理人",hotelstaff:"ホテルスタッフ",researcher:"研究者",sportsstaff:"スポーツ職員",airportstaff:"空港職員"};
