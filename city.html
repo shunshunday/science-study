@@ -116,18 +116,19 @@ function pointerGroundPoint(e){
 const keyLights=[];
 function gridPos(p){return {x:Math.round(p.x/cell)*cell,z:Math.round(p.z/cell)*cell};}
 function mat(color,metal=.25,rough=.35,emissive=0){return new THREE.MeshStandardMaterial({color,metalness:metal,roughness:rough,emissive,emissiveIntensity:.6});}
+const buildingTrimMaterial=mat(0x263e50,.35,.42);
 function box(parent,w,h,d,material,x=0,y=h/2,z=0){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
 function makeBuilding(type,x,z,level=1){
  const d=defs[type],g=new THREE.Group();
  g.position.set(x,0,z);g.userData={type,level};g.scale.setScalar(1+(level-1)*.08);
- const body=mat(d.color,.28,.42),wall=mat(0xe5edf1,.12,.68),dark=mat(0x172b3b,.48,.38),glass=mat(0x6ebbd0,.58,.2,0x123d50),windowMat=mat(0x9be8ff,.42,.16,0x28758e),trim=mat(0x263e50,.35,.42),roofMat=mat(0x334b5b,.35,.48),white=mat(0xf4f7f7,.08,.5),green=mat(0x4e9b68,.08,.8);
+ const body=mat(d.color,.28,.42),wall=mat(0xe5edf1,.12,.68),dark=mat(0x172b3b,.48,.38),glass=mat(0x6ebbd0,.58,.2,0x123d50),windowMat=mat(0x9be8ff,.42,.16,0x28758e),roofMat=mat(0x334b5b,.35,.48),white=mat(0xf4f7f7,.08,.5),green=mat(0x4e9b68,.08,.8);
  const add=(w,h,dep,m,px,py,pz)=>box(g,w,h,dep,m,px,py,pz);
  const win=(px,py,pz,w=.34,h=.48,side="front")=>{
   const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,.075),windowMat);
   if(side==="front")m.position.set(px,py,pz);
   else {m.rotation.y=Math.PI/2;m.position.set(px,py,pz);}
   m.castShadow=true;g.add(m);
-  const frame=new THREE.Mesh(new THREE.BoxGeometry(w+.09,h+.09,.045),trim);
+  const frame=new THREE.Mesh(new THREE.BoxGeometry(w+.09,h+.09,.045),buildingTrimMaterial);
   if(side==="front")frame.position.set(px,py,pz-.035);
   else {frame.rotation.y=Math.PI/2;frame.position.set(px-.035,py,pz);}
   g.add(frame);
@@ -150,11 +151,11 @@ function makeBuilding(type,x,z,level=1){
    win(px,py,1.47,.56,.68);
   }
   add(.72,1.35,.12,dark,.48,.98,1.48);
-  add(.82,.12,.18,trim,.48,1.7,1.5);
+  add(.82,.12,.18,buildingTrimMaterial,.48,1.7,1.5);
   add(3.45,.16,3.05,roofMat,0,2.86,0);
   const roof=new THREE.Mesh(new THREE.ConeGeometry(2.25,1.35,4),body);roof.rotation.y=Math.PI/4;roof.position.y=3.58;roof.scale.z=.78;roof.castShadow=true;g.add(roof);
   add(3.25,.12,.12,white,0,2.77,1.52);
-  for(let x=-1.25;x<=1.26;x+=2.5){add(.09,2.5,.1,trim,x,1.42,1.54);}
+  for(let x=-1.25;x<=1.26;x+=2.5){add(.09,2.5,.1,buildingTrimMaterial,x,1.42,1.54);}
   add(1.05,.12,.5,dark,0,.38,1.9);
   const lamp= new THREE.Mesh(new THREE.SphereGeometry(.09,12,8),windowMat);lamp.position.set(1.25,2.25,1.52);g.add(lamp);
  }else if(type==="tower"){
@@ -169,7 +170,7 @@ function makeBuilding(type,x,z,level=1){
   for(const px of [-1.62,1.62])for(const pz of [-1.62,1.62])add(.16,15.2,.16,body,px,7.75,pz);
   add(3.35,.28,3.35,roofMat,0,15.25,0);
   add(1.65,1.0,1.5,body,0,15.85,0);
-  add(.12,2.2,.12,trim,0,17.45,0);
+  add(.12,2.2,.12,buildingTrimMaterial,0,17.45,0);
   const beacon=new THREE.Mesh(new THREE.SphereGeometry(.2,16,12),windowMat);beacon.position.y=18.65;g.add(beacon);
   add(1.05,.08,3.35,white,0,.5,1.75);
  }else if(type==="shop"){
@@ -181,7 +182,7 @@ function makeBuilding(type,x,z,level=1){
   add(4.7,.12,3.65,roofMat,0,3.82,0);
   add(4.25,.72,.18,dark,0,3.45,1.91);
   for(let i=0;i<7;i++)win(-1.65+i*.55,2.55,1.78,.36,.55);
-  add(1.2,.1,.5,trim,0,.4,2.05);
+  add(1.2,.1,.5,buildingTrimMaterial,0,.4,2.05);
   for(const px of [-2,2])add(.16,3.35,.16,body,px,1.95,1.83);
   const canopy=new THREE.Mesh(new THREE.BoxGeometry(4.55,.12,.72),body);canopy.position.set(0,2.85,2.05);g.add(canopy);
   const roofBox=add(1.65,.72,1.1,body,0,4.25,-.65);
@@ -197,7 +198,7 @@ function makeBuilding(type,x,z,level=1){
   add(.34,1.25,.16,mat(0xe74b55,.05,.35),0,4.2,1.56);
   add(1.05,.34,.16,mat(0xe74b55,.05,.35),0,4.2,1.56);
   add(1.2,.1,1.2,roofMat,0,7.25,0);
-  add(.12,1.15,.12,trim,0,7.85,0);
+  add(.12,1.15,.12,buildingTrimMaterial,0,7.85,0);
  }else if(type==="school"){
   // Low campus building with classroom wings, entrance portico and clock
   add(4.25,2.8,1.45,wall,0,1.75,0);
@@ -223,15 +224,15 @@ function makeBuilding(type,x,z,level=1){
 
  }else if(type==="office"){
   add(3.65,11.5,3.3,glass,0,6,0);add(3.9,.18,3.55,body,0,11.8,0);
-  for(let f=0;f<9;f++){add(3.85,.07,3.5,trim,0,.85+f*1.22,0);for(let i=0;i<5;i++){win(-1.45+i*.72,.95+f*1.22,1.68,.48,.76);win(-1.45+i*.72,.95+f*1.22,-1.68,.48,.76);}}
+  for(let f=0;f<9;f++){add(3.85,.07,3.5,buildingTrimMaterial,0,.85+f*1.22,0);for(let i=0;i<5;i++){win(-1.45+i*.72,.95+f*1.22,1.68,.48,.76);win(-1.45+i*.72,.95+f*1.22,-1.68,.48,.76);}}
   add(4.6,1.35,2.2,body,0,.95,1.85);add(4.8,.18,.25,windowMat,0,1.45,2.99);add(2,.2,1.4,roofMat,0,12.5,0);
   const pad=new THREE.Mesh(new THREE.CylinderGeometry(1.25,1.25,.12,40),white);pad.position.set(0,12.65,0);g.add(pad);add(.14,.08,1.4,body,0,12.75,0);add(1.4,.08,.14,body,0,12.75,0);
  }else if(type==="factory"){
   add(4.6,3.1,3.8,wall,0,1.7,0);add(4.75,.2,3.95,roofMat,0,3.35,0);
   for(let i=0;i<4;i++){const sky=new THREE.Mesh(new THREE.BoxGeometry(.85,.55,3.5),glass);sky.position.set(-1.65+i*1.1,3.62,0);sky.rotation.z=.18;g.add(sky);}
   add(1.8,2.35,.18,dark,0,1.45,1.98);for(let i=0;i<3;i++)add(1.48,.055,.08,mat(0xf0b83e,.18,.48),-.55+i*.55,.55+i*.55,2.08);
-  for(let i=0;i<3;i++){add(.72,1.05,.7,body,-1.35+i*1.35,.9,-1.05);add(.16,1.1,.16,trim,-1.35+i*1.35,2,-1.05);add(.75,.12,.75,trim,-1.35+i*1.35,2.62,-1.05);}
-  add(.48,4.2,.48,trim,-1.7,2.3,-1.55);add(.72,.18,.72,trim,-1.7,4.45,-1.55);add(.42,3.2,.42,trim,1.55,1.9,-1.5);
+  for(let i=0;i<3;i++){add(.72,1.05,.7,body,-1.35+i*1.35,.9,-1.05);add(.16,1.1,.16,buildingTrimMaterial,-1.35+i*1.35,2,-1.05);add(.75,.12,.75,buildingTrimMaterial,-1.35+i*1.35,2.62,-1.05);}
+  add(.48,4.2,.48,buildingTrimMaterial,-1.7,2.3,-1.55);add(.72,.18,.72,buildingTrimMaterial,-1.7,4.45,-1.55);add(.42,3.2,.42,buildingTrimMaterial,1.55,1.9,-1.5);
  }else if(type==="firestation"){
   add(4.45,2.65,3.5,wall,0,1.5,0);add(4.65,.2,3.7,mat(0xc94b48),0,2.95,0);
   for(const px of [-1.15,1.15]){add(1.65,2.05,.16,mat(0x9b3438),px,1.35,1.8);for(let k=0;k<5;k++)add(1.48,.055,.08,white,px,.55+k*.36,1.91);}
@@ -239,7 +240,7 @@ function makeBuilding(type,x,z,level=1){
  }else if(type==="police"){
   add(4.25,2.9,3.3,wall,0,1.6,0);add(4.35,.28,3.4,mat(0x285c9a),0,3.12,0);add(4,1.35,.13,glass,0,1.35,1.7);
   for(let i=0;i<5;i++)add(.07,1.3,.08,white,-1.55+i*.78,1.35,1.79);add(1.2,.12,.8,roofMat,0,3.35,-.8);add(.8,.75,.15,white,0,2.35,1.8);
-  const badge=new THREE.Mesh(new THREE.CylinderGeometry(.25,.25,.08,6),mat(0xf0b83e,.18,.48));badge.rotation.x=Math.PI/2;badge.position.set(0,2.35,1.91);g.add(badge);add(.12,1.8,.12,trim,1.45,4,-1);add(.5,.15,.5,windowMat,1.45,4.95,-1);
+  const badge=new THREE.Mesh(new THREE.CylinderGeometry(.25,.25,.08,6),mat(0xf0b83e,.18,.48));badge.rotation.x=Math.PI/2;badge.position.set(0,2.35,1.91);g.add(badge);add(.12,1.8,.12,buildingTrimMaterial,1.45,4,-1);add(.5,.15,.5,windowMat,1.45,4.95,-1);
  }else if(type==="restaurant"){
   add(3.8,.25,3.8,green,0,.3,0);add(3,.55,3,body,0,.68,0);
   const dome=new THREE.Mesh(new THREE.SphereGeometry(1.82,32,20,0,Math.PI*2,0,Math.PI/2),new THREE.MeshPhysicalMaterial({color:0xffdca2,roughness:.15,metalness:.12,transparent:true,opacity:.65,transmission:.35}));dome.position.y=.95;g.add(dome);
@@ -316,7 +317,7 @@ function makeBuilding(type,x,z,level=1){
    // Tokamak fusion plant: reactor hall, magnetic confinement ring, cryogenic services and control block
    add(3.9,2.8,3.55,concrete,0,1.75,0);
    add(4.05,.2,3.7,steel,0,3.2,0);
-   for(let i=0;i<5;i++){const y=.9+i*.48;add(3.98,.045,3.62,trim,0,y,0);}
+   for(let i=0;i<5;i++){const y=.9+i*.48;add(3.98,.045,3.62,buildingTrimMaterial,0,y,0);}
    for(let i=0;i<4;i++)win(-1.45+i*.96,2.15,1.8,.48,.55);
    add(1.1,1.5,.18,glass,0,1.05,1.83);
    // Open cutaway-like reactor casing and luminous toroidal chamber
@@ -347,7 +348,7 @@ function makeBuilding(type,x,z,level=1){
     const tower=new THREE.Mesh(new THREE.LatheGeometry(pts,32),white);tower.position.set(px,0,-1.55);tower.castShadow=true;tower.receiveShadow=true;g.add(tower);
     cylinder(.78,.78,.12,32,steel,px,.58,-1.55);
     const rim=new THREE.Mesh(new THREE.TorusGeometry(.9,.07,8,32),steel);rim.position.set(px,6.35,-1.55);g.add(rim);
-    for(let k=0;k<3;k++)add(.045,4.7,.045,trim,px-.35+k*.35,2.95,-.75);
+    for(let k=0;k<3;k++)add(.045,4.7,.045,buildingTrimMaterial,px-.35+k*.35,2.95,-.75);
    }
    // Steam/water treatment pipes, pumps and transformers
    pipe([[-.85,1.15,-.9],[-.85,.8,-.4],[.8,.8,-.4],[.8,1.15,-.9]],.09,pipeMat);
@@ -468,27 +469,27 @@ function makeTransit(type,x,z){
   v.position.set(px,0,pz);g.add(v);
  };
  // 共通のエントランス照明・アプローチ
- for(const sx of [-1.72,1.72]){const pole=new THREE.Group();const stem=new THREE.Mesh(new THREE.CylinderGeometry(.035,.055,1.45,8),trim);stem.position.y=.73;pole.add(stem);const lamp=new THREE.Mesh(new THREE.SphereGeometry(.13,12,8),mat(0xffe5a1,.1,.18,0xffcf6a));lamp.position.y=1.5;pole.add(lamp);pole.position.set(sx,0,2.35);g.add(pole);}
+ for(const sx of [-1.72,1.72]){const pole=new THREE.Group();const stem=new THREE.Mesh(new THREE.CylinderGeometry(.035,.055,1.45,8),buildingTrimMaterial);stem.position.y=.73;pole.add(stem);const lamp=new THREE.Mesh(new THREE.SphereGeometry(.13,12,8),mat(0xffe5a1,.1,.18,0xffcf6a));lamp.position.y=1.5;pole.add(lamp);pole.position.set(sx,0,2.35);g.add(pole);}
  if(["shop","hospital","school","office","factory","firestation","police","restaurant","hotel","university","stadium","airport"].includes(type)){
   add(3.1,.08,1.15,mat(0x85949c,.1,.85),0,.08,2.55);
   for(let n=0;n<5;n++)add(.16,.035,.14,white,-.72+n*.36,.14,2.55);
  }
  if(type==="home"){sign("HOME",0x24546a,0x78e8ed,0,2.65,1.68);add(.72,.55,.75,green,-1.35,.55,1.4);add(.72,.55,.75,green,1.35,.55,1.4);add(1.1,.08,.75,roofMat,0,.12,2.45);}
- if(type==="tower"){sign("RESIDENCE",0x183d64,0x6ddcff,0,16.3,1.7);for(const sx of [-1.85,1.85])add(.16,1.4,.16,trim,sx,.8,1.6);}
+ if(type==="tower"){sign("RESIDENCE",0x183d64,0x6ddcff,0,16.3,1.7);for(const sx of [-1.85,1.85])add(.16,1.4,.16,buildingTrimMaterial,sx,.8,1.6);}
  if(type==="shop"){sign("SHOPPING",0x4d287a,0xffd66b,0,3.35,2.02);vehicle("truck",-2.6,2.9);add(.45,.8,.45,green,-2.1,.55,-1.6);add(.45,.8,.45,green,2.1,.55,-1.6);}
  if(type==="hospital"){sign("MEDICAL CENTER",0x176d72,0x8effef,0,3.15,2.28);vehicle("ambulance",-2.35,3.55);add(.12,1.1,.12,white,2.2,.65,2.2);add(.65,.1,.65,mat(0x46c6ac),2.2,1.22,2.2);}
  if(type==="school"){sign("SCIENCE ACADEMY",0x795a19,0xffe28b,0,3.35,1.05);vehicle("bus",2.65,2.5);for(const sx of [-2,2]){add(.7,.45,.7,green,sx,.42,1.6);}}
- if(type==="park"){for(const sx of [-1.2,1.2]){add(1.05,.16,.35,trim,sx,.65,1.45);for(const dx of [-.38,.38])add(.07,.42,.07,trim,sx+dx,.42,1.45);}for(let n=0;n<4;n++){const flower=new THREE.Mesh(new THREE.SphereGeometry(.12,10,8),mat([0xff9ac4,0xffd86b,0x9bcaff,0xffffff][n],.05,.5));flower.position.set(-1.2+n*.8,.58,2.05);g.add(flower);}}
- if(["fusion","fission","hydrogen","solar"].includes(type)){sign("POWER",0x123b4d,0x66e8ff,0,3.1,2.05);for(const sx of [-2.15,2.15]){add(.18,.75,.18,trim,sx,.48,1.9);const light=new THREE.Mesh(new THREE.SphereGeometry(.12,10,8),mat(0x5effaa,.1,.15,0x29d879));light.position.set(sx,.95,1.9);g.add(light);}}
+ if(type==="park"){for(const sx of [-1.2,1.2]){add(1.05,.16,.35,buildingTrimMaterial,sx,.65,1.45);for(const dx of [-.38,.38])add(.07,.42,.07,buildingTrimMaterial,sx+dx,.42,1.45);}for(let n=0;n<4;n++){const flower=new THREE.Mesh(new THREE.SphereGeometry(.12,10,8),mat([0xff9ac4,0xffd86b,0x9bcaff,0xffffff][n],.05,.5));flower.position.set(-1.2+n*.8,.58,2.05);g.add(flower);}}
+ if(["fusion","fission","hydrogen","solar"].includes(type)){sign("POWER",0x123b4d,0x66e8ff,0,3.1,2.05);for(const sx of [-2.15,2.15]){add(.18,.75,.18,buildingTrimMaterial,sx,.48,1.9);const light=new THREE.Mesh(new THREE.SphereGeometry(.12,10,8),mat(0x5effaa,.1,.15,0x29d879));light.position.set(sx,.95,1.9);g.add(light);}}
  if(type==="office"){sign("INNOVATION HQ",0x174c76,0x8ce6ff,0,11.8,1.84);vehicle("hotel",-2.65,2.8);vehicle("hotel",2.65,2.8);}
  if(type==="factory"){sign("ROBOTICS",0x354c5c,0xffbd4a,0,3.1,2.1);vehicle("truck",2.75,2.9);for(let n=0;n<3;n++){const pipe=new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,2.1,12),chrome);pipe.position.set(-2+n*.6,4.1,-1.7);g.add(pipe);}}
  if(type==="firestation"){sign("FIRE & RESCUE",0x8c2524,0xffd16b,0,3.12,1.98);vehicle("fire",-2.55,3.15);vehicle("fire",2.55,3.15);for(let n=0;n<3;n++)add(.14,.14,.14,mat(0xffb72f,.2,.25,0xff7b17),-1+n,3.4,-1.1);}
- if(type==="police"){sign("POLICE HQ",0x173b73,0x8bc9ff,0,3.2,1.95);vehicle("police",-2.55,3.1);vehicle("police",2.55,3.1);add(.18,1.5,.18,trim,2.15,.8,-1.1);add(.7,.08,.7,mat(0x3a78c7),2.15,1.6,-1.1);}
- if(type==="restaurant"){sign("RESTAURANT",0x8a4b1e,0xffdc9b,0,1.85,2.2);for(let n=0;n<3;n++){const px=-1.2+n*1.2;add(.55,.08,.55,roofMat,px,.5,2.8);add(.08,.45,.08,trim,px,.27,2.8);const umbrella=new THREE.Mesh(new THREE.ConeGeometry(.48,.22,8),mat([0xe76d55,0xe8b34e,0x6cb9a1][n]));umbrella.position.set(px,1.05,2.8);g.add(umbrella);}}
+ if(type==="police"){sign("POLICE HQ",0x173b73,0x8bc9ff,0,3.2,1.95);vehicle("police",-2.55,3.1);vehicle("police",2.55,3.1);add(.18,1.5,.18,buildingTrimMaterial,2.15,.8,-1.1);add(.7,.08,.7,mat(0x3a78c7),2.15,1.6,-1.1);}
+ if(type==="restaurant"){sign("RESTAURANT",0x8a4b1e,0xffdc9b,0,1.85,2.2);for(let n=0;n<3;n++){const px=-1.2+n*1.2;add(.55,.08,.55,roofMat,px,.5,2.8);add(.08,.45,.08,buildingTrimMaterial,px,.27,2.8);const umbrella=new THREE.Mesh(new THREE.ConeGeometry(.48,.22,8),mat([0xe76d55,0xe8b34e,0x6cb9a1][n]));umbrella.position.set(px,1.05,2.8);g.add(umbrella);}}
  if(type==="hotel"){sign("GRAND HOTEL",0x50366f,0xf5d48a,0,8.95,1.3);vehicle("hotel",2.8,2.8);for(let n=0;n<3;n++){const lamp=new THREE.Mesh(new THREE.SphereGeometry(.11,10,8),mat(0xffd68b,.1,.2,0xffb84a));lamp.position.set(-1+n,2.4,1.9);g.add(lamp);}}
  if(type==="university"){sign("UNIVERSITY",0x283c77,0xffd777,0,3.3,1.65);vehicle("bus",-2.7,2.8);for(let n=0;n<3;n++)add(.18,.9,.18,green,-1.6+n*1.6,.55,2.8);}
- if(type==="stadium"){sign("MEGA ARENA",0x176340,0x9effc1,0,3.65,2.5);for(const sx of [-2.35,2.35]){add(.12,6,.12,trim,sx,3,-1.8);const flood=new THREE.Mesh(new THREE.BoxGeometry(.85,.18,.3),white);flood.position.set(sx,6.1,-1.8);g.add(flood);}}
- if(type==="airport"){sign("INTERNATIONAL AIRPORT",0x15516a,0x9df2ff,0,3.2,1.42);for(const sx of [-2.8,2.8]){add(.18,1.8,.18,trim,sx,1,-1.1);add(.7,.12,.7,white,sx,1.95,-1.1);}}
+ if(type==="stadium"){sign("MEGA ARENA",0x176340,0x9effc1,0,3.65,2.5);for(const sx of [-2.35,2.35]){add(.12,6,.12,buildingTrimMaterial,sx,3,-1.8);const flood=new THREE.Mesh(new THREE.BoxGeometry(.85,.18,.3),white);flood.position.set(sx,6.1,-1.8);g.add(flood);}}
+ if(type==="airport"){sign("INTERNATIONAL AIRPORT",0x15516a,0x9df2ff,0,3.2,1.42);for(const sx of [-2.8,2.8]){add(.18,1.8,.18,buildingTrimMaterial,sx,1,-1.1);add(.7,.12,.7,white,sx,1.95,-1.1);}}
 
  scene.add(g);return {type,x,z,group:g};
 }
