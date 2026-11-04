@@ -603,13 +603,9 @@ async function answerQuestion(choice,button){
 function finishQuiz(){
  quizPlay.hidden=true;quizResult.hidden=false;quizProgress.textContent='チャレンジ終了';quizScore.textContent='正解 '+quizCorrect;
  const answeredCount=quizIndex+(answered?1:0);
- quizResult.innerHTML='<strong>'+quizCorrect+' / 5</strong><div>'+(quizCorrect===5?'全問正解！すばらしい！':quizCorrect>=3?'いい調子！まちがえた用語も復習しよう。':'用語一覧で復習して、もう一度挑戦しよう！')+'</div><p class="quiz-finished-count">'+answeredCount+'問回答 / 全5問</p><button class="quiz-retry" id="retryQuiz">もう一度ランダムに挑戦</button><button type="button" class="quiz-end quiz-end-result" id="finishQuizView">チャレンジ終了</button>';
+ quizResult.innerHTML='<strong>'+quizCorrect+' / 5</strong><div>'+(quizCorrect===5?'全問正解！すばらしい！':quizCorrect>=3?'いい調子！まちがえた用語も復習しよう。':'用語一覧で復習して、もう一度挑戦しよう！')+'</div><p class="quiz-finished-count">'+answeredCount+'問回答 / 全5問</p><button class="quiz-retry" id="retryQuiz">もう一度ランダムに挑戦</button>';
  document.getElementById('retryQuiz').addEventListener('click',startQuiz);
- document.getElementById('finishQuizView').addEventListener('click',()=>{
-  quizBox.classList.remove('show');quizPlay.hidden=false;quizResult.hidden=true;
-  document.getElementById('startQuiz').style.display='block';
-  quizProgress.textContent='第1問 / 5問';quizScore.textContent='正解 0';
- });
+
 }
 document.getElementById('endQuiz').addEventListener('click',finishQuiz);
 quizNext.addEventListener('click',()=>{
