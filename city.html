@@ -720,9 +720,10 @@ function updatePlacementPreviewPointer(e){
  let problem="",bounds;
  if(selected==="road"){problem=roadPlacementProblem(p.x,p.z);bounds=roadBounds(p.x,p.z);}
  else if(["rail","station","busstop"].includes(selected)){
-  const candidate=makeTransit(selected,p.x,p.z);candidate.group.updateMatrixWorld(true);bounds=new THREE.Box3().setFromObject(candidate.group);
+  // 交通施設のプレビュー判定では実モデルを毎フレーム生成しない（シーンへの残留・描画干渉を防ぐ）
+  const dims=selected==="rail"?{w:4,d:2.1}:{station:{w:4.2,d:3.1},busstop:{w:3.3,d:2.0}}[selected];
+  bounds=new THREE.Box3(new THREE.Vector3(p.x-dims.w/2,0,p.z-dims.d/2),new THREE.Vector3(p.x+dims.w/2,3,p.z+dims.d/2));
   if(transit.some(t=>t.type===selected&&(t.x===p.x&&t.z===p.z||selected==="rail"&&t.z===p.z&&Math.abs(t.x-p.x)<3.9||selected!=="rail"&&Math.hypot(t.x-p.x,t.z-p.z)<3.2)))problem=selected==="rail"?"線路が重なっています。":"交通施設が近すぎます。";
-  candidate.group.traverse(o=>{if(o.isMesh){o.geometry?.dispose();const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>m.dispose());}});
  }
  else{problem=buildingPlacementProblem(selected,p.x,p.z);bounds=buildingBounds(selected,p.x,p.z,0,1);}
  placementPreviewValid=!problem;placementGhost.position.set(p.x,.72,p.z);placementGhost.rotation.y=0;tintPlacementGhost(placementPreviewValid);
@@ -808,6 +809,7 @@ function updateMovePreviewPointer(e){
 }
 renderer.domElement.addEventListener("pointermove",updateMovePreviewPointer);
 renderer.domElement.addEventListener("pointermove",updatePlacementPreviewPointer);
+renderer.domElement.addEventListener("pointerdown",e=>{if(document.body.classList.contains("build-open"))updatePlacementPreviewPointer(e);});
 function showMoveControls(){
  const active=!!selectedObject;$("moveControls").classList.toggle("hidden",!active);
  if(!active){$("moveProgress").className="move-progress";$("moveProgress").textContent="施設を選択すると、移動プレビューを表示します。";return;}
