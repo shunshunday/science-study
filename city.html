@@ -10,7 +10,7 @@
 #game{position:fixed;inset:0}canvas{display:block}
 .topbar{position:fixed;z-index:4;left:16px;right:16px;top:14px;display:flex;gap:10px;align-items:center;pointer-events:none}.brand,.stat,.top-actions{background:#091a2ddd;border:1px solid #31516a;border-radius:13px;backdrop-filter:blur(12px);box-shadow:0 8px 30px #0005}.brand{padding:9px 15px;font-weight:900;letter-spacing:.04em}.brand small{display:block;color:var(--cyan);font-size:10px;letter-spacing:.2em}.stats{display:flex;gap:8px;flex-wrap:wrap}.stat{padding:8px 12px;min-width:100px}.stat span{display:block;color:var(--muted);font-size:10px}.stat b{font-size:17px}.top-actions{margin-left:auto;padding:8px;display:flex;gap:7px;pointer-events:auto;flex-shrink:0}.home-button{background:#0c6479;border-color:#55e5ff;font-weight:800;white-space:nowrap}
 button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;border-radius:9px;padding:8px 11px;cursor:pointer}button:hover{border-color:var(--cyan);background:#214866}button.active{background:#0c6479;border-color:var(--cyan);color:#fff}button:disabled{opacity:.4;cursor:not-allowed}
-.panel{position:fixed;z-index:3;top:92px;bottom:18px;width:250px;background:#091a2ded;border:1px solid #2b4a65;border-radius:15px;backdrop-filter:blur(14px);padding:14px;overflow:auto;box-shadow:0 12px 35px #0005}.left{left:16px;transform:translateX(calc(-100% - 24px));transition:transform .24s ease}.build-open .left{transform:translateX(0)}.right{right:16px;width:270px}.panel h2{font-size:14px;margin:0 0 10px;color:var(--cyan);letter-spacing:.08em}.panel h3{font-size:12px;color:#b8d1e4;margin:16px 0 7px}.hint{font-size:11px;color:var(--muted);line-height:1.6}.tools{display:grid;grid-template-columns:1fr 1fr;gap:7px}.tool{min-height:54px;text-align:left;font-size:11px}.recruit-count-label{display:block;grid-column:1/-1;font-size:11px;color:var(--muted);margin:3px 0 -4px}.recruit-count{grid-column:1/-1;width:100%;padding:10px;border:1px solid #365a76;border-radius:9px;background:#102a40;color:#fff;font:inherit;font-size:15px}.move-controls{grid-column:1/-1;padding:10px;background:#102f43;border:1px solid #3b7188;border-radius:10px;font-size:12px}.move-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}.move-actions button{font-size:11px;padding:7px 5px}.move-actions button:last-child{grid-column:1/-1}.move-controls small{color:#a5c0d6}.tool strong{display:block;font-size:12px}.tool em{display:block;font-style:normal;color:#a5c0d6;font-size:10px;margin-top:3px}.wide{width:100%;margin-top:7px}#resetBtn{display:block;width:auto;margin:18px 0 2px auto;padding:5px 8px;font-size:10px;line-height:1.2;opacity:.78;border-color:#75505a;color:#d9b8c0;background:#291d2a}#resetBtn:hover{opacity:1;background:#46232e;border-color:#d88b9d}.meter{height:8px;background:#203b52;border-radius:20px;overflow:hidden;margin:5px 0 10px}.meter i{display:block;height:100%;width:50%;background:linear-gradient(90deg,#41c8ff,#65f0bd);border-radius:20px}.metric{display:flex;justify-content:space-between;font-size:11px;color:#bad0e2}.log{font-size:11px;color:#b7ccdc;line-height:1.6;border-top:1px solid #28445d;padding:7px 0}.notice{position:fixed;z-index:5;left:50%;bottom:20px;transform:translateX(-50%);background:#071a2beF;border:1px solid #3e7896;border-radius:12px;padding:10px 16px;font-size:12px;box-shadow:0 10px 30px #0007;max-width:min(90vw,600px);text-align:center}.hidden{display:none!important}.public-view .left,.public-view .right{display:none!important}.public-view #buildModeBtn{display:none!important}.public-view #saveBtn{display:none!important}.public-view .topbar{right:16px}.public-view .brand small{color:#65f0bd}.public-view .notice{pointer-events:none}.login{position:fixed;z-index:10;inset:0;background:#061321ee;display:grid;place-items:center;padding:20px}.login-card{max-width:440px;background:#10243a;border:1px solid #355773;border-radius:18px;padding:28px;text-align:center}.login-card h1{margin:0 0 8px}.login-card p{color:#afc4d6;font-size:13px;line-height:1.8}.pill{display:inline-block;padding:3px 7px;border-radius:30px;background:#153e50;color:#72e9ff;font-size:10px;margin-right:4px}
+.panel{position:fixed;z-index:3;top:92px;bottom:18px;width:250px;background:#091a2ded;border:1px solid #2b4a65;border-radius:15px;backdrop-filter:blur(14px);padding:14px;overflow:auto;box-shadow:0 12px 35px #0005}.left{left:16px;transform:translateX(calc(-100% - 24px));transition:transform .24s ease}.build-open .left{transform:translateX(0)}.right{right:16px;width:270px}.panel h2{font-size:14px;margin:0 0 10px;color:var(--cyan);letter-spacing:.08em}.panel h3{font-size:12px;color:#b8d1e4;margin:16px 0 7px}.hint{font-size:11px;color:var(--muted);line-height:1.6}.tools{display:grid;grid-template-columns:1fr 1fr;gap:7px}.tool{min-height:54px;text-align:left;font-size:11px}.recruit-count-label{display:block;grid-column:1/-1;font-size:11px;color:var(--muted);margin:3px 0 -4px}.recruit-count{grid-column:1/-1;width:100%;padding:10px;border:1px solid #365a76;border-radius:9px;background:#102a40;color:#fff;font:inherit;font-size:15px}.move-controls{grid-column:1/-1;padding:10px;background:#102f43;border:1px solid #3b7188;border-radius:10px;font-size:12px}.move-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}.move-actions button{font-size:11px;padding:7px 5px}.move-actions button:last-child{grid-column:1/-1}.move-controls small{color:#a5c0d6}.move-progress{display:block;margin:6px 0;padding:7px 8px;border-radius:7px;background:#0a2031;font-size:11px;line-height:1.5;color:#b9d4e5}.move-progress.good{color:#72f0b5;border:1px solid #25875c}.move-progress.bad{color:#ff8e96;border:1px solid #a94350}.tool strong{display:block;font-size:12px}.tool em{display:block;font-style:normal;color:#a5c0d6;font-size:10px;margin-top:3px}.wide{width:100%;margin-top:7px}#resetBtn{display:block;width:auto;margin:18px 0 2px auto;padding:5px 8px;font-size:10px;line-height:1.2;opacity:.78;border-color:#75505a;color:#d9b8c0;background:#291d2a}#resetBtn:hover{opacity:1;background:#46232e;border-color:#d88b9d}.meter{height:8px;background:#203b52;border-radius:20px;overflow:hidden;margin:5px 0 10px}.meter i{display:block;height:100%;width:50%;background:linear-gradient(90deg,#41c8ff,#65f0bd);border-radius:20px}.metric{display:flex;justify-content:space-between;font-size:11px;color:#bad0e2}.log{font-size:11px;color:#b7ccdc;line-height:1.6;border-top:1px solid #28445d;padding:7px 0}.notice{position:fixed;z-index:5;left:50%;bottom:20px;transform:translateX(-50%);background:#071a2beF;border:1px solid #3e7896;border-radius:12px;padding:10px 16px;font-size:12px;box-shadow:0 10px 30px #0007;max-width:min(90vw,600px);text-align:center}.hidden{display:none!important}.public-view .left,.public-view .right{display:none!important}.public-view #buildModeBtn{display:none!important}.public-view #saveBtn{display:none!important}.public-view .topbar{right:16px}.public-view .brand small{color:#65f0bd}.public-view .notice{pointer-events:none}.login{position:fixed;z-index:10;inset:0;background:#061321ee;display:grid;place-items:center;padding:20px}.login-card{max-width:440px;background:#10243a;border:1px solid #355773;border-radius:18px;padding:28px;text-align:center}.login-card h1{margin:0 0 8px}.login-card p{color:#afc4d6;font-size:13px;line-height:1.8}.pill{display:inline-block;padding:3px 7px;border-radius:30px;background:#153e50;color:#72e9ff;font-size:10px;margin-right:4px}
 @media(max-width:900px){.panel{width:210px}.right{width:220px}.stat{min-width:76px;padding:6px 8px}.stat b{font-size:14px}.brand{font-size:12px}.topbar{left:8px;right:8px;top:8px;flex-wrap:wrap}.left{left:8px;top:130px;bottom:8px}.right{right:8px;top:130px;bottom:8px}}
 @media(max-width:620px){.stats .stat:nth-child(n+3){display:none}.panel{top:auto;bottom:8px;height:230px;width:calc(50% - 12px);padding:10px}.left{left:8px}.right{right:8px}.tools{grid-template-columns:1fr 1fr}.tool{min-height:45px;padding:6px}.topbar{align-items:flex-start}.top-actions{padding:5px}.top-actions button{font-size:10px;padding:7px}.brand{padding:7px}.stats{gap:4px}}
 </style>
@@ -32,7 +32,7 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
  <div class="hint">施設を選び、地面をクリックして配置。道路は道路ツールを選んでマスをクリック。</div>
  <h3>道路・交通</h3><div class="tools">
   <button class="tool" data-tool="select"><strong>↖ 選択</strong><em>施設を選ぶ</em></button><button class="tool active" data-tool="road"><strong>▰ 道路</strong><em>$250 / マス</em></button>
-  <button class="tool" data-tool="remove"><strong>⌫ 撤去</strong><em>道路・施設</em></button><button class="tool" data-tool="move"><strong>✥ 移動・回転</strong><em>位置と向きを変更</em></button><div id="moveControls" class="move-controls hidden"><strong id="moveTargetName">移動先を設定中</strong><div class="move-actions"><button type="button" id="rotateMoveBtn">↻ 90°回転</button><button type="button" id="confirmMoveBtn">✓ 決定</button><button type="button" id="cancelMoveBtn">キャンセル</button></div><small id="moveAngle">向き：0°</small></div>
+  <button class="tool" data-tool="remove"><strong>⌫ 撤去</strong><em>道路・施設</em></button><button class="tool" data-tool="move"><strong>✥ 移動・回転</strong><em>位置と向きを変更</em></button><div id="moveControls" class="move-controls hidden"><strong id="moveTargetName">移動先を設定中</strong><div class="move-actions"><button type="button" id="rotateMoveBtn">↻ 90°回転</button><button type="button" id="confirmMoveBtn">✓ 決定</button><button type="button" id="cancelMoveBtn">キャンセル</button></div><small id="moveAngle">向き：0°</small><div id="moveProgress" class="move-progress">施設を選択すると、移動プレビューを表示します。</div></div>
  </div>
  <h3>居住・都市施設</h3><div class="tools" id="buildingTools">
   <button class="tool" data-tool="home"><strong>⌂ 未来住宅</strong><em>$4,000</em></button>
@@ -79,6 +79,7 @@ const $=id=>document.getElementById(id);
 const supabase=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
 const publicView=new URLSearchParams(location.search).get("view")==="1";if(publicView)document.body.classList.add("public-view");
 let user=null, cash=0, selected="road", buildings=[], roads=[], cars=[], people=[], transit=[], transitVehicles=[], trainCount=0, busCount=0, aircraftArrivals=[], parkedAircraft=0, cityTick=0, saveTimer=null, selectedObject=null, pendingMove=null;
+let moveGhost=null,moveMarker=null,moveMarkerOutline=null,movePreviewPoint=null,movePreviewValid=false;
 const defs={
  home:{name:"未来住宅",cost:4000,power:2,housing:12,color:0x35b8d5,kind:"res"},
  tower:{name:"超高層住宅",cost:14000,power:12,housing:65,color:0x357bd5,kind:"res"},
@@ -100,6 +101,7 @@ const keyLight=new THREE.DirectionalLight(0xc5edff,2.3);keyLight.position.set(-3
 const ground=new THREE.Mesh(new THREE.PlaneGeometry(220,220),new THREE.MeshStandardMaterial({color:0x102b38,roughness:.92}));ground.rotation.x=-Math.PI/2;ground.position.y=-.12;ground.receiveShadow=true;scene.add(ground);
 const grid=new THREE.GridHelper(100,50,0x2a7187,0x1a4054);grid.position.y=.015;scene.add(grid);
 const floor=new THREE.Mesh(new THREE.PlaneGeometry(100,100),new THREE.MeshBasicMaterial({visible:false,side:THREE.DoubleSide}));floor.rotation.x=-Math.PI/2;floor.position.y=.02;scene.add(floor);
+const moveMarkerMaterial=new THREE.MeshBasicMaterial({color:0x35e58a,transparent:true,opacity:.28,depthWrite:false,side:THREE.DoubleSide});moveMarker=new THREE.Mesh(new THREE.PlaneGeometry(4.05,4.05),moveMarkerMaterial);moveMarker.rotation.x=-Math.PI/2;moveMarker.position.y=.055;moveMarker.visible=false;scene.add(moveMarker);moveMarkerOutline=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(4.05,4.05)),new THREE.LineBasicMaterial({color:0x35e58a,transparent:true,opacity:.95}));moveMarkerOutline.rotation.x=-Math.PI/2;moveMarkerOutline.position.y=.065;moveMarkerOutline.visible=false;scene.add(moveMarkerOutline);
 const raycaster=new THREE.Raycaster(),mouse=new THREE.Vector2();const cell=4;
 const keyLights=[];
 function gridPos(p){return {x:Math.round(p.x/cell)*cell,z:Math.round(p.z/cell)*cell};}
@@ -647,7 +649,7 @@ function staffingReport(){
  buildings.forEach(b=>{const d=defs[b.type];if(!d.staffNeed)return;const job=Object.keys(jobFacilityTypes).find(j=>jobFacilityTypes[j].includes(b.type));const count=people.filter(p=>p.workplace===b).length;const missing=Math.max(0,d.staffNeed-count);if(missing>0)reports.push({building:b,name:d.name,job:jobLabels[job],count,need:d.staffNeed,missing});});
  return reports;
 }
-function setTool(t){if(t!=="move"){selectedObject=null;cancelPendingMove();}selected=t;document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));const labels={rail:"線路",station:"駅",busstop:"バス停"};notice(t==="move"?"移動：施設を選択→移動先をクリック→「決定」。↻で90°回転。":t==="road"?"道路をクリックして敷設。":t==="remove"?"撤去したい道路・建物・交通施設をクリック。":t==="select"?"選択したい施設をクリック。":(defs[t]?.name||labels[t]||"施設")+"を配置する場所をクリック。");}
+function setTool(t){if(t!=="move"){cancelPendingMove();}selected=t;document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));const labels={rail:"線路",station:"駅",busstop:"バス停"};notice(t==="move"?"移動：施設を選択→移動先をクリック→「決定」。↻で90°回転。":t==="road"?"道路をクリックして敷設。":t==="remove"?"撤去したい道路・建物・交通施設をクリック。":t==="select"?"選択したい施設をクリック。":(defs[t]?.name||labels[t]||"施設")+"を配置する場所をクリック。");}
 function notice(s){$("notice").textContent=s;$("notice").classList.remove("hidden");clearTimeout(notice.timer);notice.timer=setTimeout(()=>$("notice").classList.add("hidden"),3000);}
 document.querySelectorAll("[data-tool]").forEach(b=>b.addEventListener("click",()=>setTool(b.dataset.tool)));
 function findAt(x,z){return buildings.find(b=>Math.abs(b.x-x)<2&&Math.abs(b.z-z)<2)||roads.find(r=>r.x===x&&r.z===z)||transit.find(t=>Math.abs(t.x-x)<2&&Math.abs(t.z-z)<2);}
@@ -659,17 +661,56 @@ function moveValidation(building,x,z){
  }else if(isAirportRunwayBlocked(x,z))return "滑走路内には移動できません。";
  return "";
 }
-function showMoveControls(){
- $("moveControls").classList.toggle("hidden",!pendingMove);
- if(pendingMove){$("moveTargetName").textContent=defs[pendingMove.building.type].name+" の移動先";$("moveAngle").textContent="向き："+Math.round(pendingMove.rotation*180/Math.PI)%360+"°";}
+function hideMovePreview(){
+ if(moveGhost){scene.remove(moveGhost);moveGhost.traverse(o=>{if(o.isMesh){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose();}});moveGhost=null;}
+ moveMarker.visible=false;moveMarkerOutline.visible=false;movePreviewPoint=null;
 }
-function cancelPendingMove(){pendingMove=null;showMoveControls();}
+function prepareMovePreview(building){
+ hideMovePreview();if(!building)return;
+ moveGhost=building.group.clone(true);
+ moveGhost.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false;if(Array.isArray(o.material))o.material=o.material.map(m=>{const c=m.clone();c.transparent=true;c.opacity=.42;c.depthWrite=false;return c;});else{const c=o.material.clone();c.transparent=true;c.opacity=.42;c.depthWrite=false;o.material=c;}}});
+ scene.add(moveGhost);moveGhost.position.set(building.x,.65,building.z);moveGhost.rotation.y=Number(building.rotation)||0;
+ moveMarker.visible=true;moveMarkerOutline.visible=true;movePreviewPoint={x:building.x,z:building.z};renderMovePreview();
+}
+function renderMovePreview(){
+ if(!selectedObject||!moveGhost)return;
+ const p=pendingMove?{x:pendingMove.x,z:pendingMove.z,rotation:pendingMove.rotation}:movePreviewPoint;
+ if(!p)return;
+ const rotation=pendingMove?pendingMove.rotation:(Number(selectedObject.rotation)||0);
+ const problem=moveValidation(selectedObject,p.x,p.z);movePreviewValid=!problem;
+ moveGhost.position.set(p.x,.65,p.z);moveGhost.rotation.y=rotation;
+ moveMarker.position.set(p.x,.055,p.z);moveMarker.rotation.z=-rotation;
+ moveMarker.material.color.set(movePreviewValid?0x35e58a:0xff4055);
+ moveMarkerOutline.position.set(p.x,.065,p.z);moveMarkerOutline.rotation.z=-rotation;moveMarkerOutline.material.color.set(movePreviewValid?0x35e58a:0xff4055);
+ const status=$("moveProgress");status.className="move-progress "+(movePreviewValid?"good":"bad");
+ status.textContent="移動先 X："+p.x+" / Z："+p.z+"｜"+(movePreviewValid?"✓ 設置可能":"✕ 設置不可："+problem);
+}
+function updateMovePreviewPointer(e){
+ if(!selectedObject||selected!=="move"||pendingMove)return;
+ const rect=renderer.domElement.getBoundingClientRect();mouse.x=(e.clientX-rect.left)/rect.width*2-1;mouse.y=-(e.clientY-rect.top)/rect.height*2+1;
+ raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObject(floor);if(!hits.length)return;
+ movePreviewPoint=gridPos(hits[0].point);renderMovePreview();
+}
+renderer.domElement.addEventListener("pointermove",updateMovePreviewPointer);
+function showMoveControls(){
+ const active=!!selectedObject;$("moveControls").classList.toggle("hidden",!active);
+ if(!active){$("moveProgress").className="move-progress";$("moveProgress").textContent="施設を選択すると、移動プレビューを表示します。";return;}
+ const rotation=pendingMove?pendingMove.rotation:(Number(selectedObject.rotation)||0);
+ $("moveTargetName").textContent=defs[selectedObject.type].name+" の移動";
+ $("moveAngle").textContent="向き："+Math.round(rotation*180/Math.PI)%360+"°";
+ $("confirmMoveBtn").disabled=!pendingMove||!movePreviewValid;
+ $("rotateMoveBtn").disabled=!pendingMove;
+ renderMovePreview();
+}
+function cancelPendingMove(){
+ pendingMove=null;selectedObject=null;hideMovePreview();showMoveControls();
+}
 function confirmPendingMove(){
  if(!pendingMove)return notice("先に移動先をクリックしてください。");
  const {building,x,z,rotation}=pendingMove,problem=moveValidation(building,x,z);
  if(problem)return notice(problem);
  building.x=x;building.z=z;building.rotation=rotation;building.group.position.set(x,0,z);building.group.rotation.y=rotation;
- pendingMove=null;selectedObject=null;showMoveControls();assignWorkplaces();updateUI();scheduleSave();notice("施設の位置と向きを変更しました。");
+ pendingMove=null;selectedObject=null;hideMovePreview();showMoveControls();assignWorkplaces();updateUI();scheduleSave();notice("施設の位置と向きを変更しました。");
 }
 $("rotateMoveBtn").onclick=()=>{if(!pendingMove)return notice("先に移動先をクリックしてください。");pendingMove.rotation=(pendingMove.rotation+Math.PI/2)%(Math.PI*2);showMoveControls();};
 $("confirmMoveBtn").onclick=confirmPendingMove;
@@ -708,9 +749,9 @@ renderer.domElement.addEventListener("pointerup",e=>{
  const p=gridPos(hits[0].point);
  if(selected==="move"){
   if(pendingMove){notice("先に「決定」または「キャンセル」を押してください。");return;}
-  if(!selectedObject){selectedObject=buildings.find(b=>Math.abs(b.x-p.x)<3&&Math.abs(b.z-p.z)<3)||null;if(selectedObject)notice(defs[selectedObject.type].name+"を選択しました。移動先をクリックしてください。");else notice("移動したい施設をクリックしてください。");return;}
+  if(!selectedObject){selectedObject=buildings.find(b=>Math.abs(b.x-p.x)<3&&Math.abs(b.z-p.z)<3)||null;if(selectedObject){prepareMovePreview(selectedObject);showMoveControls();notice(defs[selectedObject.type].name+"を選択しました。マウスを動かすと半透明プレビューが表示されます。");}else notice("移動したい施設をクリックしてください。");return;}
   const problem=moveValidation(selectedObject,p.x,p.z);if(problem)return notice(problem);
-  pendingMove={building:selectedObject,x:p.x,z:p.z,rotation:Number(selectedObject.rotation)||0};showMoveControls();notice("移動先を仮設定しました。向きを変えてから「決定」を押してください。");return;
+  pendingMove={building:selectedObject,x:p.x,z:p.z,rotation:Number(selectedObject.rotation)||0};movePreviewPoint={x:p.x,z:p.z};showMoveControls();notice("移動先を仮設定しました。半透明の建物と地面の色を確認して「決定」を押してください。");return;
  }
  if(selected==="select"){selectedObject=buildings.find(b=>Math.abs(b.x-p.x)<3&&Math.abs(b.z-p.z)<3)||transit.find(t=>Math.abs(t.x-p.x)<2&&Math.abs(t.z-p.z)<2)||null;notice(selectedObject?(selectedObject.type in defs?defs[selectedObject.type].name:({rail:"線路",station:"駅",busstop:"バス停"})[selectedObject.type])+"を選択中":"施設を選択してください。");return;}
  if(selected==="road"){addRoad(p.x,p.z);return;}
