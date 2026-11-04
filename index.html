@@ -694,7 +694,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAccount();});
 function setAuthMode(mode){authMode=mode;document.querySelectorAll('.auth-tab').forEach(b=>b.classList.toggle('active',b.dataset.authTab===mode));document.getElementById('authSubmit').textContent=mode==='login'?'ログイン':'新規登録';document.getElementById('authPassword').autocomplete=mode==='login'?'current-password':'new-password';authMessage.textContent='';}
 document.querySelectorAll('.auth-tab').forEach(b=>b.addEventListener('click',()=>setAuthMode(b.dataset.authTab)));
 function usernameEmail(username){return username.toLowerCase()+'@accounts.rikakids.invalid';}
-function scienceTitle(n){if(n>=1000)return "覇者";if(n>=500)return 'ノーベル賞';if(n>=200)return '伝説の科学者';if(n>=100)return '科学の天才';if(n>=60)return '理科博士';if(n>=30)return '理科マスター';if(n>=10)return '理科チャレンジャー';return '理科ビギナー';}
+function scienceTitle(n){if(n>=100000)return "覇者";if(n>=50000)return "ノーベル賞";if(n>=20000)return "伝説の科学者";if(n>=10000)return "科学の天才";if(n>=6000)return "理科博士";if(n>=3000)return "理科マスター";if(n>=1000)return "理科チャレンジャー";return "理科ビギナー";}
 async function refreshAccount(){
  const accountOpen=document.getElementById('accountOpen');
  if(!supabaseClient){accountOpen.textContent='ログイン・プロフィール';authView.hidden=false;profileView.hidden=true;document.getElementById('accountSetup').hidden=false;return;}
@@ -703,17 +703,17 @@ async function refreshAccount(){
  if(!session){stopPlaytimeTracking();accountOpen.textContent='ログイン・プロフィール';authView.hidden=false;profileView.hidden=true;return;}
  startPlaytimeTracking(session.user.id);
  authView.hidden=true;profileView.hidden=false;
- const {data:profile,error}=await supabaseClient.from('profiles').select('username,correct_count').eq('id',session.user.id).single();
+ const {data:profile,error}=await supabaseClient.from('profiles').select('username').eq('id',session.user.id).single();
  if(error){accountOpen.textContent=(session.user.user_metadata?.username||session.user.email?.split('@')[0]||'ユーザー')+'（ログイン中）';document.getElementById('profileMessage').textContent='プロフィールを読み込めません。';return;}
  accountOpen.textContent=profile.username+'（ログイン中）';
  document.getElementById('profileUsername').textContent=profile.username;
- const count=Number(profile.correct_count||0);
  const walletResult=await supabaseClient.rpc('get_city_wallet');
  if(walletResult.error)throw walletResult.error;
  const wallet=Array.isArray(walletResult.data)?walletResult.data[0]:walletResult.data;
  document.getElementById('profileMoney').textContent='$'+Number(wallet?.balance||0).toLocaleString('en-US');
- document.getElementById('profileRank').textContent=scienceTitle(count);
- profileView.classList.toggle('profile-view-nobel',count>=500&&count<1000);profileView.classList.toggle('profile-view-haki',count>=1000);
+ const assets=Math.max(0,Number(wallet?.balance)||0);
+ document.getElementById('profileRank').textContent=scienceTitle(assets);
+ profileView.classList.toggle('profile-view-nobel',assets>=50000&&assets<100000);profileView.classList.toggle('profile-view-haki',assets>=100000);
 }
 document.getElementById('authForm').addEventListener('submit',async e=>{
  e.preventDefault();if(!supabaseClient){authMessage.textContent='現在、アカウント機能の接続設定中です。';return;}
@@ -739,19 +739,23 @@ async function saveCorrectAnswer(unit){
  if(!supabaseClient)return null;
  try{
   const {data:{user},error:authError}=await supabaseClient.auth.getUser();if(authError||!user)return null;
-  const {error}=await supabaseClient.from('quiz_attempts').insert({user_id:user.id,unit,correct_count:1});
-  if(error)throw error;
-  const [{data:profile,error:profileError},{data:walletData,error:walletError}]=await Promise.all([
-   supabaseClient.from('profiles').select('correct_count').eq('id',user.id).single(),
-   supabaseClient.rpc('get_city_wallet')
-  ]);
-  if(profileError)throw profileError;if(walletError)throw walletError;
-  const count=Number(profile?.correct_count||0),wallet=Array.isArray(walletData)?walletData[0]:walletData;
-  document.getElementById('profileMoney').textContent='$'+Number(wallet?.balance||0).toLocaleString('en-US');
-  document.getElementById('profileRank').textContent=scienceTitle(count);
-  profileView.classList.toggle('profile-view-nobel',count>=500&&count<1000);profileView.classList.toggle('profile-view-haki',count>=1000);
+  const {error:rewardError}=await supabaseClient.rpc('earn_quiz_reward',{p_unit:unit});
+  if(rewardError)throw rewardError;
+  const {data:walletData,error:walletError}=await supabaseClient.rpc('get_city_wallet');
+  if(walletError)throw walletError;
+  const wallet=Array.isArray(walletData)?walletData[0]:walletData;
+  const assets=Math.max(0,Number(wallet?.balance)||0);
+  document.getElementById('profileMoney').textContent='
+if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else stopPlaytimeTracking();if(accountModal.classList.contains('open'))refreshAccount();});}
+if(new URLSearchParams(location.search).get('login')==='1') showAccount();
+
+</script>
+</body></html>+assets.toLocaleString('en-US');
+  document.getElementById('profileRank').textContent=scienceTitle(assets);
+  profileView.classList.toggle('profile-view-nobel',assets>=50000&&assets<100000);
+  profileView.classList.toggle('profile-view-haki',assets>=100000);
   return true;
- }catch(e){console.error('正解数・資金の保存に失敗しました',e);return false;}
+ }catch(e){console.error('資金の保存に失敗しました',e);return false;}
 }
 if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else stopPlaytimeTracking();if(accountModal.classList.contains('open'))refreshAccount();});}
 if(new URLSearchParams(location.search).get('login')==='1') showAccount();
