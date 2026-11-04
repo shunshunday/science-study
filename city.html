@@ -526,7 +526,7 @@ function transitPlacementProblem(type,x,z){
  const candidate=transitBounds(type,x,z);
  if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港ターミナルと重なっています。";
  if(roadsOverlapBuilding(candidate))return "道路と重なっています。";
- if(buildings.some(b=>b.type==="airport"&&footprintsOverlap(candidate,new THREE.Box3(new THREE.Vector3(b.x-4.35,0,b.z-32),new THREE.Vector3(b.x+4.35,3,b.z-1.5)))))return "空港の滑走路と重なっています。";
+ if(buildings.some(b=>b.type==="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";
  if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),.05)))return "ほかの交通施設と重なっています。";
  if(type==="rail"&&transit.some(t=>t.type==="rail"&&Math.abs(t.z-z)<.1&&Math.abs(t.x-x)<3.9))return "線路が重なっています。線路は4マスずつつなげてください。";
  if(type!=="rail"&&transit.some(t=>t.type===type&&Math.hypot(t.x-x,t.z-z)<4))return "同じ交通施設が近すぎます。";
@@ -772,14 +772,14 @@ function buildingPlacementProblem(type,x,z){
  if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港の敷地と重なっています。";
  if(roadsOverlapBuilding(candidate))return "道路と重なっています。";
  if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),0)))return "線路・駅・バス停と重なっています。";
- if(buildings.some(b=>b.type==="airport"&&type!=="airport"&&footprintsOverlap(candidate,new THREE.Box3(new THREE.Vector3(b.x-4.35,0,b.z-32),new THREE.Vector3(b.x+4.35,3,b.z-1.5)))))return "空港の滑走路と重なっています。";
+ if(buildings.some(b=>b.type==="airport"&&type!=="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";
  return "";
 }
 function roadPlacementProblem(x,z){
  if(roads.some(r=>r.x===x&&r.z===z))return "すでに道路があります。";
  if(buildings.some(b=>roadOverlapsBounds(x,z,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港の敷地と重なっています。";
  if(transit.some(t=>footprintsOverlap(roadBounds(x,z),transitBounds(t.type,t.x,t.z),0)))return "線路・駅・バス停と重なっています。";
- if(isAirportRunwayBlocked(x,z))return "空港の滑走路と重なっています。";
+ if(buildings.some(b=>b.type==="airport"&&footprintsOverlap(roadBounds(x,z),airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";
  return "";
 }
 function updatePlacementPreviewPointer(e){
@@ -841,8 +841,11 @@ function moveValidation(building,x,z,rotation=moveDraftRotation){
  if(roadsOverlapBuilding(candidate))return "道路と重なっています。道路のない場所を選んでください。";
  if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),0)))return "線路・駅・バス停と重なっています。";
  if(building.type==="airport"){
-  if(buildings.some(b=>b!==building&&b.type!=="airport"&&overlapsAirportRunway(b.x,b.z,x,z)))return "滑走路に既存の建物が重なります。別の場所を選んでください。";
- }else if(isAirportRunwayBlocked(x,z))return "滑走路内には移動できません。";
+  const runway=airportRunwayBounds(x,z);
+  if(buildings.some(b=>b!==building&&b.type!=="airport"&&footprintsOverlap(buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b),runway)))return "滑走路に既存の建物が重なります。別の場所を選んでください。";
+  if(roads.some(r=>footprintsOverlap(roadBounds(r.x,r.z),runway,0)))return "滑走路に道路が重なります。別の場所を選んでください。";
+  if(transit.some(t=>footprintsOverlap(transitBounds(t.type,t.x,t.z),runway,0)))return "滑走路に線路・駅・バス停が重なります。別の場所を選んでください。";
+ }else if(buildings.some(b=>b.type==="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z))))return "滑走路内には移動できません。";
  return "";
 }
 function hideMovePreview(){
@@ -921,10 +924,11 @@ async function addRoad(x,z){
  if(!(await charge(250)))return;
  roads.push(makeRoad(x,z));rebuildTransitVehicles();rebuildCarRoutes();updateUI();scheduleSave();
 }
+function airportRunwayBounds(x,z){
+ return new THREE.Box3(new THREE.Vector3(x-4.35,0,z-32),new THREE.Vector3(x+4.35,3,z-1.5));
+}
 function overlapsAirportRunway(x,z,airportX,airportZ){
- const localX=Math.abs(x-airportX),localZ=z-airportZ;
- // 空港モデルは0.6倍。滑走路の幅8・長さ46を基準に、建物の敷地分も余白に含める。
- return localX<4.35 && localZ>-32 && localZ<-1.5;
+ return x>=airportX-4.35&&x<=airportX+4.35&&z>airportZ-32&&z<airportZ-1.5;
 }
 function isAirportRunwayBlocked(x,z){
  return buildings.some(b=>b.type==="airport"&&overlapsAirportRunway(x,z,b.x,b.z));
