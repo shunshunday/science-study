@@ -280,7 +280,7 @@ function makeBuilding(type,x,z,level=1){
   for(const x of [-7.1,7.1])for(const z of [-5.45,5.45]){add(.2,5.8,.2,steel,x,5.2,z);add(.9,.35,.35,white,x,8.05,z);for(let k=0;k<5;k++){const lamp=new THREE.Mesh(new THREE.SphereGeometry(.11,8,8),mat(0xfff2c2,.1,.18,0xffe39a));lamp.position.set(x-.32+k*.16,8.08,z);g.add(lamp);}}
   // 入場ゲートとスタジアム表記
   add(4.8,.72,.28,body,0,1.0,7.75);add(4.25,.34,.08,white,0,1.1,7.91);
- }}else if(type==="airport"){
+ }else if(type==="airport"){
   add(4.7,2.5,2.5,glass,0,1.45,0);add(4.9,.18,2.7,white,0,2.8,0);add(4.45,.12,2.4,roofMat,0,2.95,0);
   // 滑走路・誘導路・エプロン
   add(8,.18,42,mat(0x303b48,.12,.9),0,.12,-27);add(7.7,.035,41.7,mat(0x424e59,.08,.92),0,.225,-27);
