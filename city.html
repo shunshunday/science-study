@@ -559,7 +559,7 @@ function refreshRailVisuals(){
    paths=dirs.map(d=>[[0,0],d]);
   }
   const addVisual=o=>{o.userData.railVisual=true;g.add(o);};
-  const railMaterial=new THREE.MeshStandardMaterial({color:0xc5d2d8,metalness:.88,roughness:.2});
+  const railMaterial=new THREE.MeshStandardMaterial({color:0xd5e0e5,metalness:.72,roughness:.24});
   const sleeperMaterial=new THREE.MeshStandardMaterial({color:0x88765d,roughness:.92});
   const ballastMaterial=new THREE.MeshStandardMaterial({color:0x56616a,roughness:1});
   for(const pair of paths){
@@ -592,38 +592,43 @@ function refreshRailVisuals(){
 function buildTrainPath(){
  const rails=transit.filter(t=>t.type==="rail");
  if(rails.length<2)return null;
- const key=p=>Math.round(p.x/4)+","+Math.round(p.z/4);
- const byKey=new Map(rails.map(r=>[key(r),r]));
- const neighbors=r=>[[4,0],[-4,0],[0,4],[0,-4]].map(([dx,dz])=>byKey.get(key({x:r.x+dx,z:r.z+dz}))).filter(Boolean);
- const seen=new Set();let best=null;
+ const key=r=>Math.round(r.x/4)+","+Math.round(r.z/4);
+ const adjacent=(a,b)=>Math.abs(Math.hypot(a.x-b.x,a.z-b.z)-4)<.35;
+ const neighbors=r=>rails.filter(other=>other!==r&&adjacent(r,other));
+ const visited=new Set();let best=null;
  for(const seed of rails){
-  if(seen.has(key(seed)))continue;
-  const component=[],queue=[seed];seen.add(key(seed));
-  for(let i=0;i<queue.length;i++){const r=queue[i];component.push(r);for(const next of neighbors(r)){if(!seen.has(key(next))){seen.add(key(next));queue.push(next);}}}
-  if(component.length<2||!transit.some(s=>s.type==="station"&&component.some(r=>Math.hypot(s.x-r.x,s.z-r.z)<=6)))continue;
-  const ends=component.filter(r=>neighbors(r).length===1);
-  if(component.some(r=>neighbors(r).length>2)||(ends.length!==0&&ends.length!==2))continue;
-  const start=ends[0]||component[0],ordered=[],visited=new Set();let current=start,previous=null;
-  while(current&&!visited.has(key(current))){
-   ordered.push(current);visited.add(key(current));
-   const next=neighbors(current).find(v=>(!previous||key(v)!==key(previous))&&!visited.has(key(v)));
+  if(visited.has(key(seed)))continue;
+  const component=[],queue=[seed];visited.add(key(seed));
+  for(let i=0;i<queue.length;i++){
+   const current=queue[i];component.push(current);
+   for(const next of neighbors(current)){if(!visited.has(key(next))){visited.add(key(next));queue.push(next);}}
+  }
+  if(component.length<2)continue;
+  const componentKeys=new Set(component.map(key));
+  const stations=transit.filter(t=>t.type==="station"&&component.some(r=>Math.hypot(t.x-r.x,t.z-r.z)<=8));
+  if(!stations.length)continue;
+  const degree=r=>neighbors(r).filter(n=>componentKeys.has(key(n))).length;
+  if(component.some(r=>degree(r)>2))continue;
+  const ends=component.filter(r=>degree(r)===1);
+  if(ends.length!==0&&ends.length!==2)continue;
+  const startRail=ends[0]||component[0],ordered=[],walked=new Set();let current=startRail,previous=null;
+  while(current&&!walked.has(key(current))){
+   ordered.push(current);walked.add(key(current));
+   const next=neighbors(current).find(n=>componentKeys.has(key(n))&&(!previous||key(n)!==key(previous))&&!walked.has(key(n)));
    previous=current;current=next||null;
   }
-  const closed=ends.length===0&&ordered.length===component.length&&neighbors(ordered[ordered.length-1]).some(v=>key(v)===key(start));
+  const closed=ends.length===0&&ordered.length===component.length&&neighbors(ordered[ordered.length-1]).some(n=>key(n)===key(startRail));
   if(ordered.length!==component.length)continue;
   const points=ordered.map(r=>({x:r.x,z:r.z}));
   if(closed)points.push({...points[0]});
   if(!best||points.length>best.length)best=points;
  }
  if(!best||best.length<2)return null;
- if(best.length>=3){
-  const closed=best[0].x===best[best.length-1].x&&best[0].z===best[best.length-1].z;
-  const routePoints=closed?best.slice(0,-1):best;
-  const vectors=routePoints.map(p=>new THREE.Vector3(p.x,.06,p.z));
-  const curve=new THREE.CatmullRomCurve3(vectors,closed,"centripetal",.35);
-  return curve.getPoints(Math.max(24,routePoints.length*12)).map(p=>({x:p.x,z:p.z}));
- }
- return best;
+ if(best.length===2)return best;
+ const closed=best[0].x===best[best.length-1].x&&best[0].z===best[best.length-1].z;
+ const nodes=closed?best.slice(0,-1):best;
+ const curve=new THREE.CatmullRomCurve3(nodes.map(p=>new THREE.Vector3(p.x,.42,p.z)),closed,"centripetal",.25);
+ return curve.getPoints(Math.max(32,nodes.length*16)).map(p=>({x:p.x,z:p.z}));
 }
 function nearestRoadFor(point){
  return roads.reduce((best,r)=>{const d=Math.hypot(r.x-point.x,r.z-point.z);return d<=6&&(!best||d<best.distance)?{road:r,distance:d}:best;},null)?.road||null;
@@ -664,7 +669,7 @@ function cacheVehiclePath(path){
  function rebuildTransitVehicles(){
   transitVehicles.forEach(v=>scene.remove(v.group));transitVehicles=[];
   const trainPath=buildTrainPath();
-  if(trainCount>0&&trainPath?.length>=2){const data=cacheVehiclePath(trainPath);for(let i=0;i<trainCount;i++){const group=makeTrain();transitVehicles.push({kind:"train",group,...data,distance:(i*2.5)%data.total,direction:1,speed:2.8,loop:trainPath[0].x===trainPath[trainPath.length-1].x&&trainPath[0].z===trainPath[trainPath.length-1].z});}}
+  if(trainCount>0&&trainPath?.length>=2){const data=cacheVehiclePath(trainPath);for(let i=0;i<trainCount;i++){const group=makeTrain();const vehicle={kind:"train",group,...data,distance:(i*2.5)%data.total,direction:1,speed:2.8,loop:trainPath[0].x===trainPath[trainPath.length-1].x&&trainPath[0].z===trainPath[trainPath.length-1].z};transitVehicles.push(vehicle);updateRouteVehicle(vehicle,0);}}
   const busPath=buildBusPath();
   if(busCount>0&&busPath?.length>=2){const data=cacheVehiclePath(busPath);for(let i=0;i<busCount;i++){const group=makeBus();transitVehicles.push({kind:"bus",group,...data,distance:(i*2)%data.total,direction:1,speed:2.1});}}
  }
@@ -678,7 +683,7 @@ function cacheVehiclePath(path){
   for(let i=0;i<data.lengths.length;i++){
    const len=data.lengths[i];if(remain<=len||i===data.lengths.length-1){
     const a=data.path[i],b=data.path[i+1],t=len?remain/len:0,dx=b.x-a.x,dz=b.z-a.z;
-    v.group.position.set(a.x+dx*t,v.kind==="train"?.06:.04,a.z+dz*t);v.group.rotation.y=Math.atan2(dx,dz)+(v.kind==="car"?Math.PI:0);break;
+    v.group.position.set(a.x+dx*t,v.kind==="train"?.06:.04,a.z+dz*t);v.group.rotation.y=Math.atan2(dx,dz)+(v.kind==="train"?Math.PI/2:v.kind==="car"?Math.PI:0);break;
    }remain-=len;
   }
  }
