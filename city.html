@@ -1585,7 +1585,9 @@ function updateMovePreviewPointer(e){
 }
 // 画面全体でポインターを捕捉。UIパネル上の操作は除外し、ゲーム画面上では確実にプレビュー更新。
 function isGamePointer(e){
- if(e.target?.closest?.(".panel,.topbar,.notice,.login"))return false;
+ // UI（下部ドック・パネル・各種ボタン）上の入力をゲーム操作として扱わない。
+ // canvas自身がイベント対象のときだけ、ゲーム画面のクリック／ドラッグを許可する。
+ if(e.target!==renderer.domElement)return false;
  const r=renderer.domElement.getBoundingClientRect();
  return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;
 }
