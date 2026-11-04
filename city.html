@@ -977,26 +977,47 @@ function buildingAtPointer(e){
  mouse.x=(e.clientX-rect.left)/rect.width*2-1;
  mouse.y=-(e.clientY-rect.top)/rect.height*2+1;
  raycaster.setFromCamera(mouse,camera);
- const hits=raycaster.intersectObjects(buildings.map(b=>b.group),true);
+ // 建物だけでなく、駅・バス停・線路の3Dモデルも同じレイで選択する。
+ const objects=[...buildings,...transit];
+ const hits=raycaster.intersectObjects(objects.map(o=>o.group),true);
  if(!hits.length)return null;
  let node=hits[0].object;
- while(node&& !buildings.some(b=>b.group===node))node=node.parent;
- return node?buildings.find(b=>b.group===node)||null:null;
+ while(node&&!objects.some(o=>o.group===node))node=node.parent;
+ return node?objects.find(o=>o.group===node)||null:null;
 }
-function moveValidation(building,x,z,rotation=moveDraftRotation){
- if(!building||!buildings.includes(building))return "移動する施設を選択してください。";
- const candidate=buildingBounds(building.type,x,z,rotation,building.level||1,building);
- if(buildings.some(b=>b!==building&&footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "別の建物の敷地と重なっています。建物が重ならない場所を選んでください。";
+function transitMoveBounds(item,x,z,rotation=0){
+ const d=transitDimensions(item.type),c=Math.abs(Math.cos(rotation)),sn=Math.abs(Math.sin(rotation));
+ const w=c*d.w+sn*d.d,depth=sn*d.w+c*d.d;
+ return new THREE.Box3(new THREE.Vector3(x-w/2,0,z-depth/2),new THREE.Vector3(x+w/2,3,z+depth/2));
+}
+function moveObjectBounds(item,x,z,rotation=0){
+ return transit.includes(item)?transitMoveBounds(item,x,z,rotation):buildingBounds(item.type,x,z,rotation,item.level||1,item);
+}
+function moveObjectName(item){
+ if(transit.includes(item))return ({rail:"線路",station:"駅",busstop:"バス停"})[item.type]||"交通施設";
+ return defs[item.type]?.name||"施設";
+}
+
+function moveValidation(item,x,z,rotation=moveDraftRotation){
+ if(!item||(!buildings.includes(item)&&!transit.includes(item)))return "移動する施設を選択してください。";
+ const isTransit=transit.includes(item);
+ const candidate=moveObjectBounds(item,x,z,rotation);
+ if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "別の建物の敷地と重なっています。";
  if(roadsOverlapBuilding(candidate))return "道路と重なっています。道路のない場所を選んでください。";
- if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),0)))return "線路・駅・バス停と重なっています。";
- if(building.type==="airport"){
+ if(transit.some(t=>t!==item&&footprintsOverlap(candidate,transitMoveBounds(t,t.x,t.z,t.rotation||0),0)))return "線路・駅・バス停と重なっています。";
+ if(isTransit){
+  if(buildings.some(b=>b.type==="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";
+  return "";
+ }
+ if(item.type==="airport"){
   const runway=airportRunwayBounds(x,z);
-  if(buildings.some(b=>b!==building&&b.type!=="airport"&&footprintsOverlap(buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b),runway)))return "滑走路に既存の建物が重なります。別の場所を選んでください。";
+  if(buildings.some(b=>b!==item&&b.type!=="airport"&&footprintsOverlap(buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b),runway)))return "滑走路に既存の建物が重なります。別の場所を選んでください。";
   if(roads.some(r=>footprintsOverlap(roadBounds(r.x,r.z),runway,0)))return "滑走路に道路が重なります。別の場所を選んでください。";
-  if(transit.some(t=>footprintsOverlap(transitBounds(t.type,t.x,t.z),runway,0)))return "滑走路に線路・駅・バス停が重なります。別の場所を選んでください。";
+  if(transit.some(t=>footprintsOverlap(transitMoveBounds(t,t.x,t.z,t.rotation||0),runway,0)))return "滑走路に線路・駅・バス停が重なります。別の場所を選んでください。";
  }else if(buildings.some(b=>b.type==="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z))))return "滑走路内には移動できません。";
  return "";
 }
+
 function hideMovePreview(){
  if(moveGhost){scene.remove(moveGhost);moveGhost.traverse(o=>{if(o.isMesh){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose();}});moveGhost=null;}
  moveMarker.visible=false;moveMarkerOutline.visible=false;moveMarker.scale.set(1,1,1);moveMarkerOutline.scale.set(1,1,1);movePreviewPoint=null;
@@ -1016,7 +1037,7 @@ function renderMovePreview(){
  const problem=moveValidation(selectedObject,p.x,p.z,rotation);movePreviewValid=!problem;
  moveGhost.position.set(p.x,.85,p.z);moveGhost.rotation.y=rotation;
  moveGhost.traverse(o=>{if(o.isMesh){const color=movePreviewValid?0x35e58a:0xff4055;const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{m.color.set(color);m.emissive?.set(color);m.emissiveIntensity=.45;});}});
- const footprint=buildingBounds(selectedObject.type,p.x,p.z,rotation,selectedObject.level||1,selectedObject),size=footprint.getSize(new THREE.Vector3()),center=footprint.getCenter(new THREE.Vector3());
+ const footprint=moveObjectBounds(selectedObject,p.x,p.z,rotation),size=footprint.getSize(new THREE.Vector3()),center=footprint.getCenter(new THREE.Vector3());
  moveMarker.scale.set(Math.max(4,size.x)/4.05,Math.max(4,size.z)/4.05,1);moveMarkerOutline.scale.copy(moveMarker.scale);
  moveMarker.position.set(center.x,.055,center.z);moveMarker.rotation.z=0;
  moveMarker.material.color.set(movePreviewValid?0x35e58a:0xff4055);
@@ -1040,10 +1061,10 @@ function showMoveControls(){
  const active=!!selectedObject;$("moveControls").classList.toggle("hidden",!active);
  if(!active){$("moveProgress").className="move-progress";$("moveProgress").textContent="施設を選択すると、移動プレビューを表示します。";return;}
  const rotation=pendingMove?pendingMove.rotation:moveDraftRotation;
- $("moveTargetName").textContent=defs[selectedObject.type].name+" の移動";
+ $("moveTargetName").textContent=moveObjectName(selectedObject)+" の移動";
  $("moveAngle").textContent="向き："+Math.round(rotation*180/Math.PI)%360+"°";
  $("confirmMoveBtn").disabled=!pendingMove||!movePreviewValid;
- $("rotateMoveBtn").disabled=!selectedObject;
+ $("rotateMoveBtn").disabled=!selectedObject||(transit.includes(selectedObject)&&selectedObject.type==="rail");
  renderMovePreview();
 }
 function cancelPendingMove(){
@@ -1054,6 +1075,7 @@ function commitPendingMove(showMessage=true){
  const {building,x,z,rotation}=pendingMove,problem=moveValidation(building,x,z,rotation);
  if(problem){notice(problem);return false;}
  building.x=x;building.z=z;building.rotation=rotation;building.group.position.set(x,0,z);building.group.rotation.y=rotation;
+ if(transit.includes(building)){refreshRailVisuals();rebuildTransitVehicles();}
  pendingMove=null;selectedObject=null;moveDraftRotation=0;hideMovePreview();showMoveControls();assignWorkplaces();updateUI();scheduleSave();
  if(showMessage)notice("施設の位置と向きを変更しました。続けて別の施設を選べます。");
  return true;
@@ -1062,7 +1084,7 @@ function confirmPendingMove(){
  if(!pendingMove)return notice("先に移動先をクリックしてください。");
  commitPendingMove(true);
 }
-$("rotateMoveBtn").onclick=()=>{if(!selectedObject)return notice("先に向きを変える施設を選択してください。");moveDraftRotation=((pendingMove?pendingMove.rotation:moveDraftRotation)+Math.PI/2)%(Math.PI*2);if(pendingMove)pendingMove.rotation=moveDraftRotation;showMoveControls();renderMovePreview();};
+$("rotateMoveBtn").onclick=()=>{if(!selectedObject)return notice("先に向きを変える施設を選択してください。");if(transit.includes(selectedObject)&&selectedObject.type==="rail")return notice("線路の向きは隣の線路との接続方向で自動的に決まります。");moveDraftRotation=((pendingMove?pendingMove.rotation:moveDraftRotation)+Math.PI/2)%(Math.PI*2);if(pendingMove)pendingMove.rotation=moveDraftRotation;showMoveControls();renderMovePreview();};
 $("rotatePlacementBtn").onclick=()=>{
  if(!defs[selected])return;
  placementRotation=(placementRotation+Math.PI/2)%(Math.PI*2);
@@ -1123,20 +1145,20 @@ window.addEventListener("pointerup",e=>{
   const clickedBuilding=buildingAtPointer(e);
   const groundPoint=pointerGroundPoint(e);
   const p=groundPoint?gridPos(groundPoint):null;
-  const targetBuilding=clickedBuilding||(p?buildingAtPoint(p.x,p.z):null);
+  const targetBuilding=clickedBuilding||(p?(buildingAtPoint(p.x,p.z)||transit.find(t=>footprintsOverlap(transitMoveBounds(t,t.x,t.z,t.rotation||0),new THREE.Box3(new THREE.Vector3(p.x-2,0,p.z-2),new THREE.Vector3(p.x+2,3,p.z+2)),0))):null);
   if(pendingMove){
    if(targetBuilding&&targetBuilding!==pendingMove.building){
     if(!commitPendingMove(false))return;
     selectedObject=targetBuilding;moveDraftRotation=Number(targetBuilding.rotation)||0;prepareMovePreview(targetBuilding);showMoveControls();
-    notice("前の建物を移動しました。続けて"+defs[targetBuilding.type].name+"を移動できます。");return;
+    notice("前の施設を移動しました。続けて"+moveObjectName(targetBuilding)+"を移動できます。");return;
    }
    if(targetBuilding===pendingMove.building){notice("この建物の移動先をクリックするか、「決定」で確定してください。");return;}
    if(!p)return notice("移動先の地面をクリックしてください。");
    const problem=moveValidation(pendingMove.building,p.x,p.z,pendingMove.rotation);if(problem)return notice(problem);
    pendingMove.x=p.x;pendingMove.z=p.z;movePreviewPoint={x:p.x,z:p.z};showMoveControls();notice("移動先を更新しました。「決定」で確定できます。");return;
   }
-  if(!selectedObject){selectedObject=targetBuilding;if(selectedObject){moveDraftRotation=Number(selectedObject.rotation)||0;prepareMovePreview(selectedObject);showMoveControls();notice(defs[selectedObject.type].name+"を選択しました。移動先をクリックするか、↻で向きを変更できます。");}else notice("移動したい施設をクリックしてください。");return;}
-  if(clickedBuilding&&clickedBuilding!==selectedObject){notice("先に現在選択中の建物の移動先をクリックしてください。");return;}
+  if(!selectedObject){selectedObject=targetBuilding;if(selectedObject){moveDraftRotation=Number(selectedObject.rotation)||0;prepareMovePreview(selectedObject);showMoveControls();notice(moveObjectName(selectedObject)+"を選択しました。移動先をクリックするか、↻で向きを変更できます。");}else notice("移動したい施設をクリックしてください。");return;}
+  if(clickedBuilding&&clickedBuilding!==selectedObject){notice("先に現在選択中の施設の移動先をクリックしてください。");return;}
   if(!p)return notice("移動先の地面をクリックしてください。");
   const problem=moveValidation(selectedObject,p.x,p.z,moveDraftRotation);if(problem)return notice(problem);
   pendingMove={building:selectedObject,x:p.x,z:p.z,rotation:moveDraftRotation};movePreviewPoint={x:p.x,z:p.z};showMoveControls();notice("移動先を仮設定しました。半透明の建物と地面の色を確認して「決定」を押してください。");return;
