@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#16834a">
-<meta name="description" content="理科キッズの正解数ランキング。中学生向け理科クイズに挑戦して、全国の学習者とランキングや称号を競おう。">
+<meta name="description" content="理科キッズの資金ランキング。中学生向け理科クイズに挑戦して、全国の学習者とランキングや称号を競おう。">
 <link rel="canonical" href="https://shunshunday.github.io/science-study/ranking.html">
 <title>ランキング｜理科キッズ</title>
 <style>
@@ -40,9 +40,9 @@ footer{background:#fff;border-top:1px solid var(--line);color:#8a968e}.footer-in
 <body>
 <header class="site-header"><div class="header-inner"><a class="home-brand" href="./" aria-label="理科キッズ ホーム"><div class="logo" aria-hidden="true">理</div><div class="brand">理科キッズ<small>SCIENCE KIDS</small></div></a><div class="header-tag">中学1〜3年生・理科用語集</div><a class="ranking-open" href="./ranking.html">🏆 ランキング</a><a class="ranking-open" href="./titles.html">🎖️ 称号一覧</a><a class="account-open" href="./account.html">ログイン・プロフィール</a></div></header>
 <main>
-<section class="hero"><div class="cup">🏆</div><h1>正解数ランキング</h1><p>みんなの累計正解数で競おう！</p></section>
+<section class="hero"><div class="cup">🏆</div><h1>正解数ランキング</h1><p>みんなの累計獲得資金で競おう！</p></section>
 <section class="panel"><div id="status" class="status">ランキングを読み込んでいます…</div><div id="list"></div></section>
-<p class="foot">ランキングにはプロフィール写真・ユーザー名・累計正解数が表示されます。<br>正解数はログイン中に正解した分が記録されます。</p>
+<p class="foot">ランキングは累計獲得資金順です。クイズ正解1問につき$100が加算されます。<br>街づくりで使った所持金はランキングの実績から減りません。</p>
 <div id="updated" class="updated"></div>
 <a class="back" href="https://shunshunday.github.io/science-study/">← 理科キッズに戻る</a>
 </main>
@@ -54,7 +54,7 @@ function titleFor(n){if(n>=1000)return "覇者";if(n>=500)return "ノーベル�
 function titleMarkFor(n){if(n>=1000)return "";if(n>=500)return "♛";if(n>=200)return "🌟";if(n>=100)return "💡";if(n>=60)return "🧪";if(n>=30)return "🔬";if(n>=10)return "⚗️";return "🌱";}
 (async()=>{
  const status=document.getElementById("status"),list=document.getElementById("list");
- const {data,error}=await client.from("public_leaderboard").select("username,correct_count").order("correct_count",{ascending:false}).order("username",{ascending:true}).limit(100);
+ const {data,error}=await client.from("public_leaderboard").select("username,correct_count,lifetime_earned").order("lifetime_earned",{ascending:false}).order("username",{ascending:true}).limit(100);
  if(error){status.textContent="ランキングを読み込めませんでした。時間をおいて再読み込みしてください。";return;}
  let avatarByUsername={};
  try{const names=(data||[]).map(x=>x.username).filter(Boolean);if(names.length){const result=await client.from("profiles").select("username,avatar_url").in("username",names);if(!result.error){(result.data||[]).forEach(p=>{if(p.avatar_url)avatarByUsername[p.username]=p.avatar_url;});}}}catch(e){console.warn("プロフィール画像の取得をスキップしました",e);}
@@ -62,16 +62,16 @@ function titleMarkFor(n){if(n>=1000)return "";if(n>=500)return "♛";if(n>=200)r
  if(!data||data.length===0){status.hidden=false;status.textContent="まだランキングに参加している人はいません。";return;}
  data.forEach((item,i)=>{
   const row=document.createElement("div");row.className="row";
-  const scoreValue=Number(item.correct_count||0);const isHaki=scoreValue>=1000;const isNobel=scoreValue>=500&&scoreValue<1000;if(isHaki)row.classList.add("haki-row");else if(isNobel)row.classList.add("nobel-row");
+  const correctValue=Number(item.correct_count||0);const scoreValue=Number(item.lifetime_earned||correctValue*100);const isHaki=correctValue>=1000;const isNobel=correctValue>=500&&correctValue<1000;if(isHaki)row.classList.add("haki-row");else if(isNobel)row.classList.add("nobel-row");
   const pos=document.createElement("div");pos.className="pos";pos.textContent=i===0?"🥇":i===1?"🥈":i===2?"🥉":String(i+1);
   const avatar=document.createElement("div");avatar.className="rank-avatar";avatar.setAttribute("aria-label",item.username+"のプロフィール画像");avatar.textContent="理";if(avatarByUsername[item.username]){const img=document.createElement("img");img.src=avatarByUsername[item.username];img.alt="";img.loading="lazy";img.referrerPolicy="no-referrer";img.addEventListener("error",()=>{img.remove();avatar.textContent="理";},{once:true});avatar.textContent="";avatar.appendChild(img);}
   const name=document.createElement("div");name.className="name";name.textContent=item.username;const mark=document.createElement("span");mark.className="title-mark";
   if(scoreValue>=1000){mark.classList.add("haisha-crest");mark.setAttribute("aria-label","覇者の紋章");mark.innerHTML='<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="haishaGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0bd"/><stop offset=".48" stop-color="#d5a34d"/><stop offset="1" stop-color="#8e5525"/></linearGradient></defs><path class="crest-ring" d="M20 2.8 34.8 11.3 34.8 28.7 20 37.2 5.2 28.7 5.2 11.3Z"/><path class="crest-crown" d="m9 24 2.2-11 7 6.1L20 8l2.8 11.1 7-6.1L32 24l-2 5H11Z"/><path class="crest-base" d="M11 31h18"/></svg>';}
-  else mark.textContent=titleMarkFor(scoreValue);
+  else mark.textContent=titleMarkFor(correctValue);
   name.appendChild(mark);
-  const title=document.createElement("span");title.className="rank";title.textContent=titleFor(Number(item.correct_count||0));name.appendChild(title);
-  const score=document.createElement("div");score.className="score";score.textContent=Number(item.correct_count||0).toLocaleString("ja-JP");
-  const small=document.createElement("small");small.textContent="問正解";score.appendChild(small);
+  const title=document.createElement("span");title.className="rank";title.textContent=titleFor(correctValue);name.appendChild(title);
+  const score=document.createElement("div");score.className="score";score.textContent="$"+scoreValue.toLocaleString("en-US");
+  const small=document.createElement("small");small.textContent="累計獲得";score.appendChild(small);
   row.append(pos,avatar,name,score);list.appendChild(row);
  });
  document.getElementById("updated").textContent="上位"+data.length+"人を表示";
