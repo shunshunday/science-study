@@ -28,7 +28,7 @@ h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:
 .member-label{margin:0 0 5px;color:#697781;font-size:9px;font-weight:900;letter-spacing:.18em}
 .member-identity{display:flex;align-items:center;gap:11px;min-width:0}.avatar-wrap{width:64px;height:64px;flex:none;border-radius:50%;overflow:hidden;border:2px solid #cbd3da;background:#e9f2eb;display:grid;place-items:center;color:#16834a;font-size:25px;font-weight:950}.avatar-wrap img{width:100%;height:100%;object-fit:cover;display:block}.avatar-wrap img[hidden]{display:none!important}.avatar-wrap{cursor:copy;transition:box-shadow .15s,border-color .15s}.avatar-wrap.avatar-drag-over{border-color:#16834a;box-shadow:0 0 0 5px #16834a35}.member-card.gold .avatar-wrap{border-color:#b88a1b}.member-name{font-size:clamp(18px,3.5vw,25px);font-weight:950;letter-spacing:.02em;overflow-wrap:anywhere;color:#1f2d35;line-height:1.25}
 .member-sub{margin-top:5px;color:#65737b;font-size:10px}
-.member-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.member-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
 .member-stat{min-width:0;padding:10px 8px;border:1px solid #cbd3da;border-radius:9px;background:#ffffffb8}
 .member-stat span{display:block;color:#687680;font-size:9px;font-weight:800;line-height:1.35}
 .member-stat strong{display:block;margin-top:5px;color:#25343c;font-size:17px;font-weight:950;line-height:1.2;overflow-wrap:anywhere}
@@ -94,7 +94,7 @@ button:disabled{opacity:.55;cursor:wait}
      <div class="member-identity"><div class="avatar-wrap"><img id="avatarPreview" alt="プロフィール写真" hidden><span id="avatarFallback">理</span></div><div style="min-width:0"><div class="member-label">MEMBER NAME</div><div class="member-name" id="username"></div><div class="member-sub">理科キッズ メンバー</div></div></div>
      <div class="member-stats">
       <div class="member-stat"><span>累計獲得資金</span><strong id="earnedMoney">$0</strong></div>
-      <div class="member-stat"><span>累計正解数</span><strong><span id="correct" style="display:inline;color:inherit;font-size:inherit">0</span><small>問</small></strong></div>
+      
       <div class="member-stat"><span>会員ランク</span><strong id="memberStatus" style="font-size:13px">通常会員</strong></div>
       <div class="member-stat"><span>累計プレイ時間</span><strong id="playtime">0分</strong></div>
      </div>
@@ -283,7 +283,6 @@ async function refreshProfile(){
   showAvatar(data.avatar_url||"");
   loadPlaytime(data.playtime_seconds);
   const count=Math.max(0,Number(data.correct_count)||0);
-  document.getElementById("correct").textContent=count.toLocaleString("ja-JP");
   const walletRows=await api("/rest/v1/city_wallets?select=lifetime_earned&user_id=eq."+encodeURIComponent(session.user.id),{method:"GET",cache:"no-store",headers:{"Cache-Control":"no-cache"}});
   const earned=Array.isArray(walletRows)&&walletRows.length?Number(walletRows[0].lifetime_earned||0):count*100;
   document.getElementById("earnedMoney").textContent="$"+earned.toLocaleString("en-US");
