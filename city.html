@@ -1468,9 +1468,9 @@ $("resetBtn").onclick=async()=>{
    return;
   }
  }
- buildings.forEach(b=>scene.remove(b.group));roads.forEach(r=>scene.remove(r.group));transit.forEach(t=>scene.remove(t.group));zones.forEach(z=>scene.remove(z.group));transitVehicles.forEach(v=>scene.remove(v.group));
+ constructions.forEach(c=>{scene.remove(c.site);scene.remove(c.building.group);});buildings.forEach(b=>scene.remove(b.group));roads.forEach(r=>scene.remove(r.group));transit.forEach(t=>scene.remove(t.group));zones.forEach(z=>scene.remove(z.group));transitVehicles.forEach(v=>scene.remove(v.group));
  cars.forEach(v=>scene.remove(v.group));people.forEach(v=>scene.remove(v.group));
- buildings=[];roads=[];cars=[];people=[];transit=[];zones=[];districts.forEach(d=>scene.remove(d.group));districts=[];selectedDistrictId=null;refreshDistrictUI();trainCount=0;busCount=0;transitVehicles=[];selectedObject=null;
+ buildings=[];roads=[];cars=[];people=[];transit=[];zones=[];constructions=[];districts.forEach(d=>scene.remove(d.group));districts=[];selectedDistrictId=null;refreshDistrictUI();trainCount=0;busCount=0;transitVehicles=[];selectedObject=null;gameElapsedMinutes=0;cityTick=0;updateCityClock();climateState.day=-1;updateClimateState();researchPoints=0;unlockedResearch=[];financeHistory=[];marketStats={monthlyRevenue:null,monthlyExpenses:null,taxRevenue:0,goodsSupply:0,goodsDemand:0,imports:0,exports:0,privateWages:0,publicWages:0,welfare:0,companies:0};disasterCooldown=0;disasterName="";taxRates={res:10,com:10,ind:10,office:10};staffingAlertState.clear();
  if(!user)await refreshWallet();
  updateUI();await saveCity();
  notice("都市を初期化しました。"+(user&&refund>0?" $"+refund.toLocaleString("en-US")+"（50%）を返金しました。":""));
