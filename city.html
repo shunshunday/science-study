@@ -480,8 +480,8 @@ function refreshRoadVisuals(){
   const degree=connected.filter(Boolean).length;r.trafficLight=degree>=3;
   const horizontal=connected[0]||connected[1],vertical=connected[2]||connected[3],roadWidth=Math.min(3.9,1.35+(r.lanes||2)*.55);box(g,horizontal&&vertical?cell:cell,.12,vertical&&!horizontal?cell:horizontal&&!vertical?roadWidth:cell,roadSurfaceMaterial,0,.02,0);
   for(let i=0;i<4;i++)if(!connected[i]){
-   const [dx,dz]=dirs[i];if(dx!==0){box(g,.52,.16,cell,roadSidewalkMaterial,dx>0?1.74:-1.74,.08,0);box(g,.08,.2,cell,roadCurbMaterial,dx>0?1.48:-1.48,.1,0);}
-   else{box(g,cell,.16,.52,roadSidewalkMaterial,0,.08,dz>0?1.74:-1.74);box(g,cell,.2,.08,roadCurbMaterial,0,.1,dz>0?1.48:-1.48);}
+   const [dx,dz]=dirs[i];if(dx!==0){box(g,.52,.16,cell,roadSidewalkMaterial,dx>0?roadWidth/2+.26:-(roadWidth/2+.26),.08,0);box(g,.08,.2,cell,roadCurbMaterial,dx>0?roadWidth/2+.04:-(roadWidth/2+.04),.1,0);}
+   else{box(g,cell,.16,.52,roadSidewalkMaterial,0,.08,dz>0?roadWidth/2+.26:-(roadWidth/2+.26));box(g,cell,.2,.08,roadCurbMaterial,0,.1,dz>0?roadWidth/2+.04:-(roadWidth/2+.04));}
   }
   const laneDivider=Array.from({length:Math.max(0,(r.lanes||2)-1)},(_,i)=>-roadWidth/2+(i+1)*roadWidth/(r.lanes||2)).filter(v=>Math.abs(v)>.08);
   if(horizontal){if(!r.oneWay)box(g,3.65,.018,.045,roadCenterMaterial,0,.092,0);for(const z of laneDivider)box(g,3.7,.018,.035,roadLaneMaterial,0,.093,z);}
