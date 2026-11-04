@@ -100,7 +100,7 @@ const defs={
  solar:{name:"太陽光発電所",cost:6000,generation:22,jobs:12,staffNeed:6,color:0xe9ca63,kind:"power"},office:{name:"未来型オフィス",cost:18000,power:22,jobs:36,staffNeed:18,color:0x42a5d8,kind:"office"},factory:{name:"先端ロボット工場",cost:22000,power:35,jobs:30,staffNeed:16,color:0x8b9ba8,kind:"factory"},firestation:{name:"スマート消防署",cost:8500,power:8,fireCapacity:120,jobs:16,staffNeed:8,color:0xe85b52,kind:"public"},police:{name:"近未来警察署",cost:9500,power:10,policeCapacity:120,jobs:18,staffNeed:9,color:0x3978c8,kind:"public"},restaurant:{name:"ガラスドームレストラン",cost:7500,power:12,jobs:14,staffNeed:7,color:0xe7a34a,kind:"restaurant"},hotel:{name:"ラグジュアリーホテル",cost:16000,power:20,jobs:28,staffNeed:14,color:0xb58cda,kind:"hotel"},university:{name:"未来総合大学",cost:20000,power:24,education:35,educationCapacity:220,jobs:32,staffNeed:16,color:0x6c83c7,kind:"school"},stadium:{name:"メガスタジアム",cost:24000,power:28,happy:24,jobs:24,staffNeed:12,color:0x4aa879,kind:"stadium"},airport:{name:"都市型空港ターミナル",cost:30000,power:42,jobs:40,staffNeed:20,color:0x6bbbc7,kind:"airport"},water:{name:"浄水場",cost:18000,power:12,waterSupply:180,jobs:14,staffNeed:7,color:0x39a9d6,kind:"utility"},sewage:{name:"下水処理場",cost:22000,power:18,sewageCapacity:180,jobs:16,staffNeed:8,color:0x78949d,kind:"utility"},waste:{name:"廃棄物処理センター",cost:26000,power:24,wasteCapacity:160,jobs:20,staffNeed:10,color:0x83a66a,kind:"utility"},farm:{name:"農業生産地区",cost:8500,power:8,jobs:18,staffNeed:8,color:0x78a84f,kind:"industry"},forestry:{name:"森林・木材生産所",cost:9500,power:7,jobs:16,staffNeed:7,color:0x477c49,kind:"industry"},mine:{name:"鉱山",cost:14500,power:16,jobs:22,staffNeed:11,color:0x8b8273,kind:"industry"},foodplant:{name:"食品加工工場",cost:17000,power:18,jobs:20,staffNeed:10,color:0xc99b50,kind:"industry"},lumbermill:{name:"製材所",cost:15000,power:14,jobs:18,staffNeed:9,color:0x9a7049,kind:"industry"},steelworks:{name:"製鉄所",cost:23000,power:28,jobs:24,staffNeed:12,color:0x75838d,kind:"industry"},manufacturer:{name:"総合製造工場",cost:29000,power:32,jobs:30,staffNeed:15,color:0x4d8c9d,kind:"industry"},cargoRail:{name:"貨物鉄道ターミナル",cost:26000,power:18,jobs:18,staffNeed:9,cargoCapacity:120,color:0x687b8b,kind:"logistics"},seaport:{name:"国際貨物港",cost:42000,power:26,jobs:26,staffNeed:13,cargoCapacity:220,color:0x397f9b,kind:"logistics"},cargoAirport:{name:"航空貨物ターミナル",cost:38000,power:30,jobs:24,staffNeed:12,cargoCapacity:180,color:0x6bbbc7,kind:"logistics"}
 };
 const scene=new THREE.Scene();const skyColor=new THREE.Color(0x9bc9e8);scene.background=skyColor;scene.fog=new THREE.Fog(skyColor,190,980);
-const camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,.1,1800);camera.position.set(28,28,35);
+const camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,.1,1800);camera.position.set(85,95,110);
 const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.domElement.style.width="100%";renderer.domElement.style.height="100%";renderer.domElement.style.display="block";renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;$("game").appendChild(renderer.domElement);
 const controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,0,0);controls.enableDamping=true;controls.maxPolarAngle=Math.PI*.47;controls.minDistance=9;controls.maxDistance=280;controls.mouseButtons.LEFT=THREE.MOUSE.PAN;controls.mouseButtons.RIGHT=THREE.MOUSE.ROTATE;controls.mouseButtons.MIDDLE=THREE.MOUSE.DOLLY;renderer.domElement.addEventListener("contextmenu",e=>e.preventDefault());
 const hemiLight=new THREE.HemisphereLight(0xc7e7ff,0x40503a,2.05);scene.add(hemiLight);
@@ -108,8 +108,8 @@ const keyLight=new THREE.DirectionalLight(0xffe4bf,2.2);keyLight.position.set(-3
 // 広大な海岸都市マップ。中央は建設用の平坦地、外周は丘陵・湾・湖。
 const MAP_SIZE=760,BUILD_RADIUS=158,SEA_LEVEL=-.55;
 const smoothTerrain=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
-function terrainHeightAt(x,z){const r=Math.hypot(x,z),angle=Math.atan2(z,x),coastRadius=278+16*Math.sin(angle*3+.4)+10*Math.sin(angle*7-.8)-75*Math.exp(-Math.pow(angle/.29,2))+28*Math.exp(-Math.pow((angle-Math.PI)/.5,2)),landFade=1-smoothTerrain(coastRadius-8,coastRadius+8,r),upland=smoothTerrain(145,258,r);let h=upland*(2.1+Math.sin(x*.026)*Math.cos(z*.023)*2.2+Math.sin((x+z)*.041)*.9);const lake=Math.hypot((x+112)*.94,(z-190)*1.08);h-=4.6*(1-smoothTerrain(21,34,lake));const pond=Math.hypot((x-82)*1.08,(z-218)*.92);h-=3.5*(1-smoothTerrain(12,19,pond));return h*landFade-4.4*(1-landFade);}
-function isBuildableLocation(x,z){return Math.hypot(x,z)<=BUILD_RADIUS&&terrainHeightAt(x,z)>SEA_LEVEL+.35;}
+function coastlineRadiusAt(x,z){const angle=Math.atan2(z,x);return 200+16*Math.sin(angle*3+.4)+10*Math.sin(angle*7-.8)-68*Math.exp(-Math.pow(angle/.29,2))+28*Math.exp(-Math.pow((angle-Math.PI)/.5,2));}function terrainHeightAt(x,z){const r=Math.hypot(x,z),coastRadius=coastlineRadiusAt(x,z),landFade=1-smoothTerrain(coastRadius-8,coastRadius+8,r),upland=smoothTerrain(145,258,r);let h=upland*(2.1+Math.sin(x*.026)*Math.cos(z*.023)*2.2+Math.sin((x+z)*.041)*.9);const lake=Math.hypot((x+100)*.94,(z-90)*1.08);h-=4.6*(1-smoothTerrain(21,34,lake));const pond=Math.hypot((x-82)*1.08,(z+105)*.92);h-=3.5*(1-smoothTerrain(12,19,pond));return h*landFade-4.4*(1-landFade);}
+function isBuildableLocation(x,z,type=null){const r=Math.hypot(x,z),h=terrainHeightAt(x,z);if(type==="seaport")return r<=BUILD_RADIUS&&Math.abs(r-coastlineRadiusAt(x,z))<23&&h>SEA_LEVEL+.35;if(type==="road"||type==="transit")return r<=BUILD_RADIUS&&h>SEA_LEVEL+.35;return r<=BUILD_RADIUS&&h>SEA_LEVEL+.35;}
 let seed=87123;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
 const groundGeometry=new THREE.PlaneGeometry(MAP_SIZE,MAP_SIZE,300,300);groundGeometry.rotateX(-Math.PI/2);const groundPositions=groundGeometry.attributes.position,groundColors=[];const grassColor=new THREE.Color(0x58784a),uplandColor=new THREE.Color(0x647d50),rockColor=new THREE.Color(0x77776b),sandColor=new THREE.Color(0xb6a17a),vertexColor=new THREE.Color();
 for(let i=0;i<groundPositions.count;i++){const x=groundPositions.getX(i),z=groundPositions.getZ(i),h=terrainHeightAt(x,z),r=Math.hypot(x,z);groundPositions.setY(i,h);if(h<SEA_LEVEL+.5)vertexColor.set(0x465f59);else if(h<1.15&&r>145)vertexColor.copy(sandColor).lerp(grassColor,smoothTerrain(.15,1.2,h));else if(h>7)vertexColor.copy(uplandColor).lerp(rockColor,smoothTerrain(7,13,h));else vertexColor.copy(grassColor).lerp(uplandColor,smoothTerrain(1,7,h));groundColors.push(vertexColor.r,vertexColor.g,vertexColor.b);}
@@ -177,7 +177,7 @@ const buildingTrimMaterial=mat(0x263e50,.35,.42);
 function box(parent,w,h,d,material,x=0,y=h/2,z=0){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
 function makeBuilding(type,x,z,level=1){
  const d=defs[type],g=new THREE.Group();
- g.position.set(x,0,z);g.userData={type,level};g.scale.setScalar(1+(level-1)*.08);
+ g.position.set(x,terrainHeightAt(x,z),z);g.userData={type,level};g.scale.setScalar(1+(level-1)*.08);
  const body=mat(d.color,.28,.42),wall=mat(0xe5edf1,.12,.68),dark=mat(0x172b3b,.48,.38),glass=mat(0x6ebbd0,.58,.2,0x123d50),windowMat=mat(0x9be8ff,.42,.16,0x28758e),roofMat=mat(0x334b5b,.35,.48),white=mat(0xf4f7f7,.08,.5),green=mat(0x4e9b68,.08,.8);
  const add=(w,h,dep,m,px,py,pz)=>box(g,w,h,dep,m,px,py,pz);
  const win=(px,py,pz,w=.34,h=.48,side="front")=>{
@@ -475,7 +475,7 @@ function makeBuilding(type,x,z,level=1){
  g.add(label);scene.add(g);return {type,x,z,level,group:g};
 }
 const roadSurfaceMaterial=mat(0x263440,.18,.82),roadSidewalkMaterial=mat(0x929da2,.05,.92),roadCurbMaterial=mat(0xc4c9c8,.08,.72),roadLaneMaterial=mat(0xe8e5cf,.05,.7),roadCenterMaterial=mat(0xf0c75b,.12,.55),signalPoleMaterial=mat(0x273440,.72,.35),signalCaseMaterial=mat(0x111c25,.5,.42);
-function makeRoad(x,z,config=null){const g=new THREE.Group();g.position.set(x,.035,z);scene.add(g);const c=config||roadConfig;return {x,z,group:g,lanes:Number(c.lanes)||2,speedLimit:Number(c.speedLimit)||50,oneWay:!!c.oneWay,flowX:Number.isFinite(Number(c.flowX))?Number(c.flowX):1,flowZ:Number.isFinite(Number(c.flowZ))?Number(c.flowZ):0,utilities:{electricity:c.utilities?.electricity===true,water:c.utilities?.water===true,sewage:c.utilities?.sewage===true},condition:100,trafficLight:false};}
+function makeRoad(x,z,config=null){const g=new THREE.Group();g.position.set(x,terrainHeightAt(x,z)+.035,z);scene.add(g);const c=config||roadConfig;return {x,z,group:g,lanes:Number(c.lanes)||2,speedLimit:Number(c.speedLimit)||50,oneWay:!!c.oneWay,flowX:Number.isFinite(Number(c.flowX))?Number(c.flowX):1,flowZ:Number.isFinite(Number(c.flowZ))?Number(c.flowZ):0,utilities:{electricity:c.utilities?.electricity===true,water:c.utilities?.water===true,sewage:c.utilities?.sewage===true},condition:100,trafficLight:false};}
 const utilityLineMaterials={electricity:mat(0xf0cf55,.25,.5),water:mat(0x35c8ed,.25,.4),sewage:mat(0x9b8067,.3,.7)};
 let utilityVisualGroup=new THREE.Group();scene.add(utilityVisualGroup);
 function refreshUtilityVisuals(){
@@ -521,7 +521,7 @@ function refreshRoadVisuals(){
   }
  }
 } function makeDistrictOverlay(d){
- const g=new THREE.Group(),w=d.maxX-d.minX+cell,h=d.maxZ-d.minZ+cell,cx=(d.minX+d.maxX)/2,cz=(d.minZ+d.maxZ)/2;g.position.set(cx,.055,cz);
+ const g=new THREE.Group(),w=d.maxX-d.minX+cell,h=d.maxZ-d.minZ+cell,cx=(d.minX+d.maxX)/2,cz=(d.minZ+d.maxZ)/2;g.position.set(cx,terrainHeightAt(cx,cz)+.055,cz);
  const fill=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:0xe5b64d,transparent:true,opacity:.055,depthWrite:false,side:THREE.DoubleSide}));fill.rotation.x=-Math.PI/2;g.add(fill);
  const edge=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w,.06,h)),new THREE.LineBasicMaterial({color:0xf0c76a,transparent:true,opacity:.9}));edge.position.y=.04;g.add(edge);
  const canvas=document.createElement("canvas");canvas.width=512;canvas.height=96;const ctx=canvas.getContext("2d");ctx.fillStyle="#1c2934";ctx.globalAlpha=.85;ctx.fillRect(0,0,512,96);ctx.globalAlpha=1;ctx.fillStyle="#ffe4a1";ctx.font="bold 38px sans-serif";ctx.textAlign="center";ctx.fillText(d.name,256,62);
@@ -548,7 +548,7 @@ function updateSelectedDistrictPolicy(){
 }
 $("districtSelect").addEventListener("change",e=>{selectedDistrictId=e.target.value||null;refreshDistrictUI();});
 ["policyHeavy","policySpeed","policyGreen","policyParking"].forEach(id=>$(id).addEventListener("change",updateSelectedDistrictPolicy));
-function makeZone(zoneType,x,z,developed=false){const info=zoneInfo[zoneType];if(!info)return null;const g=new THREE.Group();g.position.set(x,.035,z);const fill=new THREE.Mesh(new THREE.PlaneGeometry(3.72,3.72),new THREE.MeshBasicMaterial({color:info.color,transparent:true,opacity:.24,depthWrite:false,side:THREE.DoubleSide}));fill.rotation.x=-Math.PI/2;fill.position.y=.012;g.add(fill);const outline=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(3.72,.035,3.72)),new THREE.LineBasicMaterial({color:info.color,transparent:true,opacity:.9}));outline.position.y=.035;g.add(outline);g.visible=!developed;scene.add(g);return {zoneType,x,z,group:g,developed};} function zoneRoadDistance(start){
+function makeZone(zoneType,x,z,developed=false){const info=zoneInfo[zoneType];if(!info)return null;const g=new THREE.Group();g.position.set(x,terrainHeightAt(x,z)+.035,z);const fill=new THREE.Mesh(new THREE.PlaneGeometry(3.72,3.72),new THREE.MeshBasicMaterial({color:info.color,transparent:true,opacity:.24,depthWrite:false,side:THREE.DoubleSide}));fill.rotation.x=-Math.PI/2;fill.position.y=.012;g.add(fill);const outline=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(3.72,.035,3.72)),new THREE.LineBasicMaterial({color:info.color,transparent:true,opacity:.9}));outline.position.y=.035;g.add(outline);g.visible=!developed;scene.add(g);return {zoneType,x,z,group:g,developed};} function zoneRoadDistance(start){
  const zoneMap=new Map(zones.map(z=>[z.x+","+z.z,z])),queue=[{x:start.x,z:start.z,d:0}],seen=new Set([start.x+","+start.z]);
  for(let i=0;i<queue.length;i++){const p=queue[i];if(roads.some(r=>Math.abs(r.x-p.x)+Math.abs(r.z-p.z)===cell))return p.d;for(const [dx,dz] of [[cell,0],[-cell,0],[0,cell],[0,-cell]]){const x=p.x+dx,z=p.z+dz,key=x+","+z;if(!seen.has(key)&&zoneMap.has(key)){seen.add(key);queue.push({x,z,d:p.d+1});}}}
  return Infinity;
@@ -575,7 +575,7 @@ function eraseZoneAt(x,z){
  scene.remove(zone.group);zones=zones.filter(v=>v!==zone);assignWorkplaces();updateUI();scheduleSave();notice("用途指定を解除しました。");
 }
 function makeConstructionSite(x,z,type){
- const site=new THREE.Group();site.position.set(x,0,z);
+ const site=new THREE.Group();site.position.set(x,terrainHeightAt(x,z),z);
  const steel=mat(0x657987,.72,.34),yellow=mat(0xf2bd35,.38,.42),concrete=mat(0x59636b,.12,.85),cable=mat(0x26333b,.5,.5);
  const slab=new THREE.Mesh(new THREE.BoxGeometry(3.9,.16,3.9),concrete);slab.position.y=.08;site.add(slab);
  const mast=new THREE.Group();mast.position.set(1.55,.16,-1.25);site.add(mast);
@@ -688,7 +688,7 @@ function growResidents(){
 }
 const transitCosts={rail:600,station:7500,busstop:1500};
 function makeTransit(type,x,z){
- const g=new THREE.Group();g.position.set(x,0,z);g.userData={type};
+ const g=new THREE.Group();g.position.set(x,terrainHeightAt(x,z),z);g.userData={type};
  const concrete=mat(0x8b989e,.12,.86),steel=mat(0x566b79,.78,.3),railMat=mat(0x9eabb3,.85,.22),yellow=mat(0xf0c44d,.12,.5),glass=mat(0x83d9ef,.48,.16,0x174b62),blue=mat(0x197db4,.48,.28),white=mat(0xf0f5f7,.12,.5),dark=mat(0x172635,.4,.5);
  const add=(w,h,d,m,px,py,pz)=>box(g,w,h,d,m,px,py,pz);
  if(type==="rail"){
@@ -815,7 +815,7 @@ function transitBounds(type,x,z){
  const d=transitDimensions(type);
  return new THREE.Box3(new THREE.Vector3(x-d.w/2,0,z-d.d/2),new THREE.Vector3(x+d.w/2,3,z+d.d/2));
 }
-function transitPlacementProblem(type,x,z){if(!isBuildableLocation(x,z))return "海・湖・丘陵の外側には交通施設を設置できません。";if(!transitCosts[type])return "交通施設の種類が正しくありません。";const candidate=transitBounds(type,x,z);if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港ターミナルと重なっています。";if(roadsOverlapBuilding(candidate))return "道路と重なっています。";if(buildings.some(b=>b.type==="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),.05)))return "ほかの交通施設と重なっています。";if(type==="rail"&&transit.some(t=>t.type==="rail"&&Math.hypot(t.x-x,t.z-z)<3.9))return "線路が重なっています。1マスずつ隣につなげてください。";if(type!=="rail"&&transit.some(t=>t.type===type&&Math.hypot(t.x-x,t.z-z)<4))return "同じ交通施設が近すぎます。";return "";}
+function transitPlacementProblem(type,x,z){if(!isBuildableLocation(x,z,"transit"))return "海・湖・丘陵の外側には交通施設を設置できません。";if(!transitCosts[type])return "交通施設の種類が正しくありません。";const candidate=transitBounds(type,x,z);if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港ターミナルと重なっています。";if(roadsOverlapBuilding(candidate))return "道路と重なっています。";if(buildings.some(b=>b.type==="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),.05)))return "ほかの交通施設と重なっています。";if(type==="rail"&&transit.some(t=>t.type==="rail"&&Math.hypot(t.x-x,t.z-z)<3.9))return "線路が重なっています。1マスずつ隣につなげてください。";if(type!=="rail"&&transit.some(t=>t.type===type&&Math.hypot(t.x-x,t.z-z)<4))return "同じ交通施設が近すぎます。";return "";}
 function refreshRailVisuals(){
  const rails=transit.filter(t=>t.type==="rail");
  const byKey=new Map(rails.map(r=>[Math.round(r.x/4)+","+Math.round(r.z/4),r]));
@@ -995,7 +995,7 @@ function cacheVehiclePath(path){
      const phase=Math.floor(cityTick/8)%2,horizontal=Math.abs(dx)>Math.abs(dz),green=horizontal?phase===0:phase===1,distanceToSignal=len-remain;
      if(!green&&distanceToSignal<1.15&&distanceToSignal>=0){const segmentStart=v.distance-remain;v.distance=Math.min(v.distance,segmentStart+Math.max(0,len-1.15));remain=Math.min(remain,Math.max(0,len-1.15));}
     }
-    const t=len?remain/len:0;const laneRoad=road||roads.find(r=>r.x===a.x&&r.z===a.z),laneWidth=laneRoad?Math.min(3.25,1.25+(laneRoad.lanes||2)*.36)/(laneRoad.lanes||2):.8,laneOffset=laneRoad?.oneWay?0:laneWidth*.5,perpX=dz/(len||1),perpZ=-dx/(len||1);v.group.position.set(a.x+dx*t+perpX*laneOffset,v.kind==="train"?.06:.04,a.z+dz*t+perpZ*laneOffset);v.group.rotation.y=Math.atan2(dx,dz)+(v.kind==="train"?Math.PI/2:v.kind==="car"?Math.PI:0);break;
+    const t=len?remain/len:0;const laneRoad=road||roads.find(r=>r.x===a.x&&r.z===a.z),laneWidth=laneRoad?Math.min(3.25,1.25+(laneRoad.lanes||2)*.36)/(laneRoad.lanes||2):.8,laneOffset=laneRoad?.oneWay?0:laneWidth*.5,perpX=dz/(len||1),perpZ=-dx/(len||1);const vx=a.x+dx*t+perpX*laneOffset,vz=a.z+dz*t+perpZ*laneOffset;v.group.position.set(vx,terrainHeightAt(vx,vz)+(v.kind==="train"?.06:.04),vz);v.group.rotation.y=Math.atan2(dx,dz)+(v.kind==="train"?Math.PI/2:v.kind==="car"?Math.PI:0);break;
    }remain-=len;
   }
 }
@@ -1188,7 +1188,7 @@ function preparePlacementGhost(){
  placementGhost.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false;const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{m=m.clone();m.transparent=true;m.opacity=.72;m.depthWrite=false;m.depthTest=false;});if(Array.isArray(o.material))o.material=o.material.map(m=>{const q=m.clone();q.transparent=true;q.opacity=.72;q.depthWrite=false;q.depthTest=false;return q;});else{o.material=o.material.clone();o.material.transparent=true;o.material.opacity=.72;o.material.depthWrite=false;o.material.depthTest=false;}}});
  placementGhost.renderOrder=999;moveMarker.visible=true;moveMarkerOutline.visible=true;
 }
-function buildingPlacementProblem(type,x,z,rotation=0){if(!isBuildableLocation(x,z))return "海・湖・丘陵の外側は建設可能エリアではありません。";if(type==="airport"&&buildings.some(b=>b.type==="airport"))return "空港は都市に1か所だけ設置できます。";const candidate=buildingBounds(type,x,z,rotation,1);if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港の敷地と重なっています。";if(roadsOverlapBuilding(candidate))return "道路と重なっています。";if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),0)))return "線路・駅・バス停と重なっています。";if(buildings.some(b=>b.type==="airport"&&type!=="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";return "";}
+function buildingPlacementProblem(type,x,z,rotation=0){if(!isBuildableLocation(x,z,type))return "海・湖・丘陵の外側は建設可能エリアではありません。";if(type==="airport"&&buildings.some(b=>b.type==="airport"))return "空港は都市に1か所だけ設置できます。";const candidate=buildingBounds(type,x,z,rotation,1);if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港の敷地と重なっています。";if(roadsOverlapBuilding(candidate))return "道路と重なっています。";if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),0)))return "線路・駅・バス停と重なっています。";if(buildings.some(b=>b.type==="airport"&&type!=="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";return "";}
 function roadPlacementProblem(x,z){if(!isBuildableLocation(x,z))return "海・湖・丘陵の外側は建設可能エリアではありません。";if(roads.some(r=>r.x===x&&r.z===z))return "すでに道路があります。";if(buildings.some(b=>roadOverlapsBounds(x,z,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港の敷地と重なっています。";if(transit.some(t=>footprintsOverlap(roadBounds(x,z),transitBounds(t.type,t.x,t.z),0)))return "線路・駅・バス停と重なっています。";if(buildings.some(b=>b.type==="airport"&&footprintsOverlap(roadBounds(x,z),airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";return "";}
 function updatePlacementPreviewPointer(e){
  if(publicView||!document.body.classList.contains("build-open")||!(selected==="road"||["rail","station","busstop"].includes(selected)||!!defs[selected]))return;
@@ -1204,10 +1204,10 @@ function updatePlacementPreviewPointer(e){
   problem=transitPlacementProblem(selected,p.x,p.z);
  }
  else{problem=buildingPlacementProblem(selected,p.x,p.z,placementRotation);bounds=buildingBounds(selected,p.x,p.z,placementRotation,1);}
- placementPreviewValid=!problem;placementGhost.position.set(p.x,.72,p.z);placementGhost.rotation.y=defs[selected]?placementRotation:0;tintPlacementGhost(placementPreviewValid);
+ placementPreviewValid=!problem;placementGhost.position.set(p.x,terrainHeightAt(p.x,p.z)+.72,p.z);placementGhost.rotation.y=defs[selected]?placementRotation:0;tintPlacementGhost(placementPreviewValid);
  const w=Math.max(4,bounds.max.x-bounds.min.x),d=Math.max(4,bounds.max.z-bounds.min.z);
- const markerCenter=bounds.getCenter(new THREE.Vector3());moveMarker.position.set(markerCenter.x,.12,markerCenter.z);moveMarker.scale.set(w/4.05,d/4.05,1);moveMarker.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarker.material.depthTest=false;moveMarker.renderOrder=998;
- moveMarkerOutline.position.set(markerCenter.x,.13,markerCenter.z);moveMarkerOutline.scale.set(w/4.05,d/4.05,1);moveMarkerOutline.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarkerOutline.material.depthTest=false;moveMarkerOutline.renderOrder=998;
+ const markerCenter=bounds.getCenter(new THREE.Vector3());moveMarker.position.set(markerCenter.x,terrainHeightAt(markerCenter.x,markerCenter.z)+.12,markerCenter.z);moveMarker.scale.set(w/4.05,d/4.05,1);moveMarker.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarker.material.depthTest=false;moveMarker.renderOrder=998;
+ moveMarkerOutline.position.set(markerCenter.x,terrainHeightAt(markerCenter.x,markerCenter.z)+.13,markerCenter.z);moveMarkerOutline.scale.set(w/4.05,d/4.05,1);moveMarkerOutline.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarkerOutline.material.depthTest=false;moveMarkerOutline.renderOrder=998;
 }
 function setTool(t){const zoneType=t.startsWith("zone-")?t.slice(5):null,validZone=zoneInfo[zoneType];
  if(t!=="move")cancelPendingMove();
@@ -1355,7 +1355,7 @@ function commitPendingMove(showMessage=true){
  if(!pendingMove)return false;
  const {building,x,z,rotation}=pendingMove,problem=moveValidation(building,x,z,rotation);
  if(problem){notice(problem);return false;}
- building.x=x;building.z=z;building.rotation=rotation;building.group.position.set(x,0,z);building.group.rotation.y=rotation;
+ building.x=x;building.z=z;building.rotation=rotation;building.group.position.set(x,terrainHeightAt(x,z),z);building.group.rotation.y=rotation;
  if(transit.includes(building)){refreshRailVisuals();rebuildTransitVehicles();}
  pendingMove=null;selectedObject=null;moveDraftRotation=0;hideMovePreview();showMoveControls();assignWorkplaces();updateUI();scheduleSave();
  if(showMessage)notice("施設の位置と向きを変更しました。続けて別の施設を選べます。");
