@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#071525">
-<title>未来都市ビルダー｜理科キッズ</title>
+<title>自分の都市｜理科キッズ</title>
 <style>
 :root{color-scheme:dark;--bg:#071525;--panel:#10243a;--line:#24415b;--cyan:#55e5ff;--green:#65f0bd;--muted:#9bb2c7}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#edf8ff;font-family:system-ui,"Yu Gothic",sans-serif;overflow:hidden}
@@ -18,7 +18,7 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
 <body>
 <div id="game"></div>
 <div class="topbar">
- <div class="brand">理科キッズ <small>FUTURE CITY BUILDER</small></div>
+ <div class="brand">理科キッズ <small>MY CITY</small></div>
  <div class="stats">
   <div class="stat"><span>都市の所持資金</span><b id="money">$0</b></div>
   <div class="stat"><span>人口</span><b id="population">0人</b></div>
@@ -59,10 +59,10 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
  <div class="metric"><span>交通状況</span><b id="traffic">道路なし</b></div><div class="meter"><i id="trafficBar"></i></div>
  <h3>都市の開発段階</h3><div id="levelText">開拓前</div><div class="meter"><i id="levelBar"></i></div>
  <h3>住民の暮らし</h3><div class="hint" id="lifeText">住民は募集した場合のみ増えます。車両もショップで購入した場合のみ出現します。</div>
- <h3>都市ニュース</h3><div id="news"><div class="log">未来都市の建設を始めよう。</div></div>
+ <h3>都市ニュース</h3><div id="news"><div class="log">自分の都市の建設を始めよう。</div></div>
  <button class="wide" id="resetBtn">都市データを初期化</button>
 </aside>
-<div class="notice" id="notice">道路を敷いて、未来都市の建設を始めよう。ドラッグで視点回転・WASDで移動・ホイールでズーム。</div>
+<div class="notice" id="notice">道路を敷いて、自分の都市をつくろう。ドラッグで視点回転・WASDで移動・ホイールでズーム。</div>
 <div class="login hidden" id="login"><div class="login-card"><h1>都市データを保存するには</h1><p>理科キッズのアカウントでログインしてください。ログインしていない場合も、お試しプレイはできますが、クラウド保存はできません。</p><button onclick="location.href='./account.html'">ログイン・新規登録</button><button onclick="document.getElementById('login').classList.add('hidden')">お試しプレイを続ける</button></div></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
