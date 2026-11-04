@@ -946,7 +946,7 @@ function updateAirportArrivals(){
 }
 
 function spawnPerson(i,job="unemployed",arrivalStart=null){
- const jobColors={unemployed:0x286ca8,shop:0xc38b37,doctor:0xffffff,teacher:0x7b4aa8,engineer:0x3b9277,officeworker:0x365f9d,factoryworker:0x66717b,firefighter:0xd64a3f,policeofficer:0x244f91,chef:0xe4e1d5,hotelstaff:0x8e64ad,researcher:0x3c9cba,sportsstaff:0x3d9a62,airportstaff:0x4c8cba};const g=new THREE.Group(),skin=mat([0xf1c6a5,0xd9a27e,0x9a674f,0xf0d0b3][i%4]),shirt=mat(jobColors[job]??jobColors.unemployed),pants=mat([0x26384e,0x343c54,0x53616c][i%3]),hair=mat([0x241a18,0x493024,0x171a22,0x79543a][i%4]),shoe=mat(0x17212c);
+ const jobColors={unemployed:0x286ca8,shop:0xc38b37,doctor:0xffffff,teacher:0x7b4aa8,engineer:0x3b9277,utilityworker:0x438d9c,officeworker:0x365f9d,factoryworker:0x66717b,firefighter:0xd64a3f,policeofficer:0x244f91,chef:0xe4e1d5,hotelstaff:0x8e64ad,researcher:0x3c9cba,sportsstaff:0x3d9a62,airportstaff:0x4c8cba};const g=new THREE.Group(),skin=mat([0xf1c6a5,0xd9a27e,0x9a674f,0xf0d0b3][i%4]),shirt=mat(jobColors[job]??jobColors.unemployed),pants=mat([0x26384e,0x343c54,0x53616c][i%3]),hair=mat([0x241a18,0x493024,0x171a22,0x79543a][i%4]),shoe=mat(0x17212c);
  const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.19,.42,5,10),shirt);torso.position.y=1.03;g.add(torso);
  const neck=new THREE.Mesh(new THREE.CylinderGeometry(.065,.075,.13,10),skin);neck.position.y=1.34;g.add(neck);
  const head=new THREE.Mesh(new THREE.SphereGeometry(.17,20,16),skin);head.scale.set(.88,1.08,.9);head.position.y=1.52;g.add(head);
@@ -1016,8 +1016,8 @@ function spawnPerson(i,job="unemployed",arrivalStart=null){
  const home=nearestHome();const x=arrivalStart?arrivalStart.x:(home?home.x+(Math.random()-.5)*2:(Math.random()-.5)*12),z=arrivalStart?arrivalStart.z:(home?home.z+2+(Math.random()-.5)*2:(Math.random()-.5)*12);
  scene.add(g);return {group:g,x,z,home,job,id:i,angle:Math.random()*6,speed:.9+Math.random()*.45,limbs,phase:Math.random()*6,targetX:arrivalStart&&home?home.x+1.8:x,targetZ:arrivalStart&&home?home.z+2.3:z,walkTimer:0,routine:"home",working:false};
 }
-const jobFacilityTypes={shop:["shop"],doctor:["hospital"],teacher:["school","university"],engineer:["fusion","fission","hydrogen","solar"],officeworker:["office"],factoryworker:["factory"],firefighter:["firestation"],policeofficer:["police"],chef:["restaurant"],hotelstaff:["hotel"],researcher:["university"],sportsstaff:["stadium"],airportstaff:["airport"]};
-const jobLabels={unemployed:"無職",shop:"店員",doctor:"医師",teacher:"教師",engineer:"発電技術者",officeworker:"会社員",factoryworker:"工場技術者",firefighter:"消防士",policeofficer:"警察官",chef:"料理人",hotelstaff:"ホテルスタッフ",researcher:"研究者",sportsstaff:"スポーツ職員",airportstaff:"空港職員"};
+const jobFacilityTypes={shop:["shop"],doctor:["hospital"],teacher:["school","university"],engineer:["fusion","fission","hydrogen","solar"],utilityworker:["water","sewage","waste"],officeworker:["office"],factoryworker:["factory"],firefighter:["firestation"],policeofficer:["police"],chef:["restaurant"],hotelstaff:["hotel"],researcher:["university"],sportsstaff:["stadium"],airportstaff:["airport"]};
+const jobLabels={unemployed:"無職",shop:"店員",doctor:"医師",teacher:"教師",engineer:"発電技術者",utilityworker:"上下水道・廃棄物技術者",officeworker:"会社員",factoryworker:"工場技術者",firefighter:"消防士",policeofficer:"警察官",chef:"料理人",hotelstaff:"ホテルスタッフ",researcher:"研究者",sportsstaff:"スポーツ職員",airportstaff:"空港職員"};
 function compatibleBuildings(job){return buildings.filter(b=>(jobFacilityTypes[job]||[]).includes(b.type));}
 function assignWorkplaces(){
  const previous=new Map(people.map(p=>[p,p.workplace||null]));
