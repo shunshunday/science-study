@@ -335,14 +335,9 @@ function makeBuilding(type,x,z,level=1){
   const mesh=new THREE.Mesh(geo,m);mesh.position.set(px,py,pz);mesh.castShadow=true;mesh.receiveShadow=true;g.add(mesh);return mesh;
  };
  const win=(px,py,pz,w=.34,h=.48,side="front")=>{
-  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,.075),windowMat);
-  if(side==="front")m.position.set(px,py,pz);
-  else {m.rotation.y=Math.PI/2;m.position.set(px,py,pz);}
-  m.castShadow=true;g.add(m);
-  const frame=new THREE.Mesh(new THREE.BoxGeometry(w+.09,h+.09,.045),buildingTrimMaterial);
-  if(side==="front")frame.position.set(px,py,pz-.035);
-  else {frame.rotation.y=Math.PI/2;frame.position.set(px-.035,py,pz);}
-  g.add(frame);
+  const m=add(w,h,.075,windowMat,px,py,pz);
+  const frame=add(w+.10,h+.10,.045,buildingTrimMaterial,px,py,pz-.045);
+  if(side!=="front"){m.rotation.y=Math.PI/2;frame.rotation.y=Math.PI/2;frame.position.x=px-.045;frame.position.z=pz;}
  };
  const base=()=>{add(3.8,.22,3.8,dark,0,.11,0);add(3.35,.12,3.35,white,0,.28,0);};
  const facade=(width,floors,floorH,frontZ,spacing=.65)=>{
@@ -364,7 +359,11 @@ function makeBuilding(type,x,z,level=1){
   add(.72,1.35,.12,dark,.48,.98,1.48);
   add(.82,.12,.18,buildingTrimMaterial,.48,1.7,1.5);
   add(3.45,.16,3.05,roofMat,0,2.86,0);
-  const roof=new THREE.Mesh(new THREE.ConeGeometry(2.25,1.35,4),body);roof.rotation.y=Math.PI/4;roof.position.y=3.58;roof.scale.z=.78;roof.castShadow=true;g.add(roof);
+  const roofShape=new THREE.Shape();roofShape.moveTo(-1.82,2.78);roofShape.lineTo(0,4.08);roofShape.lineTo(1.82,2.78);roofShape.closePath();
+  const roof=new THREE.Mesh(new THREE.ExtrudeGeometry(roofShape,{depth:3.0,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.055,bevelThickness:.055,curveSegments:12}),roofMat);roof.position.z=-1.5;roof.castShadow=true;roof.receiveShadow=true;g.add(roof);
+  for(const side of [-1,1]){const fascia=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,3.08,8),buildingTrimMaterial);fascia.rotation.x=Math.PI/2;fascia.rotation.z=side*.62;fascia.position.set(side*.9,3.38,0);g.add(fascia);}
+  const chimney=new THREE.Mesh(new THREE.BoxGeometry(.34,.9,.38),wall);chimney.position.set(-1.05,3.72,-.55);chimney.castShadow=true;g.add(chimney);
+  const chimneyCap=new THREE.Mesh(new THREE.BoxGeometry(.46,.12,.48),roofMat);chimneyCap.position.set(-1.05,4.2,-.55);g.add(chimneyCap);
   add(3.25,.12,.12,white,0,2.77,1.52);
   for(let x=-1.25;x<=1.26;x+=2.5){add(.09,2.5,.1,buildingTrimMaterial,x,1.42,1.54);}
   add(1.05,.12,.5,dark,0,.38,1.9);
