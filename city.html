@@ -690,11 +690,11 @@ function tintPlacementGhost(valid){
  placementGhost.traverse(o=>{if(o.isMesh){o.renderOrder=999;const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{m.transparent=true;m.opacity=.72;m.depthWrite=false;m.depthTest=false;m.color.set(color);m.emissive?.set(color);m.emissiveIntensity=.45;});}else if(o.isSprite){o.renderOrder=1000;o.material.depthTest=false;}});
 }
 function preparePlacementGhost(){
- const type=selected==="road"?"road":defs[selected]?selected:null;
+ const type=selected==="road"?"road":defs[selected]?selected:["rail","station","busstop"].includes(selected)?selected:null;
  if(!type){disposePlacementGhost();return;}
  if(placementGhostType===type&&placementGhost)return;
  disposePlacementGhost();placementGhostType=type;
- placementGhost=type==="road"?makeRoad(0,0).group:makeBuilding(type,0,0).group;
+ placementGhost=type==="road"?makeRoad(0,0).group:["rail","station","busstop"].includes(type)?makeTransit(type,0,0).group:makeBuilding(type,0,0).group;
  placementGhost.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false;const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{m=m.clone();m.transparent=true;m.opacity=.72;m.depthWrite=false;m.depthTest=false;});if(Array.isArray(o.material))o.material=o.material.map(m=>{const q=m.clone();q.transparent=true;q.opacity=.72;q.depthWrite=false;q.depthTest=false;return q;});else{o.material=o.material.clone();o.material.transparent=true;o.material.opacity=.72;o.material.depthWrite=false;o.material.depthTest=false;}}});
  placementGhost.renderOrder=999;moveMarker.visible=true;moveMarkerOutline.visible=true;
 }
@@ -712,13 +712,18 @@ function roadPlacementProblem(x,z){
  return "";
 }
 function updatePlacementPreviewPointer(e){
- if(publicView||!document.body.classList.contains("build-open")||!["road",...Object.keys(defs)].includes(selected))return;
+ if(publicView||!document.body.classList.contains("build-open")||!["road","rail","station","busstop",...Object.keys(defs)].includes(selected))return;
  const rect=renderer.domElement.getBoundingClientRect();mouse.x=(e.clientX-rect.left)/rect.width*2-1;mouse.y=-(e.clientY-rect.top)/rect.height*2+1;
  raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObject(floor);if(!hits.length)return;
  const p=gridPos(hits[0].point);preparePlacementGhost();if(!placementGhost)return;
  placementPreviewPoint=p;
  let problem="",bounds;
  if(selected==="road"){problem=roadPlacementProblem(p.x,p.z);bounds=roadBounds(p.x,p.z);}
+ else if(["rail","station","busstop"].includes(selected)){
+  const candidate=makeTransit(selected,p.x,p.z);candidate.group.updateMatrixWorld(true);bounds=new THREE.Box3().setFromObject(candidate.group);
+  if(transit.some(t=>t.type===selected&&(t.x===p.x&&t.z===p.z||selected==="rail"&&t.z===p.z&&Math.abs(t.x-p.x)<3.9||selected!=="rail"&&Math.hypot(t.x-p.x,t.z-p.z)<3.2)))problem=selected==="rail"?"線路が重なっています。":"交通施設が近すぎます。";
+  candidate.group.traverse(o=>{if(o.isMesh){o.geometry?.dispose();const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>m.dispose());}});
+ }
  else{problem=buildingPlacementProblem(selected,p.x,p.z);bounds=buildingBounds(selected,p.x,p.z,0,1);}
  placementPreviewValid=!problem;placementGhost.position.set(p.x,.72,p.z);placementGhost.rotation.y=0;tintPlacementGhost(placementPreviewValid);
  const w=Math.max(4,bounds.max.x-bounds.min.x),d=Math.max(4,bounds.max.z-bounds.min.z);
