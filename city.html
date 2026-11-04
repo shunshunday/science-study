@@ -960,7 +960,7 @@ function makeTransit(type,x,z){
   if(kind==="hotel"){box(v,.8,.2,.06,mat(0xd9c18c),0,1.05,.24);}
   v.position.set(px,0,pz);g.add(v);return v;
  };
- const garageApron=(centerX=0)=>{add(2.65,.12,4.1,mat(0x78858b,.08,.9),centerX,.08,3.65);for(let n=0;n<5;n++)add(.12,.025,.22,mat(0xe7e4d2,.05,.85),centerX-1+n*.5,.16,3.45);};
+ const garageApron=(centerX=0,width=2.65)=>{add(width,.12,4.1,mat(0x78858b,.08,.9),centerX,.08,3.65);for(let n=0;n<Math.max(5,Math.floor(width/.5));n++)add(.12,.025,.22,mat(0xe7e4d2,.05,.85),centerX-(Math.max(5,Math.floor(width/.5))-1)*.25+n*.5,.16,3.45);};
  // 建物・駅だけに外構照明を設置。線路タイルには街灯を付けない。
  if(type!=="rail"&&type!=="busstop"){
   for(const sx of [-1.72,1.72]){
@@ -984,7 +984,7 @@ function makeTransit(type,x,z){
  if(["fusion","fission","hydrogen","solar"].includes(type)){sign("POWER",0x123b4d,0x66e8ff,0,3.1,2.05);for(const sx of [-2.15,2.15]){add(.18,.75,.18,buildingTrimMaterial,sx,.48,1.9);const light=new THREE.Mesh(new THREE.SphereGeometry(.12,10,8),mat(0x5effaa,.1,.15,0x29d879));light.position.set(sx,.95,1.9);g.add(light);}}
  if(type==="office"){sign("INNOVATION HQ",0x174c76,0x8ce6ff,0,11.8,1.84);vehicle("hotel",-2.65,2.8);vehicle("hotel",2.65,2.8);}
  if(type==="factory"){sign("ROBOTICS",0x354c5c,0xffbd4a,0,3.1,2.1);vehicle("truck",2.75,2.9);for(let n=0;n<3;n++){const pipe=new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,2.1,12),chrome);pipe.position.set(-2+n*.6,4.1,-1.7);g.add(pipe);}}
- if(type==="firestation"){sign("FIRE & RESCUE",0x8c2524,0xffd16b,0,3.12,1.98);garageApron();for(const px of [-1.15,1.15])g.userData.garageVehicles.push(vehicle("fire",px,.82));for(let n=0;n<3;n++)add(.14,.14,.14,mat(0xffb72f,.2,.25,0xff7b17),-1+n,3.4,-1.1);}
+ if(type==="firestation"){sign("FIRE & RESCUE",0x8c2524,0xffd16b,0,3.12,1.98);garageApron(0,4.6);for(const px of [-1.15,1.15])g.userData.garageVehicles.push(vehicle("fire",px,.82));for(let n=0;n<3;n++)add(.14,.14,.14,mat(0xffb72f,.2,.25,0xff7b17),-1+n,3.4,-1.1);}
  if(type==="police"){sign("POLICE HQ",0x173b73,0x8bc9ff,0,3.2,1.95);vehicle("police",-2.55,3.1);vehicle("police",2.55,3.1);add(.18,1.5,.18,buildingTrimMaterial,2.15,.8,-1.1);add(.7,.08,.7,mat(0x3a78c7),2.15,1.6,-1.1);}
  if(type==="restaurant"){sign("RESTAURANT",0x8a4b1e,0xffdc9b,0,1.85,2.2);for(let n=0;n<3;n++){const px=-1.2+n*1.2;add(.55,.08,.55,roofMat,px,.5,2.8);add(.08,.45,.08,buildingTrimMaterial,px,.27,2.8);const umbrella=new THREE.Mesh(new THREE.ConeGeometry(.48,.22,8),mat([0xe76d55,0xe8b34e,0x6cb9a1][n]));umbrella.position.set(px,1.05,2.8);g.add(umbrella);}}
  if(type==="hotel"){sign("GRAND HOTEL",0x50366f,0xf5d48a,0,8.95,1.3);vehicle("hotel",2.8,2.8);for(let n=0;n<3;n++){const lamp=new THREE.Mesh(new THREE.SphereGeometry(.11,10,8),mat(0xffd68b,.1,.2,0xffb84a));lamp.position.set(-1+n,2.4,1.9);g.add(lamp);}}
@@ -1167,12 +1167,12 @@ function findRoadPath(from,to){
 }
 function spawnEmergencyServiceVehicle(type,route,station,parkedModel){
  const g=new THREE.Group(),fire=type==="fire",paint=mat(fire?0xc92f2b:0xf3f5f4,.28,.42),dark=mat(0x17232c,.12,.78),glass=mat(0x8ed8e8,.5,.16),chrome=mat(0xb9c8ce,.78,.24),red=mat(0xd82f3c,.18,.25,0x8b1720),blue=mat(0x258cff,.16,.2,0x176dff),white=mat(0xf7f8f5,.08,.55);
- box(g,1.32,.58,2.85,paint,0,.68,-.05);box(g,1.18,.88,1.0,paint,0,1.32,.82);box(g,1.02,.58,.07,glass,0,1.36,1.34);box(g,1.08,.08,.08,chrome,0,1.02,1.39);
+ box(g,1.32,.58,2.85,paint,0,.68,-.05);box(g,1.18,.88,1.0,paint,0,1.32,-.82);box(g,1.02,.58,.07,glass,0,1.36,-1.34);box(g,1.08,.08,.08,chrome,0,1.02,-1.39);
  for(const sx of [-.68,.68])for(const sz of [-.94,.91]){const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,.15,18),dark);wheel.rotation.z=Math.PI/2;wheel.position.set(sx,.34,sz);g.add(wheel);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.095,.095,.16,14),chrome);hub.rotation.z=Math.PI/2;hub.position.copy(wheel.position);g.add(hub);}
- for(const sx of [-.42,.42]){box(g,.22,.14,.05,white,sx,.73,1.47);box(g,.2,.13,.05,red,sx,.72,-1.51);}
+ for(const sx of [-.42,.42]){box(g,.22,.14,.05,white,sx,.73,-1.47);box(g,.2,.13,.05,red,sx,.72,1.51);}
  box(g,.92,.12,.34,blue,0,1.86,.22);box(g,.22,.12,.34,red,-.34,1.86,.22);box(g,.22,.12,.34,red,.34,1.86,.22);
- if(fire){box(g,1.16,.72,1.45,paint,0,1.34,-.58);for(let i=0;i<3;i++)box(g,.08,.12,1.25,chrome,-.38+i*.38,1.78,-.58);box(g,.1,.65,.1,chrome,.48,1.55,-.62);box(g,.13,.13,1.25,white,-.69,1.25,-.58);}
- else{box(g,.12,.75,.05,red,0,1.32,-.62);box(g,.78,.12,.05,red,0,1.32,-.62);box(g,.22,.5,.05,red,-.48,1.2,-.62);box(g,.22,.5,.05,red,.48,1.2,-.62);}
+ if(fire){box(g,1.16,.72,1.45,paint,0,1.34,.58);for(let i=0;i<3;i++)box(g,.08,.12,1.25,chrome,-.38+i*.38,1.78,.58);box(g,.1,.65,.1,chrome,.48,1.55,.62);box(g,.13,.13,1.25,white,-.69,1.25,.58);}
+ else{box(g,.12,.75,.05,red,0,1.32,.62);box(g,.78,.12,.05,red,0,1.32,.62);box(g,.22,.5,.05,red,-.48,1.2,.62);box(g,.22,.5,.05,red,.48,1.2,.62);}
  g.position.set(route[0].x,terrainHeightAt(route[0].x,route[0].z)+.04,route[0].z);scene.add(g);
  return {kind:"car",group:g,route,pathData:cacheVehiclePath(route),distance:0,direction:1,speed:fire?5.8:5.6,loop:false,station,parkedModel};
 }
