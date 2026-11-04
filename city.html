@@ -203,30 +203,94 @@ function makeBuilding(type,x,z,level=1){
   for(let i=0;i<8;i++){const a=i*Math.PI/4;const tree=new THREE.Group();const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.07,.12,.8,8),mat(0x79553a));trunk.position.y=.75;tree.add(trunk);const crown=new THREE.Mesh(new THREE.SphereGeometry(.42,14,10),green);crown.position.y=1.28;tree.add(crown);tree.position.set(Math.cos(a)*1.7,0,Math.sin(a)*1.7);g.add(tree);}
   add(.16,.08,3.5,white,0,.47,0);
  }else{
-  const h=type==="fusion"?6.8:type==="fission"?5.2:type==="hydrogen"?4.2:1.3;
-  if(type==="solar"){
-   add(3.6,.35,3.1,wall,0,.42,0);
-   for(let ix=-1;ix<=1;ix++)for(let iz=-1;iz<=1;iz++){
-    const p=new THREE.Mesh(new THREE.BoxGeometry(.92,.09,.9),mat(0x2456a1,.72,.2));p.position.set(ix*1.08,1.25,iz*.92);p.rotation.x=-.2;g.add(p);
-    for(let k=1;k<3;k++)add(.025,.02,.9,windowMat,ix*1.08-.31+k*.31,1.31,iz*.92);
+  const h=type==="fusion"?8.2:type==="fission"?7.2:type==="hydrogen"?5.8:2.2;
+  const steel=mat(0x718b9a,.72,.3),concrete=mat(0x89969a,.08,.85),pipeMat=mat(0xc1d0d4,.68,.28),warning=mat(0xf0b83e,.18,.48),panelMat=mat(0x153d79,.78,.18),lit=mat(0x76e9ff,.35,.18,0x1b7890);
+  const cylinder=(rt,rb,height,segments,m,px,py,pz)=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,height,segments),m);o.position.set(px,py,pz);o.castShadow=true;o.receiveShadow=true;g.add(o);return o;};
+  const sphere=(radius,m,px,py,pz,sx=1,sy=1,sz=1)=>{const o=new THREE.Mesh(new THREE.SphereGeometry(radius,20,14),m);o.position.set(px,py,pz);o.scale.set(sx,sy,sz);o.castShadow=true;g.add(o);return o;};
+  const pipe=(points,r=.07,m=pipeMat)=>{const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));const o=new THREE.Mesh(new THREE.TubeGeometry(curve,32,r,8,false),m);o.castShadow=true;g.add(o);return o;};
+  const fence=()=>{for(let i=-1;i<=1;i+=2){add(.07,.75,.07,steel,i*2.05,.78,0);add(.07,.75,.07,steel,0,.78,i*2.05);}add(4.1,.07,.07,steel,0,1.13,2.05);add(.07,.07,4.1,steel,2.05,1.13,0);};
+  if(type==="fusion"){
+   // Tokamak fusion plant: reactor hall, magnetic confinement ring, cryogenic services and control block
+   add(3.9,2.8,3.55,concrete,0,1.75,0);
+   add(4.05,.2,3.7,steel,0,3.2,0);
+   for(let i=0;i<5;i++){const y=.9+i*.48;add(3.98,.045,3.62,trim,0,y,0);}
+   for(let i=0;i<4;i++)win(-1.45+i*.96,2.15,1.8,.48,.55);
+   add(1.1,1.5,.18,glass,0,1.05,1.83);
+   // Open cutaway-like reactor casing and luminous toroidal chamber
+   cylinder(1.22,1.35,.42,32,steel,0,4.0,0);
+   const torus=new THREE.Mesh(new THREE.TorusGeometry(1.05,.34,18,64),lit);torus.rotation.x=Math.PI/2;torus.position.y=4.75;g.add(torus);
+   const inner=new THREE.Mesh(new THREE.TorusGeometry(.69,.09,12,48),warning);inner.rotation.x=Math.PI/2;inner.position.y=4.75;g.add(inner);
+   for(let i=0;i<12;i++){const ang=i*Math.PI/6;const coil=new THREE.Mesh(new THREE.TorusGeometry(1.38,.095,10,24,Math.PI*.72),warning);coil.rotation.set(Math.PI/2,0,ang);coil.position.y=4.75;g.add(coil);}
+   for(let i=0;i<4;i++){const px=-1.35+i*.9;cylinder(.12,.12,1.3,12,steel,px,4.8,-.95);add(.34,.12,.34,warning,px,5.48,-.95);}
+   // Cryogenic tanks and heavy coolant pipes
+   for(const px of [-1.55,1.55]){cylinder(.38,.38,1.7,20,white,px,4.45,-1.55);sphere(.38,white,px,5.3,-1.55,1,.5,1);sphere(.38,white,px,3.6,-1.55,1,.5,1);}
+   pipe([[-1.5,4.2,-1.55],[-1.5,3.7,-.9],[-.9,3.7,-.9],[0,3.7,-.9]],.075);
+   add(1.5,1.25,1.15,body,0,.98,-2.05);
+   for(let i=0;i<3;i++)win(-.45+i*.45,1.1,-2.64,.25,.32);
+   const beacon=new THREE.PointLight(0x4deaff,2.1,13);beacon.position.set(0,5.2,0);g.add(beacon);keyLights.push(beacon);
+  }else if(type==="fission"){
+   // Nuclear fission station: containment dome, turbine hall, twin hyperboloid cooling towers
+   add(2.55,3.4,2.55,concrete,0,2.0,.05);
+   const dome=new THREE.Mesh(new THREE.SphereGeometry(1.42,32,20,0,Math.PI*2,0,Math.PI/2),white);dome.position.set(0,3.72,.05);dome.scale.z=.92;dome.castShadow=true;g.add(dome);
+   cylinder(1.48,1.48,.18,32,steel,0,3.72,.05);
+   for(let i=0;i<8;i++){const ang=i*Math.PI/4;const rib=new THREE.Mesh(new THREE.TorusGeometry(1.43,.035,6,40),steel);rib.rotation.x=Math.PI/2;rib.position.set(0,2.5+i*.25,.05);g.add(rib);}
+   add(1.35,1.2,.15,lit,0,2.2,1.36);
+   // Turbine and generator hall
+   add(2.0,2.45,2.15,wall,0,1.45,-2.25);add(2.12,.16,2.28,body,0,2.76,-2.25);
+   for(let i=0;i<3;i++)win(-.62+i*.62,1.7,-1.16,.38,.55);
+   // Hyperboloid cooling towers with wide mouths and flared bases
+   for(const px of [-1.55,1.55]){
+    const pts=[];for(let j=0;j<=24;j++){const t=j/24;const y=.55+t*5.8;const radius=.52+.54*Math.pow(Math.abs(t-.48)*2.0,1.7)+.16*t;pts.push(new THREE.Vector2(radius,y));}
+    const tower=new THREE.Mesh(new THREE.LatheGeometry(pts,32),white);tower.position.set(px,0,-1.55);tower.castShadow=true;tower.receiveShadow=true;g.add(tower);
+    cylinder(.78,.78,.12,32,steel,px,.58,-1.55);
+    const rim=new THREE.Mesh(new THREE.TorusGeometry(.9,.07,8,32),steel);rim.position.set(px,6.35,-1.55);g.add(rim);
+    for(let k=0;k<3;k++)add(.045,4.7,.045,trim,px-.35+k*.35,2.95,-.75);
    }
+   // Steam/water treatment pipes, pumps and transformers
+   pipe([[-.85,1.15,-.9],[-.85,.8,-.4],[.8,.8,-.4],[.8,1.15,-.9]],.09,pipeMat);
+   for(let i=0;i<3;i++){cylinder(.18,.18,.55,16,steel,-1.25+i*.5,.75,1.65);sphere(.18,lit,-1.25+i*.5,1.05,1.65,1,.35,1);}
+   fence();
+  }else if(type==="hydrogen"){
+   // Hydrogen power: electrolyser hall, compressor skids and high-pressure storage vessels
+   add(3.55,2.45,2.5,wall,0,1.45,.55);
+   add(3.68,.16,2.62,body,0,2.77,.55);
+   for(let i=0;i<4;i++)win(-1.28+i*.85,1.75,1.82,.48,.62);
+   add(.9,1.3,.16,lit,0,1.05,1.84);
+   // Three tall pressure tanks with rounded ends and valve assemblies
+   for(const px of [-1.35,0,1.35]){
+    cylinder(.39,.39,2.25,24,steel,px,2.05,-1.25);
+    sphere(.39,steel,px,3.18,-1.25,1,.55,1);
+    sphere(.39,steel,px,.92,-1.25,1,.55,1);
+    cylinder(.13,.13,.28,12,warning,px,3.52,-1.25);
+    cylinder(.08,.08,.3,12,pipeMat,px,3.78,-1.25);
+    const gauge=new THREE.Mesh(new THREE.CylinderGeometry(.14,.14,.06,16),white);gauge.rotation.x=Math.PI/2;gauge.position.set(px,3.38,-.82);g.add(gauge);
+   }
+   pipe([[-1.35,3.5,-1.25],[-1.35,4.0,-.7],[0,4.0,-.7],[1.35,4.0,-.7],[1.35,3.5,-1.25]],.075,lit);
+   // Compressor and fuel-cell generator cabinets
+   for(let i=0;i<2;i++){add(.72,1.15,.82,body,-1.05+i*2.1,.92,-2.0);add(.52,.55,.08,lit,-1.05+i*2.1,1.0,-1.57);cylinder(.18,.18,.5,12,steel,-1.05+i*2.1,1.78,-2.0);}
+   for(let i=0;i<3;i++)add(.12,.12,1.0,warning,-1.55+i*.18,.55,1.95);
+   pipe([[-1.35,1.2,-1.25],[-1.35,.7,-.8],[-.7,.7,-.8]],.07);
+   fence();
   }else{
-   add(3.1,h,2.8,body,0,h/2+.35,0);
-   add(3.25,.2,2.95,roofMat,0,h+.45,0);
-   for(let i=0;i<4;i++)win(-1.05+i*.7,1.15,1.43,.38,.55);
-   add(1.1,1.25,.16,glass,0,.98,1.48);
-   if(type==="fusion"){
-    for(let i=0;i<2;i++){const ring=new THREE.Mesh(new THREE.TorusGeometry(1.35+i*.18,.13,12,40),windowMat);ring.rotation.x=Math.PI/2;ring.position.y=4.15+i*.45;g.add(ring);}
-    const core=new THREE.Mesh(new THREE.SphereGeometry(.58,24,18),mat(0xc8fbff,.2,.1,0x6beaff));core.position.y=4.55;g.add(core);
-    add(.16,2.2,.16,windowMat,0,8.0,0);
-   }else if(type==="fission"){
-    for(let i=-1;i<=1;i+=2){const stack=new THREE.Mesh(new THREE.CylinderGeometry(.38,.58,4.5,16),white);stack.position.set(i*.85,5.1,0);g.add(stack);add(.75,.12,.75,trim,i*.85,7.45,0);}
-   }else{
-    for(let i=-1;i<=1;i++)add(.55,2.8,.55,glass,i*.85,2.05,0);
-    add(3.2,.12,2.9,white,0,4.65,0);
+   // Solar farm: multiple tilted photovoltaic tables, support legs, inverters and transformer
+   add(4.15,.22,3.85,concrete,0,.22,0);
+   for(let row=0;row<3;row++)for(let col=0;col<3;col++){
+    const px=-1.28+col*1.28,pz=-1.15+row*1.12;
+    const frame=new THREE.Group();frame.position.set(px,1.0,pz);frame.rotation.x=-.28;g.add(frame);
+    const panel=new THREE.Mesh(new THREE.BoxGeometry(1.12,.09,.92),panelMat);panel.castShadow=true;frame.add(panel);
+    for(let k=1;k<=3;k++){const line=new THREE.Mesh(new THREE.BoxGeometry(.018,.025,.88),lit);line.position.set(-.56+k*.28,.06,0);frame.add(line);}
+    for(let k=1;k<=2;k++){const line=new THREE.Mesh(new THREE.BoxGeometry(1.08,.025,.018),lit);line.position.set(0,.06,-.3+k*.3);frame.add(line);}
+    for(const dx of [-.43,.43]){const leg=new THREE.Mesh(new THREE.BoxGeometry(.07,.92,.07),steel);leg.position.set(dx,-.48,0);leg.castShadow=true;frame.add(leg);}
    }
+   // Inverter cabinets, transformer and electrical switchgear
+   add(.85,1.25,.72,body,-1.45,.85,1.55);add(.65,.95,.65,steel,-.35,.7,1.55);
+   for(let i=0;i<4;i++)add(.12,.72,.08,lit,-1.72+i*.18,.86,1.93);
+   cylinder(.36,.36,.82,20,steel,1.25,.65,1.5);
+   for(let i=0;i<6;i++){const fin=new THREE.Mesh(new THREE.TorusGeometry(.38,.035,6,24),steel);fin.rotation.x=Math.PI/2;fin.position.set(1.25,.45+i*.13,1.5);g.add(fin);}
+   pipe([[-1.45,1.25,1.55],[-1.45,1.55,.95],[-.35,1.55,.95],[1.25,1.15,.95]],.045,warning);
+   fence();
   }
-  const beacon=new THREE.PointLight(d.color,1.2,10);beacon.position.y=h+1.2;g.add(beacon);keyLights.push(beacon);
+  const beacon=new THREE.PointLight(d.color,1.35,12);beacon.position.y=h+1.2;g.add(beacon);keyLights.push(beacon);
  }
  const labelCanvas=document.createElement("canvas");labelCanvas.width=512;labelCanvas.height=96;
  const ctx=labelCanvas.getContext("2d");ctx.fillStyle="#071a2b";ctx.fillRect(0,0,512,96);
