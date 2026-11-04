@@ -692,8 +692,8 @@ function updatePlacementPreviewPointer(e){
  else{problem=buildingPlacementProblem(selected,p.x,p.z);bounds=buildingBounds(selected,p.x,p.z,0,1);}
  placementPreviewValid=!problem;placementGhost.position.set(p.x,.72,p.z);placementGhost.rotation.y=0;tintPlacementGhost(placementPreviewValid);
  const w=Math.max(4,bounds.max.x-bounds.min.x),d=Math.max(4,bounds.max.z-bounds.min.z);
- moveMarker.position.set(p.x,.12,p.z);moveMarker.scale.set(w/4.05,d/4.05,1);moveMarker.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarker.material.depthTest=false;moveMarker.renderOrder=998;
- moveMarkerOutline.position.set(p.x,.13,p.z);moveMarkerOutline.scale.set(w/4.05,d/4.05,1);moveMarkerOutline.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarkerOutline.material.depthTest=false;moveMarkerOutline.renderOrder=998;
+ const markerCenter=bounds.getCenter(new THREE.Vector3());moveMarker.position.set(markerCenter.x,.12,markerCenter.z);moveMarker.scale.set(w/4.05,d/4.05,1);moveMarker.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarker.material.depthTest=false;moveMarker.renderOrder=998;
+ moveMarkerOutline.position.set(markerCenter.x,.13,markerCenter.z);moveMarkerOutline.scale.set(w/4.05,d/4.05,1);moveMarkerOutline.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarkerOutline.material.depthTest=false;moveMarkerOutline.renderOrder=998;
 }
 function setTool(t){if(t!=="move"){cancelPendingMove();}disposePlacementGhost();selected=t;document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));const labels={rail:"線路",station:"駅",busstop:"バス停"};notice(t==="move"?"移動：施設を選択→移動先をクリック→「決定」。↻で90°回転。":t==="road"?"道路をクリックして敷設。":t==="remove"?"撤去したい道路・建物・交通施設をクリック。":t==="select"?"選択したい施設をクリック。":(defs[t]?.name||labels[t]||"施設")+"を配置する場所をクリック。");}
 function notice(s){$("notice").textContent=s;$("notice").classList.remove("hidden");clearTimeout(notice.timer);notice.timer=setTimeout(()=>$("notice").classList.add("hidden"),3000);}
@@ -757,10 +757,11 @@ function renderMovePreview(){
  const problem=moveValidation(selectedObject,p.x,p.z,rotation);movePreviewValid=!problem;
  moveGhost.position.set(p.x,.85,p.z);moveGhost.rotation.y=rotation;
  moveGhost.traverse(o=>{if(o.isMesh){const color=movePreviewValid?0x35e58a:0xff4055;const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{m.color.set(color);m.emissive?.set(color);m.emissiveIntensity=.45;});}});
- moveMarker.scale.set(1,1,1);moveMarkerOutline.scale.set(1,1,1);
- moveMarker.position.set(p.x,.055,p.z);moveMarker.rotation.z=0;
+ const footprint=buildingBounds(selectedObject.type,p.x,p.z,rotation,selectedObject.level||1,selectedObject),size=footprint.getSize(new THREE.Vector3()),center=footprint.getCenter(new THREE.Vector3());
+ moveMarker.scale.set(Math.max(4,size.x)/4.05,Math.max(4,size.z)/4.05,1);moveMarkerOutline.scale.copy(moveMarker.scale);
+ moveMarker.position.set(center.x,.055,center.z);moveMarker.rotation.z=0;
  moveMarker.material.color.set(movePreviewValid?0x35e58a:0xff4055);
- moveMarkerOutline.position.set(p.x,.065,p.z);moveMarkerOutline.rotation.z=0;moveMarkerOutline.material.color.set(movePreviewValid?0x35e58a:0xff4055);
+ moveMarkerOutline.position.set(center.x,.065,center.z);moveMarkerOutline.rotation.z=0;moveMarkerOutline.material.color.set(movePreviewValid?0x35e58a:0xff4055);
  const status=$("moveProgress");status.className="move-progress "+(movePreviewValid?"good":"bad");
  status.textContent="移動先 X："+p.x+" / Z："+p.z+"｜"+(movePreviewValid?"✓ 設置可能":"✕ 設置不可："+problem);$("confirmMoveBtn").disabled=!pendingMove||!movePreviewValid;
 }
