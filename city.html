@@ -654,7 +654,23 @@ function findAt(x,z){return buildings.find(b=>Math.abs(b.x-x)<1&&Math.abs(b.z-z)
 async function charge(cost){if(!user){notice("ログインしてから購入してください。");return false;}const {data,error}=await supabase.rpc("spend_city_cash",{p_amount:cost});if(error){notice(error.message==="資金が足りません"?"資金が足りません。":"購入処理に失敗しました: "+error.message);await refreshWallet();return false;}cash=Number(data);updateUI();return true;}
 async function refreshWallet(){if(!user)return;const {data,error}=await supabase.rpc("get_city_wallet");if(error){notice("所持金を読み込めません: "+error.message);return;}const wallet=Array.isArray(data)?data[0]:data;cash=Number(wallet?.balance||0);updateUI();}
 async function addRoad(x,z){if(roads.some(r=>r.x===x&&r.z===z))return;if(!(await charge(250)))return;roads.push(makeRoad(x,z));updateUI();scheduleSave();}
-async function addBuilding(type,x,z){const d=defs[type];if(buildings.some(b=>Math.abs(b.x-x)<3.2&&Math.abs(b.z-z)<3.2))return notice("そこには別の施設があります。");const count=buildings.filter(b=>b.type===type).length;if(!(await charge(d.cost)))return;buildings.push(makeBuilding(type,x,z));assignWorkplaces();notice(d.name+"を建設しました。");updateUI();scheduleSave();}
+function overlapsAirportRunway(x,z,airportX,airportZ){
+ const localX=Math.abs(x-airportX),localZ=z-airportZ;
+ // 空港モデルは0.6倍。滑走路の幅8・長さ46を基準に、建物の敷地分も余白に含める。
+ return localX<4.35 && localZ>-32 && localZ<-1.5;
+}
+function isAirportRunwayBlocked(x,z){
+ return buildings.some(b=>b.type==="airport"&&overlapsAirportRunway(x,z,b.x,b.z));
+}
+async function addBuilding(type,x,z){
+ const d=defs[type];
+ if(type!=="airport"&&isAirportRunwayBlocked(x,z))return notice("滑走路内には建物を建設できません。");
+ if(type==="airport"&&buildings.some(b=>b.type!=="airport"&&overlapsAirportRunway(b.x,b.z,x,z)))return notice("建設予定の滑走路に既存の建物があります。別の場所を選んでください。");
+ if(buildings.some(b=>Math.abs(b.x-x)<3.2&&Math.abs(b.z-z)<3.2))return notice("そこには別の施設があります。");
+ const count=buildings.filter(b=>b.type===type).length;
+ if(!(await charge(d.cost)))return;
+ buildings.push(makeBuilding(type,x,z));assignWorkplaces();notice(d.name+"を建設しました。");updateUI();scheduleSave();
+}
 let placementPointer=null;
 renderer.domElement.addEventListener("pointerdown",e=>{if(publicView||!document.body.classList.contains("build-open")||e.button!==0)return;placementPointer={id:e.pointerId,x:e.clientX,y:e.clientY};});
 renderer.domElement.addEventListener("pointerup",e=>{
