@@ -155,13 +155,13 @@ function loadPlaytime(seconds){
  }catch(e){document.getElementById("playtime").textContent="—";}
 }
 function titleFor(n){
- if(n>=1000)return "覇者";
- if(n>=500)return "ノーベル賞";
- if(n>=200)return "伝説の科学者";
- if(n>=100)return "科学の天才";
- if(n>=60)return "理科博士";
- if(n>=30)return "理科マスター";
- if(n>=10)return "理科チャレンジャー";
+ if(n>=100000)return "覇者";
+ if(n>=50000)return "ノーベル賞";
+ if(n>=20000)return "伝説の科学者";
+ if(n>=10000)return "科学の天才";
+ if(n>=6000)return "理科博士";
+ if(n>=3000)return "理科マスター";
+ if(n>=1000)return "理科チャレンジャー";
  return "理科ビギナー";
 }
 function showStatus(message){statusElement.hidden=false;statusElement.textContent=message;}
