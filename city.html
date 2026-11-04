@@ -10,7 +10,7 @@
 #game{position:fixed;inset:0}canvas{display:block}
 .topbar{position:fixed;z-index:4;left:16px;right:16px;top:14px;display:flex;gap:10px;align-items:center;pointer-events:none}.brand,.stat,.top-actions{background:#091a2ddd;border:1px solid #31516a;border-radius:13px;backdrop-filter:blur(12px);box-shadow:0 8px 30px #0005}.brand{padding:9px 15px;font-weight:900;letter-spacing:.04em}.brand small{display:block;color:var(--cyan);font-size:10px;letter-spacing:.2em}.stats{display:flex;gap:8px;flex-wrap:wrap}.stat{padding:8px 12px;min-width:100px}.stat span{display:block;color:var(--muted);font-size:10px}.stat b{font-size:17px}.top-actions{margin-left:auto;padding:8px;display:flex;gap:7px;pointer-events:auto;flex-shrink:0}.home-button{background:#0c6479;border-color:#55e5ff;font-weight:800;white-space:nowrap}
 button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;border-radius:9px;padding:8px 11px;cursor:pointer}button:hover{border-color:var(--cyan);background:#214866}button.active{background:#0c6479;border-color:var(--cyan);color:#fff}button:disabled{opacity:.4;cursor:not-allowed}
-.panel{position:fixed;z-index:3;top:92px;bottom:18px;width:250px;background:#091a2ded;border:1px solid #2b4a65;border-radius:15px;backdrop-filter:blur(14px);padding:14px;overflow:auto;box-shadow:0 12px 35px #0005}.left{left:16px}.right{right:16px;width:270px}.panel h2{font-size:14px;margin:0 0 10px;color:var(--cyan);letter-spacing:.08em}.panel h3{font-size:12px;color:#b8d1e4;margin:16px 0 7px}.hint{font-size:11px;color:var(--muted);line-height:1.6}.tools{display:grid;grid-template-columns:1fr 1fr;gap:7px}.tool{min-height:54px;text-align:left;font-size:11px}.tool strong{display:block;font-size:12px}.tool em{display:block;font-style:normal;color:#a5c0d6;font-size:10px;margin-top:3px}.wide{width:100%;margin-top:7px}#resetBtn{display:block;width:auto;margin:18px 0 2px auto;padding:5px 8px;font-size:10px;line-height:1.2;opacity:.78;border-color:#75505a;color:#d9b8c0;background:#291d2a}#resetBtn:hover{opacity:1;background:#46232e;border-color:#d88b9d}.meter{height:8px;background:#203b52;border-radius:20px;overflow:hidden;margin:5px 0 10px}.meter i{display:block;height:100%;width:50%;background:linear-gradient(90deg,#41c8ff,#65f0bd);border-radius:20px}.metric{display:flex;justify-content:space-between;font-size:11px;color:#bad0e2}.log{font-size:11px;color:#b7ccdc;line-height:1.6;border-top:1px solid #28445d;padding:7px 0}.notice{position:fixed;z-index:5;left:50%;bottom:20px;transform:translateX(-50%);background:#071a2beF;border:1px solid #3e7896;border-radius:12px;padding:10px 16px;font-size:12px;box-shadow:0 10px 30px #0007;max-width:min(90vw,600px);text-align:center}.hidden{display:none!important}.public-view .left,.public-view .right{display:none!important}.public-view #saveBtn{display:none!important}.public-view .topbar{right:16px}.public-view .brand small{color:#65f0bd}.public-view .notice{pointer-events:none}.login{position:fixed;z-index:10;inset:0;background:#061321ee;display:grid;place-items:center;padding:20px}.login-card{max-width:440px;background:#10243a;border:1px solid #355773;border-radius:18px;padding:28px;text-align:center}.login-card h1{margin:0 0 8px}.login-card p{color:#afc4d6;font-size:13px;line-height:1.8}.pill{display:inline-block;padding:3px 7px;border-radius:30px;background:#153e50;color:#72e9ff;font-size:10px;margin-right:4px}
+.panel{position:fixed;z-index:3;top:92px;bottom:18px;width:250px;background:#091a2ded;border:1px solid #2b4a65;border-radius:15px;backdrop-filter:blur(14px);padding:14px;overflow:auto;box-shadow:0 12px 35px #0005}.left{left:16px}.right{right:16px;width:270px}.panel h2{font-size:14px;margin:0 0 10px;color:var(--cyan);letter-spacing:.08em}.panel h3{font-size:12px;color:#b8d1e4;margin:16px 0 7px}.hint{font-size:11px;color:var(--muted);line-height:1.6}.tools{display:grid;grid-template-columns:1fr 1fr;gap:7px}.tool{min-height:54px;text-align:left;font-size:11px}.recruit-count-label{display:block;grid-column:1/-1;font-size:11px;color:var(--muted);margin:3px 0 -4px}.recruit-count{grid-column:1/-1;width:100%;padding:10px;border:1px solid #365a76;border-radius:9px;background:#102a40;color:#fff;font:inherit;font-size:15px}.tool strong{display:block;font-size:12px}.tool em{display:block;font-style:normal;color:#a5c0d6;font-size:10px;margin-top:3px}.wide{width:100%;margin-top:7px}#resetBtn{display:block;width:auto;margin:18px 0 2px auto;padding:5px 8px;font-size:10px;line-height:1.2;opacity:.78;border-color:#75505a;color:#d9b8c0;background:#291d2a}#resetBtn:hover{opacity:1;background:#46232e;border-color:#d88b9d}.meter{height:8px;background:#203b52;border-radius:20px;overflow:hidden;margin:5px 0 10px}.meter i{display:block;height:100%;width:50%;background:linear-gradient(90deg,#41c8ff,#65f0bd);border-radius:20px}.metric{display:flex;justify-content:space-between;font-size:11px;color:#bad0e2}.log{font-size:11px;color:#b7ccdc;line-height:1.6;border-top:1px solid #28445d;padding:7px 0}.notice{position:fixed;z-index:5;left:50%;bottom:20px;transform:translateX(-50%);background:#071a2beF;border:1px solid #3e7896;border-radius:12px;padding:10px 16px;font-size:12px;box-shadow:0 10px 30px #0007;max-width:min(90vw,600px);text-align:center}.hidden{display:none!important}.public-view .left,.public-view .right{display:none!important}.public-view #saveBtn{display:none!important}.public-view .topbar{right:16px}.public-view .brand small{color:#65f0bd}.public-view .notice{pointer-events:none}.login{position:fixed;z-index:10;inset:0;background:#061321ee;display:grid;place-items:center;padding:20px}.login-card{max-width:440px;background:#10243a;border:1px solid #355773;border-radius:18px;padding:28px;text-align:center}.login-card h1{margin:0 0 8px}.login-card p{color:#afc4d6;font-size:13px;line-height:1.8}.pill{display:inline-block;padding:3px 7px;border-radius:30px;background:#153e50;color:#72e9ff;font-size:10px;margin-right:4px}
 @media(max-width:900px){.panel{width:210px}.right{width:220px}.stat{min-width:76px;padding:6px 8px}.stat b{font-size:14px}.brand{font-size:12px}.topbar{left:8px;right:8px;top:8px;flex-wrap:wrap}.left{left:8px;top:130px;bottom:8px}.right{right:8px;top:130px;bottom:8px}}
 @media(max-width:620px){.stats .stat:nth-child(n+3){display:none}.panel{top:auto;bottom:8px;height:230px;width:calc(50% - 12px);padding:10px}.left{left:8px}.right{right:8px}.tools{grid-template-columns:1fr 1fr}.tool{min-height:45px;padding:6px}.topbar{align-items:flex-start}.top-actions{padding:5px}.top-actions button{font-size:10px;padding:7px}.brand{padding:7px}.stats{gap:4px}}
 </style>
@@ -55,7 +55,7 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
   <button class="tool" data-tool="station"><strong>🚉 駅</strong><em>$7,500</em></button>
   <button class="tool" data-tool="busstop"><strong>🚏 バス停</strong><em>$1,500</em></button>
  </div><p class="hint">線路・駅・バス停を設置しただけでは、車両は出現しません。車両ショップで別途購入してください。</p>
- <h3>車両ショップ</h3><div class="tools"><button class="tool" id="buyTrainBtn"><strong>🚆 電車を購入</strong><em>$25,000 / 編成</em></button><button class="tool" id="buyBusBtn"><strong>🚌 バスを購入</strong><em>$6,000 / 台</em></button><button class="tool" id="buyCarBtn"><strong>🚘 電動セダンを購入</strong><em>$9,000 / 台</em></button><select id="jobSelect" class="tool" style="width:100%;margin-top:8px;padding:10px"><option value="unemployed">仕事なし（無職）</option><option value="shop">🏪 店員</option><option value="doctor">🏥 医師</option><option value="teacher">🏫 教師</option><option value="engineer">⚡ 発電技術者</option><option value="officeworker">💼 会社員</option><option value="factoryworker">🏭 工場技術者</option><option value="firefighter">🚒 消防士</option><option value="policeofficer">🚓 警察官</option><option value="chef">👨‍🍳 料理人</option><option value="hotelstaff">🛎️ ホテルスタッフ</option><option value="researcher">🔬 研究者</option><option value="sportsstaff">🏟️ スポーツ職員</option><option value="airportstaff">✈️ 空港職員</option></select><button class="tool" id="recruitBtn"><strong>🧑 選んだ職業の住民を募集</strong><em>$500 / 人</em></button></div><p class="hint">車の購入条件：道路・住民・住宅がすべて必要。さらに住宅から6マス以内に道路をつなぐと、購入した車が家の前に駐車します。道路を敷いても車は増えません。</p>
+ <h3>車両ショップ</h3><div class="tools"><button class="tool" id="buyTrainBtn"><strong>🚆 電車を購入</strong><em>$25,000 / 編成</em></button><button class="tool" id="buyBusBtn"><strong>🚌 バスを購入</strong><em>$6,000 / 台</em></button><button class="tool" id="buyCarBtn"><strong>🚘 電動セダンを購入</strong><em>$9,000 / 台</em></button><select id="jobSelect" class="tool" style="width:100%;margin-top:8px;padding:10px"><option value="unemployed">仕事なし（無職）</option><option value="shop">🏪 店員</option><option value="doctor">🏥 医師</option><option value="teacher">🏫 教師</option><option value="engineer">⚡ 発電技術者</option><option value="officeworker">💼 会社員</option><option value="factoryworker">🏭 工場技術者</option><option value="firefighter">🚒 消防士</option><option value="policeofficer">🚓 警察官</option><option value="chef">👨‍🍳 料理人</option><option value="hotelstaff">🛎️ ホテルスタッフ</option><option value="researcher">🔬 研究者</option><option value="sportsstaff">🏟️ スポーツ職員</option><option value="airportstaff">✈️ 空港職員</option></select><label class="recruit-count-label" for="recruitCount">募集する人数</label><input id="recruitCount" class="recruit-count" type="number" min="1" max="100" step="1" value="1" inputmode="numeric"><button class="tool" id="recruitBtn"><strong>🧑 選んだ職業の住民を募集</strong><em>$500 / 人</em></button></div><p class="hint">車の購入条件：道路・住民・住宅がすべて必要。さらに住宅から6マス以内に道路をつなぐと、購入した車が家の前に駐車します。道路を敷いても車は増えません。</p>
 </aside>
 <aside class="panel right">
  <h2>都市の状況</h2>
@@ -514,22 +514,34 @@ function makePassengerPlane(){
  for(let i=0;i<9;i++){const w=new THREE.Mesh(new THREE.BoxGeometry(.24,.12,.08),glass);w.position.set(-.28+(i%3)*.28,.23,2.2-Math.floor(i/3)*.55);g.add(w);const q=w.clone();q.position.x=-q.position.x;g.add(q);}
  for(const x of [-5.2,5.2]){const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.2,.2,.14,12),rubber);wheel.rotation.z=Math.PI/2;wheel.position.set(x,-.7,.35);g.add(wheel);}
  const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.17,.17,.12,12),rubber);wheel.rotation.z=Math.PI/2;wheel.position.set(0,-.7,3.8);g.add(wheel);
- const beacon=new THREE.Mesh(new THREE.SphereGeometry(.13,10,8),mat(0xff3535,.1,.2,0xff2525));beacon.position.y=.85;g.add(beacon);g.scale.setScalar(.72);return g;
+ const beacon=new THREE.Mesh(new THREE.SphereGeometry(.13,10,8),mat(0xff3535,.1,.2,0xff2525));beacon.position.y=.85;g.add(beacon);g.scale.setScalar(.42);return g;
 }
-function beginAirportArrival(job,id,airport){
+function beginAirportArrival(job,id,airport,count=1){
  const group=makePassengerPlane(),stand=(parkedAircraft%3)-1;parkedAircraft++;group.position.set(airport.x,17,airport.z-82);scene.add(group);
- aircraftArrivals.push({group,airport,job,id,stand,phase:"approach",t:0});
+ aircraftArrivals.push({group,airport,job,id,count,stand,phase:"approach",t:0});
 }
 function updateAirportArrivals(){
  for(let i=aircraftArrivals.length-1;i>=0;i--){
-  const a=aircraftArrivals[i],rate=a.phase==="approach" ? .0028 : .004;a.t=Math.min(1,a.t+rate);
+  const a=aircraftArrivals[i],rate=a.phase==="approach"?.0028:a.phase==="taxi"?.004:a.phase==="departTaxi"?.006:.004;
+  a.t=Math.min(1,a.t+rate);
   if(a.phase==="approach"){
    const t=a.t;a.group.position.set(a.airport.x,17-16.35*t,a.airport.z-82+44*t);a.group.rotation.set(.035,0,0);
    if(t>=1){a.phase="taxi";a.t=0;addNews("航空機が滑走路に着陸しました。");}
+  }else if(a.phase==="taxi"){
+   const t=a.t,sx=a.airport.x,sz=a.airport.z-38,ex=a.airport.x+a.stand*2.2,ez=a.airport.z-5;
+   a.group.position.set(sx+(ex-sx)*t,.42,sz+(ez-sz)*t);a.group.rotation.set(0,Math.atan2(ex-sx,ez-sz),0);
+   if(t>=1){
+    for(let n=0;n<a.count;n++){const person=spawnPerson(a.id+n,a.job,{x:a.airport.x+1.1+a.stand*.4+(n%3)*.45,z:a.airport.z+2.4+Math.floor(n/3)*.45});people.push(person);}
+    assignWorkplaces();updateUI();scheduleSave();addNews(a.count+"人の乗客が到着便から降りました。");notice(a.count+"人が空港に到着しました。飛行機は折り返して出発します。");
+    a.phase="departTaxi";a.t=0;
+   }
+  }else if(a.phase==="departTaxi"){
+   const t=a.t,sx=a.airport.x+a.stand*2.2,sz=a.airport.z-5,ex=a.airport.x,ez=a.airport.z-38;
+   a.group.position.set(sx+(ex-sx)*t,.42,sz+(ez-sz)*t);a.group.rotation.set(0,Math.atan2(ex-sx,ez-sz),0);
+   if(t>=1){a.phase="takeoff";a.t=0;}
   }else{
-   const t=a.t,sx=a.airport.x,sz=a.airport.z-38,ex=a.airport.x+a.stand*4.2,ez=a.airport.z-5;
-   a.group.position.set(sx+(ex-sx)*t,.68,sz+(ez-sz)*t);a.group.rotation.set(0,Math.atan2(ex-sx,ez-sz),0);
-   if(t>=1){const person=spawnPerson(a.id,a.job,{x:a.airport.x+1.4+a.stand*.5,z:a.airport.z+2.5});people.push(person);assignWorkplaces();updateUI();scheduleSave();addNews("到着便から乗客が降り、街に到着しました。");notice("飛行機が到着し、乗客が空港から街へ出発しました。");aircraftArrivals.splice(i,1);}
+   const t=a.t;a.group.position.set(a.airport.x,.42+23*t,a.airport.z-38-85*t);a.group.rotation.set(-.12,0,0);
+   if(t>=1){scene.remove(a.group);aircraftArrivals.splice(i,1);addNews("乗客を降ろした航空機が離陸しました。");}
   }
  }
 }
@@ -712,7 +724,21 @@ $("buyCarBtn").onclick=async()=>{
  const car=spawnCar(cars.length,home);cars.push(car);
  notice("電動セダンを購入しました。住民の家の前に駐車しました。");scheduleSave();
 };
-$("recruitBtn").onclick=async()=>{const capacity=buildings.reduce((a,b)=>a+(defs[b.type].housing||0)*b.level,0);if(people.length+aircraftArrivals.length>=capacity){notice("住宅が不足しています。先に住宅を建設してください。");return;}const job=$("jobSelect").value;const limits=Object.fromEntries(Object.entries(jobFacilityTypes).map(([j,types])=>[j,buildings.filter(b=>types.includes(b.type)).reduce((n,b)=>n+(defs[b.type].jobs||0),0)]));if(job!=="unemployed"){const used=people.filter(p=>p.job===job).length+aircraftArrivals.filter(a=>a.job===job).length;if(used>=limits[job]){notice("その職業の求人枠がありません。対応する施設を建設してください。");return;}}if(!(await charge(500)))return;const airport=buildings.find(b=>b.type==="airport");if(airport){beginAirportArrival(job,people.length+aircraftArrivals.length,airport);notice("航空機が遠方から到着中です。着陸後、乗客が空港から街へ出ます。");}else{const person=spawnPerson(people.length,job);people.push(person);assignWorkplaces();notice((jobLabels[job]||"住民")+"として住民を募集しました。");scheduleSave();}updateUI();};
+$("recruitBtn").onclick=async()=>{
+ const count=Math.max(1,Math.min(100,Math.floor(Number($("recruitCount").value)||1)));$("recruitCount").value=count;
+ const capacity=buildings.reduce((a,b)=>a+(defs[b.type].housing||0)*b.level,0),pending=aircraftArrivals.reduce((n,a)=>n+a.count,0);
+ if(people.length+pending+count>capacity){notice("住宅の空きが足りません。あと"+Math.max(0,capacity-people.length-pending)+"人まで募集できます。");return;}
+ const job=$("jobSelect").value,limits=Object.fromEntries(Object.entries(jobFacilityTypes).map(([j,types])=>[j,buildings.filter(b=>types.includes(b.type)).reduce((n,b)=>n+(defs[b.type].jobs||0),0)]));
+ if(job!=="unemployed"){
+  const used=people.filter(p=>p.job===job).length+aircraftArrivals.filter(a=>a.job===job).reduce((n,a)=>n+a.count,0);
+  if(used+count>limits[job]){notice("その職業の求人枠が不足しています。あと"+Math.max(0,limits[job]-used)+"人まで募集できます。");return;}
+ }
+ if(!(await charge(count*500)))return;
+ const airport=buildings.find(b=>b.type==="airport");
+ if(airport){beginAirportArrival(job,people.length+pending,airport,count);notice(count+"人分の乗客を乗せた航空機が到着中です。");}
+ else{for(let n=0;n<count;n++)people.push(spawnPerson(people.length,job));assignWorkplaces();updateUI();notice(count+"人の"+(jobLabels[job]||"住民")+"を募集しました。");scheduleSave();}
+ updateUI();
+};
 addEventListener("focus",refreshWallet);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refreshWallet();});setInterval(refreshWallet,12000);
 await loadCity();updateUI(); 
 </script>
