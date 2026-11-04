@@ -1494,7 +1494,7 @@ function buildUtilityNetwork(){
  const zoneMap=new Map(zones.map(z=>[z.x+","+z.z,z])),zoneComponents=new Map(),queue=[];
  for(const z of zones)for(const [dx,dz] of dirs){const k=(z.x+dx)+","+(z.z+dz);if(roadComponents.has(k)&&!zoneComponents.has(z.x+","+z.z)){zoneComponents.set(z.x+","+z.z,roadComponents.get(k));queue.push(z);break;}}
  for(let i=0;i<queue.length;i++){const z=queue[i],componentId=zoneComponents.get(z.x+","+z.z);for(const [dx,dz] of dirs){const k=(z.x+dx)+","+(z.z+dz);if(zoneMap.has(k)&&!zoneComponents.has(k)){zoneComponents.set(k,componentId);queue.push(zoneMap.get(k));}}}
- const buildingComponent=b=>{const key=b.x+","+b.z;if(zoneComponents.has(key))return zoneComponents.get(key);let best=null,distance=Infinity;for(const r of roads){const d=Math.hypot(r.x-b.x,r.z-b.z);if(d<distance){distance=d;best=r;}}return best&&distance<=6.5?roadComponents.get(best.x+","+best.z):null;};
+ const buildingComponent=b=>{const key=b.x+","+b.z;if(zoneComponents.has(key))return zoneComponents.get(key);for(const [dx,dz] of dirs){const k=(b.x+dx)+","+(b.z+dz);if(roadComponents.has(k))return roadComponents.get(k);}return null;};
  return {roadComponents,zoneComponents,buildingComponent};
 }
 function calc(){
