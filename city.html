@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071525">
+<title>未来都市ビルダー｜理科キッズ</title>
+<style>
+:root{color-scheme:dark;--bg:#071525;--panel:#10243a;--line:#24415b;--cyan:#55e5ff;--green:#65f0bd;--muted:#9bb2c7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#edf8ff;font-family:system-ui,"Yu Gothic",sans-serif;overflow:hidden}
+#game{position:fixed;inset:0}canvas{display:block}
+.topbar{position:fixed;z-index:4;left:16px;right:16px;top:14px;display:flex;gap:10px;align-items:center;pointer-events:none}.brand,.stat,.top-actions{background:#091a2ddd;border:1px solid #31516a;border-radius:13px;backdrop-filter:blur(12px);box-shadow:0 8px 30px #0005}.brand{padding:9px 15px;font-weight:900;letter-spacing:.04em}.brand small{display:block;color:var(--cyan);font-size:10px;letter-spacing:.2em}.stats{display:flex;gap:8px;flex-wrap:wrap}.stat{padding:8px 12px;min-width:100px}.stat span{display:block;color:var(--muted);font-size:10px}.stat b{font-size:17px}.top-actions{margin-left:auto;padding:8px;display:flex;gap:7px;pointer-events:auto}
+button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;border-radius:9px;padding:8px 11px;cursor:pointer}button:hover{border-color:var(--cyan);background:#214866}button.active{background:#0c6479;border-color:var(--cyan);color:#fff}button:disabled{opacity:.4;cursor:not-allowed}
+.panel{position:fixed;z-index:3;top:92px;bottom:18px;width:250px;background:#091a2ded;border:1px solid #2b4a65;border-radius:15px;backdrop-filter:blur(14px);padding:14px;overflow:auto;box-shadow:0 12px 35px #0005}.left{left:16px}.right{right:16px;width:270px}.panel h2{font-size:14px;margin:0 0 10px;color:var(--cyan);letter-spacing:.08em}.panel h3{font-size:12px;color:#b8d1e4;margin:16px 0 7px}.hint{font-size:11px;color:var(--muted);line-height:1.6}.tools{display:grid;grid-template-columns:1fr 1fr;gap:7px}.tool{min-height:54px;text-align:left;font-size:11px}.tool strong{display:block;font-size:12px}.tool em{display:block;font-style:normal;color:#a5c0d6;font-size:10px;margin-top:3px}.wide{width:100%;margin-top:7px}.meter{height:8px;background:#203b52;border-radius:20px;overflow:hidden;margin:5px 0 10px}.meter i{display:block;height:100%;width:50%;background:linear-gradient(90deg,#41c8ff,#65f0bd);border-radius:20px}.metric{display:flex;justify-content:space-between;font-size:11px;color:#bad0e2}.log{font-size:11px;color:#b7ccdc;line-height:1.6;border-top:1px solid #28445d;padding:7px 0}.notice{position:fixed;z-index:5;left:50%;bottom:20px;transform:translateX(-50%);background:#071a2beF;border:1px solid #3e7896;border-radius:12px;padding:10px 16px;font-size:12px;box-shadow:0 10px 30px #0007;max-width:min(90vw,600px);text-align:center}.hidden{display:none!important}.login{position:fixed;z-index:10;inset:0;background:#061321ee;display:grid;place-items:center;padding:20px}.login-card{max-width:440px;background:#10243a;border:1px solid #355773;border-radius:18px;padding:28px;text-align:center}.login-card h1{margin:0 0 8px}.login-card p{color:#afc4d6;font-size:13px;line-height:1.8}.pill{display:inline-block;padding:3px 7px;border-radius:30px;background:#153e50;color:#72e9ff;font-size:10px;margin-right:4px}
+@media(max-width:900px){.panel{width:210px}.right{width:220px}.stat{min-width:76px;padding:6px 8px}.stat b{font-size:14px}.brand{font-size:12px}.topbar{left:8px;right:8px;top:8px}.left{left:8px;top:130px;bottom:8px}.right{right:8px;top:130px;bottom:8px}}
+@media(max-width:620px){.stats .stat:nth-child(n+3){display:none}.panel{top:auto;bottom:8px;height:230px;width:calc(50% - 12px);padding:10px}.left{left:8px}.right{right:8px}.tools{grid-template-columns:1fr 1fr}.tool{min-height:45px;padding:6px}.topbar{align-items:flex-start}.top-actions{padding:5px}.top-actions button{font-size:10px;padding:7px}.brand{padding:7px}.stats{gap:4px}}
+</style>
+</head>
+<body>
+<div id="game"></div>
+<div class="topbar">
+ <div class="brand">理科キッズ <small>FUTURE CITY BUILDER</small></div>
+ <div class="stats">
+  <div class="stat"><span>都市資産</span><b id="money">$120,000</b></div>
+  <div class="stat"><span>人口</span><b id="population">0人</b></div>
+  <div class="stat"><span>電力</span><b id="power">0 / 0 MW</b></div>
+  <div class="stat"><span>幸福度</span><b id="happiness">--%</b></div>
+ </div>
+ <div class="top-actions"><button id="saveBtn">保存</button><button id="homeBtn">理科キッズへ</button></div>
+</div>
+<aside class="panel left">
+ <h2>都市建設メニュー</h2>
+ <div class="hint">施設を選び、地面をクリックして配置。道路は道路ツールを選んでマスをクリック。</div>
+ <h3>道路・交通</h3><div class="tools">
+  <button class="tool active" data-tool="road"><strong>▰ 道路</strong><em>$500 / マス</em></button>
+  <button class="tool" data-tool="remove"><strong>⌫ 撤去</strong><em>道路・施設</em></button>
+ </div>
+ <h3>居住・都市施設</h3><div class="tools" id="buildingTools">
+  <button class="tool" data-tool="home"><strong>⌂ 未来住宅</strong><em>$8,000</em></button>
+  <button class="tool" data-tool="tower"><strong>▥ 超高層住宅</strong><em>$28,000</em></button>
+  <button class="tool" data-tool="shop"><strong>◇ 商業プラザ</strong><em>$12,000</em></button>
+  <button class="tool" data-tool="hospital"><strong>✚ 先端医療センター</strong><em>$24,000</em></button>
+  <button class="tool" data-tool="school"><strong>⌑ 科学アカデミー</strong><em>$18,000</em></button>
+  <button class="tool" data-tool="park"><strong>✿ バイオドーム</strong><em>$9,000</em></button>
+ </div>
+ <h3>次世代エネルギー</h3><div class="tools">
+  <button class="tool" data-tool="fusion"><strong>⚛ 核融合炉</strong><em>$55,000 / 180 MW</em></button>
+  <button class="tool" data-tool="fission"><strong>☢ 原子力発電所</strong><em>$38,000 / 110 MW</em></button>
+  <button class="tool" data-tool="hydrogen"><strong>H₂ 水素発電所</strong><em>$22,000 / 55 MW</em></button>
+  <button class="tool" data-tool="solar"><strong>☀ 太陽光発電所</strong><em>$12,000 / 22 MW</em></button>
+ </div>
+ <button class="wide" id="upgradeBtn">選択した施設をアップグレード</button>
+ <button class="wide" id="earnBtn">研究助成金を受け取る +$2,000</button>
+ <p class="hint">※研究助成金はゲーム内のテスト用収入。クイズ正解数とは別管理です。</p>
+</aside>
+<aside class="panel right">
+ <h2>都市の状況</h2>
+ <div class="metric"><span>電力供給</span><b id="powerLabel">0 MW</b></div><div class="meter"><i id="powerBar"></i></div>
+ <div class="metric"><span>住宅収容人数</span><b id="housing">0 / 0人</b></div><div class="meter"><i id="housingBar"></i></div>
+ <div class="metric"><span>医療・教育</span><b id="services">不足</b></div><div class="meter"><i id="serviceBar"></i></div>
+ <div class="metric"><span>交通状況</span><b id="traffic">道路なし</b></div><div class="meter"><i id="trafficBar"></i></div>
+ <h3>都市の開発段階</h3><div id="levelText">開拓前</div><div class="meter"><i id="levelBar"></i></div>
+ <h3>住民の暮らし</h3><div class="hint" id="lifeText">住宅を建てると住民が移住してきます。住民は道路沿いを歩き、施設を利用します。</div>
+ <h3>都市ニュース</h3><div id="news"><div class="log">未来都市の建設を始めよう。</div></div>
+ <button class="wide" id="resetBtn">都市データを初期化</button>
+</aside>
+<div class="notice" id="notice">道路を敷いて、未来都市の建設を始めよう。ドラッグで視点回転・WASDで移動・ホイールでズーム。</div>
+<div class="login hidden" id="login"><div class="login-card"><h1>都市データを保存するには</h1><p>理科キッズのアカウントでログインしてください。ログインしていない場合も、お試しプレイはできますが、クラウド保存はできません。</p><button onclick="location.href='./account.html'">ログイン・新規登録</button><button onclick="document.getElementById('login').classList.add('hidden')">お試しプレイを続ける</button></div></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+const $=id=>document.getElementById(id);
+const supabase=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
+let user=null, cash=120000, selected="road", buildings=[], roads=[], cars=[], people=[], cityTick=0, saveTimer=null, selectedObject=null;
+const defs={
+ home:{name:"未来住宅",cost:8000,power:2,housing:12,color:0x35b8d5,kind:"res"},
+ tower:{name:"超高層住宅",cost:28000,power:12,housing:65,color:0x357bd5,kind:"res"},
+ shop:{name:"商業プラザ",cost:12000,power:9,jobs:18,color:0x9c67dc,kind:"shop"},
+ hospital:{name:"先端医療センター",cost:24000,power:18,service:45,color:0x46c6ac,kind:"hospital"},
+ school:{name:"科学アカデミー",cost:18000,power:14,education:55,color:0xe4b84f,kind:"school"},
+ park:{name:"バイオドーム",cost:9000,power:3,happy:18,color:0x55bb77,kind:"park"},
+ fusion:{name:"核融合炉",cost:55000,generation:180,color:0x42dfff,kind:"power"},
+ fission:{name:"原子力発電所",cost:38000,generation:110,color:0x9cdb79,kind:"power"},
+ hydrogen:{name:"水素発電所",cost:22000,generation:55,color:0x66c5e8,kind:"power"},
+ solar:{name:"太陽光発電所",cost:12000,generation:22,color:0xe9ca63,kind:"power"}
+};
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x071525);scene.fog=new THREE.Fog(0x071525,55,170);
+const camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,.1,400);camera.position.set(28,28,35);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;$("game").appendChild(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,0,0);controls.enableDamping=true;controls.maxPolarAngle=Math.PI*.47;controls.minDistance=9;controls.maxDistance=100;
+scene.add(new THREE.HemisphereLight(0x9edaff,0x172538,2));
+const keyLight=new THREE.DirectionalLight(0xc5edff,2.3);keyLight.position.set(-30,50,25);keyLight.castShadow=true;keyLight.shadow.mapSize.set(2048,2048);scene.add(keyLight);
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(220,220),new THREE.MeshStandardMaterial({color:0x102b38,roughness:.92}));ground.rotation.x=-Math.PI/2;ground.position.y=-.12;ground.receiveShadow=true;scene.add(ground);
+const grid=new THREE.GridHelper(100,50,0x2a7187,0x1a4054);grid.position.y=.015;scene.add(grid);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(100,100),new THREE.MeshBasicMaterial({visible:false,side:THREE.DoubleSide}));floor.rotation.x=-Math.PI/2;floor.position.y=.02;scene.add(floor);
+const raycaster=new THREE.Raycaster(),mouse=new THREE.Vector2();const cell=4;
+const keyLights=[];
+function gridPos(p){return {x:Math.round(p.x/cell)*cell,z:Math.round(p.z/cell)*cell};}
+function mat(color,metal=.25,rough=.35,emissive=0){return new THREE.MeshStandardMaterial({color,metalness:metal,roughness:rough,emissive,emissiveIntensity:.6});}
+function box(parent,w,h,d,material,x=0,y=h/2,z=0){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
+function makeBuilding(type,x,z,level=1){
+ const d=defs[type],g=new THREE.Group();g.position.set(x,0,z);g.userData={type,level};const body=mat(d.color,.48,.27),glass=mat(0x9cecff,.7,.16,0x164d69),dark=mat(0x132d43,.6,.3),glow=mat(0x38ddff,.3,.2,0x21bddd);
+ box(g,3.1,.35,3.1,dark,0,.18,0);
+ if(type==="home"||type==="tower"||type==="shop"||type==="hospital"||type==="school"||type==="park"){
+  let h=type==="home"?3.3:type==="tower"?12:type==="shop"?5:type==="hospital"?7:type==="school"?6:4;
+  box(g,2.5,h,2.5,glass,0,h/2+.35,0);box(g,2.72,.28,2.72,body,0,.65,0);
+  for(let y=1.5;y<h;y+=1.6)for(let side=-1;side<=1;side+=2)box(g,.13,.72,.035,glow,side*1.27,y,1.27);
+  box(g,2.8,.18,2.8,body,0,h+.42,0);
+  if(type==="tower"){for(let y=2;y<h;y+=2.1)box(g,2.58,.08,2.58,glow,0,y,0);box(g,.18,3,.18,glow,0,h+1.9,0);}
+  if(type==="hospital")box(g,.45,2.4,.25,mat(0xffffff,.1,.3),0,h+1.5,0);
+  if(type==="school")for(let i=-1;i<=1;i++)box(g,.45,.3,.1,glow,i*.75,h+1,1.32);
+  if(type==="park"){const dome=new THREE.Mesh(new THREE.SphereGeometry(1.55,16,12,0,Math.PI*2,0,Math.PI/2),mat(0x62d69b,.15,.2,0x1c7549));dome.position.y=2.7;g.add(dome);for(let i=0;i<6;i++){const t=new THREE.Mesh(new THREE.ConeGeometry(.42,1.5,7),mat(0x57bb79));t.position.set(Math.cos(i)*.9,1.1,Math.sin(i)*.9);g.add(t);}}
+ }else{
+  const h=type==="fusion"?7:type==="fission"?5:type==="hydrogen"?4:2.4;
+  box(g,2.4,h,2.4,body,0,h/2+.35,0);
+  if(type==="fusion"){const ring=new THREE.Mesh(new THREE.TorusGeometry(1.25,.16,12,40),glow);ring.rotation.x=Math.PI/2;ring.position.y=4.2;g.add(ring);const core=new THREE.Mesh(new THREE.SphereGeometry(.62,20,16),mat(0xc8fbff,.2,.1,0x6beaff));core.position.y=4.2;g.add(core);box(g,.15,2.4,.15,glow,0,h+1.2,0);}
+  if(type==="fission"){for(let i=-1;i<=1;i+=2){const c=new THREE.Mesh(new THREE.CylinderGeometry(.5,.7,4,12),mat(0xd7e8e5,.45,.3));c.position.set(i*.75,4,0);g.add(c);}}
+  if(type==="hydrogen"){for(let i=-1;i<=1;i++)box(g,.45,2.6,.45,glass,i*.75,2,0);}
+  if(type==="solar"){for(let i=-1;i<=1;i++){const p=new THREE.Mesh(new THREE.BoxGeometry(.9,.08,1.5),mat(0x2456a1,.7,.2));p.position.set(i*.85,1.4,0);p.rotation.x=-.22;g.add(p);}}
+  const beacon=new THREE.PointLight(d.color,1.8,9);beacon.position.y=h+1;g.add(beacon);keyLights.push(beacon);
+ }
+ const labelCanvas=document.createElement("canvas");labelCanvas.width=256;labelCanvas.height=64;const ctx=labelCanvas.getContext("2d");ctx.fillStyle="#071a2b";ctx.fillRect(0,0,256,64);ctx.fillStyle="#a9f4ff";ctx.font="bold 25px sans-serif";ctx.textAlign="center";ctx.fillText(d.name,128,40);const tex=new THREE.CanvasTexture(labelCanvas);const label=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));label.scale.set(4.2,1.05,1);label.position.y=(type==="tower"?14:type==="fusion"?10:8);g.add(label);
+ scene.add(g);return {type,x,z,level,group:g};
+}
+function makeRoad(x,z){const g=new THREE.Group();g.position.set(x,.035,z);const road=new THREE.Mesh(new THREE.BoxGeometry(cell,.12,cell),mat(0x263b4d,.35,.7));road.position.y=.02;g.add(road);const stripe=box(g,.12,.025,3.2,mat(0x8edbe8,.2,.5,0x22505b),0,.1,0);scene.add(g);return {x,z,group:g};}
+function spawnCar(i){const g=new THREE.Group();const c=mat([0x29b9d9,0x8a70df,0xe4b95c,0x64d5aa][i%4],.65,.22);box(g,1.15,.45,2,c,0,.48,0);box(g,.8,.35,.9,mat(0x9cecff,.5,.12),0,.82,-.12);for(const x of [-.48,.48])for(const z of [-.62,.62]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.12,12),mat(0x080e16));w.rotation.z=Math.PI/2;w.position.set(x,.23,z);g.add(w);}scene.add(g);return {group:g,edge:0,t:Math.random(),speed:.12+Math.random()*.1};}
+function spawnPerson(i){const g=new THREE.Group();const colors=[0xffc27a,0x7ab8ff,0xff8eb3,0x8ee0b4];const torso=new THREE.Mesh(new THREE.CylinderGeometry(.16,.2,.65,8),mat(colors[i%4]));torso.position.y=.68;g.add(torso);const head=new THREE.Mesh(new THREE.SphereGeometry(.17,10,8),mat(0xffd2ae));head.position.y=1.12;g.add(head);scene.add(g);return {group:g,x:(Math.random()-.5)*22,z:(Math.random()-.5)*22,angle:Math.random()*6,speed:.35+Math.random()*.25};}
+function setTool(t){selected=t;document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));notice(t==="road"?"道路をクリックして敷設。":t==="remove"?"撤去したい道路・建物をクリック。":defs[t].name+"を配置する場所をクリック。");}
+function notice(s){$("notice").textContent=s;$("notice").classList.remove("hidden");clearTimeout(notice.timer);notice.timer=setTimeout(()=>$("notice").classList.add("hidden"),3000);}
+document.querySelectorAll("[data-tool]").forEach(b=>b.addEventListener("click",()=>setTool(b.dataset.tool)));
+function findAt(x,z){return buildings.find(b=>Math.abs(b.x-x)<1&&Math.abs(b.z-z)<1)||roads.find(r=>r.x===x&&r.z===z);}
+function addRoad(x,z){if(roads.some(r=>r.x===x&&r.z===z))return;const cost=500;if(cash<cost)return notice("資金が足りません。");cash-=cost;roads.push(makeRoad(x,z));updateUI();scheduleSave();}
+function addBuilding(type,x,z){const d=defs[type];if(buildings.some(b=>Math.abs(b.x-x)<3.2&&Math.abs(b.z-z)<3.2))return notice("そこには別の施設があります。");if(cash<d.cost)return notice("資金が足りません。");const count=buildings.filter(b=>b.type===type).length;if(type==="fusion"&&count===0&&buildings.length<3)return notice("核融合炉は都市レベル2（施設3棟）で解放されます。");cash-=d.cost;buildings.push(makeBuilding(type,x,z));notice(d.name+"を建設しました。");updateUI();scheduleSave();}
+renderer.domElement.addEventListener("pointerdown",e=>{if(e.button!==0)return;const rect=renderer.domElement.getBoundingClientRect();mouse.x=(e.clientX-rect.left)/rect.width*2-1;mouse.y=-(e.clientY-rect.top)/rect.height*2+1;raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObject(floor);if(!hits.length)return;const p=gridPos(hits[0].point);if(selected==="road")addRoad(p.x,p.z);else if(selected==="remove"){const item=findAt(p.x,p.z);if(!item)return;cash+=item.type?Math.round(defs[item.type].cost*.35):150;if(item.group)scene.remove(item.group);if(item.type)buildings=buildings.filter(b=>b!==item);else roads=roads.filter(r=>r!==item);selectedObject=null;updateUI();scheduleSave();}else addBuilding(selected,p.x,p.z);});
+$("upgradeBtn").onclick=()=>{if(!selectedObject){notice("アップグレードする施設を先にクリックして選択してください。");return;}};
+$("earnBtn").onclick=()=>{cash+=2000;notice("研究助成金 +$2,000");updateUI();scheduleSave();};
+$("resetBtn").onclick=async()=>{if(!confirm("この都市の建物・道路・資産を初期状態に戻します。よろしいですか？"))return;buildings.forEach(b=>scene.remove(b.group));roads.forEach(r=>scene.remove(r.group));buildings=[];roads=[];cash=120000;updateUI();await saveCity();notice("都市を初期化しました。");};
+$("homeBtn").onclick=()=>location.href="./";
+function calc(){const sum=k=>buildings.reduce((a,b)=>a+(defs[b.type][k]||0)*b.level,0);const generation=sum("generation"),demand=sum("power")+Math.ceil(population()*.12),homes=sum("housing"),pop=Math.min(homes,Math.floor(homes*.72)),hosp=sum("service"),schools=sum("education");const traffic=roads.length?Math.min(100,Math.round(cars.length*12/Math.max(1,roads.length)*20)):0;const powerOk=generation>=demand;const services=Math.min(100,Math.round(Math.min(hosp/Math.max(1,pop*.025),schools/Math.max(1,pop*.035),1)*100));const happiness=Math.max(8,Math.min(100,Math.round(45+(powerOk?18:-28)+(homes>=pop?10:-18)+services*.22-traffic*.28+sum("happy"))));return {generation,demand,homes,pop,hosp,schools,traffic,powerOk,services,happiness};}
+function population(){return Math.min(buildings.reduce((a,b)=>a+(defs[b.type].housing||0)*b.level,0),Math.floor(buildings.reduce((a,b)=>a+(defs[b.type].housing||0)*b.level,0)*.72));}
+function updateUI(){const s=calc();$("money").textContent="$"+cash.toLocaleString("en-US");$("population").textContent=s.pop.toLocaleString()+"人";$("power").textContent=s.generation+" / "+s.demand+" MW";$("happiness").textContent=s.happiness+"%";$("powerLabel").textContent=s.generation+" MW";$("powerBar").style.width=Math.min(100,s.generation/Math.max(1,s.demand)*100)+"%";$("housing").textContent=s.pop+" / "+s.homes+"人";$("housingBar").style.width=(s.homes?Math.min(100,s.pop/s.homes*100):0)+"%";$("services").textContent=s.services+"%";$("serviceBar").style.width=s.services+"%";$("traffic").textContent=roads.length?(s.traffic>65?"大渋滞":s.traffic>30?"混雑":"スムーズ"):"道路なし";$("trafficBar").style.width=s.traffic+"%";const level=buildings.length>=12?4:buildings.length>=7?3:buildings.length>=3?2:1;$("levelText").textContent=["","レベル1・開拓都市","レベル2・先端都市","レベル3・未来都市","レベル4・超高度都市"][level];$("levelBar").style.width=[0,25,50,75,100][level]+"%";$("lifeText").textContent=s.pop+"人が居住。"+(s.powerOk?"電力は安定しています。":"電力不足！停電が発生しています。")+(s.hosp<s.pop*.025?" 医療施設が不足。":"")+(s.schools<s.pop*.035?" 学校が不足。":"");$("fusion").disabled=buildings.length<3;}
+function addNews(msg){const el=document.createElement("div");el.className="log";el.textContent=new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"})+" "+msg;$("news").prepend(el);while($("news").children.length>6)$("news").lastChild.remove();}
+function simulation(){const s=calc();if(cityTick%5===0){if(!s.powerOk)addNews("電力不足により都市の一部で停電が発生！");if(s.homes<s.pop+10&&s.homes>0)addNews("住宅不足で移住希望者が定着できません。");if(s.services<45&&s.pop>20)addNews("病院・学校の不足が住民の不満につながっています。");if(s.traffic>65)addNews("幹線道路で渋滞が発生しています。");if(buildings.length===3)addNews("都市レベル2！核融合炉などの先端施設が解放されました。");updateUI();}cityTick++;}
+function routePoints(){return roads.map(r=>new THREE.Vector3(r.x,.15,r.z));}
+function animate(){requestAnimationFrame(animate);controls.update();const pts=routePoints();cars.forEach(c=>{if(pts.length<2){c.group.visible=false;return;}c.group.visible=true;c.t+=c.speed*.0008;const idx=Math.floor(c.t*pts.length)%pts.length,next=(idx+1)%pts.length;const a=pts[idx],b=pts[next];c.group.position.lerpVectors(a,b,(c.t*pts.length)%1);c.group.lookAt(b.x,.15,b.z);});people.forEach(p=>{p.angle+=(Math.random()-.5)*.025;p.x+=Math.cos(p.angle)*p.speed*.006;p.z+=Math.sin(p.angle)*p.speed*.006;if(Math.abs(p.x)>26||Math.abs(p.z)>26)p.angle+=Math.PI;p.group.position.set(p.x,0,p.z);});renderer.render(scene,camera);}
+for(let i=0;i<12;i++)cars.push(spawnCar(i));for(let i=0;i<32;i++)people.push(spawnPerson(i));
+const keys={};addEventListener("keydown",e=>{keys[e.key.toLowerCase()]=true;if(["w","a","s","d"].includes(e.key.toLowerCase()))e.preventDefault();});addEventListener("keyup",e=>keys[e.key.toLowerCase()]=false);
+function moveCamera(){const v=new THREE.Vector3();if(keys.w)v.z-=1;if(keys.s)v.z+=1;if(keys.a)v.x-=1;if(keys.d)v.x+=1;if(v.lengthSq()){v.normalize().multiplyScalar(.28);controls.target.add(v);camera.position.add(v);}}
+function loop(){moveCamera();requestAnimationFrame(loop);}loop();animate();setInterval(simulation,1800);
+addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+async function loadCity(){const {data:{session}}=await supabase.auth.getSession();user=session?.user||null;if(!user){$("login").classList.remove("hidden");return;}const {data,error}=await supabase.from("city_saves").select("city_state").eq("user_id",user.id).maybeSingle();if(error){notice("クラウド保存の読み込みに失敗: "+error.message);return;}if(data?.city_state){const st=data.city_state;cash=Number(st.cash)||120000;(st.roads||[]).forEach(r=>roads.push(makeRoad(r.x,r.z)));(st.buildings||[]).forEach(b=>buildings.push(makeBuilding(b.type,b.x,b.z,b.level||1)));updateUI();notice("前回の都市データを読み込みました。");}else notice("新しい都市を作成しました。");}
+async function saveCity(){if(!user){notice("クラウド保存にはログインが必要です。");return;}const state={cash,roads:roads.map(r=>({x:r.x,z:r.z})),buildings:buildings.map(b=>({type:b.type,x:b.x,z:b.z,level:b.level})),version:1};const {error}=await supabase.from("city_saves").upsert({user_id:user.id,city_state:state,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(error){notice("保存に失敗しました: "+error.message);return;}notice("都市データをクラウドに保存しました。");}
+function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveCity,1200);}
+$("saveBtn").onclick=saveCity;
+await loadCity();updateUI();animate(); 
+</script>
+</body></html>
