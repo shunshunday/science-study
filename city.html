@@ -815,9 +815,13 @@ function updateMovePreviewPointer(e){
  const groundPoint=pointerGroundPoint(e);if(!groundPoint)return;
  movePreviewPoint=gridPos(groundPoint);renderMovePreview();
 }
-renderer.domElement.addEventListener("pointermove",updateMovePreviewPointer);
-renderer.domElement.addEventListener("pointermove",updatePlacementPreviewPointer);
-renderer.domElement.addEventListener("pointerdown",e=>{if(document.body.classList.contains("build-open"))updatePlacementPreviewPointer(e);});
+// 画面全体でポインターを捕捉。UIパネル上の操作は除外し、ゲーム画面上では確実にプレビュー更新。
+function isGamePointer(e){
+ if(e.target?.closest?.(".panel,.topbar,.notice,.login"))return false;
+ const r=renderer.domElement.getBoundingClientRect();
+ return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;
+}
+window.addEventListener("pointermove",e=>{if(isGamePointer(e)){updateMovePreviewPointer(e);updatePlacementPreviewPointer(e);}},true);
 function showMoveControls(){
  const active=!!selectedObject;$("moveControls").classList.toggle("hidden",!active);
  if(!active){$("moveProgress").className="move-progress";$("moveProgress").textContent="施設を選択すると、移動プレビューを表示します。";return;}
@@ -870,10 +874,14 @@ async function addBuilding(type,x,z){
  buildings.push(makeBuilding(type,x,z));assignWorkplaces();notice(d.name+"を建設しました。");updateUI();scheduleSave();
 }
 let placementPointer=null;
-renderer.domElement.addEventListener("pointerdown",e=>{if(publicView||!document.body.classList.contains("build-open")||e.button!==0)return;placementPointer={id:e.pointerId,x:e.clientX,y:e.clientY};});
-renderer.domElement.addEventListener("pointerup",e=>{
+window.addEventListener("pointerdown",e=>{
+ if(publicView||!document.body.classList.contains("build-open")||e.button!==0||!isGamePointer(e))return;
+ placementPointer={id:e.pointerId,x:e.clientX,y:e.clientY};
+ updatePlacementPreviewPointer(e);
+},true);
+window.addEventListener("pointerup",e=>{
  if(publicView||!document.body.classList.contains("build-open")){placementPointer=null;return;}
- if(!placementPointer||placementPointer.id!==e.pointerId)return;
+ if(!placementPointer||placementPointer.id!==e.pointerId||!isGamePointer(e))return;
  const start=placementPointer;placementPointer=null;
  if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>6)return;
  const groundPoint=pointerGroundPoint(e);if(!groundPoint)return;
@@ -908,7 +916,7 @@ renderer.domElement.addEventListener("pointerup",e=>{
  }
  addBuilding(selected,p.x,p.z);
 });
-renderer.domElement.addEventListener("pointercancel",()=>{placementPointer=null;});
+window.addEventListener("pointercancel",()=>{placementPointer=null;},true);
 $("resetBtn").onclick=async()=>{
  const buildingCost=buildings.reduce((total,b)=>{
   const base=b.type==="airport"?0:defs[b.type].cost;
