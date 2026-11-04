@@ -602,8 +602,9 @@ function cacheVehiclePath(path){
  async function addTransit(type,x,z){
  const problem=transitPlacementProblem(type,x,z);if(problem)return notice(problem);
  const cost=transitCosts[type];if(!(await charge(cost)))return;
- transit.push(makeTransit(type,x,z));rebuildTransitVehicles();updateUI();scheduleSave();
- notice(({rail:"線路",station:"駅",busstop:"バス停"})[type]+"を設置しました。");
+ let item=null;
+ try{item=makeTransit(type,x,z);if(!item?.group)throw new Error("交通施設モデルを作成できませんでした");transit.push(item);rebuildTransitVehicles();disposePlacementGhost();placementPreviewPoint=null;updateUI();scheduleSave();notice(({rail:"線路",station:"駅",busstop:"バス停"})[type]+"を設置しました。");}
+ catch(err){if(item?.group)scene.remove(item.group);if(item)transit=transit.filter(t=>t!==item);try{const {data,error}=await supabase.rpc("refund_city_cash",{p_amount:cost});if(error)throw error;cash=Number(data);updateUI();}catch(re){notice("交通施設の設置失敗。返金にも失敗しました："+re.message);return;}console.error(err);notice("設置できなかったため、費用を返金しました。"+err.message);}
 }
 function spawnCar(i,home=nearestHome()){
  const g=new THREE.Group(),paint=mat([0x29b9d9,0x8a70df,0xe4b95c,0x64d5aa][i%4],.78,.2),glass=mat(0x9cecff,.65,.12),rubber=mat(0x080e16,.05,.8),chrome=mat(0xc9e5ef,.85,.18);
@@ -938,7 +939,9 @@ async function refreshWallet(){if(!user)return;const {data,error}=await supabase
 async function addRoad(x,z){
  const problem=roadPlacementProblem(x,z);if(problem)return notice(problem);
  if(!(await charge(250)))return;
- roads.push(makeRoad(x,z));rebuildTransitVehicles();rebuildCarRoutes();updateUI();scheduleSave();
+ let road=null;
+ try{road=makeRoad(x,z);if(!road?.group)throw new Error("道路モデルを作成できませんでした");roads.push(road);disposePlacementGhost();placementPreviewPoint=null;rebuildTransitVehicles();rebuildCarRoutes();updateUI();scheduleSave();notice("道路を設置しました。");}
+ catch(err){if(road?.group)scene.remove(road.group);if(road)roads=roads.filter(r=>r!==road);try{const {data,error}=await supabase.rpc("refund_city_cash",{p_amount:250});if(error)throw error;cash=Number(data);updateUI();}catch(re){notice("設置失敗。返金にも失敗しました："+re.message);return;}console.error(err);notice("道路を設置できなかったため、$250を返金しました。"+err.message);}
 }
 function airportRunwayBounds(x,z){
  return new THREE.Box3(new THREE.Vector3(x-4.35,0,z-32),new THREE.Vector3(x+4.35,3,z-1.5));
@@ -953,7 +956,9 @@ async function addBuilding(type,x,z){
  const d=defs[type],problem=buildingPlacementProblem(type,x,z);if(problem)return notice(problem);
  const isFreeAirport=type==="airport"&&!buildings.some(b=>b.type==="airport");
  if(!isFreeAirport&&!(await charge(d.cost)))return;
- buildings.push(makeBuilding(type,x,z));assignWorkplaces();notice(d.name+"を建設しました。");updateUI();scheduleSave();
+ let building=null;
+ try{building=makeBuilding(type,x,z);if(!building?.group)throw new Error("建物モデルを作成できませんでした");buildings.push(building);assignWorkplaces();disposePlacementGhost();placementPreviewPoint=null;notice(d.name+"を建設しました。");updateUI();scheduleSave();}
+ catch(err){if(building?.group)scene.remove(building.group);if(building)buildings=buildings.filter(b=>b!==building);if(!isFreeAirport){try{const {data,error}=await supabase.rpc("refund_city_cash",{p_amount:d.cost});if(error)throw error;cash=Number(data);updateUI();}catch(re){notice("建設失敗。返金にも失敗しました："+re.message);return;}}console.error(err);notice("建設できなかったため、費用を返金しました。"+err.message);}
 }
 let placementPointer=null;
 window.addEventListener("pointerdown",e=>{
