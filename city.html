@@ -247,10 +247,40 @@ function makeBuilding(type,x,z,level=1){
   const dome=new THREE.Mesh(new THREE.SphereGeometry(1,24,16,0,Math.PI*2,0,Math.PI/2),white);dome.position.set(0,3.45,-.45);g.add(dome);add(.62,5,.62,body,0,2.7,-2);add(.8,.25,.8,roofMat,0,5.3,-2);
   const clock=new THREE.Mesh(new THREE.CylinderGeometry(.25,.25,.08,24),white);clock.rotation.x=Math.PI/2;clock.position.set(0,4.4,-1.66);g.add(clock);
  }else if(type==="stadium"){
-  const bowl=new THREE.Mesh(new THREE.CylinderGeometry(2.15,2.55,2,48,1,true),mat(0x9aa8b3,.15,.72));bowl.position.y=1.25;g.add(bowl);const field=new THREE.Mesh(new THREE.CircleGeometry(1.8,48),mat(0x348b58,.05,.85));field.rotation.x=-Math.PI/2;field.position.y=.32;g.add(field);
-  for(let i=0;i<4;i++){const ring=new THREE.Mesh(new THREE.TorusGeometry(2.1-i*.16,.12,8,48),mat([0xe5e8ee,0x4c83c4,0xe5e8ee,0x4c83c4][i],.15,.5));ring.rotation.x=Math.PI/2;ring.position.y=.65+i*.38;g.add(ring);}
-  for(const px of [-1.9,1.9])for(const pz of [-1.9,1.9]){add(.16,5.4,.16,trim,px,2.8,pz);add(.8,.12,.35,windowMat,px,5.55,pz);}add(3.4,.35,.3,body,0,2.8,2.25);add(1,.6,.18,white,0,3.25,2.45);
- }else if(type==="airport"){
+  // 大型サッカースタジアム：楕円形の観客席、屋根、ピッチ、照明塔
+  const steel=mat(0x536675,.68,.32),concourse=mat(0x263b4d,.38,.52),seatBlue=mat(0x1764a0,.18,.58),seatLight=mat(0x8fb8d2,.15,.55),seatRed=mat(0xc84a43,.18,.55),turf=mat(0x237b45,.08,.88),lineMat=mat(0xf4f5e9,.08,.65),roof=mat(0xdce5eb,.52,.28),glassBand=mat(0x4b9db5,.62,.2,0x123e50);
+  // 大きな楕円形の基礎と外周コンコース
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(8.2,8.7,1.05,64),concourse);base.scale.z=.78;base.position.y=.55;base.castShadow=true;base.receiveShadow=true;g.add(base);
+  const outer=new THREE.Mesh(new THREE.CylinderGeometry(7.9,8.35,2.7,64,1,true),steel);outer.scale.z=.78;outer.position.y=2.0;outer.castShadow=true;g.add(outer);
+  // 外壁ガラスと水平ファサード
+  for(let y of [1.05,2.0,2.85]){const band=new THREE.Mesh(new THREE.TorusGeometry(7.95,.095,8,96),y===2?glassBand:steel);band.scale.z=.78;band.rotation.x=Math.PI/2;band.position.y=y;g.add(band);}
+  for(let a=0;a<32;a++){const t=a*Math.PI*2/32,x=Math.cos(t)*7.98,z=Math.sin(t)*6.22;const p=new THREE.Mesh(new THREE.BoxGeometry(.13,2.1,.13),roof);p.position.set(x,2.05,z);g.add(p);}
+  // ピッチと競技ライン（サッカー）
+  add(10.8,.18,6.6,turf,0,1.12,0);
+  add(10.35,.025,6.15,lineMat,0,1.225,0);
+  add( .045,.03,6.15,lineMat,0,1.25,0);
+  const circle=new THREE.Mesh(new THREE.TorusGeometry(.82,.025,6,48),lineMat);circle.rotation.x=Math.PI/2;circle.position.y=1.255;g.add(circle);
+  for(const z of [-2.7,2.7]){add(1.65,.035,.055,lineMat,0,1.25,z);add(.055,.035,1.15,lineMat,0,1.25,z);}
+  // ゴール枠
+  for(const z of [-3.45,3.45]){for(const x of [-.9,.9])add(.07,1.05,.07,white,x,1.65,z);add(1.85,.07,.07,white,0,2.18,z);}
+  // 4層の観客席。楕円形のリングを傾けてスタンドを表現
+  for(let tier=0;tier<4;tier++){
+   const radius=5.35+tier*.58,seatMat=tier===2?seatRed:(tier%2?seatLight:seatBlue);
+   const ring=new THREE.Mesh(new THREE.TorusGeometry(radius,.34,8,96),seatMat);ring.scale.set(1,.78,1);ring.rotation.x=Math.PI/2;ring.position.y=1.75+tier*.62;ring.castShadow=true;g.add(ring);
+   const front=new THREE.Mesh(new THREE.TorusGeometry(radius-.23,.055,6,96),steel);front.scale.z=.78;front.rotation.x=Math.PI/2;front.position.y=1.95+tier*.62;g.add(front);
+  }
+  // 観客席の段状デッキと上部屋根リング
+  for(let tier=0;tier<4;tier++){const deck=new THREE.Mesh(new THREE.CylinderGeometry(5.35+tier*.58,5.7+tier*.58,.22,64,1,true),steel);deck.scale.z=.78;deck.position.y=1.55+tier*.62;g.add(deck);}
+  const canopyShape=new THREE.Shape();canopyShape.absarc(0,0,8.15,0,Math.PI*2,false);const hole=new THREE.Path();hole.absarc(0,0,5.55,0,Math.PI*2,true);canopyShape.holes.push(hole);
+  const canopy=new THREE.Mesh(new THREE.ExtrudeGeometry(canopyShape,{depth:.22,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.08,bevelThickness:.06,curveSegments:64}),roof);canopy.rotation.x=Math.PI/2;canopy.scale.z=.78;canopy.position.y=4.35;canopy.castShadow=true;g.add(canopy);
+  // 大型電光スコアボード
+  add(3.1,1.35,.22,dark,0,5.0,-5.2);add(2.85,1.08,.06,mat(0x123d49,.2,.3,0x167b83),0,5.0,-5.34);
+  for(let x=-1.1;x<=1.11;x+=.55)add(.045,.78,.035,mat(0x65e9d0,.2,.2,0x20a99a),x,5.0,-5.39);
+  // 4基の照明塔と投光器
+  for(const x of [-7.1,7.1])for(const z of [-5.45,5.45]){add(.2,5.8,.2,steel,x,5.2,z);add(.9,.35,.35,white,x,8.05,z);for(let k=0;k<5;k++){const lamp=new THREE.Mesh(new THREE.SphereGeometry(.11,8,8),mat(0xfff2c2,.1,.18,0xffe39a));lamp.position.set(x-.32+k*.16,8.08,z);g.add(lamp);}}
+  // 入場ゲートとスタジアム表記
+  add(4.8,.72,.28,body,0,1.0,7.75);add(4.25,.34,.08,white,0,1.1,7.91);
+ }}else if(type==="airport"){
   add(4.7,2.5,2.5,glass,0,1.45,0);add(4.9,.18,2.7,white,0,2.8,0);add(4.45,.12,2.4,roofMat,0,2.95,0);
   // 滑走路・誘導路・エプロン
   add(8,.18,42,mat(0x303b48,.12,.9),0,.12,-27);add(7.7,.035,41.7,mat(0x424e59,.08,.92),0,.225,-27);
