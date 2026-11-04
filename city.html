@@ -52,8 +52,8 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
   <button class="tool" data-tool="rail"><strong>▤ 線路</strong><em>$1,200 / マス</em></button>
   <button class="tool" data-tool="station"><strong>🚉 駅</strong><em>$15,000</em></button>
   <button class="tool" data-tool="busstop"><strong>🚏 バス停</strong><em>$3,000</em></button>
- </div><p class="hint">線路を同じ列に2マス以上つなぎ、駅を設置すると電車が走ります。道路沿いにバス停を2か所設置するとバスが運行します。</p>
- <h3>車両ショップ</h3><div class="tools"><button class="tool" id="buyCarBtn"><strong>🚘 電動セダンを購入</strong><em>$18,000 / 台</em></button><button class="tool" id="recruitBtn"><strong>🧑 住民を1人募集</strong><em>$1,000 / 人</em></button></div><p class="hint">車の購入条件：道路・住民・住宅がすべて必要。さらに住宅から6マス以内に道路をつなぐと、購入した車が家の前に駐車します。道路を敷いても車は増えません。</p>
+ </div><p class="hint">線路・駅・バス停を設置しただけでは、車両は出現しません。車両ショップで別途購入してください。</p>
+ <h3>車両ショップ</h3><div class="tools"><button class="tool" id="buyTrainBtn"><strong>🚆 電車を購入</strong><em>$50,000 / 編成</em></button><button class="tool" id="buyBusBtn"><strong>🚌 バスを購入</strong><em>$12,000 / 台</em></button><button class="tool" id="buyCarBtn"><strong>🚘 電動セダンを購入</strong><em>$18,000 / 台</em></button><button class="tool" id="recruitBtn"><strong>🧑 住民を1人募集</strong><em>$1,000 / 人</em></button></div><p class="hint">車の購入条件：道路・住民・住宅がすべて必要。さらに住宅から6マス以内に道路をつなぐと、購入した車が家の前に駐車します。道路を敷いても車は増えません。</p>
 </aside>
 <aside class="panel right">
  <h2>都市の状況</h2>
@@ -76,7 +76,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 const $=id=>document.getElementById(id);
 const supabase=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
 const publicView=new URLSearchParams(location.search).get("view")==="1";if(publicView)document.body.classList.add("public-view");
-let user=null, cash=0, selected="road", buildings=[], roads=[], cars=[], people=[], transit=[], transitVehicles=[], cityTick=0, saveTimer=null, selectedObject=null;
+let user=null, cash=0, selected="road", buildings=[], roads=[], cars=[], people=[], transit=[], transitVehicles=[], trainCount=0, busCount=0, cityTick=0, saveTimer=null, selectedObject=null;
 const defs={
  home:{name:"未来住宅",cost:8000,power:2,housing:12,color:0x35b8d5,kind:"res"},
  tower:{name:"超高層住宅",cost:28000,power:12,housing:65,color:0x357bd5,kind:"res"},
@@ -369,12 +369,9 @@ function rebuildTransitVehicles(){
  const tracks=transit.filter(t=>t.type==="rail"),stations=transit.filter(t=>t.type==="station");
  const rows={};tracks.forEach(t=>{const k=t.z; (rows[k]||(rows[k]=[])).push(t.x);});
  const line=Object.entries(rows).map(([z,xs])=>({z:Number(z),xs:xs.sort((a,b)=>a-b)})).find(r=>r.xs.length>=2&&stations.some(s=>Math.abs(s.z-r.z)<=4));
- if(line){const group=makeTrain();transitVehicles.push({kind:"train",group,min:line.xs[0],max:line.xs[line.xs.length-1],z:line.z,phase:0});}
+ if(trainCount>0&&line){for(let i=0;i<trainCount;i++){const group=makeTrain();transitVehicles.push({kind:"train",group,min:line.xs[0],max:line.xs[line.xs.length-1],z:line.z,phase:i*Math.PI});}}
  const stops=transit.filter(t=>t.type==="busstop");
- if(stops.length>=2&&roads.length>=2){
-  const route=stops.slice(0,2),group=makeBus();
-  transitVehicles.push({kind:"bus",group,a:route[0],b:route[1],phase:0});
- }
+ if(busCount>0&&stops.length>=2){for(let i=0;i<busCount;i++){const route=[stops[i%stops.length],stops[(i+1)%stops.length]];const group=makeBus();transitVehicles.push({kind:"bus",group,a:route[0],b:route[1],phase:i*Math.PI});}}
 }
 async function addTransit(type,x,z){
  const duplicate=transit.some(t=>t.type===type&&t.x===x&&t.z===z);
@@ -456,8 +453,8 @@ $("resetBtn").onclick=async()=>{
   return total+base+upgrades;
  },0);
  const transitCost=transit.reduce((sum,t)=>sum+transitCosts[t.type],0);
- const refund=Math.floor((buildingCost+roads.length*500+cars.length*18000+people.length*1000+transitCost)/2);
- const message="都市データを初期化します。\n建物・道路・線路・駅・バス停・車・住民はすべて削除されます。\n"+(refund>0?"返金額：$"+refund.toLocaleString("en-US")+"（購入費用の50%）\n":"返金対象はありません。\n")+"本当に初期化しますか？";
+ const refund=Math.floor((buildingCost+roads.length*500+cars.length*18000+people.length*1000+transitCost+trainCount*50000+busCount*12000)/2);
+ const message="都市データを初期化します。\n建物・道路・線路・駅・バス停・電車・バス・車・住民はすべて削除されます。\n"+(refund>0?"返金額：$"+refund.toLocaleString("en-US")+"（購入費用の50%）\n":"返金対象はありません。\n")+"本当に初期化しますか？";
  if(!confirm(message))return;
  if(user&&refund>0){
   try{
@@ -472,7 +469,7 @@ $("resetBtn").onclick=async()=>{
  }
  buildings.forEach(b=>scene.remove(b.group));roads.forEach(r=>scene.remove(r.group));transit.forEach(t=>scene.remove(t.group));transitVehicles.forEach(v=>scene.remove(v.group));
  cars.forEach(v=>scene.remove(v.group));people.forEach(v=>scene.remove(v.group));
- buildings=[];roads=[];cars=[];people=[];transit=[];transitVehicles=[];selectedObject=null;
+ buildings=[];roads=[];cars=[];people=[];transit=[];trainCount=0;busCount=0;transitVehicles=[];selectedObject=null;
  if(!user)await refreshWallet();
  updateUI();await saveCity();
  notice("都市を初期化しました。"+(user&&refund>0?" $"+refund.toLocaleString("en-US")+"（50%）を返金しました。":""));
@@ -503,10 +500,22 @@ const keys={};addEventListener("keydown",e=>{keys[e.key.toLowerCase()]=true;if([
 function moveCamera(){const v=new THREE.Vector3();if(keys.w)v.z-=1;if(keys.s)v.z+=1;if(keys.a)v.x-=1;if(keys.d)v.x+=1;if(v.lengthSq()){v.normalize().multiplyScalar(.28);controls.target.add(v);camera.position.add(v);}}
 function loop(){moveCamera();requestAnimationFrame(loop);}loop();animate();setInterval(simulation,1800);
 addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
-async function loadCity(){if(publicView){const username=new URLSearchParams(location.search).get("user")||"";$("saveBtn").hidden=true;const {data,error}=await supabase.rpc("get_public_player",{p_username:username});if(error||!data){notice("このプレイヤーは見つかりません。");return;}document.title=data.username+"の都市｜理科キッズ";document.querySelector(".brand").innerHTML="理科キッズ <small>"+data.username+" の都市（見学モード）</small>";cash=Number(data.balance)||0;const st=data.city_state||{};(st.roads||[]).forEach(r=>roads.push(makeRoad(r.x,r.z)));(st.buildings||[]).forEach(b=>{if(defs[b.type])buildings.push(makeBuilding(b.type,b.x,b.z,b.level||1));});(st.transit||[]).forEach(t=>{if(transitCosts[t.type])transit.push(makeTransit(t.type,t.x,t.z));});rebuildTransitVehicles();if(Number(st.version)>=3){for(let i=0;i<Math.min(100,Number(st.cars)||0);i++)cars.push(spawnCar(i,nearestHome()));}for(let i=0;i<Math.min(500,Number(st.people)||0);i++)people.push(spawnPerson(i));updateUI();notice(data.city_state?"他のプレイヤーの都市を見学中です。建設・購入・保存はできません。":"このプレイヤーはまだ都市を保存していません。");return;}const {data:{session}}=await supabase.auth.getSession();user=session?.user||null;if(!user){$("login").classList.remove("hidden");return;}await refreshWallet();const {data,error}=await supabase.from("city_saves").select("city_state").eq("user_id",user.id).maybeSingle();if(error){notice("クラウド保存の読み込みに失敗: "+error.message);return;}if(data?.city_state){const st=data.city_state;(st.roads||[]).forEach(r=>roads.push(makeRoad(r.x,r.z)));(st.buildings||[]).forEach(b=>buildings.push(makeBuilding(b.type,b.x,b.z,b.level||1)));(st.transit||[]).forEach(t=>{if(transitCosts[t.type])transit.push(makeTransit(t.type,t.x,t.z));});rebuildTransitVehicles();if(Number(st.version)>=3){for(let i=0;i<Math.min(100,Number(st.cars)||0);i++)cars.push(spawnCar(i,nearestHome()));}else{addNews("旧バージョンの未購入車両を整理しました。車はショップで購入した分だけになります。");}for(let i=0;i<Math.min(500,Number(st.people)||0);i++)people.push(spawnPerson(i));updateUI();notice("前回の都市データを読み込みました。");}else notice("新しい都市を作成しました。");}
-async function saveCity(){if(!user){notice("クラウド保存にはログインが必要です。");return;}const state={roads:roads.map(r=>({x:r.x,z:r.z})),buildings:buildings.map(b=>({type:b.type,x:b.x,z:b.z,level:b.level})),transit:transit.map(t=>({type:t.type,x:t.x,z:t.z})),cars:cars.length,people:people.length,version:4};const {error}=await supabase.from("city_saves").upsert({user_id:user.id,city_state:state,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(error){notice("保存に失敗しました: "+error.message);return;}notice("都市データをクラウドに保存しました。");}
+async function loadCity(){if(publicView){const username=new URLSearchParams(location.search).get("user")||"";$("saveBtn").hidden=true;const {data,error}=await supabase.rpc("get_public_player",{p_username:username});if(error||!data){notice("このプレイヤーは見つかりません。");return;}document.title=data.username+"の都市｜理科キッズ";document.querySelector(".brand").innerHTML="理科キッズ <small>"+data.username+" の都市（見学モード）</small>";cash=Number(data.balance)||0;const st=data.city_state||{};(st.roads||[]).forEach(r=>roads.push(makeRoad(r.x,r.z)));(st.buildings||[]).forEach(b=>{if(defs[b.type])buildings.push(makeBuilding(b.type,b.x,b.z,b.level||1));});(st.transit||[]).forEach(t=>{if(transitCosts[t.type])transit.push(makeTransit(t.type,t.x,t.z));});trainCount=Math.max(0,Math.min(20,Number(st.trains)||0));busCount=Math.max(0,Math.min(50,Number(st.buses)||0));rebuildTransitVehicles();if(Number(st.version)>=3){for(let i=0;i<Math.min(100,Number(st.cars)||0);i++)cars.push(spawnCar(i,nearestHome()));}for(let i=0;i<Math.min(500,Number(st.people)||0);i++)people.push(spawnPerson(i));updateUI();notice(data.city_state?"他のプレイヤーの都市を見学中です。建設・購入・保存はできません。":"このプレイヤーはまだ都市を保存していません。");return;}const {data:{session}}=await supabase.auth.getSession();user=session?.user||null;if(!user){$("login").classList.remove("hidden");return;}await refreshWallet();const {data,error}=await supabase.from("city_saves").select("city_state").eq("user_id",user.id).maybeSingle();if(error){notice("クラウド保存の読み込みに失敗: "+error.message);return;}if(data?.city_state){const st=data.city_state;(st.roads||[]).forEach(r=>roads.push(makeRoad(r.x,r.z)));(st.buildings||[]).forEach(b=>buildings.push(makeBuilding(b.type,b.x,b.z,b.level||1)));(st.transit||[]).forEach(t=>{if(transitCosts[t.type])transit.push(makeTransit(t.type,t.x,t.z));});rebuildTransitVehicles();if(Number(st.version)>=3){for(let i=0;i<Math.min(100,Number(st.cars)||0);i++)cars.push(spawnCar(i,nearestHome()));}else{addNews("旧バージョンの未購入車両を整理しました。車はショップで購入した分だけになります。");}for(let i=0;i<Math.min(500,Number(st.people)||0);i++)people.push(spawnPerson(i));updateUI();notice("前回の都市データを読み込みました。");}else notice("新しい都市を作成しました。");}
+async function saveCity(){if(!user){notice("クラウド保存にはログインが必要です。");return;}const state={roads:roads.map(r=>({x:r.x,z:r.z})),buildings:buildings.map(b=>({type:b.type,x:b.x,z:b.z,level:b.level})),transit:transit.map(t=>({type:t.type,x:t.x,z:t.z})),cars:cars.length,people:people.length,trains:trainCount,buses:busCount,version:5};const {error}=await supabase.from("city_saves").upsert({user_id:user.id,city_state:state,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(error){notice("保存に失敗しました: "+error.message);return;}notice("都市データをクラウドに保存しました。");}
 function scheduleSave(){if(publicView)return;clearTimeout(saveTimer);saveTimer=setTimeout(saveCity,1200);}
 $("saveBtn").onclick=saveCity;
+$("buyTrainBtn").onclick=async()=>{
+ const tracks=transit.filter(t=>t.type==="rail"),stations=transit.filter(t=>t.type==="station");
+ const rows={};tracks.forEach(t=>{(rows[t.z]||(rows[t.z]=[])).push(t.x);});
+ const line=Object.entries(rows).map(([z,xs])=>({z:Number(z),xs:xs.sort((a,b)=>a-b)})).find(r=>r.xs.length>=2&&stations.some(s=>Math.abs(s.z-r.z)<=4));
+ if(!line){notice("電車を走らせるには、同じ列の線路を2マス以上と駅が必要です。");return;}
+ if(!(await charge(50000)))return;trainCount++;rebuildTransitVehicles();notice("電車を購入しました。線路上を走ります。");scheduleSave();
+};
+$("buyBusBtn").onclick=async()=>{
+ const stops=transit.filter(t=>t.type==="busstop");
+ if(stops.length<2){notice("バスを走らせるには、バス停が2か所以上必要です。");return;}
+ if(!(await charge(12000)))return;busCount++;rebuildTransitVehicles();notice("バスを購入しました。バス停の間を走ります。");scheduleSave();
+};
 $("buyCarBtn").onclick=async()=>{
  const home=nearestHome();
  if(!roads.length){notice("車を購入するには、まず道路が必要です。");return;}
