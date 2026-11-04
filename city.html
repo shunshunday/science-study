@@ -13,6 +13,15 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
 .panel{position:fixed;z-index:3;top:92px;bottom:18px;width:250px;background:#091a2ded;border:1px solid #2b4a65;border-radius:15px;backdrop-filter:blur(14px);padding:14px;overflow:auto;box-shadow:0 12px 35px #0005}.left{left:16px;transform:translateX(calc(-100% - 24px));transition:transform .24s ease}.build-open .left{transform:translateX(0)}.right{right:16px;width:270px}.panel h2{font-size:14px;margin:0 0 10px;color:var(--cyan);letter-spacing:.08em}.panel h3{font-size:12px;color:#b8d1e4;margin:16px 0 7px}.hint{font-size:11px;color:var(--muted);line-height:1.6}.tools{display:grid;grid-template-columns:1fr 1fr;gap:7px}.tool{min-height:54px;text-align:left;font-size:11px}.recruit-count-label{display:block;grid-column:1/-1;font-size:11px;color:var(--muted);margin:3px 0 -4px}.recruit-count{grid-column:1/-1;width:100%;padding:10px;border:1px solid #365a76;border-radius:9px;background:#102a40;color:#fff;font:inherit;font-size:15px}.move-controls{grid-column:1/-1;padding:10px;background:#102f43;border:1px solid #3b7188;border-radius:10px;font-size:12px}.move-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}.move-actions button{font-size:11px;padding:7px 5px}.move-actions button:last-child{grid-column:1/-1}.move-controls small{color:#a5c0d6}.move-progress{display:block;margin:6px 0;padding:7px 8px;border-radius:7px;background:#0a2031;font-size:11px;line-height:1.5;color:#b9d4e5}.move-progress.good{color:#72f0b5;border:1px solid #25875c}.move-progress.bad{color:#ff8e96;border:1px solid #a94350}.tool strong{display:block;font-size:12px}.tool em{display:block;font-style:normal;color:#a5c0d6;font-size:10px;margin-top:3px}.wide{width:100%;margin-top:7px}#resetBtn{display:block;width:auto;margin:18px 0 2px auto;padding:5px 8px;font-size:10px;line-height:1.2;opacity:.78;border-color:#75505a;color:#d9b8c0;background:#291d2a}#resetBtn:hover{opacity:1;background:#46232e;border-color:#d88b9d}.meter{height:8px;background:#203b52;border-radius:20px;overflow:hidden;margin:5px 0 10px}.meter i{display:block;height:100%;width:50%;background:linear-gradient(90deg,#41c8ff,#65f0bd);border-radius:20px}.metric{display:flex;justify-content:space-between;font-size:11px;color:#bad0e2}.log{font-size:11px;color:#b7ccdc;line-height:1.6;border-top:1px solid #28445d;padding:7px 0}.notice{position:fixed;z-index:5;left:50%;bottom:20px;transform:translateX(-50%);background:#071a2beF;border:1px solid #3e7896;border-radius:12px;padding:10px 16px;font-size:12px;box-shadow:0 10px 30px #0007;max-width:min(90vw,600px);text-align:center}.hidden{display:none!important}.public-view .left,.public-view .right{display:none!important}.public-view #buildModeBtn{display:none!important}.public-view #saveBtn{display:none!important}.public-view .topbar{right:16px}.public-view .brand small{color:#65f0bd}.public-view .notice{pointer-events:none}.login{position:fixed;z-index:10;inset:0;background:#061321ee;display:grid;place-items:center;padding:20px}.login-card{max-width:440px;background:#10243a;border:1px solid #355773;border-radius:18px;padding:28px;text-align:center}.login-card h1{margin:0 0 8px}.login-card p{color:#afc4d6;font-size:13px;line-height:1.8}.pill{display:inline-block;padding:3px 7px;border-radius:30px;background:#153e50;color:#72e9ff;font-size:10px;margin-right:4px}
 @media(max-width:900px){.panel{width:210px}.right{width:220px}.stat{min-width:76px;padding:6px 8px}.stat b{font-size:14px}.brand{font-size:12px}.topbar{left:8px;right:8px;top:8px;flex-wrap:wrap}.left{left:8px;top:130px;bottom:8px}.right{right:8px;top:130px;bottom:8px}}
 @media(max-width:620px){.stats .stat:nth-child(n+3){display:none}.panel{top:auto;bottom:8px;height:230px;width:calc(50% - 12px);padding:10px}.left{left:8px}.right{right:8px}.tools{grid-template-columns:1fr 1fr}.tool{min-height:45px;padding:6px}.topbar{align-items:flex-start}.top-actions{padding:5px}.top-actions button{font-size:10px;padding:7px}.brand{padding:7px}.stats{gap:4px}}
+/* 都市建設UIの質感を統一 */
+.panel{background:linear-gradient(155deg,rgba(10,29,48,.97),rgba(5,17,31,.96));border-color:#37617b;box-shadow:0 18px 48px #0008,inset 0 1px #ffffff12}
+.panel h2{font-size:14px;text-shadow:0 0 16px #55e5ff55}
+.panel h3{padding-left:8px;border-left:2px solid #48cfe8;color:#d1e8f5}
+.tool{background:linear-gradient(145deg,#193a55,#10283e);border-color:#345a73;border-radius:11px;transition:transform .14s,border-color .14s,box-shadow .14s}
+.tool:hover{transform:translateY(-1px);box-shadow:0 5px 15px #0005,0 0 12px #55e5ff18}
+.tool.active{background:linear-gradient(135deg,#08718a,#10445e);border-color:#69eaff;box-shadow:inset 0 0 0 1px #8beeff33,0 0 16px #39d8ff22}
+.stat{background:linear-gradient(145deg,#102c43ed,#091a2ddd);border-color:#3b627c}
+.notice{background:linear-gradient(120deg,#071a2bf5,#102e46f5);border-color:#4b9ab8;box-shadow:0 12px 38px #0009,0 0 20px #43d9ff18}
 </style>
 </head>
 <body>
@@ -412,10 +421,8 @@ function makeTransit(type,x,z){
  const concrete=mat(0x8b989e,.12,.86),steel=mat(0x566b79,.78,.3),railMat=mat(0x9eabb3,.85,.22),yellow=mat(0xf0c44d,.12,.5),glass=mat(0x83d9ef,.48,.16,0x174b62),blue=mat(0x197db4,.48,.28),white=mat(0xf0f5f7,.12,.5),dark=mat(0x172635,.4,.5);
  const add=(w,h,d,m,px,py,pz)=>box(g,w,h,d,m,px,py,pz);
  if(type==="rail"){
-  // Straight double rail with sleepers, ballast and fasteners
-  add(4,.12,2.1,mat(0x515e67,.05,.95),0,.06,0);
-  for(let i=-7;i<=7;i++){add(.16,.12,1.65,concrete,i*.27,.16,0);add(.07,.1,.18,steel,i*.27,.26,-.58);add(.07,.1,.18,steel,i*.27,.26,.58);}
-  for(const zoff of [-.58,.58]){add(4,.13,.13,railMat,0,.31,zoff);add(4,.035,.08,steel,0,.39,zoff);}
+  // Full 4x4 ballast tile; the connected track geometry is rebuilt from neighboring tiles.
+  add(4,.12,4,mat(0x35434b,.08,.96),0,.06,0);
  }else if(type==="station"){
   // Elevated platform, canopy, glass waiting hall, sign and access stairs
   add(4.1,.38,2.9,concrete,0,.34,0);
@@ -532,6 +539,55 @@ function transitPlacementProblem(type,x,z){
  if(type==="rail"&&transit.some(t=>t.type==="rail"&&Math.hypot(t.x-x,t.z-z)<3.9))return "線路が重なっています。1マスずつ隣につなげてください。";
  if(type!=="rail"&&transit.some(t=>t.type===type&&Math.hypot(t.x-x,t.z-z)<4))return "同じ交通施設が近すぎます。";
  return "";
+}
+function refreshRailVisuals(){
+ const rails=transit.filter(t=>t.type==="rail"),byKey=new Map(rails.map(r=>[Math.round(r.x/4)+","+Math.round(r.z/4),r]));
+ for(const rail of rails){
+  const g=rail.group;
+  for(const child of [...g.children]){
+   if(child.userData?.railVisual){g.remove(child);child.geometry?.dispose();}
+  }
+  const dirs=[[4,0],[-4,0],[0,4],[0,-4]].filter(([dx,dz])=>byKey.has(Math.round((rail.x+dx)/4)+","+Math.round((rail.z+dz)/4)));
+  let paths=[];
+  if(dirs.length<=1){
+   const d=dirs[0]||[4,0];paths=[[[-d[0],-d[1]],[d[0],d[1]]]];
+  }else if(dirs.length===2&&dirs[0][0]===-dirs[1][0]&&dirs[0][1]===-dirs[1][1]){
+   paths=[[dirs[0],dirs[1]]];
+  }else if(dirs.length===2){
+   paths=[[dirs[0],dirs[1]]];
+  }else{
+   paths=dirs.map(d=>[[0,0],d]);
+  }
+  const addVisual=o=>{o.userData.railVisual=true;g.add(o);};
+  const railMaterial=new THREE.MeshStandardMaterial({color:0xc5d2d8,metalness:.88,roughness:.2});
+  const sleeperMaterial=new THREE.MeshStandardMaterial({color:0x88765d,roughness:.92});
+  const ballastMaterial=new THREE.MeshStandardMaterial({color:0x56616a,roughness:1});
+  for(const pair of paths){
+   const start=new THREE.Vector3(pair[0][0]*.5,.27,pair[0][1]*.5);
+   const end=new THREE.Vector3(pair[1][0]*.5,.27,pair[1][1]*.5);
+   let curve;
+   if(pair[0][0]===0&&pair[0][1]===0)curve=new THREE.LineCurve3(start,end);
+   else if(pair[1][0]===-pair[0][0]&&pair[1][1]===-pair[0][1])curve=new THREE.LineCurve3(start,end);
+   else curve=new THREE.QuadraticBezierCurve3(start,new THREE.Vector3(0,.27,0),end);
+   const samples=curve.getPoints(20),left=[],right=[];
+   for(let i=0;i<samples.length;i++){
+    const p=samples[i],before=samples[Math.max(0,i-1)],after=samples[Math.min(samples.length-1,i+1)];
+    const dx=after.x-before.x,dz=after.z-before.z,len=Math.hypot(dx,dz)||1,nx=dz/len,nz=-dx/len;
+    left.push(new THREE.Vector3(p.x+nx*.58,p.y,p.z+nz*.58));
+    right.push(new THREE.Vector3(p.x-nx*.58,p.y,p.z-nz*.58));
+    if(i<samples.length-1&&i%2===0){
+     const tangent=new THREE.Vector3(dx,0,dz).normalize(),tie=new THREE.Mesh(new THREE.BoxGeometry(.15,.1,1.58),sleeperMaterial);
+     tie.position.set(p.x,.19,p.z);tie.rotation.y=Math.atan2(tangent.x,tangent.z)+Math.PI/2;addVisual(tie);
+    }
+   }
+   for(const points of [left,right]){
+    const railCurve=new THREE.CatmullRomCurve3(points);
+    const mesh=new THREE.Mesh(new THREE.TubeGeometry(railCurve,24,.065,8,false),railMaterial);
+    addVisual(mesh);
+   }
+  }
+  const base=new THREE.Mesh(new THREE.BoxGeometry(4,.08,4),ballastMaterial);base.position.y=.13;addVisual(base);
+ }
 }
 function buildTrainPath(){
  const rails=transit.filter(t=>t.type==="rail");
