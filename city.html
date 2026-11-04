@@ -1819,8 +1819,8 @@ function animate(){requestAnimationFrame(animate);controls.update();updateDayNig
  });
  renderer.render(scene,camera);}
 
-const keys={};addEventListener("keydown",e=>{keys[e.key.toLowerCase()]=true;if(["w","a","s","d"].includes(e.key.toLowerCase()))e.preventDefault();});addEventListener("keyup",e=>keys[e.key.toLowerCase()]=false);
-function moveCamera(){const v=new THREE.Vector3();if(keys.w)v.z-=1;if(keys.s)v.z+=1;if(keys.a)v.x-=1;if(keys.d)v.x+=1;if(v.lengthSq()){v.normalize().multiplyScalar(.28);controls.target.add(v);camera.position.add(v);}}
+const keys={};const arrowKeys={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right"};addEventListener("keydown",e=>{const k=arrowKeys[e.key];if(k){keys[k]=true;e.preventDefault();}});addEventListener("keyup",e=>{const k=arrowKeys[e.key];if(k)keys[k]=false;});
+function moveCamera(){const v=new THREE.Vector3();if(keys.up)v.z-=1;if(keys.down)v.z+=1;if(keys.left)v.x-=1;if(keys.right)v.x+=1;if(v.lengthSq()){v.normalize().multiplyScalar(.28);controls.target.add(v);camera.position.add(v);}}
 function loop(){moveCamera();requestAnimationFrame(loop);}loop();animate();setInterval(simulation,1000);
 addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 function restoreConstructions(saved){
