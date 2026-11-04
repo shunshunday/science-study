@@ -1722,9 +1722,17 @@ window.addEventListener("pointerup",e=>{
   const problem=moveValidation(selectedObject,p.x,p.z,moveDraftRotation);if(problem)return notice(problem);
   pendingMove={building:selectedObject,x:p.x,z:p.z,rotation:moveDraftRotation};movePreviewPoint={x:p.x,z:p.z};showMoveControls();notice("移動先を仮設定しました。半透明の建物と地面の色を確認して「決定」を押してください。");return;
  }
+ if(selected==="select"){
+  // 建物の表面をクリックすると地面へのレイが届かないため、先に3Dモデルを直接判定する。
+  const clicked=buildingAtPointer(e);
+  const groundPoint=clicked?null:pointerGroundPoint(e);
+  const p=groundPoint?gridPos(groundPoint):null;
+  selectedObject=clicked||(p?(buildings.find(b=>Math.abs(b.x-p.x)<3&&Math.abs(b.z-p.z)<3)||transit.find(t=>Math.abs(t.x-p.x)<2&&Math.abs(t.z-p.z)<2)):null);
+  notice(selectedObject?(selectedObject.type in defs?defs[selectedObject.type].name:({rail:"線路",station:"駅",busstop:"バス停"})[selectedObject.type])+"を選択中":"施設を選択してください。");
+  return;
+ }
  const groundPoint=pointerGroundPoint(e);if(!groundPoint)return;
  const p=gridPos(groundPoint);
- if(selected==="select"){selectedObject=buildingAtPointer(e)||buildings.find(b=>Math.abs(b.x-p.x)<3&&Math.abs(b.z-p.z)<3)||transit.find(t=>Math.abs(t.x-p.x)<2&&Math.abs(t.z-p.z)<2)||null;notice(selectedObject?(selectedObject.type in defs?defs[selectedObject.type].name:({rail:"線路",station:"駅",busstop:"バス停"})[selectedObject.type])+"を選択中":"施設を選択してください。");return;}
  if(selected==="road"){addRoad(p.x,p.z);return;}if(selected==="zone-erase"){eraseZoneAt(p.x,p.z);return;}if(selected.startsWith("zone-")){addZoneArea(selected.slice(5),p.x,p.z,p.x,p.z);return;}
  if(["rail","station","busstop"].includes(selected)){addTransit(selected,p.x,p.z);return;}
  if(selected==="remove"){
