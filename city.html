@@ -134,7 +134,7 @@ function makeBuilding(type,x,z,level=1){
   const dome=new THREE.Mesh(new THREE.SphereGeometry(2.0,32,20,0,Math.PI*2,0,Math.PI/2),new THREE.MeshPhysicalMaterial({color:0x73e5c0,metalness:.12,roughness:.12,transparent:true,opacity:.72,transmission:.35}));dome.position.y=.55;g.add(dome);
   for(let i=0;i<10;i++){const a=i*Math.PI/5;const rib=new THREE.Mesh(new THREE.TorusGeometry(1.98,.035,6,48,Math.PI),glow);rib.rotation.set(Math.PI/2,0,a);rib.position.y=.58;g.add(rib);}
   for(let i=0;i<5;i++){const tree=new THREE.Group();const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.07,.11,.8,8),mat(0x79553a));trunk.position.y=.45;tree.add(trunk);const crown=new THREE.Mesh(new THREE.SphereGeometry(.38,12,10),mat(0x4fcb83));crown.position.y=.95;tree.add(crown);tree.position.set(Math.cos(i*1.25)*1.05,0,Math.sin(i*1.25)*1.05);g.add(tree);}
- }}else{
+ }else{
   const h=type==="fusion"?7:type==="fission"?5:type==="hydrogen"?4:2.4;
   box(g,2.4,h,2.4,body,0,h/2+.35,0);
   if(type==="fusion"){const ring=new THREE.Mesh(new THREE.TorusGeometry(1.25,.16,12,40),glow);ring.rotation.x=Math.PI/2;ring.position.y=4.2;g.add(ring);const core=new THREE.Mesh(new THREE.SphereGeometry(.62,20,16),mat(0xc8fbff,.2,.1,0x6beaff));core.position.y=4.2;g.add(core);box(g,.15,2.4,.15,glow,0,h+1.2,0);}
