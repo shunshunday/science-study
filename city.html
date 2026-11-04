@@ -421,8 +421,7 @@ function makeTransit(type,x,z){
  const concrete=mat(0x8b989e,.12,.86),steel=mat(0x566b79,.78,.3),railMat=mat(0x9eabb3,.85,.22),yellow=mat(0xf0c44d,.12,.5),glass=mat(0x83d9ef,.48,.16,0x174b62),blue=mat(0x197db4,.48,.28),white=mat(0xf0f5f7,.12,.5),dark=mat(0x172635,.4,.5);
  const add=(w,h,d,m,px,py,pz)=>box(g,w,h,d,m,px,py,pz);
  if(type==="rail"){
-  // Full 4x4 ballast tile; the connected track geometry is rebuilt from neighboring tiles.
-  add(4,.12,4,mat(0x35434b,.08,.96),0,.06,0);
+  // Track geometry is generated across connected tiles in refreshRailVisuals().
  }else if(type==="station"){
   // Elevated platform, canopy, glass waiting hall, sign and access stairs
   add(4.1,.38,2.9,concrete,0,.34,0);
@@ -551,11 +550,11 @@ function transitPlacementProblem(type,x,z){
 function refreshRailVisuals(){
  const rails=transit.filter(t=>t.type==="rail");
  const byKey=new Map(rails.map(r=>[Math.round(r.x/4)+","+Math.round(r.z/4),r]));
- const railMaterial=new THREE.MeshStandardMaterial({color:0xd9e2e7,metalness:.82,roughness:.2});
- const sleeperMaterial=new THREE.MeshStandardMaterial({color:0x493b2e,roughness:.96});
- const ballastMaterial=new THREE.MeshStandardMaterial({color:0x424b50,roughness:1});
+ const railMaterial=new THREE.MeshStandardMaterial({color:0xcbd5dc,metalness:.88,roughness:.2});
+ const sleeperMaterial=new THREE.MeshStandardMaterial({color:0x493526,roughness:.95});
+ const ballastMaterial=new THREE.MeshStandardMaterial({color:0x68645d,roughness:1});
  const add=(group,mesh)=>{mesh.userData.railVisual=true;group.add(mesh);};
- const directions=[[4,0],[-4,0],[0,4],[0,-4]];
+ const dirs=[[4,0],[-4,0],[0,4],[0,-4]];
  const edgeDone=new Set();
  for(const rail of rails){
   const g=rail.group;
@@ -565,37 +564,40 @@ function refreshRailVisuals(){
     child.geometry?.dispose();
    }
   }
-  // 砕石の路盤はタイル同士が隙間なく接するように敷く
-  const bed=new THREE.Mesh(new THREE.BoxGeometry(4.02,.12,4.02),ballastMaterial);
-  bed.position.y=.12;
-  add(g,bed);
-  const neighbors=directions.map(([dx,dz])=>({dx,dz,key:Math.round((rail.x+dx)/4)+","+Math.round((rail.z+dz)/4)}))
+  const ownKey=Math.round(rail.x/4)+","+Math.round(rail.z/4);
+  const neighbors=dirs.map(([dx,dz])=>({dx,dz,key:Math.round((rail.x+dx)/4)+","+Math.round((rail.z+dz)/4)}))
    .filter(d=>byKey.has(d.key));
-  if(!neighbors.length)neighbors.push({dx:4,dz:0,key:""});
-  for(const d of neighbors){
-   const ownKey=Math.round(rail.x/4)+","+Math.round(rail.z/4);
-   const edgeKey=[ownKey,d.key].sort().join("|");
-   if(d.key&&edgeDone.has(edgeKey))continue;
-   if(d.key)edgeDone.add(edgeKey);
-   const start=new THREE.Vector3(0,.34,0);
-   const finish=new THREE.Vector3(d.dx,.34,d.dz);
-   const dir=new THREE.Vector3(d.dx,0,d.dz).normalize();
-   const side=new THREE.Vector3(dir.z,0,-dir.x);
-   // 隣接タイルの中心までレールを伸ばし、継ぎ目をなくす
-   for(const sign of [-1,1]){
-    const offset=side.clone().multiplyScalar(.58*sign);
-    const curve=new THREE.LineCurve3(start.clone().add(offset),finish.clone().add(offset));
-    const mesh=new THREE.Mesh(new THREE.TubeGeometry(curve,1,.065,8,false),railMaterial);
-    add(g,mesh);
+  // 端点だけの線路も、隣接タイルがなくても短い線路として表示する
+  const segments=neighbors.length?neighbors:[{dx:4,dz:0,key:""}];
+  for(const d of segments){
+   const edgeKey=d.key?[ownKey,d.key].sort().join("|"):ownKey+"|stub";
+   if(edgeDone.has(edgeKey))continue;
+   edgeDone.add(edgeKey);
+   const dx=d.dx,dz=d.dz;
+   const length=Math.hypot(dx,dz),ux=dx/length,uz=dz/length;
+   const centerX=dx*.5,centerZ=dz*.5;
+   const angle=Math.atan2(dx,dz);
+   // 道路のような全面板にはせず、線路幅だけの砕石床を敷く
+   const bed=new THREE.Mesh(new THREE.BoxGeometry(dz===0?4.08:1.9,.16,dz===0?1.9:4.08),ballastMaterial);
+   bed.position.set(centerX,.13,centerZ);
+   add(g,bed);
+   // 2本の頭の丸い鋼 rail を枕木より上に配置
+   for(const side of [-1,1]){
+    const offsetX=uz*.58*side,offsetZ=-ux*.58*side;
+    const railCurve=new THREE.LineCurve3(
+     new THREE.Vector3(offsetX,.39,offsetZ),
+     new THREE.Vector3(dx+offsetX,.39,dz+offsetZ)
+    );
+    const railMesh=new THREE.Mesh(new THREE.TubeGeometry(railCurve,1,.075,10,false),railMaterial);
+    add(g,railMesh);
    }
-   const length=Math.hypot(d.dx,d.dz);
-   const count=Math.ceil(length/.62);
+   // 枕木を約60cm間隔で横断方向に並べる
+   const count=Math.max(5,Math.ceil(length/.58));
    for(let i=0;i<=count;i++){
     const t=i/count;
-    const p=start.clone().lerp(finish,t);
-    const tie=new THREE.Mesh(new THREE.BoxGeometry(.17,.11,1.62),sleeperMaterial);
-    tie.position.set(p.x,.235,p.z);
-    tie.rotation.y=Math.atan2(d.dx,d.dz);
+    const tie=new THREE.Mesh(new THREE.BoxGeometry(1.72,.16,.2),sleeperMaterial);
+    tie.position.set(dx*t,.27,dz*t);
+    tie.rotation.y=angle;
     add(g,tie);
    }
   }
