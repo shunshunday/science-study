@@ -397,6 +397,56 @@ function makeTransit(type,x,z){
   add(.44,.48,.025,white,1.35,2.12,.55);
   add(.06,.1,.08,yellow,1.35,1.65,.5);
  }
+
+ // 建物ごとの外構・看板・設備・専用車両
+ const sign=(label,color=0x173e58,accent=0x63dcff,px=0,py=3.1,pz=2.04)=>{
+  add(2.35,.48,.13,mat(color,.35,.32),px,py,pz);
+  add(1.95,.055,.045,mat(accent,.2,.25,accent),px,py-.18,pz+.08);
+  for(const sx of [-.92,.92]){const bolt=new THREE.Mesh(new THREE.SphereGeometry(.045,8,6),white);bolt.position.set(px+sx,py,pz+.09);g.add(bolt);}
+ };
+ const vehicle=(kind,px,pz)=>{
+  const v=new THREE.Group(),isEmergency=["police","fire","ambulance"].includes(kind);
+  const paint=mat(kind==="police"?0xf4f7fb:kind==="fire"?0xd9362f:kind==="ambulance"?0xf7f8f8:kind==="bus"?0xe5b43e:kind==="truck"?0x4e718c:kind==="hotel"?0x263e59:0x2d9aaf,.35,.3);
+  const black=mat(0x101820,.12,.82),glassM=mat(0x16384e,.55,.12),chrome=mat(0xb8cbd4,.8,.2),red=mat(0xd72e3b,.2,.24,0x9c1420),blueL=mat(0x268cff,.15,.2,0x167cff);
+  box(v,1.08,.48,2.05,paint,0,.62,0);
+  box(v,.94,.54,.92,paint,0,1.08,-.28);
+  box(v,.82,.36,.06,glassM,0,1.12,.19);
+  box(v,.06,.38,.07,chrome,-.43,1.12,.2);box(v,.06,.38,.07,chrome,.43,1.12,.2);
+  box(v,.9,.1,.12,chrome,0,.48,1.04);
+  box(v,.16,.13,.05,mat(0xfff2c2,.1,.2,0xffe4a0),-.35,.68,1.04);box(v,.16,.13,.05,mat(0xfff2c2,.1,.2,0xffe4a0),.35,.68,1.04);
+  for(const sx of [-.57,.57])for(const sz of [-.62,.68]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.13,14),black);w.rotation.z=Math.PI/2;w.position.set(sx,.35,sz);v.add(w);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.075,.075,.14,12),chrome);hub.rotation.z=Math.PI/2;hub.position.set(sx,.35,sz);v.add(hub);}
+  if(kind==="police"||kind==="fire"||kind==="ambulance"){box(v,.56,.12,.2,blueL,0,1.42,-.22);box(v,.24,.12,.2,red,-.2,1.42,-.22);box(v,.24,.12,.2,red,.2,1.42,-.22);}
+  if(kind==="fire"){box(v,.82,.18,.85,mat(0xb8c5cc,.7,.3),0,1.03,-.68);for(let n=0;n<3;n++)box(v,.07,.12,.75,chrome,-.25+n*.25,1.19,-.68);box(v,.12,.65,.12,chrome,.35,1.32,-.55);}
+  if(kind==="ambulance"){box(v,.68,.48,.04,red,0,1.12,.245);box(v,.14,.72,.05,red,0,1.12,.28);box(v,.72,.13,.05,red,0,1.12,.28);}
+  if(kind==="police"){box(v,.58,.28,.035,mat(0x1c4f8d),0,.96,.23);box(v,.12,.16,.04,white,0,.96,.26);}
+  if(kind==="truck"){box(v,1.03,.76,.95,mat(0xe5e9ed,.2,.55),0,1.12,-.55);box(v,.8,.12,.05,mat(0x28789a),0,1.12,-.04);}
+  if(kind==="bus"){box(v,1.02,.58,1.75,paint,0,1.13,-.12);for(let n=0;n<4;n++)box(v,.035,.36,.34,glassM,.55,1.16,-.72+n*.42);}
+  if(kind==="hotel"){box(v,.8,.2,.06,mat(0xd9c18c),0,1.05,.24);}
+  v.position.set(px,0,pz);g.add(v);
+ };
+ // 共通のエントランス照明・アプローチ
+ for(const sx of [-1.72,1.72]){const pole=new THREE.Group();const stem=new THREE.Mesh(new THREE.CylinderGeometry(.035,.055,1.45,8),trim);stem.position.y=.73;pole.add(stem);const lamp=new THREE.Mesh(new THREE.SphereGeometry(.13,12,8),mat(0xffe5a1,.1,.18,0xffcf6a));lamp.position.y=1.5;pole.add(lamp);pole.position.set(sx,0,2.35);g.add(pole);}
+ if(["shop","hospital","school","office","factory","firestation","police","restaurant","hotel","university","stadium","airport"].includes(type)){
+  add(3.1,.08,1.15,mat(0x85949c,.1,.85),0,.08,2.55);
+  for(let n=0;n<5;n++)add(.16,.035,.14,white,-.72+n*.36,.14,2.55);
+ }
+ if(type==="home"){sign("HOME",0x24546a,0x78e8ed,0,2.65,1.68);add(.72,.55,.75,green,-1.35,.55,1.4);add(.72,.55,.75,green,1.35,.55,1.4);add(1.1,.08,.75,roofMat,0,.12,2.45);}
+ if(type==="tower"){sign("RESIDENCE",0x183d64,0x6ddcff,0,16.3,1.7);for(const sx of [-1.85,1.85])add(.16,1.4,.16,trim,sx,.8,1.6);}
+ if(type==="shop"){sign("SHOPPING",0x4d287a,0xffd66b,0,3.35,2.02);vehicle("truck",-2.6,2.9);add(.45,.8,.45,green,-2.1,.55,-1.6);add(.45,.8,.45,green,2.1,.55,-1.6);}
+ if(type==="hospital"){sign("MEDICAL CENTER",0x176d72,0x8effef,0,3.15,2.28);vehicle("ambulance",-2.35,3.55);add(.12,1.1,.12,white,2.2,.65,2.2);add(.65,.1,.65,mat(0x46c6ac),2.2,1.22,2.2);}
+ if(type==="school"){sign("SCIENCE ACADEMY",0x795a19,0xffe28b,0,3.35,1.05);vehicle("bus",2.65,2.5);for(const sx of [-2,2]){add(.7,.45,.7,green,sx,.42,1.6);}}
+ if(type==="park"){for(const sx of [-1.2,1.2]){add(1.05,.16,.35,trim,sx,.65,1.45);for(const dx of [-.38,.38])add(.07,.42,.07,trim,sx+dx,.42,1.45);}for(let n=0;n<4;n++){const flower=new THREE.Mesh(new THREE.SphereGeometry(.12,10,8),mat([0xff9ac4,0xffd86b,0x9bcaff,0xffffff][n],.05,.5));flower.position.set(-1.2+n*.8,.58,2.05);g.add(flower);}}
+ if(["fusion","fission","hydrogen","solar"].includes(type)){sign("POWER",0x123b4d,0x66e8ff,0,3.1,2.05);for(const sx of [-2.15,2.15]){add(.18,.75,.18,trim,sx,.48,1.9);const light=new THREE.Mesh(new THREE.SphereGeometry(.12,10,8),mat(0x5effaa,.1,.15,0x29d879));light.position.set(sx,.95,1.9);g.add(light);}}
+ if(type==="office"){sign("INNOVATION HQ",0x174c76,0x8ce6ff,0,11.8,1.84);vehicle("hotel",-2.65,2.8);vehicle("hotel",2.65,2.8);}
+ if(type==="factory"){sign("ROBOTICS",0x354c5c,0xffbd4a,0,3.1,2.1);vehicle("truck",2.75,2.9);for(let n=0;n<3;n++){const pipe=new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,2.1,12),chrome);pipe.position.set(-2+n*.6,4.1,-1.7);g.add(pipe);}}
+ if(type==="firestation"){sign("FIRE & RESCUE",0x8c2524,0xffd16b,0,3.12,1.98);vehicle("fire",-2.55,3.15);vehicle("fire",2.55,3.15);for(let n=0;n<3;n++)add(.14,.14,.14,mat(0xffb72f,.2,.25,0xff7b17),-1+n,3.4,-1.1);}
+ if(type==="police"){sign("POLICE HQ",0x173b73,0x8bc9ff,0,3.2,1.95);vehicle("police",-2.55,3.1);vehicle("police",2.55,3.1);add(.18,1.5,.18,trim,2.15,.8,-1.1);add(.7,.08,.7,mat(0x3a78c7),2.15,1.6,-1.1);}
+ if(type==="restaurant"){sign("RESTAURANT",0x8a4b1e,0xffdc9b,0,1.85,2.2);for(let n=0;n<3;n++){const px=-1.2+n*1.2;add(.55,.08,.55,roofMat,px,.5,2.8);add(.08,.45,.08,trim,px,.27,2.8);const umbrella=new THREE.Mesh(new THREE.ConeGeometry(.48,.22,8),mat([0xe76d55,0xe8b34e,0x6cb9a1][n]));umbrella.position.set(px,1.05,2.8);g.add(umbrella);}}
+ if(type==="hotel"){sign("GRAND HOTEL",0x50366f,0xf5d48a,0,8.95,1.3);vehicle("hotel",2.8,2.8);for(let n=0;n<3;n++){const lamp=new THREE.Mesh(new THREE.SphereGeometry(.11,10,8),mat(0xffd68b,.1,.2,0xffb84a));lamp.position.set(-1+n,2.4,1.9);g.add(lamp);}}
+ if(type==="university"){sign("UNIVERSITY",0x283c77,0xffd777,0,3.3,1.65);vehicle("bus",-2.7,2.8);for(let n=0;n<3;n++)add(.18,.9,.18,green,-1.6+n*1.6,.55,2.8);}
+ if(type==="stadium"){sign("MEGA ARENA",0x176340,0x9effc1,0,3.65,2.5);for(const sx of [-2.35,2.35]){add(.12,6,.12,trim,sx,3,-1.8);const flood=new THREE.Mesh(new THREE.BoxGeometry(.85,.18,.3),white);flood.position.set(sx,6.1,-1.8);g.add(flood);}}
+ if(type==="airport"){sign("INTERNATIONAL AIRPORT",0x15516a,0x9df2ff,0,3.2,1.42);for(const sx of [-2.8,2.8]){add(.18,1.8,.18,trim,sx,1,-1.1);add(.7,.12,.7,white,sx,1.95,-1.1);}}
+
  scene.add(g);return {type,x,z,group:g};
 }
 function makeTrain(){
