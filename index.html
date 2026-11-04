@@ -584,7 +584,7 @@ async function answerQuestion(choice,button){
  if(!correct)button.classList.add('wrong');
  if(correct){
   const earned=await saveCorrectAnswer(q.category);
-  quizFeedback.textContent=earned?'正解！ +$100 獲得！':(supabaseClient?'正解！資金の保存に失敗しました。再ログインして確認してください。':'正解！ログインすると+$100が貯まります。');
+  quizFeedback.textContent=earned===true?'正解！ +$100 獲得！':(earned===null?'正解！ログインすると+$100が貯まります。':'正解！資金の保存に失敗しました。再ログインして確認してください。');
  }else quizFeedback.textContent='不正解。正解は「'+q.term+'」です。';
  quizScore.textContent='正解 '+quizCorrect;quizNext.classList.add('show');
 }
@@ -736,9 +736,9 @@ document.getElementById('authForm').addEventListener('submit',async e=>{
 });
 document.getElementById('logoutButton').addEventListener('click',async()=>{if(!supabaseClient)return;stopPlaytimeTracking();await supabaseClient.auth.signOut();await refreshAccount();});
 async function saveCorrectAnswer(unit){
- if(!supabaseClient)return false;
+ if(!supabaseClient)return null;
  try{
-  const {data:{user},error:authError}=await supabaseClient.auth.getUser();if(authError||!user)return false;
+  const {data:{user},error:authError}=await supabaseClient.auth.getUser();if(authError||!user)return null;
   const {error}=await supabaseClient.from('quiz_attempts').insert({user_id:user.id,unit,correct_count:1});
   if(error)throw error;
   const [{data:profile,error:profileError},{data:walletData,error:walletError}]=await Promise.all([
