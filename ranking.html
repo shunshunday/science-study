@@ -54,7 +54,7 @@ function titleFor(n){if(n>=100000)return "覇者";if(n>=50000)return "ノーベ�
 function titleMarkFor(n){if(n>=100000)return "";if(n>=50000)return "♛";if(n>=20000)return "🌟";if(n>=10000)return "💡";if(n>=6000)return "🧪";if(n>=3000)return "🔬";if(n>=1000)return "⚗️";return "🌱";}
 (async()=>{
  const status=document.getElementById("status"),list=document.getElementById("list");
- const {data,error}=await client.from("public_leaderboard").select("username,correct_count,balance,lifetime_earned").order("balance",{ascending:false}).order("username",{ascending:true}).limit(100);
+ const {data,error}=await client.from("public_leaderboard").select("username,balance,lifetime_earned").order("balance",{ascending:false}).order("username",{ascending:true}).limit(100);
  if(error){status.textContent="ランキングを読み込めませんでした。時間をおいて再読み込みしてください。";return;}
  let avatarByUsername={};
  try{const names=(data||[]).map(x=>x.username).filter(Boolean);if(names.length){const result=await client.from("profiles").select("username,avatar_url").in("username",names);if(!result.error){(result.data||[]).forEach(p=>{if(p.avatar_url)avatarByUsername[p.username]=p.avatar_url;});}}}catch(e){console.warn("プロフィール画像の取得をスキップしました",e);}
