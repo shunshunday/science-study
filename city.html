@@ -417,7 +417,7 @@ function spawnPerson(i){
  const home=nearestHome();const x=home?home.x+(Math.random()-.5)*2:(Math.random()-.5)*12,z=home?home.z+2+(Math.random()-.5)*2:(Math.random()-.5)*12;
  scene.add(g);return {group:g,x,z,home,angle:Math.random()*6,speed:.9+Math.random()*.45,limbs,phase:Math.random()*6,targetX:x,targetZ:z,walkTimer:0};
 }
-function setTool(t){selected=t;document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));notice(t==="road"?"道路をクリックして敷設。":t==="remove"?"撤去したい道路・建物をクリック。":defs[t].name+"を配置する場所をクリック。");}
+function setTool(t){selected=t;document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));const labels={rail:"線路",station:"駅",busstop:"バス停"};notice(t==="road"?"道路をクリックして敷設。":t==="remove"?"撤去したい道路・建物・交通施設をクリック。":t==="select"?"選択したい施設をクリック。":(defs[t]?.name||labels[t]||"施設")+"を配置する場所をクリック。");}
 function notice(s){$("notice").textContent=s;$("notice").classList.remove("hidden");clearTimeout(notice.timer);notice.timer=setTimeout(()=>$("notice").classList.add("hidden"),3000);}
 document.querySelectorAll("[data-tool]").forEach(b=>b.addEventListener("click",()=>setTool(b.dataset.tool)));
 function findAt(x,z){return buildings.find(b=>Math.abs(b.x-x)<1&&Math.abs(b.z-z)<1)||roads.find(r=>r.x===x&&r.z===z)||transit.find(t=>Math.abs(t.x-x)<1&&Math.abs(t.z-z)<1);}
@@ -442,7 +442,7 @@ renderer.domElement.addEventListener("pointerup",e=>{
   const item=findAt(p.x,p.z);if(!item)return;
   const refund=item.type?(defs[item.type]?Math.floor(defs[item.type].cost/2):Math.floor(transitCosts[item.type]/2)):250;
   (async()=>{if(user){try{const {data,error}=await supabase.rpc("refund_city_cash",{p_amount:refund});if(error)throw error;cash=Number(data);}catch(err){notice("返金に失敗したため撤去を中止しました: "+err.message);await refreshWallet();return;}}else{notice("返金・撤去にはログインが必要です。");return;}
-   if(item.group)scene.remove(item.group);if(item.type in defs)buildings=buildings.filter(b=>b!==item);else if(item.type)transit=transit.filter(t=>t!==item);else roads=roads.filter(r=>r!==item);
+   if(item.group)scene.remove(item.group);if(item.type&&item.type in defs)buildings=buildings.filter(b=>b!==item);else if(item.type)transit=transit.filter(t=>t!==item);else roads=roads.filter(r=>r!==item);
    if(selectedObject===item)selectedObject=null;rebuildTransitVehicles();updateUI();scheduleSave();notice("撤去しました。$"+refund.toLocaleString("en-US")+"（費用の50%）を返金しました。");
   })();return;
  }
@@ -457,7 +457,7 @@ $("resetBtn").onclick=async()=>{
  },0);
  const transitCost=transit.reduce((sum,t)=>sum+transitCosts[t.type],0);
  const refund=Math.floor((buildingCost+roads.length*500+cars.length*18000+people.length*1000+transitCost)/2);
- const message="都市データを初期化します。\n建物・道路・車・住民はすべて削除されます。\n"+(refund>0?"返金額：$"+refund.toLocaleString("en-US")+"（購入費用の50%）\n":"返金対象はありません。\n")+"本当に初期化しますか？";
+ const message="都市データを初期化します。\n建物・道路・線路・駅・バス停・車・住民はすべて削除されます。\n"+(refund>0?"返金額：$"+refund.toLocaleString("en-US")+"（購入費用の50%）\n":"返金対象はありません。\n")+"本当に初期化しますか？";
  if(!confirm(message))return;
  if(user&&refund>0){
   try{
