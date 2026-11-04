@@ -971,6 +971,18 @@ function buildingAtPoint(x,z){
   return x>=bounds.min.x-.15&&x<=bounds.max.x+.15&&z>=bounds.min.z-.15&&z<=bounds.max.z+.15;
  })||null;
 }
+function buildingAtPointer(e){
+ const rect=renderer.domElement.getBoundingClientRect();
+ if(!rect.width||!rect.height)return null;
+ mouse.x=(e.clientX-rect.left)/rect.width*2-1;
+ mouse.y=-(e.clientY-rect.top)/rect.height*2+1;
+ raycaster.setFromCamera(mouse,camera);
+ const hits=raycaster.intersectObjects(buildings.map(b=>b.group),true);
+ if(!hits.length)return null;
+ let node=hits[0].object;
+ while(node&& !buildings.some(b=>b.group===node))node=node.parent;
+ return node?buildings.find(b=>b.group===node)||null:null;
+}
 function moveValidation(building,x,z,rotation=moveDraftRotation){
  if(!building||!buildings.includes(building))return "移動する施設を選択してください。";
  const candidate=buildingBounds(building.type,x,z,rotation,building.level||1,building);
@@ -1109,7 +1121,8 @@ window.addEventListener("pointerup",e=>{
  const groundPoint=pointerGroundPoint(e);if(!groundPoint)return;
  const p=gridPos(groundPoint);
  if(selected==="move"){
-  const clickedBuilding=buildingAtPoint(p.x,p.z);
+  // 建物の屋根や壁を直接クリックしても選択できるよう、3Dモデルへレイキャストする。
+  const clickedBuilding=buildingAtPointer(e)||buildingAtPoint(p.x,p.z);
   if(pendingMove){
    if(clickedBuilding&&clickedBuilding!==pendingMove.building){
     if(!commitPendingMove(false))return;
@@ -1125,7 +1138,7 @@ window.addEventListener("pointerup",e=>{
   const problem=moveValidation(selectedObject,p.x,p.z,moveDraftRotation);if(problem)return notice(problem);
   pendingMove={building:selectedObject,x:p.x,z:p.z,rotation:moveDraftRotation};movePreviewPoint={x:p.x,z:p.z};showMoveControls();notice("移動先を仮設定しました。半透明の建物と地面の色を確認して「決定」を押してください。");return;
  }
- if(selected==="select"){selectedObject=buildings.find(b=>Math.abs(b.x-p.x)<3&&Math.abs(b.z-p.z)<3)||transit.find(t=>Math.abs(t.x-p.x)<2&&Math.abs(t.z-p.z)<2)||null;notice(selectedObject?(selectedObject.type in defs?defs[selectedObject.type].name:({rail:"線路",station:"駅",busstop:"バス停"})[selectedObject.type])+"を選択中":"施設を選択してください。");return;}
+ if(selected==="select"){selectedObject=buildingAtPointer(e)||buildings.find(b=>Math.abs(b.x-p.x)<3&&Math.abs(b.z-p.z)<3)||transit.find(t=>Math.abs(t.x-p.x)<2&&Math.abs(t.z-p.z)<2)||null;notice(selectedObject?(selectedObject.type in defs?defs[selectedObject.type].name:({rail:"線路",station:"駅",busstop:"バス停"})[selectedObject.type])+"を選択中":"施設を選択してください。");return;}
  if(selected==="road"){addRoad(p.x,p.z);return;}
  if(["rail","station","busstop"].includes(selected)){addTransit(selected,p.x,p.z);return;}
  if(selected==="remove"){
