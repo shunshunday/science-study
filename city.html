@@ -131,7 +131,9 @@ function terrainBaseHeightAt(x,z){
  const ridged=1-Math.abs(terrainFbm((x+warpX)*.023,(z+warpZ)*.023,4));
  const detail=terrainFbm(x*.072,z*.072,3);
  const upland=smoothTerrain(126,190,r),landFade=1-smoothTerrain(coast-13,coast+13,r);
- const sharpRidge=1-Math.abs(terrainFbm((x+warpX)*.052+7,(z+warpZ)*.052-11,4));\n const rockDetail=terrainFbm(x*.14+31,z*.14-17,3);\n let h=.24+detail*.32+upland*(3.4+broad*7.2+(ridged-.48)*29+detail*1.5+sharpRidge*5.2+rockDetail*1.35);
+ const sharpRidge=1-Math.abs(terrainFbm((x+warpX)*.052+7,(z+warpZ)*.052-11,4));
+ const rockDetail=terrainFbm(x*.14+31,z*.14-17,3);
+ let h=.24+detail*.32+upland*(3.4+broad*7.2+(ridged-.48)*29+detail*1.5+sharpRidge*5.2+rockDetail*1.35);
  const lake=Math.hypot((x+100)*.94,(z-90)*1.08),pond=Math.hypot((x-82)*1.08,(z+105)*.92);
  h-=4.9*(1-smoothTerrain(18,34,lake));h-=3.8*(1-smoothTerrain(11,23,pond));
  return h*landFade-4.4*(1-landFade);
