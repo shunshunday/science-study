@@ -1,0 +1,23 @@
+name: City Builder Browser Test
+on:
+  push:
+    branches: [main]
+    paths: ["city.html","tests/**","playwright.config.cjs","package.json","package-lock.json",".github/workflows/city-browser-test.yml"]
+  pull_request:
+    paths: ["city.html","tests/**","playwright.config.cjs","package.json","package-lock.json",".github/workflows/city-browser-test.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:city
