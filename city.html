@@ -617,10 +617,11 @@ function buildTrainPath(){
  }
  if(!best||best.length<2)return null;
  if(best.length>=3){
-  const vectors=best.map(p=>new THREE.Vector3(p.x,.06,p.z));
   const closed=best[0].x===best[best.length-1].x&&best[0].z===best[best.length-1].z;
+  const routePoints=closed?best.slice(0,-1):best;
+  const vectors=routePoints.map(p=>new THREE.Vector3(p.x,.06,p.z));
   const curve=new THREE.CatmullRomCurve3(vectors,closed,"centripetal",.35);
-  return curve.getPoints(Math.max(24,(best.length-1)*12)).map(p=>({x:p.x,z:p.z}));
+  return curve.getPoints(Math.max(24,routePoints.length*12)).map(p=>({x:p.x,z:p.z}));
  }
  return best;
 }
