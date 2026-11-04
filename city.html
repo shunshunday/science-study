@@ -500,7 +500,7 @@ function refreshRoadVisuals(){
   const g=r.group;for(const child of [...g.children]){child.geometry?.dispose();g.remove(child);}
   const connected=dirs.map(([dx,dz])=>byKey.has((r.x+dx)+","+(r.z+dz)));
   const degree=connected.filter(Boolean).length;r.trafficLight=degree>=3;
-  const horizontal=connected[0]||connected[1],vertical=connected[2]||connected[3],roadWidth=Math.min(3.25,1.25+(r.lanes||2)*.36);box(g,horizontal&&vertical?cell:cell,.12,vertical&&!horizontal?cell:horizontal&&!vertical?roadWidth:cell,roadSurfaceMaterial,0,.02,0);const utilityView=$("utilityView")?.value;if(utilityView&&utilityView!=="off"&&r.utilities?.[utilityView]!==false){const offsets={electricity:-.52,water:0,sewage:.52},offset=offsets[utilityView],m=utilityLineMaterials[utilityView];if(horizontal)box(g,3.72,.075,.075,m,0,.32,offset);if(vertical)box(g,.075,.075,3.72,m,offset,.32,0);}
+  const horizontal=connected[0]||connected[1],vertical=connected[2]||connected[3],roadWidth=Math.min(3.25,1.25+(r.lanes||2)*.36);box(g,vertical&&!horizontal?roadWidth:cell,.12,horizontal&&!vertical?roadWidth:cell,roadSurfaceMaterial,0,.02,0);const utilityView=$("utilityView")?.value;if(utilityView&&utilityView!=="off"&&r.utilities?.[utilityView]!==false){const offsets={electricity:-.52,water:0,sewage:.52},offset=offsets[utilityView],m=utilityLineMaterials[utilityView];if(horizontal)box(g,3.72,.075,.075,m,0,.32,offset);if(vertical)box(g,.075,.075,3.72,m,offset,.32,0);}
   for(let i=0;i<4;i++)if(!connected[i]){
    const [dx,dz]=dirs[i];if(dx!==0){box(g,.38,.16,cell,roadSidewalkMaterial,dx>0?roadWidth/2+.2:-(roadWidth/2+.26),.08,0);box(g,.055,.2,cell,roadCurbMaterial,dx>0?roadWidth/2+.015:-(roadWidth/2+.04),.1,0);}
    else{box(g,cell,.16,.38,roadSidewalkMaterial,0,.08,dz>0?roadWidth/2+.26:-(roadWidth/2+.26));box(g,cell,.2,.055,roadCurbMaterial,0,.1,dz>0?roadWidth/2+.04:-(roadWidth/2+.04));}
@@ -815,17 +815,7 @@ function transitBounds(type,x,z){
  const d=transitDimensions(type);
  return new THREE.Box3(new THREE.Vector3(x-d.w/2,0,z-d.d/2),new THREE.Vector3(x+d.w/2,3,z+d.d/2));
 }
-function transitPlacementProblem(type,x,z){
- if(!transitCosts[type])return "交通施設の種類が正しくありません。";
- const candidate=transitBounds(type,x,z);
- if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港ターミナルと重なっています。";
- if(roadsOverlapBuilding(candidate))return "道路と重なっています。";
- if(buildings.some(b=>b.type==="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";
- if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),.05)))return "ほかの交通施設と重なっています。";
- if(type==="rail"&&transit.some(t=>t.type==="rail"&&Math.hypot(t.x-x,t.z-z)<3.9))return "線路が重なっています。1マスずつ隣につなげてください。";
- if(type!=="rail"&&transit.some(t=>t.type===type&&Math.hypot(t.x-x,t.z-z)<4))return "同じ交通施設が近すぎます。";
- return "";
-}
+function transitPlacementProblem(type,x,z){if(!isBuildableLocation(x,z))return "海・湖・丘陵の外側には交通施設を設置できません。";if(!transitCosts[type])return "交通施設の種類が正しくありません。";const candidate=transitBounds(type,x,z);if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港ターミナルと重なっています。";if(roadsOverlapBuilding(candidate))return "道路と重なっています。";if(buildings.some(b=>b.type==="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),.05)))return "ほかの交通施設と重なっています。";if(type==="rail"&&transit.some(t=>t.type==="rail"&&Math.hypot(t.x-x,t.z-z)<3.9))return "線路が重なっています。1マスずつ隣につなげてください。";if(type!=="rail"&&transit.some(t=>t.type===type&&Math.hypot(t.x-x,t.z-z)<4))return "同じ交通施設が近すぎます。";return "";}
 function refreshRailVisuals(){
  const rails=transit.filter(t=>t.type==="rail");
  const byKey=new Map(rails.map(r=>[Math.round(r.x/4)+","+Math.round(r.z/4),r]));
@@ -1443,7 +1433,7 @@ function smoothRoadStroke(points){if(!roadCurveEnabled||points.length<3)return p
 window.addEventListener("pointerup",e=>{
  if(publicView){placementPointer=null;return;}
  if(!placementPointer||placementPointer.id!==e.pointerId)return;
- const start=placementPointer;placementPointer=null;controls.enabled=true;if(!isGamePointer(e)){roadDragCells=[];return;}const endGround=pointerGroundPoint(e);if(selected==="road"&&roadDragCells.length>1){const path=smoothRoadStroke(roadDragCells.slice());roadDragCells=[];addRoadStroke(path);return;}if(selected.startsWith("utility-")&&roadDragCells.length>1){const type=selected.slice(8),path=roadDragCells.slice();roadDragCells=[];addUtilityStroke(type,path);return;}roadDragCells=[];
+ const start=placementPointer;placementPointer=null;controls.enabled=true;if(!isGamePointer(e)){roadDragCells=[];return;}const endGround=pointerGroundPoint(e);if(selected==="road"&&roadDragCells.length>1){const path=smoothRoadStroke(roadDragCells.slice());roadDragCells=[];addRoadStroke(path);return;}if(selected.startsWith("utility-")){const path=roadDragCells.slice();roadDragCells=[];if(path.length>1)addUtilityStroke(selected.slice(8),path);else notice("配線・配管は左ボタンを押したまま2地点以上をドラッグしてください。");return;}roadDragCells=[];
  if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>6&&selected==="district"){const a=pointerGroundPoint({clientX:start.x,clientY:start.y});if(a&&endGround){const p1=gridPos(a),p2=gridPos(endGround);addDistrictArea(p1.x,p1.z,p2.x,p2.z);}return;}if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>6&&selected.startsWith("zone-")&&selected!=="zone-erase"){const a=pointerGroundPoint({clientX:start.x,clientY:start.y});if(a&&endGround){const p1=gridPos(a),p2=gridPos(endGround);addZoneArea(selected.slice(5),p1.x,p1.z,p2.x,p2.z);}return;}
  if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>6)return;
  if(selected==="move"){
