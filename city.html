@@ -651,12 +651,16 @@ function updateSelectedDistrictPolicy(){
 $("districtSelect").addEventListener("change",e=>{selectedDistrictId=e.target.value||null;refreshDistrictUI();});
 ["policyHeavy","policySpeed","policyGreen","policyParking"].forEach(id=>$(id).addEventListener("change",updateSelectedDistrictPolicy));
 function makeZone(zoneType,x,z,developed=false){const info=zoneInfo[zoneType];if(!info)return null;const g=new THREE.Group();g.position.set(x,terrainHeightAt(x,z)+.035,z);const fill=new THREE.Mesh(new THREE.PlaneGeometry(3.72,3.72),new THREE.MeshBasicMaterial({color:info.color,transparent:true,opacity:.24,depthWrite:false,side:THREE.DoubleSide}));fill.rotation.x=-Math.PI/2;fill.position.y=.012;g.add(fill);const outline=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(3.72,.035,3.72)),new THREE.LineBasicMaterial({color:info.color,transparent:true,opacity:.9}));outline.position.y=.035;g.add(outline);g.visible=!developed;scene.add(g);return {zoneType,x,z,group:g,developed};} function zoneRoadDistance(start){
- const zoneMap=new Map(zones.map(z=>[z.x+","+z.z,z])),queue=[{x:start.x,z:start.z,d:0}],seen=new Set([start.x+","+start.z]);
+ const zoneMap=new Map(zones.map(z=>[Math.round(z.x/cell)+","+Math.round(z.z/cell),z]));
+ const sx=Math.round(start.x/cell),sz=Math.round(start.z/cell),queue=[{x:sx,z:sz,d:0}],seen=new Set([sx+","+sz]);
  for(let i=0;i<queue.length;i++){
-  const p=queue[i];
-  // 地区セルの中心と道路セルの中心が隣接していれば道路接続済みとする。
-  if(roads.some(r=>Math.abs(r.x-p.x)+Math.abs(r.z-p.z)<=cell+0.01))return p.d;
-  for(const [dx,dz] of [[cell,0],[-cell,0],[0,cell],[0,-cell]]){const x=p.x+dx,z=p.z+dz,key=x+","+z;if(!seen.has(key)&&zoneMap.has(key)){seen.add(key);queue.push({x,z,d:p.d+1});}}
+  const p=queue[i],wx=p.x*cell,wz=p.z*cell;
+  // 道路タイルの中心が隣接・斜め隣接していても道路接続済みと判定する。
+  if(roads.some(r=>Math.hypot(r.x-wx,r.z-wz)<=cell*Math.SQRT2+0.05))return p.d;
+  for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){
+   const x=p.x+dx,z=p.z+dz,key=x+","+z;
+   if(!seen.has(key)&&zoneMap.has(key)){seen.add(key);queue.push({x,z,d:p.d+1});}
+  }
  }
  return Infinity;
 }
