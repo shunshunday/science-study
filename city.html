@@ -1021,7 +1021,7 @@ function makeTransit(type,x,z){
   const nearbyRail=transit.filter(t=>t.type==="rail").sort((a,b)=>Math.hypot(a.x-x,a.z-z)-Math.hypot(b.x-x,b.z-z))[0];
   if(nearbyRail){const dx=nearbyRail.x-x,dz=nearbyRail.z-z;g.rotation.y=Math.atan2(dx,dz);}
  }
- if(type==="hospital"||type==="firestation")g.userData.garageExit={x:x+(type==="hospital"?1.05:0),z:z+5.8};
+ if(type==="hospital"||type==="firestation")g.userData.garageExit={x:type==="hospital"?1.05:0,z:5.8};
  scene.add(g);return {type,x,z,group:g,garageExit:g.userData.garageExit||null,garageVehicles:g.userData.garageVehicles||[]};
 }
 function makeTrain(){
@@ -1206,7 +1206,7 @@ function dispatchServiceVehicle(type,target){
  const stations=buildings.filter(b=>b.type===config.station&&(b.damage||0)<.7&&people.filter(p=>p.workplace===b).length>=(defs[b.type].staffNeed||1)*.5);if(!stations.length)return false;
  const station=stations.sort((a,b)=>Math.hypot(a.x-target.x,a.z-target.z)-Math.hypot(b.x-target.x,b.z-target.z))[0],limit=Math.max(1,Math.floor(serviceBudgets[config.budget]/50)),active=serviceVehicles.filter(v=>v.serviceType===type).length;if(active>=limit)return false;
  const parkedModel=station.garageVehicles?.find(m=>!m.userData.inUse)||null;if(station.garageVehicles?.length&&!parkedModel)return false;
- const exit=station.garageExit||station,roadRoute=findRoadPath(exit,target);if(!roadRoute)return false;const route=station.garageExit?[{x:exit.x,z:exit.z},...roadRoute]:roadRoute;
+ const offset=station.garageExit,angle=station.rotation||0,exit=offset?{x:station.x+offset.x*Math.cos(angle)+offset.z*Math.sin(angle),z:station.z-offset.x*Math.sin(angle)+offset.z*Math.cos(angle)}:station;let roadRoute=findRoadPath(exit,target);if(!roadRoute){const a=nearestRoadFor(exit),b=nearestRoadFor(target);if(a&&a===b)roadRoute=[{x:a.x,z:a.z},{x:target.x,z:target.z}];}if(!roadRoute)return false;const route=offset?[{x:exit.x,z:exit.z},...roadRoute]:roadRoute;
  let vehicle;if(type==="fire"||type==="ambulance")vehicle=spawnEmergencyServiceVehicle(type,route,station,parkedModel);else vehicle=spawnCar(serviceVehicles.length+90,station);
  if(parkedModel){parkedModel.userData.inUse=true;parkedModel.visible=false;}
  vehicle.serviceType=type;vehicle.serviceTarget=target;vehicle.station=station;vehicle.parkedModel=parkedModel;vehicle.dispatched=true;vehicle.taskDone=false;vehicle.route=route;vehicle.pathData=cacheVehiclePath(route);vehicle.distance=0;vehicle.direction=1;vehicle.speed=type==="ambulance"||type==="fire"?5.8:4.4;vehicle.loop=false;
