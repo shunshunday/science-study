@@ -993,7 +993,7 @@ function makeTransit(type,x,z){
  if(type==="airport"){sign("INTERNATIONAL AIRPORT",0x15516a,0x9df2ff,0,3.2,1.42);for(const sx of [-2.8,2.8]){add(.18,1.8,.18,buildingTrimMaterial,sx,1,-1.1);add(.7,.12,.7,white,sx,1.95,-1.1);}}
 
  // Shared architectural finish: roof plant, parapets, service access and exterior lighting
- const flatRoofY={tower:15.4,shop:3.9,hospital:7.35,school:3.32,office:12.55,factory:3.48,firestation:3.08,police:3.28,hotel:8.75,university:3.48,stadium:6.25,airport:3.35,water:3.1,sewage:3.1,waste:3.1,farm:2.8,forestry:2.8,mine:3.2,foodplant:3.4,lumbermill:3.4,steelworks:4.2,manufacturer:3.8,cargoRail:2.8,seaport:2.8,cargoAirport:2.8};
+ const flatRoofY={tower:15.4,shop:3.9,hospital:7.35,school:3.32,office:12.55,factory:3.48,firestation:3.08,police:3.28,hotel:8.75,university:3.48,stadium:6.25,airport:3.35,fusion:8.2,fission:7.2,hydrogen:5.8,water:3.1,sewage:3.1,waste:3.1,farm:2.8,forestry:2.8,mine:3.2,foodplant:3.4,lumbermill:3.4,steelworks:4.2,manufacturer:3.8,cargoRail:2.8,seaport:2.8,cargoAirport:2.8};
  const roofY=flatRoofY[type];
  if(roofY!==undefined){
   const roofUnitMat=mat(0x71818b,.62,.38),ventMat=mat(0x263b49,.48,.5);
