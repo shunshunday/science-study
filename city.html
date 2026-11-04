@@ -1820,7 +1820,7 @@ function animate(){requestAnimationFrame(animate);controls.update();updateDayNig
  renderer.render(scene,camera);}
 
 const keys={};const arrowKeys={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right"};addEventListener("keydown",e=>{const k=arrowKeys[e.key];if(k){keys[k]=true;e.preventDefault();}});addEventListener("keyup",e=>{const k=arrowKeys[e.key];if(k)keys[k]=false;});
-function moveCamera(){const v=new THREE.Vector3();if(keys.up)v.z-=1;if(keys.down)v.z+=1;if(keys.left)v.x-=1;if(keys.right)v.x+=1;if(v.lengthSq()){v.normalize().multiplyScalar(.28);controls.target.add(v);camera.position.add(v);}}
+function moveCamera(){const forward=new THREE.Vector3();camera.getWorldDirection(forward);forward.y=0;if(forward.lengthSq()<1e-8)return;forward.normalize();const right=new THREE.Vector3().crossVectors(forward,new THREE.Vector3(0,1,0)).normalize();const v=new THREE.Vector3();if(keys.up)v.add(forward);if(keys.down)v.sub(forward);if(keys.right)v.add(right);if(keys.left)v.sub(right);if(v.lengthSq()){v.normalize().multiplyScalar(.28);controls.target.add(v);camera.position.add(v);}}
 function loop(){moveCamera();requestAnimationFrame(loop);}loop();animate();setInterval(simulation,1000);
 addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 function restoreConstructions(saved){
