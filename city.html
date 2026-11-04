@@ -1098,9 +1098,9 @@ $("buyTrainBtn").onclick=async()=>{
 $("buyBusBtn").onclick=async()=>{
  const stops=transit.filter(t=>t.type==="busstop");
  if(stops.length<2){notice("バスを走らせるには、バス停が2か所以上必要です。");return;}
- const busPath=roadPathBetween(stops[0],stops[1]);
- if(!busPath||busPath.length<2){notice("2つのバス停それぞれを道路につなぎ、間を連続した道路で結んでください。");return;}
- if(!(await charge(6000)))return;busCount++;rebuildTransitVehicles();notice("バスを購入しました。バス停の間を走ります。");scheduleSave();
+ const busPath=buildBusPath();
+ if(!busPath||busPath.length<3){notice("すべてのバス停の近くに道路をつなぎ、停留所を順番に結ぶ連続した道路網を作ってください。");return;}
+ if(!(await charge(6000)))return;busCount++;rebuildTransitVehicles();notice("バスを購入しました。全バス停を巡回します。");scheduleSave();
 };
 $("buyCarBtn").onclick=async()=>{
  const home=nearestHome();
