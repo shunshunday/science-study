@@ -610,20 +610,20 @@ function advanceConstructions(){
  }
 }
 function advancePopulationLife(){
- if(gameElapsedMinutes%1440!==0||publicView)return;
+ if(gameElapsedMinutes%1440!==0||publicView)return;const cityHappiness=calc().happiness;
  for(const p of [...people]){
-  p.age=(Number(p.age)||18)+1/365;
+  p.age=(Number(p.age)||18)+1/365;p.group.scale.setScalar(p.age<13?.58:p.age<18?.78:1);
   if(p.age>78&&Math.random()<Math.min(.045,(p.age-75)*.001)){scene.remove(p.group);people=people.filter(x=>x!==p);addNews("住民が高齢のため亡くなりました。");continue;}
   if(p.age<25&&buildings.some(b=>["school","university"].includes(b.type)))p.education=Math.min(4,(p.education||0)+.006);
   if(p.age>=18&&p.job==="unemployed"&&p.home){const available=Object.entries(jobFacilityTypes).filter(([job,types])=>buildings.some(b=>types.includes(b.type)&&people.filter(x=>x.job===job).length<buildings.filter(v=>types.includes(v.type)).reduce((n,v)=>n+(defs[v.type].jobs||0),0))).map(([job])=>job);if(available.length)p.job=available[Math.floor(Math.random()*available.length)];}
-  if(calc().happiness<24&&Math.random()<.008){scene.remove(p.group);people=people.filter(x=>x!==p);addNews("生活環境の悪化により住民が転出しました。");}
+  if(cityHappiness<24&&Math.random()<.008){scene.remove(p.group);people=people.filter(x=>x!==p);addNews("生活環境の悪化により住民が転出しました。");}
  }
  if(people.length<120){
   const homes=buildings.filter(b=>(defs[b.type]?.housing||0)>0);
   for(const home of homes){
    const family=people.filter(p=>p.home===home),adults=family.filter(p=>p.age>=20&&p.age<=42).length,capacity=(defs[home.type].housing||0)*(home.level||1);
    if(adults>=2&&family.length<capacity&&Math.random()<.0035&&people.length<120){
-    const child=spawnPerson(people.length,"unemployed",{x:home.x+(Math.random()-.5),z:home.z+2+(Math.random()-.5)});child.home=home;child.age=0;child.education=0;child.money=0;child.routine="home";people.push(child);addNews("新しい子どもが誕生しました。人口が増えました。");break;
+    const child=spawnPerson(people.length,"unemployed",{x:home.x+(Math.random()-.5),z:home.z+2+(Math.random()-.5)});child.home=home;child.age=0;child.education=0;child.money=0;child.group.scale.setScalar(.58);child.routine="home";people.push(child);addNews("新しい子どもが誕生しました。人口が増えました。");break;
    }
   }
  }
