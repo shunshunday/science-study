@@ -1,13 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<rect width="128" height="128" rx="24" fill="#fff"/>
-<g fill="none" stroke-linecap="round" stroke-linejoin="round">
-<path d="M24 87 Q15 70 24 49 M104 87 Q113 70 104 49" stroke="#b88a3b" stroke-width="4"/>
-<path d="M21 72l-9-5m11-6-8-8m12-4-5-9m82 32 9-5m-11-6 8-8m-12-4 5-9" stroke="#b88a3b" stroke-width="3"/>
-<path d="M28 92 Q64 82 100 92" stroke="#b88a3b" stroke-width="3"/>
-<path d="M24 91 Q44 76 64 92 Q84 76 104 91 L104 103 Q84 88 64 104 Q44 88 24 103Z" fill="#16385e" stroke="#16385e" stroke-width="2"/>
-<path d="M64 92v12" stroke="#fff" stroke-width="2"/>
-<path d="M18 37 64 15 110 37 64 58Z" fill="#16385e" stroke="#16385e" stroke-width="2"/>
-<path d="M43 49v16q21 13 42 0V49" fill="#16385e" stroke="#16385e" stroke-width="2"/>
-<path d="M109 38v24" stroke="#b88a3b" stroke-width="3"/>
-<circle cx="109" cy="66" r="4" fill="#b88a3b" stroke="#b88a3b"/>
-</g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><rect width="128" height="128" rx="24" fill="#fff"/><image href="./rika-kids-logo.webp" width="128" height="88" y="20" preserveAspectRatio="xMidYMid meet"/></svg>
