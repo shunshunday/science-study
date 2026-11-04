@@ -974,26 +974,36 @@ function buildingAtPoint(x,z){
 function buildingAtPointer(e){
  const rect=renderer.domElement.getBoundingClientRect();
  if(!rect.width||!rect.height)return null;
- mouse.x=(e.clientX-rect.left)/rect.width*2-1;
- mouse.y=-(e.clientY-rect.top)/rect.height*2+1;
- raycaster.setFromCamera(mouse,camera);
- const hits=raycaster.intersectObjects(buildings.map(b=>b.group),true);
- if(hits.length){
-  let node=hits[0].object;
-  while(node&&!buildings.some(b=>b.group===node))node=node.parent;
-  const found=node?buildings.find(b=>b.group===node):null;
-  if(found)return found;
- }
- let nearest=null,nearestDistance=Infinity;
+ // 画面上の建物の投影範囲でクリック判定する。メッシュの当たり判定に依存しない。
+ camera.updateMatrixWorld(true);
+ const sx=e.clientX-rect.left,sy=e.clientY-rect.top;
+ let selectedBuilding=null,nearestDepth=Infinity;
  for(const b of buildings){
+  if(!b?.group)continue;
   b.group.updateWorldMatrix(true,true);
-  const bounds=new THREE.Box3().setFromObject(b.group),hit=new THREE.Vector3();
-  if(raycaster.ray.intersectBox(bounds,hit)){
-   const distance=raycaster.ray.origin.distanceTo(hit);
-   if(distance<nearestDistance){nearest=b;nearestDistance=distance;}
+  const bounds=new THREE.Box3().setFromObject(b.group);
+  if(bounds.isEmpty())continue;
+  const corners=[
+   new THREE.Vector3(bounds.min.x,bounds.min.y,bounds.min.z),
+   new THREE.Vector3(bounds.min.x,bounds.min.y,bounds.max.z),
+   new THREE.Vector3(bounds.min.x,bounds.max.y,bounds.min.z),
+   new THREE.Vector3(bounds.min.x,bounds.max.y,bounds.max.z),
+   new THREE.Vector3(bounds.max.x,bounds.min.y,bounds.min.z),
+   new THREE.Vector3(bounds.max.x,bounds.min.y,bounds.max.z),
+   new THREE.Vector3(bounds.max.x,bounds.max.y,bounds.min.z),
+   new THREE.Vector3(bounds.max.x,bounds.max.y,bounds.max.z)
+  ];
+  let left=Infinity,right=-Infinity,top=Infinity,bottom=-Infinity,depth=Infinity,visible=false;
+  for(const v of corners){
+   v.project(camera);
+   if(v.z>=-1&&v.z<=1)visible=true;
+   const x=(v.x*.5+.5)*rect.width,y=(-v.y*.5+.5)*rect.height;
+   left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);depth=Math.min(depth,v.z);
   }
+  if(!visible||sx<left-8||sx>right+8||sy<top-8||sy>bottom+8)continue;
+  if(depth<nearestDepth){nearestDepth=depth;selectedBuilding=b;}
  }
- return nearest;
+ return selectedBuilding;
 }
 function moveValidation(building,x,z,rotation=moveDraftRotation){
  if(!building||!buildings.includes(building))return "移動する施設を選択してください。";
