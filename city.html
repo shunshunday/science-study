@@ -906,7 +906,7 @@ function cacheVehiclePath(path){
     const a=data.path[i],b=data.path[i+1],dx=b.x-a.x,dz=b.z-a.z,road=roads.find(r=>r.x===b.x&&r.z===b.z);
     if(v.kind==="car"&&road?.trafficLight){
      const phase=Math.floor(cityTick/8)%2,horizontal=Math.abs(dx)>Math.abs(dz),green=horizontal?phase===0:phase===1,distanceToSignal=len-remain;
-     if(!green&&distanceToSignal<1.15&&distanceToSignal>=0){remain=Math.max(0,len-1.15);v.distance-=Math.max(0,v.distance-(v.distance-remain));}
+     if(!green&&distanceToSignal<1.15&&distanceToSignal>=0){const segmentStart=v.distance-remain;v.distance=Math.min(v.distance,segmentStart+Math.max(0,len-1.15));remain=Math.min(remain,Math.max(0,len-1.15));}
     }
     const t=len?remain/len:0;v.group.position.set(a.x+dx*t,v.kind==="train"?.06:.04,a.z+dz*t);v.group.rotation.y=Math.atan2(dx,dz)+(v.kind==="train"?Math.PI/2:v.kind==="car"?Math.PI:0);break;
    }remain-=len;
