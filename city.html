@@ -444,7 +444,7 @@ function makeBuilding(type,x,z,level=1){
    for(let i=0;i<3;i++)add(.12,.12,1.0,warning,-1.55+i*.18,.55,1.95);
    pipe([[-1.35,1.2,-1.25],[-1.35,.7,-.8],[-.7,.7,-.8]],.07);
    fence();
-  }else{
+  }else if(type==="solar"){
    // Solar farm: multiple tilted photovoltaic tables, support legs, inverters and transformer
    add(4.15,.22,3.85,concrete,0,.22,0);
    for(let row=0;row<3;row++)for(let col=0;col<3;col++){
@@ -462,6 +462,19 @@ function makeBuilding(type,x,z,level=1){
    for(let i=0;i<6;i++){const fin=new THREE.Mesh(new THREE.TorusGeometry(.38,.035,6,24),steel);fin.rotation.x=Math.PI/2;fin.position.set(1.25,.45+i*.13,1.5);g.add(fin);}
    pipe([[-1.45,1.25,1.55],[-1.45,1.55,.95],[-.35,1.55,.95],[1.25,1.15,.95]],.045,warning);
    fence();
+  }else{
+   // Resource industries and freight terminals use distinct industrial-scale structures.
+   const concrete=mat(0x777f80,.08,.9),metal=mat(0x667781,.72,.34),roof=mat(0x3b4b55,.38,.55),glassWall=mat(0x8db9bf,.28,.28),containerMats=[0x2f7185,0xb66b42,0x647f9a,0x8b9a69].map(c=>mat(c,.32,.55));
+   add(3.75,.22,3.75,concrete,0,.2,0);add(3.25,1.9,2.9,wall,0,1.28,-.15);add(3.4,.2,3.05,roof,0,2.35,-.15);add(1.05,1.45,.12,dark,0,1.0,1.34);
+   for(const x of [-1.1,1.1]){add(.62,.72,.08,glassWall,x,1.55,1.35);add(.08,1.85,.08,metal,x,1.25,1.42);}
+   for(let i=0;i<3;i++)add(.1,.65,.12,metal,-1.15+i*.18,.72,1.48);
+   if(type==="farm"){for(let row=0;row<2;row++){const greenhouse=new THREE.Mesh(new THREE.BoxGeometry(1.05,1.2,2.1),glassWall);greenhouse.position.set(-1.05+row*2.1,.9,-1.25);g.add(greenhouse);}cylinder(.55,.55,2.6,20,white,1.35,1.45,1.05);cylinder(.08,.08,.55,12,metal,1.35,3.0,1.05);}
+   else if(type==="forestry"||type==="lumbermill"){for(let row=0;row<3;row++)for(let k=0;k<3;k++){const log=new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,1.35,10),mat(0x805a37,.05,.9));log.rotation.z=Math.PI/2;log.position.set(-1.15+k*.72,.42+row*.34,-1.35+row*.85);g.add(log);}add(.75,1.35,.7,metal,1.25,.9,.85);}
+   else if(type==="mine"){for(let i=0;i<3;i++){const pile=new THREE.Mesh(new THREE.ConeGeometry(.72,1.0,7),mat(i===1?0x77736b:0x625f59,.08,.96));pile.position.set(-1.15+i*1.1,.55,-1.5);g.add(pile);}const conveyor=new THREE.Mesh(new THREE.BoxGeometry(.42,1.5,2.5),metal);conveyor.position.set(1.35,1.1,-.65);conveyor.rotation.x=-.35;g.add(conveyor);}
+   else if(type==="foodplant"||type==="steelworks"){for(let i=0;i<3;i++){cylinder(.42,.42,2.4,20,metal,-1.25+i*1.25,1.55,-1.2);cylinder(.1,.1,.6,12,warning,-1.25+i*1.25,3.0,-1.2);}if(type==="steelworks")for(const x of [-1.1,1.1])cylinder(.32,.42,3.2,16,dark,x,2.0,1.2);}
+   else if(type==="manufacturer"){for(let i=0;i<3;i++){add(.65,.85,.65,metal,-1.1+i*1.1,.7,-1.1);cylinder(.12,.12,1.1,10,warning,-1.1+i*1.1,1.7,-1.1);}add(3.1,.12,.5,metal,0,.55,1.55);}
+   else if(type==="cargoRail"||type==="seaport"||type==="cargoAirport"){for(let row=0;row<2;row++)for(let col=0;col<3;col++){const c=new THREE.Mesh(new THREE.BoxGeometry(.92,.65,.82),containerMats[(row*3+col)%containerMats.length]);c.position.set(-1.05+col*1.05,.62,-1.15+row*1.05);c.castShadow=true;g.add(c);}if(type==="cargoRail"){for(const z of [-1.45,-.75]){add(3.8,.09,.08,metal,0,.32,z);for(let i=0;i<8;i++)add(.14,.08,.18,dark,-1.7+i*.48,.22,z);}}if(type==="seaport"){add(3.8,.3,1.0,concrete,0,.28,1.85);for(const x of [-1.35,1.35]){add(.12,2.8,.12,warning,x,1.55,.75);add(1.7,.1,.12,metal,x+.7,2.85,.75);add(.1,1.7,.1,metal,x+1.45,2.0,.75);}}if(type==="cargoAirport")add(3.9,.08,1.0,concrete,0,.22,1.8);}
+   for(let i=0;i<4;i++)add(.07,.55,.07,metal,-1.55+i*1.03,.28,-1.78);
   }
   const beacon=new THREE.PointLight(d.color,1.35,12);beacon.position.y=h+1.2;g.add(beacon);keyLights.push(beacon);
  }
