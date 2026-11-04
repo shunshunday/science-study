@@ -554,6 +554,56 @@ function spawnPerson(i,job="unemployed",arrivalStart=null){
  const hairCap=new THREE.Mesh(new THREE.SphereGeometry(.176,18,10,0,Math.PI*2,0,Math.PI*.58),hair);hairCap.position.set(0,1.59,-.015);g.add(hairCap);
  for(const x of [-.055,.055]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.018,8,8),mat(0x17202a));eye.position.set(x,1.535,.148);g.add(eye);}
  const nose=new THREE.Mesh(new THREE.SphereGeometry(.022,8,8),skin);nose.position.set(0,1.49,.16);g.add(nose);
+ // 職業ごとの制服・帽子・識別マーク。遠目でも仕事が分かるシルエットにする
+ const uniformMat=(color,metal=.12)=>mat(color,metal,.52);
+ const uniformBox=(w,h,d,m,x,y,z)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=true;g.add(o);return o;};
+ const uniformSphere=(r,m,x,y,z,sx=1,sy=1,sz=1)=>{const o=new THREE.Mesh(new THREE.SphereGeometry(r,12,10),m);o.position.set(x,y,z);o.scale.set(sx,sy,sz);g.add(o);return o;};
+ const uniformCyl=(rt,rb,h,m,x,y,z)=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,12),m);o.position.set(x,y,z);o.castShadow=true;g.add(o);return o;};
+ const navy=uniformMat(0x172c45),whiteUniform=uniformMat(0xf4f6f2),gold=uniformMat(0xf2c65c,.55),red=uniformMat(0xc92f32),reflect=uniformMat(0xf5d64d,.25),black=uniformMat(0x17202a);
+ // 基本の上着を重ね、職業ごとに特徴的な装備を追加
+ uniformBox(.31,.48,.075,shirt,0,1.04,.174);
+ if(job==="doctor"||job==="researcher"){
+  uniformBox(.105,.48,.035,whiteUniform,-.105,1.04,.218);uniformBox(.105,.48,.035,whiteUniform,.105,1.04,.218);
+  uniformBox(.045,.22,.018,red,.105,1.13,.241);
+  uniformBox(.13,.045,.025,whiteUniform,0,1.29,.22);
+  if(job==="doctor"){const tube=uniformCyl(.014,.014,.34,black,.105,1.02,.245);tube.rotation.z=-.3;uniformSphere(.035,gold,.105,.84,.25);}
+  else {uniformBox(.28,.055,.035,uniformMat(0x43b7d0),0,.91,.222);}
+ }else if(job==="policeofficer"){
+  uniformBox(.29,.045,.025,gold,0,1.15,.22);uniformBox(.09,.09,.025,gold,0,1.08,.226);
+  uniformCyl(.205,.205,.075,navy,0,1.75,0);uniformBox(.35,.045,.24,navy,0,1.72,0);
+  uniformBox(.07,.07,.025,gold,0,1.1,.244);
+ }else if(job==="firefighter"){
+  uniformBox(.34,.075,.035,reflect,0,.99,.22);uniformBox(.34,.045,.035,reflect,0,.79,.19);
+  uniformCyl(.19,.19,.12,red,0,1.75,0);uniformBox(.34,.035,.25,gold,0,1.72,0);
+  uniformBox(.11,.08,.025,gold,0,1.12,.24);
+ }else if(job==="chef"){
+  uniformBox(.34,.38,.055,whiteUniform,0,1.04,.205);uniformBox(.12,.2,.025,whiteUniform,0,1.25,.24);
+  uniformCyl(.105,.105,.12,whiteUniform,0,1.76,0);uniformSphere(.09,whiteUniform,0,1.84,0,1.25,.8,1.1);
+  uniformBox(.34,.25,.045,uniformMat(0x29313b),0,.88,.22);
+ }else if(job==="shop"||job==="hotelstaff"){
+  const apron=uniformMat(job==="shop"?0x9a552d:0x292d50);
+  uniformBox(.3,.36,.045,apron,0,.94,.22);uniformBox(.13,.045,.025,gold,0,1.2,.245);
+  if(job==="shop"){uniformCyl(.17,.17,.045,uniformMat(0x9a552d),0,1.72,0);uniformBox(.34,.035,.2,uniformMat(0x9a552d),0,1.69,0);}
+  else {uniformBox(.13,.08,.025,gold,0,1.12,.25);uniformBox(.08,.08,.025,whiteUniform,0,1.25,.24);}
+ }else if(job==="engineer"||job==="factoryworker"){
+  const hi=job==="engineer"?reflect:uniformMat(0xf08a32);
+  uniformBox(.34,.43,.045,hi,0,1.04,.205);uniformBox(.055,.43,.02,whiteUniform,-.1,1.04,.235);uniformBox(.055,.43,.02,whiteUniform,.1,1.04,.235);
+  uniformCyl(.19,.19,.12,uniformMat(job==="engineer"?0x2f9b70:0xe9a12d),0,1.75,0);
+  uniformBox(.38,.035,.25,gold,0,1.69,0);
+ }else if(job==="officeworker"||job==="teacher"||job==="researcher"){
+  uniformBox(.075,.26,.025,whiteUniform,0,1.15,.235);
+  uniformBox(.045,.2,.025,uniformMat(job==="teacher"?0x7b4aa8:0xb52d39),0,1.05,.253);
+  if(job==="teacher"){uniformBox(.32,.08,.04,uniformMat(0x7b4aa8),0,.82,.2);}
+ }else if(job==="airportstaff"){
+  uniformBox(.34,.08,.035,reflect,0,.98,.22);uniformBox(.09,.12,.025,gold,0,1.12,.24);
+  uniformCyl(.18,.18,.06,navy,0,1.75,0);uniformBox(.34,.035,.22,navy,0,1.72,0);
+ }else if(job==="sportsstaff"){
+  uniformBox(.34,.07,.035,whiteUniform,0,1.02,.22);uniformBox(.08,.3,.025,whiteUniform,0,1.04,.24);
+  uniformBox(.24,.06,.025,gold,0,1.22,.24);
+ }else{
+  // 無職も私服としてジャケットとスニーカーを着用
+  uniformBox(.32,.28,.035,uniformMat(0x244b70),0,.91,.2);
+ }
  const limbs=[];
  for(const side of [-1,1]){
   const armPivot=new THREE.Group();armPivot.position.set(side*.22,1.23,0);g.add(armPivot);
