@@ -1,0 +1,1 @@
+{"name":"rika-kids-city-builder","private":true,"version":"1.0.0","description":"Browser smoke tests for the Rika Kids city builder","scripts":{"test:city":"playwright test"},"devDependencies":{"@playwright/test":"^1.56.0"}}
