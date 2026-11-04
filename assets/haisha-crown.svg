@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 270" role="img" aria-label="覇者の金冠">
+<defs>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff5c8"/><stop offset=".22" stop-color="#f6ca58"/><stop offset=".48" stop-color="#9c5b08"/><stop offset=".68" stop-color="#ffe18a"/><stop offset="1" stop-color="#9a5a0a"/></linearGradient>
+ <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff5c7"/><stop offset=".45" stop-color="#d99b24"/><stop offset="1" stop-color="#6f3b05"/></linearGradient>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<ellipse cx="180" cy="235" rx="124" ry="10" fill="#000" opacity=".38" filter="url(#shadow)"/>
+<g stroke="#7c4507" stroke-width="2.8" stroke-linejoin="round">
+ <path fill="url(#gold)" d="M180 14 211 60 194 83 166 83 149 60Z"/>
+ <path fill="url(#edge)" d="M180 24 196 59 180 73 164 59Z"/>
+ <path fill="url(#gold)" d="M180 73 C155 53 139 62 128 82 C111 52 83 56 67 83 C48 72 27 89 28 115 C31 152 55 178 81 190 L279 190 C305 178 329 152 332 115 C333 89 312 72 293 83 C277 56 249 52 232 82 C221 62 205 53 180 73Z"/>
+ <path fill="#2b1607" d="M180 86 C151 64 143 93 151 125 L159 174 201 174 209 125 C217 93 209 64 180 86Z"/>
+ <path fill="#2b1607" d="M85 92 C61 76 50 100 61 130 L83 174 119 174 111 128 C107 108 100 98 85 92Z"/>
+ <path fill="#2b1607" d="M275 92 C299 76 310 100 299 130 L277 174 241 174 249 128 C253 108 260 98 275 92Z"/>
+ <path fill="none" stroke="url(#edge)" stroke-width="8" d="M180 78 C150 48 129 74 137 111 L151 177 M180 78 C210 48 231 74 223 111 L209 177 M67 87 C39 72 30 106 49 140 L77 177 M293 87 C321 72 330 106 311 140 L283 177"/>
+ <path fill="url(#gold)" d="M38 174 Q180 198 322 174 L311 210 Q180 229 49 210Z"/>
+ <path fill="url(#edge)" d="M49 204 Q180 225 311 204 L307 225 Q180 247 53 225Z"/>
+</g>
+<path d="M44 181 Q180 207 316 181" fill="none" stroke="#fff1b3" stroke-width="4"/>
+<g fill="#fff1b3" stroke="#9a5a0a" stroke-width="2">
+ <path d="m91 186 10-13 10 13-10 13Z"/><circle cx="133" cy="191" r="5"/><path d="m180 181 15 15-15 15-15-15Z"/><circle cx="227" cy="191" r="5"/><path d="m249 186 10-13 10 13-10 13Z"/>
+</g>
+</svg>
