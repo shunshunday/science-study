@@ -28,8 +28,8 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
 .left{left:16px;top:auto;bottom:78px;width:min(560px,calc(100vw - 32px));max-height:58vh;transform:translateY(calc(100% + 100px));transition:transform .22s ease;z-index:24;padding:14px 16px 16px}
 .build-open .left{transform:translateY(0)}
 .left h2{display:flex;align-items:center;justify-content:space-between}
-#cityDock{position:fixed;z-index:25;left:16px;bottom:14px;display:flex;gap:6px;max-width:calc(100vw - 32px);padding:7px;background:#071827ed;border:1px solid #31516a;border-radius:14px;box-shadow:0 8px 28px #0008;overflow-x:auto;backdrop-filter:blur(8px)}
-#cityDock button{white-space:nowrap;font-size:12px;padding:10px 13px}
+#cityDock{position:fixed;z-index:1000;pointer-events:auto;isolation:isolate;left:16px;bottom:14px;display:flex;gap:6px;max-width:calc(100vw - 32px);padding:7px;background:#071827ed;border:1px solid #31516a;border-radius:14px;box-shadow:0 8px 28px #0008;overflow-x:auto;backdrop-filter:blur(8px)}
+#cityDock button{pointer-events:auto;position:relative;z-index:1;white-space:nowrap;font-size:12px;padding:10px 13px}
 #cityDock button.active{background:#0b6479;border-color:var(--cyan)}
 .build-category{display:none}.build-category.active{display:block}
 .build-category .tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:7px}
