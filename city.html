@@ -653,9 +653,29 @@ function setTool(t){if(t!=="move"){cancelPendingMove();}selected=t;document.quer
 function notice(s){$("notice").textContent=s;$("notice").classList.remove("hidden");clearTimeout(notice.timer);notice.timer=setTimeout(()=>$("notice").classList.add("hidden"),3000);}
 document.querySelectorAll("[data-tool]").forEach(b=>b.addEventListener("click",()=>setTool(b.dataset.tool)));
 function findAt(x,z){return buildings.find(b=>Math.abs(b.x-x)<2&&Math.abs(b.z-z)<2)||roads.find(r=>r.x===x&&r.z===z)||transit.find(t=>Math.abs(t.x-x)<2&&Math.abs(t.z-z)<2);}
-function moveValidation(building,x,z){
+function buildingBounds(type,x,z,rotation=0,level=1,source=null){
+ const group=source?source.group.clone(true):makeBuilding(type,x,z,level).group;
+ group.position.set(x,0,z);group.rotation.y=rotation;group.updateMatrixWorld(true);
+ const bounds=new THREE.Box3().setFromObject(group);
+ if(!source){
+  scene.remove(group);
+  group.traverse(o=>{if(o.isMesh){o.geometry?.dispose();const materials=Array.isArray(o.material)?o.material:[o.material];materials.forEach(m=>{if(m.map)m.map.dispose();m.dispose();});}else if(o.isSprite){o.material?.map?.dispose();o.material?.dispose();}});
+ }
+ return bounds;
+}
+function footprintsOverlap(a,b,gap=.35){
+ return a.min.x<b.max.x-gap&&a.max.x>b.min.x+gap&&a.min.z<b.max.z-gap&&a.max.z>b.min.z+gap;
+}
+function buildingAtPoint(x,z){
+ return buildings.find(b=>{
+  const bounds=buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b);
+  return x>=bounds.min.x-.15&&x<=bounds.max.x+.15&&z>=bounds.min.z-.15&&z<=bounds.max.z+.15;
+ })||null;
+}
+function moveValidation(building,x,z,rotation=moveDraftRotation){
  if(!building||!buildings.includes(building))return "移動する施設を選択してください。";
- if(buildings.some(b=>b!==building&&Math.abs(b.x-x)<3.2&&Math.abs(b.z-z)<3.2))return "そこには別の施設があります。";
+ const candidate=buildingBounds(building.type,x,z,rotation,building.level||1,building);
+ if(buildings.some(b=>b!==building&&footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "別の建物の敷地と重なっています。建物が重ならない場所を選んでください。";
  if(building.type==="airport"){
   if(buildings.some(b=>b!==building&&b.type!=="airport"&&overlapsAirportRunway(b.x,b.z,x,z)))return "滑走路に既存の建物が重なります。別の場所を選んでください。";
  }else if(isAirportRunwayBlocked(x,z))return "滑走路内には移動できません。";
@@ -677,7 +697,7 @@ function renderMovePreview(){
  const p=pendingMove?{x:pendingMove.x,z:pendingMove.z,rotation:pendingMove.rotation}:movePreviewPoint;
  if(!p)return;
  const rotation=pendingMove?pendingMove.rotation:moveDraftRotation;
- const problem=moveValidation(selectedObject,p.x,p.z);movePreviewValid=!problem;
+ const problem=moveValidation(selectedObject,p.x,p.z,rotation);movePreviewValid=!problem;
  moveGhost.position.set(p.x,.65,p.z);moveGhost.rotation.y=rotation;
  moveMarker.position.set(p.x,.055,p.z);moveMarker.rotation.z=0;
  moveMarker.material.color.set(movePreviewValid?0x35e58a:0xff4055);
@@ -707,7 +727,7 @@ function cancelPendingMove(){
 }
 function confirmPendingMove(){
  if(!pendingMove)return notice("先に移動先をクリックしてください。");
- const {building,x,z,rotation}=pendingMove,problem=moveValidation(building,x,z);
+ const {building,x,z,rotation}=pendingMove,problem=moveValidation(building,x,z,rotation);
  if(problem)return notice(problem);
  building.x=x;building.z=z;building.rotation=rotation;building.group.position.set(x,0,z);building.group.rotation.y=rotation;
  pendingMove=null;selectedObject=null;moveDraftRotation=0;hideMovePreview();showMoveControls();assignWorkplaces();updateUI();scheduleSave();notice("施設の位置と向きを変更しました。続けて別の施設も移動できます。");
@@ -732,7 +752,8 @@ async function addBuilding(type,x,z){
  if(type==="airport"&&buildings.some(b=>b.type==="airport"))return notice("空港は都市に1か所だけ設置できます。");
  if(type!=="airport"&&isAirportRunwayBlocked(x,z))return notice("滑走路内には建物を建設できません。");
  if(type==="airport"&&buildings.some(b=>b.type!=="airport"&&overlapsAirportRunway(b.x,b.z,x,z)))return notice("建設予定の滑走路に既存の建物があります。別の場所を選んでください。");
- if(buildings.some(b=>Math.abs(b.x-x)<3.2&&Math.abs(b.z-z)<3.2))return notice("そこには別の施設があります。");
+ const candidateBounds=buildingBounds(type,x,z,0,1);
+ if(buildings.some(b=>footprintsOverlap(candidateBounds,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return notice("建物の敷地が重なっています。別の場所を選んでください。");
  const isFreeAirport=type==="airport"&&!buildings.some(b=>b.type==="airport");
  if(!isFreeAirport&&!(await charge(d.cost)))return;
  buildings.push(makeBuilding(type,x,z));assignWorkplaces();notice(d.name+"を建設しました。");updateUI();scheduleSave();
@@ -749,8 +770,8 @@ renderer.domElement.addEventListener("pointerup",e=>{
  const p=gridPos(hits[0].point);
  if(selected==="move"){
   if(pendingMove){notice("先に「決定」または「キャンセル」を押してください。");return;}
-  if(!selectedObject){selectedObject=buildings.find(b=>Math.abs(b.x-p.x)<3&&Math.abs(b.z-p.z)<3)||null;if(selectedObject){moveDraftRotation=Number(selectedObject.rotation)||0;prepareMovePreview(selectedObject);showMoveControls();notice(defs[selectedObject.type].name+"を選択しました。移動先をクリックするか、↻で向きを変更できます。");}else notice("移動したい施設をクリックしてください。");return;}
-  const problem=moveValidation(selectedObject,p.x,p.z);if(problem)return notice(problem);
+  if(!selectedObject){selectedObject=buildingAtPoint(p.x,p.z);if(selectedObject){moveDraftRotation=Number(selectedObject.rotation)||0;prepareMovePreview(selectedObject);showMoveControls();notice(defs[selectedObject.type].name+"を選択しました。移動先をクリックするか、↻で向きを変更できます。");}else notice("移動したい施設をクリックしてください。");return;}
+  const problem=moveValidation(selectedObject,p.x,p.z,moveDraftRotation);if(problem)return notice(problem);
   pendingMove={building:selectedObject,x:p.x,z:p.z,rotation:moveDraftRotation};movePreviewPoint={x:p.x,z:p.z};showMoveControls();notice("移動先を仮設定しました。半透明の建物と地面の色を確認して「決定」を押してください。");return;
  }
  if(selected==="select"){selectedObject=buildings.find(b=>Math.abs(b.x-p.x)<3&&Math.abs(b.z-p.z)<3)||transit.find(t=>Math.abs(t.x-p.x)<2&&Math.abs(t.z-p.z)<2)||null;notice(selectedObject?(selectedObject.type in defs?defs[selectedObject.type].name:({rail:"線路",station:"駅",busstop:"バス停"})[selectedObject.type])+"を選択中":"施設を選択してください。");return;}
