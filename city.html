@@ -666,6 +666,16 @@ function buildingBounds(type,x,z,rotation=0,level=1,source=null){
 function footprintsOverlap(a,b,gap=.35){
  return a.min.x<b.max.x-gap&&a.max.x>b.min.x+gap&&a.min.z<b.max.z-gap&&a.max.z>b.min.z+gap;
 }
+function roadBounds(x,z){
+ const half=0.95;
+ return new THREE.Box3(new THREE.Vector3(x-half,0,z-half),new THREE.Vector3(x+half,1,z+half));
+}
+function roadOverlapsBounds(x,z,bounds){
+ return footprintsOverlap(roadBounds(x,z),bounds,0);
+}
+function roadsOverlapBuilding(bounds,ignoreRoad=null){
+ return roads.some(r=>r!==ignoreRoad&&roadOverlapsBounds(r.x,r.z,bounds));
+}
 function buildingAtPoint(x,z){
  return buildings.find(b=>{
   const bounds=buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b);
@@ -676,6 +686,7 @@ function moveValidation(building,x,z,rotation=moveDraftRotation){
  if(!building||!buildings.includes(building))return "移動する施設を選択してください。";
  const candidate=buildingBounds(building.type,x,z,rotation,building.level||1,building);
  if(buildings.some(b=>b!==building&&footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "別の建物の敷地と重なっています。建物が重ならない場所を選んでください。";
+ if(roadsOverlapBuilding(candidate))return "道路と重なっています。道路のない場所を選んでください。";
  if(building.type==="airport"){
   if(buildings.some(b=>b!==building&&b.type!=="airport"&&overlapsAirportRunway(b.x,b.z,x,z)))return "滑走路に既存の建物が重なります。別の場所を選んでください。";
  }else if(isAirportRunwayBlocked(x,z))return "滑走路内には移動できません。";
@@ -744,7 +755,14 @@ $("cancelMoveBtn").onclick=()=>{cancelPendingMove();notice("移動をキャン�
 
 async function charge(cost){if(!user){notice("ログインしてから購入してください。");return false;}const {data,error}=await supabase.rpc("spend_city_cash",{p_amount:cost});if(error){notice(error.message==="資金が足りません"?"資金が足りません。":"購入処理に失敗しました: "+error.message);await refreshWallet();return false;}cash=Number(data);updateUI();return true;}
 async function refreshWallet(){if(!user)return;const {data,error}=await supabase.rpc("get_city_wallet");if(error){notice("所持金を読み込めません: "+error.message);return;}const wallet=Array.isArray(data)?data[0]:data;cash=Number(wallet?.balance||0);updateUI();}
-async function addRoad(x,z){if(roads.some(r=>r.x===x&&r.z===z))return;if(!(await charge(250)))return;roads.push(makeRoad(x,z));updateUI();scheduleSave();}
+async function addRoad(x,z){
+ if(roads.some(r=>r.x===x&&r.z===z))return;
+ const tile=roadBounds(x,z);
+ if(buildings.some(b=>roadOverlapsBounds(x,z,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return notice("道路が建物・空港の敷地と重なります。別の場所を選んでください。");
+ if(isAirportRunwayBlocked(x,z))return notice("滑走路内には道路を敷設できません。");
+ if(!(await charge(250)))return;
+ roads.push(makeRoad(x,z));updateUI();scheduleSave();
+}
 function overlapsAirportRunway(x,z,airportX,airportZ){
  const localX=Math.abs(x-airportX),localZ=z-airportZ;
  // 空港モデルは0.6倍。滑走路の幅8・長さ46を基準に、建物の敷地分も余白に含める。
@@ -760,6 +778,7 @@ async function addBuilding(type,x,z){
  if(type==="airport"&&buildings.some(b=>b.type!=="airport"&&overlapsAirportRunway(b.x,b.z,x,z)))return notice("建設予定の滑走路に既存の建物があります。別の場所を選んでください。");
  const candidateBounds=buildingBounds(type,x,z,0,1);
  if(buildings.some(b=>footprintsOverlap(candidateBounds,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return notice("建物の敷地が重なっています。別の場所を選んでください。");
+ if(roadsOverlapBuilding(candidateBounds))return notice("道路と建物の敷地が重なっています。道路のない場所を選んでください。");
  const isFreeAirport=type==="airport"&&!buildings.some(b=>b.type==="airport");
  if(!isFreeAirport&&!(await charge(d.cost)))return;
  buildings.push(makeBuilding(type,x,z));assignWorkplaces();notice(d.name+"を建設しました。");updateUI();scheduleSave();
