@@ -100,7 +100,7 @@ function gridPos(p){return {x:Math.round(p.x/cell)*cell,z:Math.round(p.z/cell)*c
 function mat(color,metal=.25,rough=.35,emissive=0){return new THREE.MeshStandardMaterial({color,metalness:metal,roughness:rough,emissive,emissiveIntensity:.6});}
 function box(parent,w,h,d,material,x=0,y=h/2,z=0){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
 function makeBuilding(type,x,z,level=1){
- const d=defs[type],g=new THREE.Group();g.position.set(x,0,z);g.userData={type,level};const body=mat(d.color,.48,.27),glass=mat(0x9cecff,.7,.16,0x164d69),dark=mat(0x132d43,.6,.3),glow=mat(0x38ddff,.3,.2,0x21bddd);
+ const d=defs[type],g=new THREE.Group();g.position.set(x,0,z);g.userData={type,level};g.scale.setScalar(1+(level-1)*.08);const body=mat(d.color,.48,.27),glass=mat(0x9cecff,.7,.16,0x164d69),dark=mat(0x132d43,.6,.3),glow=mat(0x38ddff,.3,.2,0x21bddd);
  box(g,3.1,.35,3.1,dark,0,.18,0);
  if(type==="home"||type==="tower"||type==="shop"||type==="hospital"||type==="school"||type==="park"){
   let h=type==="home"?3.3:type==="tower"?12:type==="shop"?5:type==="hospital"?7:type==="school"?6:4;
@@ -153,6 +153,6 @@ async function loadCity(){const {data:{session}}=await supabase.auth.getSession(
 async function saveCity(){if(!user){notice("クラウド保存にはログインが必要です。");return;}const state={cash,roads:roads.map(r=>({x:r.x,z:r.z})),buildings:buildings.map(b=>({type:b.type,x:b.x,z:b.z,level:b.level})),version:1};const {error}=await supabase.from("city_saves").upsert({user_id:user.id,city_state:state,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(error){notice("保存に失敗しました: "+error.message);return;}notice("都市データをクラウドに保存しました。");}
 function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveCity,1200);}
 $("saveBtn").onclick=saveCity;
-await loadCity();updateUI();animate(); 
+await loadCity();updateUI(); 
 </script>
 </body></html>
