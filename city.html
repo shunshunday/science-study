@@ -187,7 +187,28 @@ async function charge(cost){if(!user){notice("ログインしてから購入し�
 async function refreshWallet(){if(!user)return;const {data,error}=await supabase.rpc("get_city_wallet");if(error){notice("所持金を読み込めません: "+error.message);return;}const wallet=Array.isArray(data)?data[0]:data;cash=Number(wallet?.balance||0);updateUI();}
 async function addRoad(x,z){if(roads.some(r=>r.x===x&&r.z===z))return;if(!(await charge(500)))return;roads.push(makeRoad(x,z));updateUI();scheduleSave();}
 async function addBuilding(type,x,z){const d=defs[type];if(buildings.some(b=>Math.abs(b.x-x)<3.2&&Math.abs(b.z-z)<3.2))return notice("そこには別の施設があります。");const count=buildings.filter(b=>b.type===type).length;if(type==="fusion"&&count===0&&buildings.length<3)return notice("核融合炉は都市レベル2（施設3棟）で解放されます。");if(!(await charge(d.cost)))return;buildings.push(makeBuilding(type,x,z));notice(d.name+"を建設しました。");updateUI();scheduleSave();}
-renderer.domElement.addEventListener("pointerdown",e=>{if(e.button!==0)return;const rect=renderer.domElement.getBoundingClientRect();mouse.x=(e.clientX-rect.left)/rect.width*2-1;mouse.y=-(e.clientY-rect.top)/rect.height*2+1;raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObject(floor);if(!hits.length)return;const p=gridPos(hits[0].point);if(selected==="select"){selectedObject=buildings.find(b=>Math.abs(b.x-p.x)<2&&Math.abs(b.z-p.z)<2)||null;notice(selectedObject?defs[selectedObject.type].name+"（Lv."+selectedObject.level+"）を選択中":"施設を選択してください。");return;}if(selected==="road")addRoad(p.x,p.z);else if(selected==="remove"){const item=findAt(p.x,p.z);if(!item)return;if(item.group)scene.remove(item.group);if(item.type)buildings=buildings.filter(b=>b!==item);else roads=roads.filter(r=>r!==item);selectedObject=null;updateUI();scheduleSave();}else addBuilding(selected,p.x,p.z);});
+let placementPointer=null;
+renderer.domElement.addEventListener("pointerdown",e=>{if(e.button!==0)return;placementPointer={id:e.pointerId,x:e.clientX,y:e.clientY};});
+renderer.domElement.addEventListener("pointerup",e=>{
+ if(!placementPointer||placementPointer.id!==e.pointerId)return;
+ const start=placementPointer;placementPointer=null;
+ if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>6)return;
+ const rect=renderer.domElement.getBoundingClientRect();mouse.x=(e.clientX-rect.left)/rect.width*2-1;mouse.y=-(e.clientY-rect.top)/rect.height*2+1;
+ raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObject(floor);if(!hits.length)return;
+ const p=gridPos(hits[0].point);
+ if(selected==="select"){selectedObject=buildings.find(b=>Math.abs(b.x-p.x)<2&&Math.abs(b.z-p.z)<2)||null;notice(selectedObject?defs[selectedObject.type].name+"（Lv."+selectedObject.level+"）を選択中":"施設を選択してください。");return;}
+ if(selected==="road"){addRoad(p.x,p.z);return;}
+ if(selected==="remove"){
+  const item=findAt(p.x,p.z);if(!item)return;
+  const refund=item.type?Math.floor((defs[item.type].cost+Array.from({length:Math.max(0,item.level-1)},(_,i)=>Math.round(defs[item.type].cost*(.55+(i+1)*.35))).reduce((a,b)=>a+b,0))/2):250;
+  (async()=>{if(user){try{const {data,error}=await supabase.rpc("refund_city_cash",{p_amount:refund});if(error)throw error;cash=Number(data);}catch(err){notice("返金に失敗したため撤去を中止しました: "+err.message);await refreshWallet();return;}}else{notice("返金・撤去にはログインが必要です。");return;}
+   if(item.group)scene.remove(item.group);if(item.type)buildings=buildings.filter(b=>b!==item);else roads=roads.filter(r=>r!==item);
+   if(selectedObject===item)selectedObject=null;updateUI();scheduleSave();notice("撤去しました。$"+refund.toLocaleString("en-US")+"（費用の50%）を返金しました。");
+  })();return;
+ }
+ addBuilding(selected,p.x,p.z);
+});
+renderer.domElement.addEventListener("pointercancel",()=>{placementPointer=null;});
 $("upgradeBtn").onclick=async()=>{if(!selectedObject){notice("「選択」ツールで施設をクリックしてください。");return;}const cost=Math.round(defs[selectedObject.type].cost*(.55+selectedObject.level*.35));if(!(await charge(cost)))return;const old=selectedObject;scene.remove(old.group);const next=makeBuilding(old.type,old.x,old.z,old.level+1);buildings[buildings.indexOf(old)]=next;selectedObject=next;notice(defs[next.type].name+"をレベル"+next.level+"に強化しました。");updateUI();scheduleSave();};
 
 $("resetBtn").onclick=async()=>{if(!confirm("この都市の建物・道路・資産を初期状態に戻します。よろしいですか？"))return;buildings.forEach(b=>scene.remove(b.group));roads.forEach(r=>scene.remove(r.group));buildings=[];roads=[];cars.forEach(v=>scene.remove(v.group));people.forEach(v=>scene.remove(v.group));cars=[];people=[];await refreshWallet();updateUI();await saveCity();notice("都市を初期化しました。");};
