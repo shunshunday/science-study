@@ -69,9 +69,9 @@ footer{background:#fff;border-top:1px solid var(--line);color:#8a968e}.footer-in
    <h2 id="profileHeading">マイプロフィール</h2>
    <div class="profile-honors">✦ SCIENCE HONORS · NOBEL LEVEL ✦</div>
    <div class="profile-user"><div class="profile-avatar">理</div><div><strong id="profileUsername">ユーザー</strong><small>理科キッズ メンバー</small></div></div>
-   <div class="profile-score"><strong id="profileMoney">$0</strong><span>累計獲得資金</span></div>
+   <div class="profile-score"><strong id="profileMoney">$0</strong><span>資産（都市の所持金）</span></div>
    <div class="profile-rank"><span>現在の称号</span><strong id="profileRank">理科ビギナー</strong></div>
-   <p class="profile-caption">クイズ正解1問につき累計獲得資金が$100増えます。街づくりで使った資金は累計獲得資金から減りません。</p>
+   <p class="profile-caption">都市の所持金を表示します。街づくりで使った資金や返金も反映されます。</p>
    <a class="auth-submit" style="display:block;text-align:center;text-decoration:none" href="profile.html">プロフィールページを開く</a>
    <a class="profile-page-link" href="./profile.html">マイページを開く</a><button class="auth-submit" id="logoutButton" type="button">ログアウト</button>
    <p class="auth-message" id="profileMessage" role="status"></p>
@@ -711,7 +711,7 @@ async function refreshAccount(){
  const walletResult=await supabaseClient.rpc('get_city_wallet');
  if(walletResult.error)throw walletResult.error;
  const wallet=Array.isArray(walletResult.data)?walletResult.data[0]:walletResult.data;
- document.getElementById('profileMoney').textContent='$'+Number(wallet?.lifetime_earned||count*100).toLocaleString('en-US');
+ document.getElementById('profileMoney').textContent='$'+Number(wallet?.balance||0).toLocaleString('en-US');
  document.getElementById('profileRank').textContent=scienceTitle(count);
  profileView.classList.toggle('profile-view-nobel',count>=500&&count<1000);profileView.classList.toggle('profile-view-haki',count>=1000);
 }
@@ -747,7 +747,7 @@ async function saveCorrectAnswer(unit){
   ]);
   if(profileError)throw profileError;if(walletError)throw walletError;
   const count=Number(profile?.correct_count||0),wallet=Array.isArray(walletData)?walletData[0]:walletData;
-  document.getElementById('profileMoney').textContent='$'+Number(wallet?.lifetime_earned||count*100).toLocaleString('en-US');
+  document.getElementById('profileMoney').textContent='$'+Number(wallet?.balance||0).toLocaleString('en-US');
   document.getElementById('profileRank').textContent=scienceTitle(count);
   profileView.classList.toggle('profile-view-nobel',count>=500&&count<1000);profileView.classList.toggle('profile-view-haki',count>=1000);
   return true;
