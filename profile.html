@@ -290,7 +290,7 @@ async function refreshProfile(){
   showStatus("ログイン状態を確認しています…");
   const session=await ensureSession();
   startProfilePlaytime(session.user.id);
-  const rows=await api("/rest/v1/profiles?select=username,correct_count,avatar_url,playtime_seconds&id=eq."+encodeURIComponent(session.user.id),{method:"GET",cache:"no-store",headers:{"Cache-Control":"no-cache"}});
+  const rows=await api("/rest/v1/profiles?select=username,avatar_url,playtime_seconds&id=eq."+encodeURIComponent(session.user.id),{method:"GET",cache:"no-store",headers:{"Cache-Control":"no-cache"}});
   const data=Array.isArray(rows)?rows[0]:null;
   if(!data)throw new Error("プロフィール情報が見つかりません。");
   document.getElementById("username").textContent=data.username||"ユーザー";
