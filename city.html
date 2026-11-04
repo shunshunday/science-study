@@ -79,7 +79,7 @@ const $=id=>document.getElementById(id);
 const supabase=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
 const publicView=new URLSearchParams(location.search).get("view")==="1";if(publicView)document.body.classList.add("public-view");
 let user=null, cash=0, selected="road", buildings=[], roads=[], cars=[], people=[], transit=[], transitVehicles=[], trainCount=0, busCount=0, aircraftArrivals=[], parkedAircraft=0, cityTick=0, saveTimer=null, selectedObject=null, pendingMove=null;
-let moveGhost=null,moveMarker=null,moveMarkerOutline=null,movePreviewPoint=null,movePreviewValid=false;
+let moveGhost=null,moveMarker=null,moveMarkerOutline=null,movePreviewPoint=null,movePreviewValid=false,moveDraftRotation=0;
 const defs={
  home:{name:"未来住宅",cost:4000,power:2,housing:12,color:0x35b8d5,kind:"res"},
  tower:{name:"超高層住宅",cost:14000,power:12,housing:65,color:0x357bd5,kind:"res"},
@@ -676,7 +676,7 @@ function renderMovePreview(){
  if(!selectedObject||!moveGhost)return;
  const p=pendingMove?{x:pendingMove.x,z:pendingMove.z,rotation:pendingMove.rotation}:movePreviewPoint;
  if(!p)return;
- const rotation=pendingMove?pendingMove.rotation:(Number(selectedObject.rotation)||0);
+ const rotation=pendingMove?pendingMove.rotation:moveDraftRotation;
  const problem=moveValidation(selectedObject,p.x,p.z);movePreviewValid=!problem;
  moveGhost.position.set(p.x,.65,p.z);moveGhost.rotation.y=rotation;
  moveMarker.position.set(p.x,.055,p.z);moveMarker.rotation.z=0;
@@ -695,11 +695,11 @@ renderer.domElement.addEventListener("pointermove",updateMovePreviewPointer);
 function showMoveControls(){
  const active=!!selectedObject;$("moveControls").classList.toggle("hidden",!active);
  if(!active){$("moveProgress").className="move-progress";$("moveProgress").textContent="施設を選択すると、移動プレビューを表示します。";return;}
- const rotation=pendingMove?pendingMove.rotation:(Number(selectedObject.rotation)||0);
+ const rotation=pendingMove?pendingMove.rotation:moveDraftRotation;
  $("moveTargetName").textContent=defs[selectedObject.type].name+" の移動";
  $("moveAngle").textContent="向き："+Math.round(rotation*180/Math.PI)%360+"°";
  $("confirmMoveBtn").disabled=!pendingMove||!movePreviewValid;
- $("rotateMoveBtn").disabled=!pendingMove;
+ $("rotateMoveBtn").disabled=!selectedObject;
  renderMovePreview();
 }
 function cancelPendingMove(){
@@ -710,9 +710,9 @@ function confirmPendingMove(){
  const {building,x,z,rotation}=pendingMove,problem=moveValidation(building,x,z);
  if(problem)return notice(problem);
  building.x=x;building.z=z;building.rotation=rotation;building.group.position.set(x,0,z);building.group.rotation.y=rotation;
- pendingMove=null;selectedObject=null;hideMovePreview();showMoveControls();assignWorkplaces();updateUI();scheduleSave();notice("施設の位置と向きを変更しました。");
+ pendingMove=null;selectedObject=null;moveDraftRotation=0;hideMovePreview();showMoveControls();assignWorkplaces();updateUI();scheduleSave();notice("施設の位置と向きを変更しました。続けて別の施設も移動できます。");
 }
-$("rotateMoveBtn").onclick=()=>{if(!pendingMove)return notice("先に移動先をクリックしてください。");pendingMove.rotation=(pendingMove.rotation+Math.PI/2)%(Math.PI*2);showMoveControls();};
+$("rotateMoveBtn").onclick=()=>{if(!selectedObject)return notice("先に向きを変える施設を選択してください。");moveDraftRotation=((pendingMove?pendingMove.rotation:moveDraftRotation)+Math.PI/2)%(Math.PI*2);if(pendingMove)pendingMove.rotation=moveDraftRotation;showMoveControls();renderMovePreview();};
 $("confirmMoveBtn").onclick=confirmPendingMove;
 $("cancelMoveBtn").onclick=()=>{cancelPendingMove();notice("移動をキャンセルしました。");};
 
@@ -749,9 +749,9 @@ renderer.domElement.addEventListener("pointerup",e=>{
  const p=gridPos(hits[0].point);
  if(selected==="move"){
   if(pendingMove){notice("先に「決定」または「キャンセル」を押してください。");return;}
-  if(!selectedObject){selectedObject=buildings.find(b=>Math.abs(b.x-p.x)<3&&Math.abs(b.z-p.z)<3)||null;if(selectedObject){prepareMovePreview(selectedObject);showMoveControls();notice(defs[selectedObject.type].name+"を選択しました。マウスを動かすと半透明プレビューが表示されます。");}else notice("移動したい施設をクリックしてください。");return;}
+  if(!selectedObject){selectedObject=buildings.find(b=>Math.abs(b.x-p.x)<3&&Math.abs(b.z-p.z)<3)||null;if(selectedObject){moveDraftRotation=Number(selectedObject.rotation)||0;prepareMovePreview(selectedObject);showMoveControls();notice(defs[selectedObject.type].name+"を選択しました。移動先をクリックするか、↻で向きを変更できます。");}else notice("移動したい施設をクリックしてください。");return;}
   const problem=moveValidation(selectedObject,p.x,p.z);if(problem)return notice(problem);
-  pendingMove={building:selectedObject,x:p.x,z:p.z,rotation:Number(selectedObject.rotation)||0};movePreviewPoint={x:p.x,z:p.z};showMoveControls();notice("移動先を仮設定しました。半透明の建物と地面の色を確認して「決定」を押してください。");return;
+  pendingMove={building:selectedObject,x:p.x,z:p.z,rotation:moveDraftRotation};movePreviewPoint={x:p.x,z:p.z};showMoveControls();notice("移動先を仮設定しました。半透明の建物と地面の色を確認して「決定」を押してください。");return;
  }
  if(selected==="select"){selectedObject=buildings.find(b=>Math.abs(b.x-p.x)<3&&Math.abs(b.z-p.z)<3)||transit.find(t=>Math.abs(t.x-p.x)<2&&Math.abs(t.z-p.z)<2)||null;notice(selectedObject?(selectedObject.type in defs?defs[selectedObject.type].name:({rail:"線路",station:"駅",busstop:"バス停"})[selectedObject.type])+"を選択中":"施設を選択してください。");return;}
  if(selected==="road"){addRoad(p.x,p.z);return;}
