@@ -405,165 +405,96 @@ function makeBuilding(type,x,z,level=1){
  g.add(label);scene.add(g);return {type,x,z,level,group:g};
 }
 function makeRoad(x,z){const g=new THREE.Group();g.position.set(x,.035,z);const road=new THREE.Mesh(new THREE.BoxGeometry(cell,.12,cell),mat(0x263b4d,.35,.7));road.position.y=.02;g.add(road);const stripe=box(g,.12,.025,3.2,mat(0x8edbe8,.2,.5,0x22505b),0,.1,0);scene.add(g);return {x,z,group:g};}
+// ===== 公共交通システム v1：このブロックが交通施設・車両の唯一の実装 =====
 const transitCosts={rail:600,station:7500,busstop:1500};
 function makeTransit(type,x,z){
  const g=new THREE.Group();g.position.set(x,0,z);g.userData={type};
- const concrete=mat(0x8b989e,.12,.86),steel=mat(0x566b79,.78,.3),railMat=mat(0x9eabb3,.85,.22),yellow=mat(0xf0c44d,.12,.5),glass=mat(0x83d9ef,.48,.16,0x174b62),blue=mat(0x197db4,.48,.28),white=mat(0xf0f5f7,.12,.5),dark=mat(0x172635,.4,.5);
+ const concrete=mat(0x87959d,.12,.88),steel=mat(0x465b6a,.78,.3),railMat=mat(0xc1cbd1,.86,.2),yellow=mat(0xf4c84b,.15,.45),glass=mat(0x8bdcf0,.55,.12),blue=mat(0x167db5,.5,.25),white=mat(0xf5f8fa,.12,.45),dark=mat(0x172735,.4,.55);
  const add=(w,h,d,m,px,py,pz)=>box(g,w,h,d,m,px,py,pz);
  if(type==="rail"){
-  // Straight double rail with sleepers, ballast and fasteners
-  add(4,.12,2.1,mat(0x515e67,.05,.95),0,.06,0);
-  for(let i=-7;i<=7;i++){add(.16,.12,1.65,concrete,i*.27,.16,0);add(.07,.1,.18,steel,i*.27,.26,-.58);add(.07,.1,.18,steel,i*.27,.26,.58);}
-  for(const zoff of [-.58,.58]){add(4,.13,.13,railMat,0,.31,zoff);add(4,.035,.08,steel,0,.39,zoff);}
+  add(4,.12,2.1,mat(0x4d5962,.1,.95),0,.06,0);
+  for(let n=0;n<15;n++){const x=-1.82+n*.26;add(.13,.12,1.65,concrete,x,.16,0);}
+  for(const zoff of [-.58,.58]){add(4,.14,.14,railMat,0,.29,zoff);add(4,.035,.07,steel,0,.38,zoff);}
  }else if(type==="station"){
-  // Elevated platform, canopy, glass waiting hall, sign and access stairs
-  add(4.1,.38,2.9,concrete,0,.34,0);
-  add(3.9,.12,.22,yellow,0,.59,1.22);
-  add(2.7,1.35,1.25,glass,0,1.28,-.1);
-  for(const px of [-1.42,1.42])add(.12,2.15,.12,steel,px,1.38,-.1);
-  add(4.2,.16,2.25,blue,0,2.48,-.05);
-  for(const px of [-1.85,1.85])add(.12,1.9,.12,steel,px,1.35,-.05);
-  add(1.55,.42,.12,dark,0,2.9,1.02);
-  add(1.38,.23,.035,white,0,2.92,1.1);
-  add(.12,1.2,.12,steel,-1.45,.9,1.45);add(.12,1.2,.12,steel,1.45,.9,1.45);
-  const stair=new THREE.Mesh(new THREE.BoxGeometry(1.1,.12,1.3),concrete);stair.position.set(0,.3,1.8);stair.rotation.x=-.22;g.add(stair);
+  add(4.1,.34,2.9,concrete,0,.25,0);add(3.8,.1,.18,yellow,0,.48,1.18);
+  add(2.7,1.25,1.15,glass,0,1.15,-.12);
+  for(const px of [-1.45,1.45])add(.12,2,.12,steel,px,1.25,-.12);
+  add(4.25,.16,2.25,blue,0,2.28,-.1);
+  add(1.5,.38,.12,dark,0,2.58,1.02);add(1.28,.2,.04,white,0,2.6,1.1);
+  for(const px of [-1.7,1.7]){add(.12,1.2,.12,steel,px,.85,1.45);add(.55,.08,.55,yellow,px,.15,1.55);}
  }else if(type==="busstop"){
-  // Pavement bay, glass shelter, bench and route marker
-  add(3.3,.2,2.0,concrete,0,.1,0);
-  add(2.15,.08,.72,blue,0,1.25,-.35);
-  for(const px of [-1.02,1.02]){add(.09,1.35,.09,steel,px,.78,-.35);add(.08,1.2,.07,glass,px*.75,.75,-.35);}
-  add(2.0,.08,.08,steel,0,.72,-.35);
-  add(1.45,.12,.35,dark,0,.55,-.05);
-  for(const px of [-.62,.62])add(.08,.42,.08,steel,px,.35,-.05);
-  add(.12,2.0,.12,steel,1.35,1.0,.5);
-  add(.58,.72,.08,blue,1.35,2.12,.5);
-  add(.44,.48,.025,white,1.35,2.12,.55);
-  add(.06,.1,.08,yellow,1.35,1.65,.5);
+  add(3.3,.18,2,concrete,0,.09,0);add(2.15,.08,.72,blue,0,1.25,-.35);
+  for(const px of [-1.02,1.02]){add(.09,1.35,.09,steel,px,.72,-.35);add(.08,1.18,.07,glass,px*.75,.72,-.35);}
+  add(2,.08,.08,steel,0,.68,-.35);add(1.45,.12,.35,dark,0,.52,-.05);
+  for(const px of [-.62,.62])add(.08,.42,.08,steel,px,.32,-.05);
+  add(.12,1.85,.12,steel,1.34,.95,.5);add(.58,.68,.08,blue,1.34,1.95,.5);add(.43,.44,.035,white,1.34,1.95,.55);
  }
-
- // 建物ごとの外構・看板・設備・専用車両
- const sign=(label,color=0x173e58,accent=0x63dcff,px=0,py=3.1,pz=2.04)=>{
-  add(2.35,.48,.13,mat(color,.35,.32),px,py,pz);
-  add(1.95,.055,.045,mat(accent,.2,.25,accent),px,py-.18,pz+.08);
-  for(const sx of [-.92,.92]){const bolt=new THREE.Mesh(new THREE.SphereGeometry(.045,8,6),white);bolt.position.set(px+sx,py,pz+.09);g.add(bolt);}
- };
- const vehicle=(kind,px,pz)=>{
-  const v=new THREE.Group(),isEmergency=["police","fire","ambulance"].includes(kind);
-  const paint=mat(kind==="police"?0xf4f7fb:kind==="fire"?0xd9362f:kind==="ambulance"?0xf7f8f8:kind==="bus"?0xe5b43e:kind==="truck"?0x4e718c:kind==="hotel"?0x263e59:0x2d9aaf,.35,.3);
-  const black=mat(0x101820,.12,.82),glassM=mat(0x16384e,.55,.12),chrome=mat(0xb8cbd4,.8,.2),red=mat(0xd72e3b,.2,.24,0x9c1420),blueL=mat(0x268cff,.15,.2,0x167cff);
-  box(v,1.08,.48,2.05,paint,0,.62,0);
-  box(v,.94,.54,.92,paint,0,1.08,-.28);
-  box(v,.82,.36,.06,glassM,0,1.12,.19);
-  box(v,.06,.38,.07,chrome,-.43,1.12,.2);box(v,.06,.38,.07,chrome,.43,1.12,.2);
-  box(v,.9,.1,.12,chrome,0,.48,1.04);
-  box(v,.16,.13,.05,mat(0xfff2c2,.1,.2,0xffe4a0),-.35,.68,1.04);box(v,.16,.13,.05,mat(0xfff2c2,.1,.2,0xffe4a0),.35,.68,1.04);
-  for(const sx of [-.57,.57])for(const sz of [-.62,.68]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.13,14),black);w.rotation.z=Math.PI/2;w.position.set(sx,.35,sz);v.add(w);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.075,.075,.14,12),chrome);hub.rotation.z=Math.PI/2;hub.position.set(sx,.35,sz);v.add(hub);}
-  if(kind==="police"||kind==="fire"||kind==="ambulance"){box(v,.56,.12,.2,blueL,0,1.42,-.22);box(v,.24,.12,.2,red,-.2,1.42,-.22);box(v,.24,.12,.2,red,.2,1.42,-.22);}
-  if(kind==="fire"){box(v,.82,.18,.85,mat(0xb8c5cc,.7,.3),0,1.03,-.68);for(let n=0;n<3;n++)box(v,.07,.12,.75,chrome,-.25+n*.25,1.19,-.68);box(v,.12,.65,.12,chrome,.35,1.32,-.55);}
-  if(kind==="ambulance"){box(v,.68,.48,.04,red,0,1.12,.245);box(v,.14,.72,.05,red,0,1.12,.28);box(v,.72,.13,.05,red,0,1.12,.28);}
-  if(kind==="police"){box(v,.58,.28,.035,mat(0x1c4f8d),0,.96,.23);box(v,.12,.16,.04,white,0,.96,.26);}
-  if(kind==="truck"){box(v,1.03,.76,.95,mat(0xe5e9ed,.2,.55),0,1.12,-.55);box(v,.8,.12,.05,mat(0x28789a),0,1.12,-.04);}
-  if(kind==="bus"){box(v,1.02,.58,1.75,paint,0,1.13,-.12);for(let n=0;n<4;n++)box(v,.035,.36,.34,glassM,.55,1.16,-.72+n*.42);}
-  if(kind==="hotel"){box(v,.8,.2,.06,mat(0xd9c18c),0,1.05,.24);}
-  v.position.set(px,0,pz);g.add(v);
- };
- // 共通のエントランス照明・アプローチ
- for(const sx of [-1.72,1.72]){const pole=new THREE.Group();const stem=new THREE.Mesh(new THREE.CylinderGeometry(.035,.055,1.45,8),trim);stem.position.y=.73;pole.add(stem);const lamp=new THREE.Mesh(new THREE.SphereGeometry(.13,12,8),mat(0xffe5a1,.1,.18,0xffcf6a));lamp.position.y=1.5;pole.add(lamp);pole.position.set(sx,0,2.35);g.add(pole);}
- if(["shop","hospital","school","office","factory","firestation","police","restaurant","hotel","university","stadium","airport"].includes(type)){
-  add(3.1,.08,1.15,mat(0x85949c,.1,.85),0,.08,2.55);
-  for(let n=0;n<5;n++)add(.16,.035,.14,white,-.72+n*.36,.14,2.55);
- }
- if(type==="home"){sign("HOME",0x24546a,0x78e8ed,0,2.65,1.68);add(.72,.55,.75,green,-1.35,.55,1.4);add(.72,.55,.75,green,1.35,.55,1.4);add(1.1,.08,.75,roofMat,0,.12,2.45);}
- if(type==="tower"){sign("RESIDENCE",0x183d64,0x6ddcff,0,16.3,1.7);for(const sx of [-1.85,1.85])add(.16,1.4,.16,trim,sx,.8,1.6);}
- if(type==="shop"){sign("SHOPPING",0x4d287a,0xffd66b,0,3.35,2.02);vehicle("truck",-2.6,2.9);add(.45,.8,.45,green,-2.1,.55,-1.6);add(.45,.8,.45,green,2.1,.55,-1.6);}
- if(type==="hospital"){sign("MEDICAL CENTER",0x176d72,0x8effef,0,3.15,2.28);vehicle("ambulance",-2.35,3.55);add(.12,1.1,.12,white,2.2,.65,2.2);add(.65,.1,.65,mat(0x46c6ac),2.2,1.22,2.2);}
- if(type==="school"){sign("SCIENCE ACADEMY",0x795a19,0xffe28b,0,3.35,1.05);vehicle("bus",2.65,2.5);for(const sx of [-2,2]){add(.7,.45,.7,green,sx,.42,1.6);}}
- if(type==="park"){for(const sx of [-1.2,1.2]){add(1.05,.16,.35,trim,sx,.65,1.45);for(const dx of [-.38,.38])add(.07,.42,.07,trim,sx+dx,.42,1.45);}for(let n=0;n<4;n++){const flower=new THREE.Mesh(new THREE.SphereGeometry(.12,10,8),mat([0xff9ac4,0xffd86b,0x9bcaff,0xffffff][n],.05,.5));flower.position.set(-1.2+n*.8,.58,2.05);g.add(flower);}}
- if(["fusion","fission","hydrogen","solar"].includes(type)){sign("POWER",0x123b4d,0x66e8ff,0,3.1,2.05);for(const sx of [-2.15,2.15]){add(.18,.75,.18,trim,sx,.48,1.9);const light=new THREE.Mesh(new THREE.SphereGeometry(.12,10,8),mat(0x5effaa,.1,.15,0x29d879));light.position.set(sx,.95,1.9);g.add(light);}}
- if(type==="office"){sign("INNOVATION HQ",0x174c76,0x8ce6ff,0,11.8,1.84);vehicle("hotel",-2.65,2.8);vehicle("hotel",2.65,2.8);}
- if(type==="factory"){sign("ROBOTICS",0x354c5c,0xffbd4a,0,3.1,2.1);vehicle("truck",2.75,2.9);for(let n=0;n<3;n++){const pipe=new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,2.1,12),chrome);pipe.position.set(-2+n*.6,4.1,-1.7);g.add(pipe);}}
- if(type==="firestation"){sign("FIRE & RESCUE",0x8c2524,0xffd16b,0,3.12,1.98);vehicle("fire",-2.55,3.15);vehicle("fire",2.55,3.15);for(let n=0;n<3;n++)add(.14,.14,.14,mat(0xffb72f,.2,.25,0xff7b17),-1+n,3.4,-1.1);}
- if(type==="police"){sign("POLICE HQ",0x173b73,0x8bc9ff,0,3.2,1.95);vehicle("police",-2.55,3.1);vehicle("police",2.55,3.1);add(.18,1.5,.18,trim,2.15,.8,-1.1);add(.7,.08,.7,mat(0x3a78c7),2.15,1.6,-1.1);}
- if(type==="restaurant"){sign("RESTAURANT",0x8a4b1e,0xffdc9b,0,1.85,2.2);for(let n=0;n<3;n++){const px=-1.2+n*1.2;add(.55,.08,.55,roofMat,px,.5,2.8);add(.08,.45,.08,trim,px,.27,2.8);const umbrella=new THREE.Mesh(new THREE.ConeGeometry(.48,.22,8),mat([0xe76d55,0xe8b34e,0x6cb9a1][n]));umbrella.position.set(px,1.05,2.8);g.add(umbrella);}}
- if(type==="hotel"){sign("GRAND HOTEL",0x50366f,0xf5d48a,0,8.95,1.3);vehicle("hotel",2.8,2.8);for(let n=0;n<3;n++){const lamp=new THREE.Mesh(new THREE.SphereGeometry(.11,10,8),mat(0xffd68b,.1,.2,0xffb84a));lamp.position.set(-1+n,2.4,1.9);g.add(lamp);}}
- if(type==="university"){sign("UNIVERSITY",0x283c77,0xffd777,0,3.3,1.65);vehicle("bus",-2.7,2.8);for(let n=0;n<3;n++)add(.18,.9,.18,green,-1.6+n*1.6,.55,2.8);}
- if(type==="stadium"){sign("MEGA ARENA",0x176340,0x9effc1,0,3.65,2.5);for(const sx of [-2.35,2.35]){add(.12,6,.12,trim,sx,3,-1.8);const flood=new THREE.Mesh(new THREE.BoxGeometry(.85,.18,.3),white);flood.position.set(sx,6.1,-1.8);g.add(flood);}}
- if(type==="airport"){sign("INTERNATIONAL AIRPORT",0x15516a,0x9df2ff,0,3.2,1.42);for(const sx of [-2.8,2.8]){add(.18,1.8,.18,trim,sx,1,-1.1);add(.7,.12,.7,white,sx,1.95,-1.1);}}
-
  scene.add(g);return {type,x,z,group:g};
 }
 function makeTrain(){
- const g=new THREE.Group(),body=mat(0xf0f4f6,.58,.22),blue=mat(0x167bb5,.5,.2),glass=mat(0x102d42,.7,.12),light=mat(0xc8f5ff,.15,.15,0x78dfff),wheel=mat(0x151d26,.55,.5);
- for(let car=0;car<3;car++){
-  const unit=new THREE.Group();unit.position.x=-car*2.35;
-  box(unit,1.9,.82,1.25,body,0,.92,0);
-  box(unit,1.92,.2,1.28,blue,0,.52,0);
-  box(unit,1.42,.36,.045,glass,0,1.04,.65);
-  box(unit,.18,.25,.06,light,0,1.13,.69);
-  for(const wx of [-.62,-.2,.22,.62])box(unit,.22,.38,.05,glass,wx,1.02,.66);
-  for(const side of [-1,1])for(const wx of [-.62,.62]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.2,.2,.12,16),wheel);w.rotation.z=Math.PI/2;w.position.set(wx,.43,side*.59);unit.add(w);}
+ const g=new THREE.Group(),body=mat(0xf1f5f7,.55,.22),blue=mat(0x147bb8,.5,.22),glass=mat(0x102c42,.7,.12),wheel=mat(0x141c25,.3,.7);
+ for(let n=0;n<3;n++){const unit=new THREE.Group();unit.position.x=-n*2.25;
+  box(unit,1.95,.85,1.25,body,0,.92,0);box(unit,1.96,.2,1.28,blue,0,.5,0);
+  box(unit,1.5,.38,.05,glass,0,1.03,.65);
+  for(const x of [-.62,-.2,.22,.62])box(unit,.16,.24,.06,glass,x,1.03,.69);
+  for(const side of [-1,1])for(const x of [-.62,.62]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.12,16),wheel);w.rotation.z=Math.PI/2;w.position.set(x,.4,side*.59);unit.add(w);}
   g.add(unit);
  }
- scene.add(g);return g;
+ return g;
 }
 function makeBus(){
- const g=new THREE.Group(),body=mat(0xf4f3e9,.28,.34),blue=mat(0x167bb5,.45,.25),glass=mat(0x18384e,.65,.14),rubber=mat(0x121a23,.2,.65);
- box(g,1.15,1.0,2.45,body,0,.95,0);box(g,1.17,.25,2.46,blue,0,.52,0);
- for(const z of [-.75,-.15,.45])box(g,.035,.48,.42,glass,.59,1.03,z);
- box(g,.04,.52,.58,glass,0,1.03,1.24);
- for(const x of [-.49,.49])for(const z of [-.72,.72]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.12,16),rubber);w.rotation.z=Math.PI/2;w.position.set(x,.36,z);g.add(w);}
- scene.add(g);return g;
+ const g=new THREE.Group(),body=mat(0xf4f3e9,.3,.35),blue=mat(0x167db5,.45,.25),glass=mat(0x18384e,.65,.14),rubber=mat(0x121a23,.2,.65);
+ box(g,1.18,1.05,2.55,body,0,.92,0);box(g,1.2,.22,2.56,blue,0,.48,0);
+ for(const z of [-.82,-.22,.38,.82])box(g,.035,.48,.42,glass,.6,1,z);
+ box(g,.04,.52,.58,glass,0,1,1.29);
+ for(const x of [-.5,.5])for(const z of [-.78,.78]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.13,16),rubber);w.rotation.z=Math.PI/2;w.position.set(x,.34,z);g.add(w);}
+ return g;
 }
-function transitDimensions(type){
- return type==="rail"?{w:4,d:2.1}:type==="station"?{w:4.2,d:3.1}:{w:3.3,d:2.0};
-}
-function transitBounds(type,x,z){
- const d=transitDimensions(type);
- return new THREE.Box3(new THREE.Vector3(x-d.w/2,0,z-d.d/2),new THREE.Vector3(x+d.w/2,3,z+d.d/2));
-}
+function transitDimensions(type){return type==="rail"?{w:4,d:2.1}:type==="station"?{w:4.2,d:3.1}:{w:3.3,d:2};}
+function transitBounds(type,x,z){const d=transitDimensions(type);return new THREE.Box3(new THREE.Vector3(x-d.w/2,0,z-d.d/2),new THREE.Vector3(x+d.w/2,3,z+d.d/2));}
 function transitPlacementProblem(type,x,z){
  if(!transitCosts[type])return "交通施設の種類が正しくありません。";
  const candidate=transitBounds(type,x,z);
- if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港ターミナルと重なっています。";
+ if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物と重なっています。";
  if(roadsOverlapBuilding(candidate))return "道路と重なっています。";
  if(buildings.some(b=>b.type==="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";
- if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),.05)))return "ほかの交通施設と重なっています。";
- if(type==="rail"&&transit.some(t=>t.type==="rail"&&Math.abs(t.z-z)<.1&&Math.abs(t.x-x)<3.9))return "線路が重なっています。線路は4マスずつつなげてください。";
- if(type!=="rail"&&transit.some(t=>t.type===type&&Math.hypot(t.x-x,t.z-z)<4))return "同じ交通施設が近すぎます。";
+ for(const t of transit){if(footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),.02)){
+  if(type==="rail"&&t.type==="rail"&&Math.abs(t.z-z)<.1&&Math.abs(Math.abs(t.x-x)-4)<.15)continue;
+  return "ほかの交通施設と重なっています。";
+ }}
+ if(type==="rail"&&transit.some(t=>t.type==="rail"&&Math.abs(t.z-z)<.1&&Math.abs(t.x-x)<.1))return "そこには線路があります。";
+ if(type!=="rail"&&transit.some(t=>t.type===type&&Math.hypot(t.x-x,t.z-z)<4))return "同じ施設が近すぎます。";
  return "";
 }
 function buildTrainPath(){
  const rows=new Map();
- transit.filter(t=>t.type==="rail").forEach(t=>{const key=Math.round(t.z*100)/100;if(!rows.has(key))rows.set(key,[]);rows.get(key).push(t);});
+ transit.filter(t=>t.type==="rail").forEach(t=>{const k=Math.round(t.z*100)/100;if(!rows.has(k))rows.set(k,[]);rows.get(k).push(t);});
  let best=null;
- for(const [z,items] of rows){
-  items.sort((a,b)=>a.x-b.x);let run=[];
-  const check=()=>{if(run.length<2)return;const station=transit.some(s=>s.type==="station"&&run.some(r=>Math.hypot(s.x-r.x,s.z-r.z)<=5.5));if(station&&(!best||run.length>best.length))best=run.map(r=>({x:r.x,z:r.z}));};
-  for(const rail of items){if(run.length&&Math.abs(rail.x-run[run.length-1].x-4)>0.15){check();run=[];}run.push(rail);}check();
+ for(const [z,items] of rows){items.sort((a,b)=>a.x-b.x);let run=[];
+  const accept=()=>{if(run.length<2)return;const hasStation=transit.some(s=>s.type==="station"&&run.some(r=>Math.hypot(s.x-r.x,s.z-r.z)<=6));if(hasStation&&(!best||run.length>best.length))best=run.map(r=>({x:r.x,z:r.z}));};
+  for(const rail of items){if(run.length&&Math.abs(rail.x-run[run.length-1].x-4)>.15){accept();run=[];}run.push(rail);}accept();
  }
  return best;
 }
 function nearestRoadFor(point){
- return roads.reduce((best,r)=>{const d=Math.hypot(r.x-point.x,r.z-point.z);return d<=6&&(!best||d<best.distance)?{road:r,distance:d}:best;},null)?.road||null;
+ if(!point)return null;let best=null;
+ for(const road of roads){const d=Math.hypot(road.x-point.x,road.z-point.z);if(d<=6&&(!best||d<best.distance))best={road,distance:d};}
+ return best?.road||null;
 }
 function roadPathBetween(start,end){
  const first=nearestRoadFor(start),last=nearestRoadFor(end);if(!first||!last)return null;
- const key=r=>r.x+","+r.z,queue=[first],previous=new Map([[key(first),null]]),byKey=new Map(roads.map(r=>[key(r),r]));
- for(let i=0;i<queue.length;i++){
-  const r=queue[i];if(r===last)break;
-  for(const [dx,dz] of [[4,0],[-4,0],[0,4],[0,-4]]){const next=byKey.get((r.x+dx)+","+(r.z+dz));if(next&&!previous.has(key(next))){previous.set(key(next),r);queue.push(next);}}
+ const key=r=>r.x+","+r.z,byKey=new Map(roads.map(r=>[key(r),r])),queue=[first],prev=new Map([[key(first),null]]);
+ for(let i=0;i<queue.length;i++){const r=queue[i];if(r===last)break;
+  for(const [dx,dz] of [[4,0],[-4,0],[0,4],[0,-4]]){const next=byKey.get((r.x+dx)+","+(r.z+dz));if(next&&!prev.has(key(next))){prev.set(key(next),r);queue.push(next);}}
  }
- if(!previous.has(key(last)))return null;
- const path=[];for(let r=last;r;r=previous.get(key(r)))path.push({x:r.x,z:r.z});return path.reverse();
+ if(!prev.has(key(last)))return null;const path=[];for(let r=last;r;r=prev.get(key(r)))path.push({x:r.x,z:r.z});return path.reverse();
 }
 function buildCarRoute(home){
- if(!roads.length)return null;
- const start=nearestRoadFor(home||roads[0]);if(!start)return null;
- const key=r=>r.x+","+r.z,byKey=new Map(roads.map(r=>[key(r),r]));
- const bfs=origin=>{const queue=[origin],prev=new Map([[key(origin),null]]);for(let i=0;i<queue.length;i++){const r=queue[i];for(const [dx,dz] of [[4,0],[-4,0],[0,4],[0,-4]]){const n=byKey.get((r.x+dx)+","+(r.z+dz));if(n&&!prev.has(key(n))){prev.set(key(n),r);queue.push(n);}}}return {queue,prev};};
- const first=bfs(start),far=first.queue.reduce((a,b)=>Math.hypot(b.x-start.x,b.z-start.z)>Math.hypot(a.x-start.x,a.z-start.z)?b:a,start);
- const second=bfs(far),end=second.queue.reduce((a,b)=>Math.hypot(b.x-far.x,b.z-far.z)>Math.hypot(a.x-far.x,a.z-far.z)?b:a,far);
- const path=[];for(let r=end;r;r=second.prev.get(key(r)))path.push({x:r.x,z:r.z});path.reverse();return path.length>1?path:null;
+ if(!roads.length)return null;const start=nearestRoadFor(home||roads[0]);if(!start)return null;
+ const key=r=>r.x+","+r.z,byKey=new Map(roads.map(r=>[key(r),r])),queue=[start],prev=new Map([[key(start),null]]);
+ for(let i=0;i<queue.length;i++){const r=queue[i];for(const [dx,dz] of [[4,0],[-4,0],[0,4],[0,-4]]){const n=byKey.get((r.x+dx)+","+(r.z+dz));if(n&&!prev.has(key(n))){prev.set(key(n),r);queue.push(n);}}}
+ const far=queue.reduce((a,b)=>Math.hypot(b.x-start.x,b.z-start.z)>Math.hypot(a.x-start.x,a.z-start.z)?b:a,start);
+ const path=[];for(let r=far;r;r=prev.get(key(r)))path.push({x:r.x,z:r.z});path.reverse();return path.length>1?path:null;
 }
 function rebuildCarRoutes(){
  cars.forEach(car=>{car.route=buildCarRoute(car.home);car.distance=0;car.direction=1;if(car.route?.length)car.group.position.set(car.route[0].x,.05,car.route[0].z);else if(car.home)car.group.position.set(car.home.x+2.25,.05,car.home.z+1.7);});
@@ -571,239 +502,36 @@ function rebuildCarRoutes(){
 function rebuildTransitVehicles(){
  transitVehicles.forEach(v=>scene.remove(v.group));transitVehicles=[];
  const trainPath=buildTrainPath();
- if(trainCount>0&&trainPath){for(let i=0;i<trainCount;i++){const group=makeTrain();transitVehicles.push({kind:"train",group,path:trainPath.slice(),distance:i*2.5,direction:1,speed:2.8});}}
- const stops=transit.filter(t=>t.type==="busstop"),busPath=stops.length>=2?roadPathBetween(stops[0],stops[1]):null;
- if(busCount>0&&busPath?.length>=2){for(let i=0;i<busCount;i++){const group=makeBus();transitVehicles.push({kind:"bus",group,path:busPath.slice(),distance:i*2,direction:i%2?-1:1,speed:2.1});}}
+ if(trainPath)for(let i=0;i<trainCount;i++){const group=makeTrain();scene.add(group);transitVehicles.push({kind:"train",group,path:trainPath,distance:i*2.5,direction:1,speed:2.8});}
+ const stops=transit.filter(t=>t.type==="busstop");
+ if(stops.length>=2){const route=roadPathBetween(stops[0],stops[1]);if(route?.length>=2)for(let i=0;i<busCount;i++){const group=makeBus();scene.add(group);transitVehicles.push({kind:"bus",group,path:route,distance:i*2,direction:i%2?-1:1,speed:2.1});}}
 }
 function updateRouteVehicle(v,dt){
- if(!v.path||v.path.length<2)return;
- let total=0,lengths=[];for(let i=1;i<v.path.length;i++){const d=Math.hypot(v.path[i].x-v.path[i-1].x,v.path[i].z-v.path[i-1].z);lengths.push(d);total+=d;}
- if(total<=0)return;
- v.distance+=v.speed*dt*v.direction;
+ if(!v.path||v.path.length<2)return;let total=0,lengths=[];
+ for(let i=1;i<v.path.length;i++){const d=Math.hypot(v.path[i].x-v.path[i-1].x,v.path[i].z-v.path[i-1].z);lengths.push(d);total+=d;}
+ if(total<=0)return;v.distance+=v.speed*dt*v.direction;
  if(v.distance>=total){v.distance=total;v.direction=-1;}else if(v.distance<=0){v.distance=0;v.direction=1;}
  let remain=v.distance;
  for(let i=0;i<lengths.length;i++){if(remain<=lengths[i]||i===lengths.length-1){const a=v.path[i],b=v.path[i+1],t=lengths[i]?remain/lengths[i]:0,dx=b.x-a.x,dz=b.z-a.z;v.group.position.set(a.x+dx*t,v.kind==="train"?.06:.04,a.z+dz*t);v.group.rotation.y=Math.atan2(dx,dz)+(v.kind==="car"?Math.PI:0);break;}remain-=lengths[i];}
 }
 async function addTransit(type,x,z){
  const problem=transitPlacementProblem(type,x,z);if(problem)return notice(problem);
- const cost=transitCosts[type];if(!(await charge(cost)))return;
- transit.push(makeTransit(type,x,z));rebuildTransitVehicles();updateUI();scheduleSave();
+ if(!(await charge(transitCosts[type])))return;
+ transit.push(makeTransit(type,x,z));rebuildTransitVehicles();rebuildCarRoutes();updateUI();scheduleSave();
  notice(({rail:"線路",station:"駅",busstop:"バス停"})[type]+"を設置しました。");
 }
 function spawnCar(i,home=nearestHome()){
  const g=new THREE.Group(),paint=mat([0x29b9d9,0x8a70df,0xe4b95c,0x64d5aa][i%4],.78,.2),glass=mat(0x9cecff,.65,.12),rubber=mat(0x080e16,.05,.8),chrome=mat(0xc9e5ef,.85,.18);
- const lower=new THREE.Mesh(new THREE.CapsuleGeometry(.55,.95,5,10),paint);lower.rotation.x=Math.PI/2;lower.scale.set(1,.48,1.55);lower.position.y=.52;g.add(lower);
+ const body=new THREE.Mesh(new THREE.CapsuleGeometry(.55,.95,5,10),paint);body.rotation.x=Math.PI/2;body.scale.set(1,.48,1.55);body.position.y=.52;g.add(body);
  const cabin=new THREE.Mesh(new THREE.BoxGeometry(.82,.48,1.05),glass);cabin.position.set(0,.91,-.12);g.add(cabin);
  const roof=new THREE.Mesh(new THREE.BoxGeometry(.7,.09,.8),paint);roof.position.set(0,1.18,-.12);g.add(roof);
  for(const x of [-.48,.48])for(const z of [-.62,.62]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.14,20),rubber);w.rotation.z=Math.PI/2;w.position.set(x,.28,z);g.add(w);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,.145,16),chrome);hub.rotation.z=Math.PI/2;hub.position.copy(w.position);g.add(hub);}
  for(const x of [-.34,.34]){const head=new THREE.Mesh(new THREE.BoxGeometry(.22,.12,.04),mat(0xf4fff0,.2,.15,0xb9eaff));head.position.set(x,.55,-1.02);g.add(head);const tail=new THREE.Mesh(new THREE.BoxGeometry(.2,.12,.04),mat(0xff334f,.1,.25,0x8f1020));tail.position.set(x,.55,1.02);g.add(tail);}
- const car={kind:"car",group:g,home,route:null,distance:0,direction:1,speed:3.2};
- scene.add(g);car.route=buildCarRoute(home);if(car.route?.length)g.position.set(car.route[0].x,.05,car.route[0].z);else if(home)g.position.set(home.x+2.25,.05,home.z+1.7);return car;
+ const car={kind:"car",group:g,home,route:null,distance:0,direction:1,speed:3.2};scene.add(g);car.route=buildCarRoute(home);
+ if(car.route?.length)car.group.position.set(car.route[0].x,.05,car.route[0].z);else if(home)car.group.position.set(home.x+2.25,.05,home.z+1.7);
+ return car;
 }
-function nearestHome(x=0,z=0){const homes=buildings.filter(b=>defs[b.type]?.kind==="res");if(!homes.length)return null;return homes.reduce((a,b)=>Math.hypot(b.x-x,b.z-z)<Math.hypot(a.x-x,a.z-z)?b:a);}
-
-function makePassengerPlane(){
- const g=new THREE.Group(),white=mat(0xf2f5f8,.35,.28),blue=mat(0x2474b8,.55,.22),dark=mat(0x182b3e,.35,.45),glass=mat(0x6bc9e8,.55,.15),metal=mat(0xaab8c3,.8,.22),rubber=mat(0x141a20,.05,.85);
- const fus=new THREE.Mesh(new THREE.CylinderGeometry(.48,.58,8.8,20),white);fus.rotation.x=Math.PI/2;g.add(fus);
- const nose=new THREE.Mesh(new THREE.ConeGeometry(.48,1.8,20),white);nose.rotation.x=Math.PI/2;nose.position.z=5.1;g.add(nose);
- const tail=new THREE.Mesh(new THREE.ConeGeometry(.57,1.5,16),blue);tail.rotation.x=-Math.PI/2;tail.position.z=-4.65;g.add(tail);
- const wing=new THREE.Mesh(new THREE.BoxGeometry(14,.16,1.65),white);wing.position.set(0,-.04,.1);g.add(wing);
- const stripe=new THREE.Mesh(new THREE.BoxGeometry(13.5,.04,.18),blue);stripe.position.set(0,.06,.45);g.add(stripe);
- const rear=new THREE.Mesh(new THREE.BoxGeometry(4.4,.12,.8),white);rear.position.set(0,.55,-3.65);g.add(rear);
- const fin=new THREE.Mesh(new THREE.BoxGeometry(.14,1.65,1.5),blue);fin.position.set(0,1.05,-4.05);g.add(fin);
- for(const x of [-.39,.39]){const engine=new THREE.Mesh(new THREE.CylinderGeometry(.36,.42,1.6,16),metal);engine.rotation.x=Math.PI/2;engine.position.set(x*5,-.48,.1);g.add(engine);const intake=new THREE.Mesh(new THREE.CircleGeometry(.29,16),dark);intake.position.set(x*5,-.48,.92);g.add(intake);}
- for(let i=0;i<9;i++){const w=new THREE.Mesh(new THREE.BoxGeometry(.24,.12,.08),glass);w.position.set(-.28+(i%3)*.28,.23,2.2-Math.floor(i/3)*.55);g.add(w);const q=w.clone();q.position.x=-q.position.x;g.add(q);}
- for(const x of [-5.2,5.2]){const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.2,.2,.14,12),rubber);wheel.rotation.z=Math.PI/2;wheel.position.set(x,-.7,.35);g.add(wheel);}
- const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.17,.17,.12,12),rubber);wheel.rotation.z=Math.PI/2;wheel.position.set(0,-.7,3.8);g.add(wheel);
- const beacon=new THREE.Mesh(new THREE.SphereGeometry(.13,10,8),mat(0xff3535,.1,.2,0xff2525));beacon.position.y=.85;g.add(beacon);g.scale.setScalar(.42);return g;
-}
-function beginAirportArrival(job,id,airport,count=1){
- const group=makePassengerPlane(),stand=(parkedAircraft%3)-1;parkedAircraft++;group.position.set(airport.x,17,airport.z-52);scene.add(group);
- aircraftArrivals.push({group,airport,job,id,count,stand,phase:"approach",t:0});
-}
-function updateAirportArrivals(){
- for(let i=aircraftArrivals.length-1;i>=0;i--){
-  const a=aircraftArrivals[i],rate=a.phase==="approach"?.0028:a.phase==="taxi"?.004:a.phase==="departTaxi"?.006:.004;
-  a.t=Math.min(1,a.t+rate);
-  if(a.phase==="approach"){
-   const t=a.t;a.group.position.set(a.airport.x,17-16.35*t,a.airport.z-52+27*t);a.group.rotation.set(.035,0,0);
-   if(t>=1){a.phase="taxi";a.t=0;addNews("航空機が滑走路に着陸しました。");}
-  }else if(a.phase==="taxi"){
-   const t=a.t,sx=a.airport.x,sz=a.airport.z-25,ex=a.airport.x+a.stand*1.3,ez=a.airport.z-3;
-   a.group.position.set(sx+(ex-sx)*t,.42,sz+(ez-sz)*t);a.group.rotation.set(0,Math.atan2(ex-sx,ez-sz),0);
-   if(t>=1){
-    for(let n=0;n<a.count;n++){const person=spawnPerson(a.id+n,a.job,{x:a.airport.x+1.1+a.stand*.4+(n%3)*.45,z:a.airport.z+2.4+Math.floor(n/3)*.45});people.push(person);}
-    assignWorkplaces();updateUI();scheduleSave();addNews(a.count+"人の乗客が到着便から降りました。");notice(a.count+"人が空港に到着しました。飛行機は折り返して出発します。");
-    a.phase="departTaxi";a.t=0;
-   }
-  }else if(a.phase==="departTaxi"){
-   const t=a.t,sx=a.airport.x+a.stand*1.3,sz=a.airport.z-3,ex=a.airport.x,ez=a.airport.z-25;
-   a.group.position.set(sx+(ex-sx)*t,.42,sz+(ez-sz)*t);a.group.rotation.set(0,Math.atan2(ex-sx,ez-sz),0);
-   if(t>=1){a.phase="takeoff";a.t=0;}
-  }else{
-   const t=a.t;a.group.position.set(a.airport.x,.42+23*t,a.airport.z-25-55*t);a.group.rotation.set(-.12,0,0);
-   if(t>=1){scene.remove(a.group);aircraftArrivals.splice(i,1);addNews("乗客を降ろした航空機が離陸しました。");}
-  }
- }
-}
-
-function spawnPerson(i,job="unemployed",arrivalStart=null){
- const jobColors={unemployed:0x286ca8,shop:0xc38b37,doctor:0xffffff,teacher:0x7b4aa8,engineer:0x3b9277,officeworker:0x365f9d,factoryworker:0x66717b,firefighter:0xd64a3f,policeofficer:0x244f91,chef:0xe4e1d5,hotelstaff:0x8e64ad,researcher:0x3c9cba,sportsstaff:0x3d9a62,airportstaff:0x4c8cba};const g=new THREE.Group(),skin=mat([0xf1c6a5,0xd9a27e,0x9a674f,0xf0d0b3][i%4]),shirt=mat(jobColors[job]??jobColors.unemployed),pants=mat([0x26384e,0x343c54,0x53616c][i%3]),hair=mat([0x241a18,0x493024,0x171a22,0x79543a][i%4]),shoe=mat(0x17212c);
- const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.19,.42,5,10),shirt);torso.position.y=1.03;g.add(torso);
- const neck=new THREE.Mesh(new THREE.CylinderGeometry(.065,.075,.13,10),skin);neck.position.y=1.34;g.add(neck);
- const head=new THREE.Mesh(new THREE.SphereGeometry(.17,20,16),skin);head.scale.set(.88,1.08,.9);head.position.y=1.52;g.add(head);
- const hairCap=new THREE.Mesh(new THREE.SphereGeometry(.176,18,10,0,Math.PI*2,0,Math.PI*.58),hair);hairCap.position.set(0,1.59,-.015);g.add(hairCap);
- for(const x of [-.055,.055]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.018,8,8),mat(0x17202a));eye.position.set(x,1.535,.148);g.add(eye);}
- const nose=new THREE.Mesh(new THREE.SphereGeometry(.022,8,8),skin);nose.position.set(0,1.49,.16);g.add(nose);
- // 職業ごとの制服・帽子・識別マーク。遠目でも仕事が分かるシルエットにする
- const uniformMat=(color,metal=.12)=>mat(color,metal,.52);
- const uniformBox=(w,h,d,m,x,y,z)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=true;g.add(o);return o;};
- const uniformSphere=(r,m,x,y,z,sx=1,sy=1,sz=1)=>{const o=new THREE.Mesh(new THREE.SphereGeometry(r,12,10),m);o.position.set(x,y,z);o.scale.set(sx,sy,sz);g.add(o);return o;};
- const uniformCyl=(rt,rb,h,m,x,y,z)=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,12),m);o.position.set(x,y,z);o.castShadow=true;g.add(o);return o;};
- const navy=uniformMat(0x172c45),whiteUniform=uniformMat(0xf4f6f2),gold=uniformMat(0xf2c65c,.55),red=uniformMat(0xc92f32),reflect=uniformMat(0xf5d64d,.25),black=uniformMat(0x17202a);
- // 基本の上着を重ね、職業ごとに特徴的な装備を追加
- uniformBox(.31,.48,.075,shirt,0,1.04,.174);
- if(job==="doctor"||job==="researcher"){
-  uniformBox(.105,.48,.035,whiteUniform,-.105,1.04,.218);uniformBox(.105,.48,.035,whiteUniform,.105,1.04,.218);
-  uniformBox(.045,.22,.018,red,.105,1.13,.241);
-  uniformBox(.13,.045,.025,whiteUniform,0,1.29,.22);
-  if(job==="doctor"){const tube=uniformCyl(.014,.014,.34,black,.105,1.02,.245);tube.rotation.z=-.3;uniformSphere(.035,gold,.105,.84,.25);}
-  else {uniformBox(.28,.055,.035,uniformMat(0x43b7d0),0,.91,.222);}
- }else if(job==="policeofficer"){
-  uniformBox(.29,.045,.025,gold,0,1.15,.22);uniformBox(.09,.09,.025,gold,0,1.08,.226);
-  uniformCyl(.205,.205,.075,navy,0,1.75,0);uniformBox(.35,.045,.24,navy,0,1.72,0);
-  uniformBox(.07,.07,.025,gold,0,1.1,.244);
- }else if(job==="firefighter"){
-  uniformBox(.34,.075,.035,reflect,0,.99,.22);uniformBox(.34,.045,.035,reflect,0,.79,.19);
-  uniformCyl(.19,.19,.12,red,0,1.75,0);uniformBox(.34,.035,.25,gold,0,1.72,0);
-  uniformBox(.11,.08,.025,gold,0,1.12,.24);
- }else if(job==="chef"){
-  uniformBox(.34,.38,.055,whiteUniform,0,1.04,.205);uniformBox(.12,.2,.025,whiteUniform,0,1.25,.24);
-  uniformCyl(.105,.105,.12,whiteUniform,0,1.76,0);uniformSphere(.09,whiteUniform,0,1.84,0,1.25,.8,1.1);
-  uniformBox(.34,.25,.045,uniformMat(0x29313b),0,.88,.22);
- }else if(job==="shop"||job==="hotelstaff"){
-  const apron=uniformMat(job==="shop"?0x9a552d:0x292d50);
-  uniformBox(.3,.36,.045,apron,0,.94,.22);uniformBox(.13,.045,.025,gold,0,1.2,.245);
-  if(job==="shop"){uniformCyl(.17,.17,.045,uniformMat(0x9a552d),0,1.72,0);uniformBox(.34,.035,.2,uniformMat(0x9a552d),0,1.69,0);}
-  else {uniformBox(.13,.08,.025,gold,0,1.12,.25);uniformBox(.08,.08,.025,whiteUniform,0,1.25,.24);}
- }else if(job==="engineer"||job==="factoryworker"){
-  const hi=job==="engineer"?reflect:uniformMat(0xf08a32);
-  uniformBox(.34,.43,.045,hi,0,1.04,.205);uniformBox(.055,.43,.02,whiteUniform,-.1,1.04,.235);uniformBox(.055,.43,.02,whiteUniform,.1,1.04,.235);
-  uniformCyl(.19,.19,.12,uniformMat(job==="engineer"?0x2f9b70:0xe9a12d),0,1.75,0);
-  uniformBox(.38,.035,.25,gold,0,1.69,0);
- }else if(job==="officeworker"||job==="teacher"||job==="researcher"){
-  uniformBox(.075,.26,.025,whiteUniform,0,1.15,.235);
-  uniformBox(.045,.2,.025,uniformMat(job==="teacher"?0x7b4aa8:0xb52d39),0,1.05,.253);
-  if(job==="teacher"){uniformBox(.32,.08,.04,uniformMat(0x7b4aa8),0,.82,.2);}
- }else if(job==="airportstaff"){
-  uniformBox(.34,.08,.035,reflect,0,.98,.22);uniformBox(.09,.12,.025,gold,0,1.12,.24);
-  uniformCyl(.18,.18,.06,navy,0,1.75,0);uniformBox(.34,.035,.22,navy,0,1.72,0);
- }else if(job==="sportsstaff"){
-  uniformBox(.34,.07,.035,whiteUniform,0,1.02,.22);uniformBox(.08,.3,.025,whiteUniform,0,1.04,.24);
-  uniformBox(.24,.06,.025,gold,0,1.22,.24);
- }else{
-  // 無職も私服としてジャケットとスニーカーを着用
-  uniformBox(.32,.28,.035,uniformMat(0x244b70),0,.91,.2);
- }
- const limbs=[];
- for(const side of [-1,1]){
-  const armPivot=new THREE.Group();armPivot.position.set(side*.22,1.23,0);g.add(armPivot);
-  const upper=new THREE.Mesh(new THREE.CapsuleGeometry(.065,.25,4,8),shirt);upper.position.y=-.17;armPivot.add(upper);
-  const fore=new THREE.Mesh(new THREE.CapsuleGeometry(.052,.2,4,8),skin);fore.position.set(0,-.37,.015);armPivot.add(fore);
-  const hand=new THREE.Mesh(new THREE.SphereGeometry(.06,10,8),skin);hand.position.set(0,-.49,.025);armPivot.add(hand);limbs.push(armPivot);
-  const legPivot=new THREE.Group();legPivot.position.set(side*.105,.79,0);g.add(legPivot);
-  const leg=new THREE.Mesh(new THREE.CapsuleGeometry(.075,.29,4,8),pants);leg.position.y=-.19;legPivot.add(leg);
-  const foot=new THREE.Mesh(new THREE.BoxGeometry(.13,.09,.23),shoe);foot.position.set(0,-.39,.055);legPivot.add(foot);limbs.push(legPivot);
- }
- const home=nearestHome();const x=arrivalStart?arrivalStart.x:(home?home.x+(Math.random()-.5)*2:(Math.random()-.5)*12),z=arrivalStart?arrivalStart.z:(home?home.z+2+(Math.random()-.5)*2:(Math.random()-.5)*12);
- scene.add(g);return {group:g,x,z,home,job,id:i,angle:Math.random()*6,speed:.9+Math.random()*.45,limbs,phase:Math.random()*6,targetX:arrivalStart&&home?home.x+1.8:x,targetZ:arrivalStart&&home?home.z+2.3:z,walkTimer:0,routine:"home",working:false};
-}
-const jobFacilityTypes={shop:["shop"],doctor:["hospital"],teacher:["school","university"],engineer:["fusion","fission","hydrogen","solar"],officeworker:["office"],factoryworker:["factory"],firefighter:["firestation"],policeofficer:["police"],chef:["restaurant"],hotelstaff:["hotel"],researcher:["university"],sportsstaff:["stadium"],airportstaff:["airport"]};
-const jobLabels={unemployed:"無職",shop:"店員",doctor:"医師",teacher:"教師",engineer:"発電技術者",officeworker:"会社員",factoryworker:"工場技術者",firefighter:"消防士",policeofficer:"警察官",chef:"料理人",hotelstaff:"ホテルスタッフ",researcher:"研究者",sportsstaff:"スポーツ職員",airportstaff:"空港職員"};
-function compatibleBuildings(job){return buildings.filter(b=>(jobFacilityTypes[job]||[]).includes(b.type));}
-function assignWorkplaces(){
- const previous=new Map(people.map(p=>[p,p.workplace||null]));
- const used=new Map();
- people.forEach(p=>{p.home=nearestHome(p.x,p.z)||p.home||null;p.workplace=null;p.workplaceName="";});
- for(const job of Object.keys(jobFacilityTypes)){
-  const workers=people.filter(p=>p.job===job);
-  const facilities=compatibleBuildings(job);
-  workers.forEach(p=>{
-   const candidates=facilities.filter(b=>(used.get(b)||0)<(defs[b.type].jobs||0)).sort((a,b)=>Math.hypot(a.x-p.x,a.z-p.z)-Math.hypot(b.x-p.x,b.z-p.z));
-   const workplace=candidates[0];
-   if(workplace){p.workplace=workplace;p.workplaceName=defs[workplace.type].name;used.set(workplace,(used.get(workplace)||0)+1);}
-   if(previous.get(p)!==p.workplace){p.working=false;p.routine="home";if(p.home){p.targetX=p.home.x+1.8;p.targetZ=p.home.z+2.3;}else{p.targetX=p.x;p.targetZ=p.z;}p.walkTimer=0;}
-  });
- }
- return used;
-}
-function workplacePoint(b,index=0){
- const offset=(index%5-2)*.42;
- return {x:b.x+offset,z:b.z+2.7};
-}
-const staffingAlertState=new Map();
-function staffingReport(){
- const used=assignWorkplaces(),reports=[];
- buildings.forEach(b=>{const d=defs[b.type];if(!d.staffNeed)return;const job=Object.keys(jobFacilityTypes).find(j=>jobFacilityTypes[j].includes(b.type));const count=people.filter(p=>p.workplace===b).length;const missing=Math.max(0,d.staffNeed-count);if(missing>0)reports.push({building:b,name:d.name,job:jobLabels[job],count,need:d.staffNeed,missing});});
- return reports;
-}
-let placementGhost=null,placementGhostType=null,placementPreviewPoint=null,placementPreviewValid=false;
-function disposePlacementGhost(){
- if(placementGhost){scene.remove(placementGhost);placementGhost.traverse(o=>{if(o.isMesh){const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>m.dispose());}});placementGhost=null;}
- placementGhostType=null;placementPreviewPoint=null;moveMarker.visible=false;moveMarkerOutline.visible=false;
-}
-function tintPlacementGhost(valid){
- if(!placementGhost)return;
- const color=valid?0x35e58a:0xff4055;
- placementGhost.traverse(o=>{if(o.isMesh){o.renderOrder=999;const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{m.transparent=true;m.opacity=.72;m.depthWrite=false;m.depthTest=false;m.color.set(color);m.emissive?.set(color);m.emissiveIntensity=.45;});}else if(o.isSprite){o.renderOrder=1000;o.material.depthTest=false;}});
-}
-function preparePlacementGhost(){
- const type=selected==="road"?"road":defs[selected]?selected:["rail","station","busstop"].includes(selected)?selected:null;
- if(!type){disposePlacementGhost();return;}
- if(placementGhostType===type&&placementGhost)return;
- disposePlacementGhost();placementGhostType=type;
- placementGhost=type==="road"?makeRoad(0,0).group:["rail","station","busstop"].includes(type)?makeTransit(type,0,0).group:makeBuilding(type,0,0).group;
- placementGhost.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false;const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{m=m.clone();m.transparent=true;m.opacity=.72;m.depthWrite=false;m.depthTest=false;});if(Array.isArray(o.material))o.material=o.material.map(m=>{const q=m.clone();q.transparent=true;q.opacity=.72;q.depthWrite=false;q.depthTest=false;return q;});else{o.material=o.material.clone();o.material.transparent=true;o.material.opacity=.72;o.material.depthWrite=false;o.material.depthTest=false;}}});
- placementGhost.renderOrder=999;moveMarker.visible=true;moveMarkerOutline.visible=true;
-}
-function buildingPlacementProblem(type,x,z){
- if(type==="airport"&&buildings.some(b=>b.type==="airport"))return "空港は都市に1か所だけ設置できます。";
- const candidate=buildingBounds(type,x,z,0,1);
- if(buildings.some(b=>footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港の敷地と重なっています。";
- if(roadsOverlapBuilding(candidate))return "道路と重なっています。";
- if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),0)))return "線路・駅・バス停と重なっています。";
- if(buildings.some(b=>b.type==="airport"&&type!=="airport"&&footprintsOverlap(candidate,airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";
- return "";
-}
-function roadPlacementProblem(x,z){
- if(roads.some(r=>r.x===x&&r.z===z))return "すでに道路があります。";
- if(buildings.some(b=>roadOverlapsBounds(x,z,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "建物・空港の敷地と重なっています。";
- if(transit.some(t=>footprintsOverlap(roadBounds(x,z),transitBounds(t.type,t.x,t.z),0)))return "線路・駅・バス停と重なっています。";
- if(buildings.some(b=>b.type==="airport"&&footprintsOverlap(roadBounds(x,z),airportRunwayBounds(b.x,b.z))))return "空港の滑走路と重なっています。";
- return "";
-}
-function updatePlacementPreviewPointer(e){
- if(publicView||!document.body.classList.contains("build-open")||!["road","rail","station","busstop",...Object.keys(defs)].includes(selected))return;
- const groundPoint=pointerGroundPoint(e);if(!groundPoint)return;
- const p=gridPos(groundPoint);preparePlacementGhost();if(!placementGhost)return;
- placementPreviewPoint=p;
- let problem="",bounds;
- if(selected==="road"){problem=roadPlacementProblem(p.x,p.z);bounds=roadBounds(p.x,p.z);}
- else if(["rail","station","busstop"].includes(selected)){
-  // 交通施設のプレビュー判定では実モデルを毎フレーム生成しない（シーンへの残留・描画干渉を防ぐ）
-  const dims=transitDimensions(selected);
-  bounds=new THREE.Box3(new THREE.Vector3(p.x-dims.w/2,0,p.z-dims.d/2),new THREE.Vector3(p.x+dims.w/2,3,p.z+dims.d/2));
-  problem=transitPlacementProblem(selected,p.x,p.z);
- }
- else{problem=buildingPlacementProblem(selected,p.x,p.z);bounds=buildingBounds(selected,p.x,p.z,0,1);}
- placementPreviewValid=!problem;placementGhost.position.set(p.x,.72,p.z);placementGhost.rotation.y=0;tintPlacementGhost(placementPreviewValid);
- const w=Math.max(4,bounds.max.x-bounds.min.x),d=Math.max(4,bounds.max.z-bounds.min.z);
- const markerCenter=bounds.getCenter(new THREE.Vector3());moveMarker.position.set(markerCenter.x,.12,markerCenter.z);moveMarker.scale.set(w/4.05,d/4.05,1);moveMarker.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarker.material.depthTest=false;moveMarker.renderOrder=998;
- moveMarkerOutline.position.set(markerCenter.x,.13,markerCenter.z);moveMarkerOutline.scale.set(w/4.05,d/4.05,1);moveMarkerOutline.material.color.set(placementPreviewValid?0x35e58a:0xff4055);moveMarkerOutline.material.depthTest=false;moveMarkerOutline.renderOrder=998;
-}
-function setTool(t){if(t!=="move"){cancelPendingMove();}disposePlacementGhost();selected=t;document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));const labels={rail:"線路",station:"駅",busstop:"バス停"};notice(t==="move"?"移動：施設を選択→移動先をクリック→「決定」。↻で90°回転。":t==="road"?"道路をクリックして敷設。":t==="remove"?"撤去したい道路・建物・交通施設をクリック。":t==="select"?"選択したい施設をクリック。":(defs[t]?.name||labels[t]||"施設")+"を配置する場所をクリック。");}
-function notice(s){$("notice").textContent=s;$("notice").classList.remove("hidden");clearTimeout(notice.timer);notice.timer=setTimeout(()=>$("notice").classList.add("hidden"),3000);}
-document.querySelectorAll("[data-tool]").forEach(b=>b.addEventListener("click",()=>setTool(b.dataset.tool)));
+// ===== 公共交通システム v1 終了 =====
 function findAt(x,z){return buildings.find(b=>Math.abs(b.x-x)<2&&Math.abs(b.z-z)<2)||roads.find(r=>r.x===x&&r.z===z)||transit.find(t=>Math.abs(t.x-x)<2&&Math.abs(t.z-z)<2);}
 function buildingBounds(type,x,z,rotation=0,level=1,source=null){
  const group=source?source.group.clone(true):makeBuilding(type,x,z,level).group;
