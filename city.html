@@ -836,6 +836,7 @@ function moveValidation(building,x,z,rotation=moveDraftRotation){
  const candidate=buildingBounds(building.type,x,z,rotation,building.level||1,building);
  if(buildings.some(b=>b!==building&&footprintsOverlap(candidate,buildingBounds(b.type,b.x,b.z,b.rotation||0,b.level||1,b))))return "別の建物の敷地と重なっています。建物が重ならない場所を選んでください。";
  if(roadsOverlapBuilding(candidate))return "道路と重なっています。道路のない場所を選んでください。";
+ if(transit.some(t=>footprintsOverlap(candidate,transitBounds(t.type,t.x,t.z),0)))return "線路・駅・バス停と重なっています。";
  if(building.type==="airport"){
   if(buildings.some(b=>b!==building&&b.type!=="airport"&&overlapsAirportRunway(b.x,b.z,x,z)))return "滑走路に既存の建物が重なります。別の場所を選んでください。";
  }else if(isAirportRunwayBlocked(x,z))return "滑走路内には移動できません。";
@@ -1074,7 +1075,8 @@ $("buyTrainBtn").onclick=async()=>{
 $("buyBusBtn").onclick=async()=>{
  const stops=transit.filter(t=>t.type==="busstop");
  if(stops.length<2){notice("バスを走らせるには、バス停が2か所以上必要です。");return;}
- if(!roadPathBetween(stops[0],stops[1])){notice("2つのバス停をつなぐ連続した道路を敷いてください。");return;}
+ const busPath=roadPathBetween(stops[0],stops[1]);
+ if(!busPath||busPath.length<2){notice("2つのバス停それぞれを道路につなぎ、間を連続した道路で結んでください。");return;}
  if(!(await charge(6000)))return;busCount++;rebuildTransitVehicles();notice("バスを購入しました。バス停の間を走ります。");scheduleSave();
 };
 $("buyCarBtn").onclick=async()=>{
