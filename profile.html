@@ -75,12 +75,23 @@ button,a.action{display:block;width:100%;text-align:center;border:0;border-radiu
 #status,#passwordMessage,#deleteMessage{font-size:12px;text-align:center;color:var(--muted);margin:12px 0 0;min-height:18px}
 #profile[hidden]{display:none}
 button:disabled{opacity:.55;cursor:wait}
-</style>
+.site-header{background:#fff;border-bottom:1px solid var(--line)}
+.home-brand{display:flex;align-items:center;gap:13px;text-decoration:none;color:inherit;flex:none}
+.header-inner{max-width:1100px;margin:auto;padding:15px 24px;display:flex;align-items:center;gap:13px}
+.site-header .header-inner{transform:none!important;flex-wrap:nowrap;min-width:0}
+.logo{width:46px;height:46px;border-radius:5px;background:#168b4c;color:white;display:grid;place-items:center;font-size:29px;font-weight:900;box-shadow:inset 0 -3px 0 #0d6d3a;padding-bottom:4px;box-sizing:border-box}
+.site-header .brand{display:block;font-size:23px;font-weight:850;color:#1d3426;margin:0;letter-spacing:normal}
+.site-header .brand small{display:block;font-size:10px;letter-spacing:.16em;color:#839087;line-height:1.2}
+.header-tag{margin-left:auto;color:#678071;font-size:12px;font-weight:700;background:#f0f7f2;padding:7px 12px;border-radius:30px;white-space:nowrap;flex:0 1 auto}
+.ranking-open{margin-left:0;border:1px solid #dce8df;border-radius:9px;background:#f3f8f4;color:#28613d;padding:9px 12px;font:inherit;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.account-open{margin-left:0;border:0;border-radius:9px;background:#168b4c;color:#fff;padding:10px 14px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;flex:0 0 auto;text-decoration:none}
+@media(max-width:900px){.site-header .header-inner{gap:7px;padding-left:16px;padding-right:16px}.site-header .brand{font-size:19px}.header-tag{font-size:10px;padding:6px 8px}.ranking-open{padding:8px 8px;font-size:11px}.account-open{padding:8px 9px;font-size:11px}}
+@media(max-width:650px){.site-header .header-inner{padding:12px 16px;flex-wrap:wrap}.site-header .logo{width:46px;height:46px}.site-header .header-tag{margin-left:auto}.site-header .ranking-open{margin-left:0}.site-header .account-open{margin-left:0}}</style>
 <link rel="icon" type="image/webp" href="./rika-kids-logo.webp">
 </head>
 <body>
+<header class="site-header"><div class="header-inner"><a class="home-brand" href="./" aria-label="理科キッズ ホーム"><div class="logo" aria-hidden="true">理</div><div class="brand">理科キッズ<small>SCIENCE KIDS</small></div></a><div class="header-tag">中学1〜3年生・理科用語集</div><a class="ranking-open" href="./ranking.html">🏆 ランキング</a><a class="ranking-open" href="./titles.html">🎖️ 称号一覧</a><a class="ranking-open" href="./city.html">🌆 自分の都市</a><a class="account-open" id="accountOpen" href="./account.html">ログイン・プロフィール</a></div></header>
 <main>
- <a class="brand" href="./" aria-label="理科キッズ ホーム"><span class="logo">理</span><span>理科キッズ</span></a>
  <h1>マイプロフィール</h1>
  <p class="lead">理科キッズの会員証・学習記録を確認できます。</p>
  <p id="status">ログイン状態を確認しています…</p>
