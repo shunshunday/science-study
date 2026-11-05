@@ -1,1 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><rect width="128" height="128" rx="24" fill="#fff"/><image href="./rika-kids-logo.webp" width="128" height="88" y="20" preserveAspectRatio="xMidYMid meet"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="18" fill="#168b4c"/>
+  <path d="M18 18h92v92H18z" fill="none" stroke="#ffffff" stroke-opacity=".2" stroke-width="3"/>
+  <text x="64" y="91" text-anchor="middle" font-family="'Noto Sans JP','Yu Gothic',Meiryo,sans-serif" font-size="82" font-weight="900" fill="#ffffff">理</text>
+</svg>
