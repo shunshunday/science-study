@@ -649,7 +649,19 @@ async function answerQuestion(choice,button){
  if(correct){
   const earned=await saveCorrectAnswer(q.category);
   quizFeedback.textContent=earned===true?'正解！ +$100 獲得！':(earned===null?'正解！ログインすると+$100が貯まります。':'正解！資金の保存に失敗しました。再ログインして確認してください。');
- }else quizFeedback.textContent='不正解。正解は「'+q.term+'」です。\n解説：'+q.definition+(q.formula?'\n関連する式・表記：'+q.formula:'');
+ }else{
+  quizFeedback.textContent='';
+  const answerLine=document.createElement('div');
+  answerLine.textContent='不正解。正解は「'+q.term+'」です。';
+  const explanationLine=document.createElement('div');
+  explanationLine.textContent='解説：'+q.definition;
+  quizFeedback.append(answerLine,explanationLine);
+  if(q.formula){
+   const formulaLine=document.createElement('div');
+   formulaLine.textContent='関連する式・表記：'+q.formula;
+   quizFeedback.appendChild(formulaLine);
+  }
+ }
  quizScore.textContent='正解 '+quizCorrect;quizNext.classList.add('show');
 }
 function finishQuiz(){
