@@ -87,6 +87,28 @@ main,.rika-global-footer,footer{margin-left:238px}
  .science-topbar{margin-left:0}
  main,.rika-global-footer,footer{margin-left:0}
 }
+
+/* History Kids typography: shared font family and type scale */
+:root{
+  --science-font:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+}
+html{font-size:16px}
+body{font-family:var(--science-font);line-height:1.7}
+button,input,select,textarea{font-family:inherit}
+.science-side-name{font-size:1.3rem}
+.science-side-name small{font-size:.6875rem;letter-spacing:.2em}
+.science-side-caption{font-size:.75rem}
+.science-side-nav a{font-size:.9375rem}
+.science-side-nav a span{font-size:1.3rem}
+.science-side-foot{font-size:.8125rem}
+.science-topbar-tagline{font-size:.8125rem;font-weight:400}
+.science-account-link,.science-furigana{font-size:.8125rem}
+.science-wallet span,.science-wallet strong{font-size:1.15rem}
+@media(max-width:650px){
+  .science-topbar-tagline{font-size:.75rem}
+  .science-account-link,.science-furigana{font-size:.75rem}
+  .science-wallet span,.science-wallet strong{font-size:1rem}
+}
 </style></head><body>
 <aside class="science-sidebar"><a class="science-side-brand" href="./"><span class="science-side-logo">理</span><span class="science-side-name">理科キッズ<small>SCIENCE KIDS</small></span></a><p class="science-side-caption">きょうは、何を学ぶ？</p><nav class="science-side-nav" aria-label="メインメニュー"><a href="./#quiz"><span>✎</span> クイズで学ぶ</a><a href="./city.html"><span>⌂</span> わたしの町</a><a href="./notifications.html"><span>♢</span> 通知</a><a href="./howto.html"><span>？</span> 遊び方</a></nav><p class="science-side-foot">理科を学んで、知識を集めよう。<br>毎日の学習を応援します。</p></aside>
 <header class="science-topbar"><div class="science-topbar-inner"><p class="science-topbar-tagline">学んで、集めて、理科を楽しもう。</p><a class="science-account-link" href="./account.html">ログイン・プロフィール</a></div></header>
