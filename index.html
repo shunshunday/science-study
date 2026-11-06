@@ -129,13 +129,9 @@ footer{margin-left:277px}
   <p class="science-side-caption">きょうは、何を学ぶ？</p>
   <nav class="science-side-nav" aria-label="メインメニュー">
     <a class="active" href="#quiz"><span>✎</span> クイズで学ぶ</a>
-    <a href="#terms"><span>⌕</span> 理科用語一覧</a>
-    <a href="./ranking.html"><span>◷</span> ランキング</a>
-    <a href="./titles.html"><span>◇</span> 称号一覧</a>
-    <a href="./city.html"><span>⌂</span> 自分の都市</a>
-    <a href="./profile.html"><span>◉</span> プロフィール</a>
-    <a href="./account.html"><span>↻</span> アカウント</a>
-    <a href="https://forms.gle/Fp5vCWwTv7TZuBq7A" target="_blank" rel="noopener noreferrer"><span>✉</span> お問い合わせ</a>
+    <a href="./city.html"><span>⌂</span> わたしの町</a>
+    <a href="#notifications" id="scienceNotificationsLink"><span>♢</span> 通知</a>
+    <a href="#howto"><span>？</span> 遊び方</a>
   </nav>
   <p class="science-side-foot">理科を学んで、知識を集めよう。<br>毎日の学習を応援します。</p>
 </aside>
@@ -211,7 +207,7 @@ footer{margin-left:277px}
     <article class="seo-guide-card"><h3>生物｜生命とからだのしくみ</h3><p>植物や動物のつくりとはたらき、細胞、生殖と遺伝、消化・呼吸・血液循環、生態系などを学びます。図と用語を対応させ、器官や細胞がどのように働くかを整理しましょう。</p></article>
     <article class="seo-guide-card"><h3>地学｜地球・天気・宇宙</h3><p>火山や地震、地層、天気の変化、気象観測、地球と宇宙、太陽や月、天体の動きなどを扱います。観察結果や図、時間による変化を結びつけて考えることがポイントです。</p></article>
   </div>
-  <h3>理科キッズの使い方</h3>
+  <h3 id="howto">理科キッズの使い方</h3>
   <ol>
     <li><strong>用語を調べる：</strong>検索欄に言葉や化学式を入力し、意味を確認します。化学・物理・生物・地学の分野別にも絞り込めます。</li>
     <li><strong>クイズで確かめる：</strong>学んだ用語を4択クイズで復習します。間違えた問題は説明を読み直し、なぜその答えになるのかを確認しましょう。</li>
@@ -945,5 +941,9 @@ async function refreshTopWallet(){
 refreshTopWallet();
 if(supabaseClient)supabaseClient.auth.onAuthStateChange(()=>refreshTopWallet());
 
+
+// Sidebar notification shortcut
+const scienceNotificationsLink=document.getElementById('scienceNotificationsLink');
+if(scienceNotificationsLink){scienceNotificationsLink.addEventListener('click',event=>{event.preventDefault();alert('現在、新しい通知はありません。');});}
 </script>
 </body></html>
