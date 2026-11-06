@@ -905,10 +905,12 @@ document.getElementById('authForm').addEventListener('submit',async e=>{
  finally{submit.disabled=false;}
 });
 document.getElementById('logoutButton').addEventListener('click',async()=>{if(!supabaseClient)return;stopPlaytimeTracking();await supabaseClient.auth.signOut();await refreshAccount();});
+function getGuestWallet(){try{const n=Number(localStorage.getItem('rikakids-guest-wallet'));return Number.isFinite(n)&&n>=0?n:100000;}catch(e){return 100000;}}
+function setGuestWallet(value){try{localStorage.setItem('rikakids-guest-wallet',String(Math.max(0,Math.floor(Number(value)||0))));}catch(e){}}
 async function saveCorrectAnswer(unit){
- if(!supabaseClient)return null;
+ if(!supabaseClient){setGuestWallet(getGuestWallet()+100);return true;}
  try{
-  const {data:{user},error:authError}=await supabaseClient.auth.getUser();if(authError||!user)return null;
+  const {data:{user},error:authError}=await supabaseClient.auth.getUser();if(authError||!user){setGuestWallet(getGuestWallet()+100);return true;}
   const {error:rewardError}=await supabaseClient.rpc('earn_quiz_reward',{p_unit:unit});
   if(rewardError)throw rewardError;
   const {data:walletData,error:walletError}=await supabaseClient.rpc('get_city_wallet');
@@ -936,10 +938,57 @@ if(furiganaToggle){
 }
 async function refreshTopWallet(){
  const walletNode=document.getElementById('topWallet');
- if(!walletNode||!supabaseClient)return;
+ if(!walletNode)return;
  try{
+  if(!supabaseClient){walletNode.textContent='
+  const {data,error}=await supabaseClient.rpc('get_city_wallet');
+  if(error)throw error;
+  const wallet=Array.isArray(data)?data[0]:data;
+  walletNode.textContent='$'+Number(wallet?.balance||0).toLocaleString('en-US');
+ }catch(e){walletNode.textContent='資産を読み込めません';}
+}
+refreshTopWallet();
+if(supabaseClient)supabaseClient.auth.onAuthStateChange(()=>refreshTopWallet());
+
+
+</script>
+<footer class="rika-global-footer">
+  <div class="rika-footer-inner">
+    <p class="rika-footer-tagline">理科キッズ — 1問ずつ、理科がわかる。</p>
+    <nav class="rika-footer-links" aria-label="フッターメニュー">
+      <a href="https://forms.gle/Fp5vCWwTv7TZuBq7A" target="_blank" rel="noopener noreferrer">お問い合わせ</a>
+      <a href="./operator.html" target="_blank" rel="noopener noreferrer">運営者情報</a>
+      <a href="./privacy.html" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>
+      <a href="./credits.html" target="_blank" rel="noopener noreferrer">クレジット</a>
+    </nav>
+  </div>
+</footer>
+</body></html>+getGuestWallet().toLocaleString('en-US')+'（ゲスト）';return;}
   const {data:{session}}=await supabaseClient.auth.getSession();
-  if(!session){walletNode.textContent='ログインして資産を表示';return;}
+  if(!session){walletNode.textContent='
+  const {data,error}=await supabaseClient.rpc('get_city_wallet');
+  if(error)throw error;
+  const wallet=Array.isArray(data)?data[0]:data;
+  walletNode.textContent='$'+Number(wallet?.balance||0).toLocaleString('en-US');
+ }catch(e){walletNode.textContent='資産を読み込めません';}
+}
+refreshTopWallet();
+if(supabaseClient)supabaseClient.auth.onAuthStateChange(()=>refreshTopWallet());
+
+
+</script>
+<footer class="rika-global-footer">
+  <div class="rika-footer-inner">
+    <p class="rika-footer-tagline">理科キッズ — 1問ずつ、理科がわかる。</p>
+    <nav class="rika-footer-links" aria-label="フッターメニュー">
+      <a href="https://forms.gle/Fp5vCWwTv7TZuBq7A" target="_blank" rel="noopener noreferrer">お問い合わせ</a>
+      <a href="./operator.html" target="_blank" rel="noopener noreferrer">運営者情報</a>
+      <a href="./privacy.html" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>
+      <a href="./credits.html" target="_blank" rel="noopener noreferrer">クレジット</a>
+    </nav>
+  </div>
+</footer>
+</body></html>+getGuestWallet().toLocaleString('en-US')+'（ゲスト）';return;}
   const {data,error}=await supabaseClient.rpc('get_city_wallet');
   if(error)throw error;
   const wallet=Array.isArray(data)?data[0]:data;
