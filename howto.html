@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#16834a">
+<link rel="icon" type="image/svg+xml" href="./rika-kids-icon.svg?v=white-photo">
+<link rel="apple-touch-icon" href="./rika-kids-favicon.png?v=2">
+<meta name="description" content="理科キッズの遊び方。クイズ、理科用語、学習記録、わたしの町の楽しみ方を紹介します。">
+<link rel="canonical" href="https://shunshunday.github.io/science-study/howto.html">
+<title>遊び方 | 理科キッズ</title>
+<style>
+:root{--green:#16834a;--pale:#eaf6ee;--ink:#1b344a;--muted:#718395;--line:#dce3e9;--bg:#f3f5f7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans JP","Yu Gothic",Meiryo,system-ui,sans-serif;line-height:1.75}
+.science-sidebar{position:fixed;z-index:1000;inset:0 auto 0 0;width:277px;background:#1b344a;color:#d9e4ee;padding:30px 22px 24px;display:flex;flex-direction:column;overflow-y:auto}
+.science-side-brand{display:flex;align-items:center;gap:14px;color:#fff;text-decoration:none;padding:14px 9px 24px}
+.science-side-logo{width:47px;height:47px;border-radius:6px;background:#168b4c;color:#fff;display:grid;place-items:center;font-size:29px;font-weight:900;flex:none}
+.science-side-name{font-size:21px;font-weight:900;line-height:1.25;letter-spacing:.02em}.science-side-name small{display:block;margin-top:5px;font-size:10px;letter-spacing:.2em;color:#c2d0dc}
+.science-side-caption{margin:28px 14px 16px;color:#9fb4c7;font-size:12px;letter-spacing:.08em}
+.science-side-nav{display:grid;gap:7px}.science-side-nav a{min-height:57px;display:flex;align-items:center;gap:17px;padding:0 18px;border-radius:12px;color:#d6e1eb;text-decoration:none;font-size:15px;font-weight:750}
+.science-side-nav a span{width:22px;text-align:center;font-size:22px;color:#c5d8e9}.science-side-nav a:hover{background:#29465f;color:#fff}
+.science-side-nav a.active{background:#eaf6ee;color:#126b38}.science-side-nav a.active span{color:#168b4c}
+.science-side-foot{margin:auto 13px 0;padding-top:30px;color:#9fb4c7;font-size:11px;line-height:1.9}
+.science-topbar{height:90px;position:sticky;top:0;z-index:900;margin-left:277px;background:#fff;border-bottom:1px solid var(--line)}
+.science-topbar-inner{height:100%;padding:0 46px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.science-topbar-tagline{margin:0;color:#8293a2;font-size:13px;letter-spacing:.08em}
+.science-topbar-actions{display:flex;align-items:center;gap:14px}
+.science-account-link{padding:11px 15px;border:1px solid #d2dce4;border-radius:10px;color:#536b80;text-decoration:none;font-size:12px;white-space:nowrap}
+.science-wallet{height:56px;padding:0 18px;display:flex;align-items:center;gap:12px;border-radius:12px;background:#eaf6ee;color:#126b38;white-space:nowrap;font-weight:850}
+main{margin-left:277px;padding:36px 46px 75px;max-width:1300px}
+.page-heading{margin:8px 0 28px}.eyebrow{font-size:11px;letter-spacing:.14em;color:var(--green);font-weight:850}.page-heading h1{font-size:35px;margin:7px 0;color:var(--ink)}.page-heading p{margin:0;color:var(--muted);font-size:14px}
+.guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.guide-card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:23px 24px;box-shadow:0 5px 18px #153d2508}
+.guide-number{width:38px;height:38px;display:grid;place-items:center;border-radius:10px;background:var(--pale);color:var(--green);font-weight:900;font-size:17px;margin-bottom:12px}
+.guide-card h2{font-size:19px;margin:0 0 8px}.guide-card p{font-size:13px;color:#637487;margin:0 0 12px}
+.guide-card ol,.guide-card ul{padding-left:21px;margin:0;color:#526477;font-size:13px}.guide-card li{margin:5px 0}
+.guide-link{display:inline-block;margin-top:15px;color:var(--green);font-size:13px;font-weight:850;text-decoration:none}.guide-link:hover{text-decoration:underline}
+.tip{margin-top:20px;padding:17px 20px;border:1px solid #d5e9da;background:#eef7f0;border-radius:12px;color:#42624c;font-size:13px}
+@media(max-width:900px){.science-sidebar{width:220px;padding:22px 14px}.science-topbar{margin-left:220px}.science-topbar-inner{padding:0 20px}main{margin-left:220px;padding:28px 22px 60px}}
+@media(max-width:650px){.science-sidebar{position:relative;width:100%;height:auto;padding:10px 12px;display:block}.science-side-brand{padding:5px 7px 10px}.science-side-caption,.science-side-foot{display:none}.science-side-nav{display:flex;overflow-x:auto;gap:5px;padding:3px 0 7px}.science-side-nav a{min-height:42px;white-space:nowrap;padding:0 11px;font-size:12px;gap:7px}.science-side-nav a span{font-size:16px;width:auto}.science-topbar{height:auto;min-height:65px;margin-left:0;position:relative}.science-topbar-inner{padding:10px 12px;align-items:center}.science-topbar-tagline{display:none}.science-topbar-actions{width:100%;justify-content:flex-end}.science-account-link{padding:9px;font-size:11px}.science-wallet{height:39px;padding:0 10px;font-size:12px}main{margin-left:0;padding:22px 14px 45px}.page-heading h1{font-size:27px}.guide-grid{grid-template-columns:1fr}.guide-card{padding:20px}}
+</style>
+</head>
+<body>
+<aside class="science-sidebar">
+  <a class="science-side-brand" href="./" aria-label="理科キッズ ホーム"><span class="science-side-logo">理</span><span class="science-side-name">理科キッズ<small>SCIENCE KIDS</small></span></a>
+  <p class="science-side-caption">きょうは、何を学ぶ？</p>
+  <nav class="science-side-nav" aria-label="メインメニュー">
+    <a href="./#quiz"><span>✎</span> クイズで学ぶ</a>
+    <a href="./city.html"><span>⌂</span> わたしの町</a>
+    <a href="./notifications.html"><span>♢</span> 通知</a>
+    <a class="active" href="./howto.html"><span>？</span> 遊び方</a>
+  </nav>
+  <p class="science-side-foot">理科を学んで、知識を集めよう。<br>毎日の学習を応援します。</p>
+</aside>
+<header class="science-topbar"><div class="science-topbar-inner">
+  <p class="science-topbar-tagline">学んで、集めて、理科を楽しもう。</p>
+  <div class="science-topbar-actions"><a class="science-account-link" href="./account.html">ログイン・プロフィール</a><div class="science-wallet">◉　理科キッズ</div></div>
+</div></header>
+<main>
+  <section class="page-heading"><div class="eyebrow">HOW TO PLAY</div><h1>遊び方</h1><p>理科キッズの楽しみ方を紹介します。初めての人も、ここから始めよう！</p></section>
+  <div class="guide-grid">
+    <section class="guide-card"><div class="guide-number">01</div><h2>クイズで学ぶ</h2><p>中学理科の問題に挑戦して、楽しみながら知識を身につけよう。</p><ol><li>ホームの「クイズで学ぶ」を開く</li><li>化学・物理・生物・地学など、挑戦したい分野を選ぶ</li><li>表示された問題の答えを選ぶ</li><li>正解・不正解と解説を確認して、次の問題へ進む</li></ol><a class="guide-link" href="./#quiz">クイズを始める →</a></section>
+    <section class="guide-card"><div class="guide-number">02</div><h2>理科用語を調べる</h2><p>わからない言葉や化学式を調べて、クイズの復習にも役立てよう。</p><ul><li>用語一覧でキーワードを検索</li><li>分野の絞り込みを使って探す</li><li>意味や説明を読んで覚える</li></ul><a class="guide-link" href="./#terms">用語一覧を見る →</a></section>
+    <section class="guide-card"><div class="guide-number">03</div><h2>わたしの町</h2><p>自分の町をつくって、少しずつ発展させよう。</p><ul><li>町の画面で道路や地区、施設などのメニューを確認</li><li>資金や町の状況を見ながら建設・整備する</li><li>町のデータを保存して、続きから遊ぶ</li></ul><a class="guide-link" href="./city.html">わたしの町へ →</a></section>
+    <section class="guide-card"><div class="guide-number">04</div><h2>記録・ランキング</h2><p>学習を続けて、自分の成長や称号を確認しよう。</p><ul><li>アカウントにログインして学習記録を保存</li><li>プロフィールで自分の情報を確認</li><li>ランキングや称号一覧で現在の成果をチェック</li></ul><a class="guide-link" href="./ranking.html">ランキングを見る →</a></section>
+    <section class="guide-card"><div class="guide-number">05</div><h2>通知をチェック</h2><p>新しい遊びや機能追加、アップデートのお知らせを確認できます。</p><ul><li>左のメニューから「通知」を開く</li><li>新しいお知らせが掲載されたら内容を確認</li></ul><a class="guide-link" href="./notifications.html">通知を見る →</a></section>
+    <section class="guide-card"><div class="guide-number">06</div><h2>困ったときは</h2><p>ページがうまく動かないときは、再読み込みしてみてください。</p><ul><li>ログインが必要な機能はアカウントにログイン</li><li>表示が古い場合は Ctrl + F5 で再読み込み</li><li>解決しない場合はお問い合わせから連絡</li></ul><a class="guide-link" href="https://forms.gle/Fp5vCWwTv7TZuBq7A" target="_blank" rel="noopener noreferrer">お問い合わせ →</a></section>
+  </div>
+  <div class="tip">💡 まずはクイズに挑戦してみよう！正解を重ねながら、理科の知識を増やしていこう。</div>
+</main>
+</body>
+</html>
