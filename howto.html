@@ -12,22 +12,22 @@
 <style>
 :root{--green:#16834a;--pale:#eaf6ee;--ink:#1b344a;--muted:#718395;--line:#dce3e9;--bg:#f3f5f7}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans JP","Yu Gothic",Meiryo,system-ui,sans-serif;line-height:1.75}
-.science-sidebar{position:fixed;z-index:1000;inset:0 auto 0 0;width:224px;background:#1b344a;color:#d9e4ee;padding:20px 16px 18px;display:flex;flex-direction:column;overflow-y:auto}
-.science-side-brand{display:flex;align-items:center;gap:14px;color:#fff;text-decoration:none;padding:14px 9px 24px}
-.science-side-logo{width:47px;height:47px;border-radius:6px;background:#168b4c;color:#fff;display:grid;place-items:center;font-size:29px;font-weight:900;flex:none}
-.science-side-name{font-size:21px;font-weight:900;line-height:1.25;letter-spacing:.02em}.science-side-name small{display:block;margin-top:5px;font-size:10px;letter-spacing:.2em;color:#c2d0dc}
-.science-side-caption{margin:28px 14px 16px;color:#9fb4c7;font-size:12px;letter-spacing:.08em}
-.science-side-nav{display:grid;gap:5px}.science-side-nav a{min-height:46px;display:flex;align-items:center;gap:12px;padding:0 13px;border-radius:10px;color:#d6e1eb;text-decoration:none;font-size:13px;font-weight:750}
-.science-side-nav a span{width:19px;text-align:center;font-size:18px;color:#c5d8e9}.science-side-nav a:hover{background:#29465f;color:#fff}
+.science-sidebar{position:fixed;z-index:1000;inset:0 auto 0 0;width:190px;background:#1b344a;color:#d9e4ee;padding:16px 12px;display:flex;flex-direction:column;overflow-y:auto}
+.science-side-brand{display:flex;align-items:center;gap:9px;color:#fff;text-decoration:none;padding:4px 5px 12px}
+.science-side-logo{width:34px;height:38px;border-radius:6px;background:#168b4c;color:#fff;display:grid;place-items:center;font-size:21px;font-weight:900;flex:none}
+.science-side-name{font-size:17px;font-weight:900;line-height:1.25;letter-spacing:.02em}.science-side-name small{display:block;margin-top:5px;font-size:10px;letter-spacing:.2em;color:#c2d0dc}
+.science-side-caption{margin:18px 9px 10px;color:#9fb4c7;font-size:12px;letter-spacing:.08em}
+.science-side-nav{display:grid;gap:5px}.science-side-nav a{min-height:37px;display:flex;align-items:center;gap:8px;padding:0 9px;border-radius:9px;color:#d6e1eb;text-decoration:none;font-size:12px;font-weight:750}
+.science-side-nav a span{width:19px;text-align:center;font-size:16px;color:#c5d8e9}.science-side-nav a:hover{background:#29465f;color:#fff}
 .science-side-nav a.active{background:#eaf6ee;color:#126b38}.science-side-nav a.active span{color:#168b4c}
 .science-side-foot{margin:auto 13px 0;padding-top:30px;color:#9fb4c7;font-size:11px;line-height:1.9}
-.science-topbar{height:64px;position:sticky;top:0;z-index:900;margin-left:224px;background:#fff;border-bottom:1px solid var(--line)}
-.science-topbar-inner{height:100%;padding:0 28px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.science-topbar{height:56px;position:sticky;top:0;z-index:900;margin-left:190px;background:#fff;border-bottom:1px solid var(--line)}
+.science-topbar-inner{height:100%;padding:0 18px;display:flex;align-items:center;justify-content:space-between;gap:14px}
 .science-topbar-tagline{margin:0;color:#8293a2;font-size:12px;letter-spacing:.06em}
 .science-topbar-actions{display:flex;align-items:center;gap:14px}
 .science-account-link{padding:11px 15px;border:1px solid #d2dce4;border-radius:10px;color:#536b80;text-decoration:none;font-size:12px;white-space:nowrap}
-.science-wallet{height:56px;padding:0 18px;display:flex;align-items:center;gap:12px;border-radius:12px;background:#eaf6ee;color:#126b38;white-space:nowrap;font-weight:850}
-main{margin-left:277px;padding:36px 46px 75px;max-width:1300px}
+.science-wallet{height:36px;padding:0 11px;display:flex;align-items:center;gap:6px;border-radius:9px;background:#eaf6ee;color:#126b38;white-space:nowrap;font-weight:850}
+main{margin-left:190px;padding:28px 36px 65px;max-width:1300px}
 .page-heading{margin:8px 0 28px}.eyebrow{font-size:11px;letter-spacing:.14em;color:var(--green);font-weight:850}.page-heading h1{font-size:35px;margin:7px 0;color:var(--ink)}.page-heading p{margin:0;color:var(--muted);font-size:14px}
 .guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .guide-card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:23px 24px;box-shadow:0 5px 18px #153d2508}
@@ -36,7 +36,7 @@ main{margin-left:277px;padding:36px 46px 75px;max-width:1300px}
 .guide-card ol,.guide-card ul{padding-left:21px;margin:0;color:#526477;font-size:13px}.guide-card li{margin:5px 0}
 .guide-link{display:inline-block;margin-top:15px;color:var(--green);font-size:13px;font-weight:850;text-decoration:none}.guide-link:hover{text-decoration:underline}
 .tip{margin-top:20px;padding:17px 20px;border:1px solid #d5e9da;background:#eef7f0;border-radius:12px;color:#42624c;font-size:13px}
-@media(max-width:900px){.science-sidebar{width:200px;padding:18px 12px}.science-topbar{margin-left:200px}.science-topbar-inner{padding:0 18px}main{margin-left:200px;padding:26px 20px 56px}}
+@media(max-width:900px){.science-sidebar{width:170px;padding:16px 10px}.science-topbar{margin-left:170px}.science-topbar-inner{padding:0 14px}main{margin-left:170px;padding:24px 18px 50px}}
 @media(max-width:650px){.science-sidebar{position:relative;width:100%;height:auto;padding:10px 12px;display:block}.science-side-brand{padding:5px 7px 10px}.science-side-caption,.science-side-foot{display:none}.science-side-nav{display:flex;overflow-x:auto;gap:5px;padding:3px 0 7px}.science-side-nav a{min-height:42px;white-space:nowrap;padding:0 11px;font-size:12px;gap:7px}.science-side-nav a span{font-size:16px;width:auto}.science-topbar{height:auto;min-height:58px;margin-left:0;position:relative}.science-topbar-inner{padding:10px 12px;align-items:center}.science-topbar-tagline{display:none}.science-topbar-actions{width:100%;justify-content:flex-end}.science-account-link{padding:9px;font-size:11px}.science-wallet{height:39px;padding:0 10px;font-size:12px}main{margin-left:0;padding:22px 14px 45px}.page-heading h1{font-size:27px}.guide-grid{grid-template-columns:1fr}.guide-card{padding:20px}}
 </style>
 <style>
