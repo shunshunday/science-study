@@ -905,7 +905,7 @@ document.getElementById('authForm').addEventListener('submit',async e=>{
  finally{submit.disabled=false;}
 });
 document.getElementById('logoutButton').addEventListener('click',async()=>{if(!supabaseClient)return;stopPlaytimeTracking();await supabaseClient.auth.signOut();await refreshAccount();});
-function getGuestWallet(){try{const n=Number(localStorage.getItem('rikakids-guest-wallet'));return Number.isFinite(n)&&n>=0?n:100000;}catch(e){return 100000;}}
+function getGuestWallet(){try{const raw=localStorage.getItem('rikakids-guest-wallet');if(raw===null)return 0;let n=Number(raw);if(!localStorage.getItem('rikakids-guest-wallet-v2')){if(n===100000)n=0;localStorage.setItem('rikakids-guest-wallet-v2','1');localStorage.setItem('rikakids-guest-wallet',String(n));}return Number.isFinite(n)&&n>=0?n:0;}catch(e){return 0;}}
 function setGuestWallet(value){try{localStorage.setItem('rikakids-guest-wallet',String(Math.max(0,Math.floor(Number(value)||0))));}catch(e){}}
 async function saveCorrectAnswer(unit){
  if(!supabaseClient){setGuestWallet(getGuestWallet()+100);return true;}
