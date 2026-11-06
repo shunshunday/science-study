@@ -146,17 +146,17 @@ footer{margin-left:238px}
 .science-wallet span{font-size:15px}
 .science-wallet strong{font-size:14px}
 /* Smaller text in both navigation bars; bar dimensions remain unchanged */
-.science-side-name{font-size:18px}
-.science-side-name small{font-size:9px}
-.science-side-caption{font-size:12px}
-.science-side-nav a{font-size:14px}
-.science-side-nav a span{font-size:18px}
-.science-side-foot{font-size:11px}
-.science-topbar-tagline{font-size:12px}
-.science-account-link{font-size:12px}
-.science-furigana{font-size:13px}
-.science-wallet span{font-size:15px}
-.science-wallet strong{font-size:16px}
+.science-side-name{font-size:14px}
+.science-side-name small{font-size:8px}
+.science-side-caption{font-size:9px}
+.science-side-nav a{font-size:10px}
+.science-side-nav a span{font-size:15px}
+.science-side-foot{font-size:9px}
+.science-topbar-tagline{font-size:9px}
+.science-account-link{font-size:9px}
+.science-furigana{font-size:10px}
+.science-wallet span{font-size:12px}
+.science-wallet strong{font-size:11px}
 
 @media(max-width:1150px){
  .science-sidebar{width:190px;padding:20px 10px}
@@ -191,7 +191,7 @@ footer{margin-left:238px}
   <div class="science-topbar-inner">
     <p class="science-topbar-tagline">学んで、集めて、理科を楽しもう。</p>
     <div class="science-topbar-actions">
-      <a class="science-account-link" id="accountOpen" href="./account.html">ログイン・プロフィール</a>
+      <a class="science-account-link" id="accountOpen" href="./account.html">ログイン</a>
       <button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true">ふりがな　ON</button>
       <div class="science-wallet"><span>◉</span><strong id="topWallet">ゲスト資金を読み込み中</strong></div>
     </div>
@@ -911,10 +911,10 @@ function usernameEmail(username){return username.toLowerCase()+'@accounts.rikaki
 function scienceTitle(n){if(n>=1000000)return "覇者";if(n>=500000)return "ノーベル賞";if(n>=200000)return "伝説の科学者";if(n>=100000)return "科学の天才";if(n>=60000)return "理科博士";if(n>=30000)return "理科マスター";if(n>=10000)return "理科チャレンジャー";return "理科ビギナー";}
 async function refreshAccount(){
  const accountOpen=document.getElementById('accountOpen');
- if(!supabaseClient){accountOpen.textContent='ログイン・プロフィール';authView.hidden=false;profileView.hidden=true;document.getElementById('accountSetup').hidden=false;return;}
+ if(!supabaseClient){accountOpen.textContent='ログイン';authView.hidden=false;profileView.hidden=true;document.getElementById('accountSetup').hidden=false;return;}
  document.getElementById('accountSetup').hidden=true;
  const {data:{session}}=await supabaseClient.auth.getSession();
- if(!session){stopPlaytimeTracking();accountOpen.textContent='ログイン・プロフィール';authView.hidden=false;profileView.hidden=true;return;}
+ if(!session){stopPlaytimeTracking();accountOpen.textContent='ログイン';authView.hidden=false;profileView.hidden=true;return;}
  startPlaytimeTracking(session.user.id);
  authView.hidden=true;profileView.hidden=false;
  const {data:profile,error}=await supabaseClient.from('profiles').select('username').eq('id',session.user.id).single();
