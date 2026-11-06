@@ -217,6 +217,28 @@ main,.rika-global-footer,footer{margin-left:238px}
  .science-topbar{margin-left:0}
  main,.rika-global-footer,footer{margin-left:0}
 }
+
+/* History Kids typography: shared font family and type scale */
+:root{
+  --science-font:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+}
+html{font-size:16px}
+body{font-family:var(--science-font);line-height:1.7}
+button,input,select,textarea{font-family:inherit}
+.science-side-name{font-size:1.3rem}
+.science-side-name small{font-size:.6875rem;letter-spacing:.2em}
+.science-side-caption{font-size:.75rem}
+.science-side-nav a{font-size:.9375rem}
+.science-side-nav a span{font-size:1.3rem}
+.science-side-foot{font-size:.8125rem}
+.science-topbar-tagline{font-size:.8125rem;font-weight:400}
+.science-account-link,.science-furigana{font-size:.8125rem}
+.science-wallet span,.science-wallet strong{font-size:1.15rem}
+@media(max-width:650px){
+  .science-topbar-tagline{font-size:.75rem}
+  .science-account-link,.science-furigana{font-size:.75rem}
+  .science-wallet span,.science-wallet strong{font-size:1rem}
+}
 </style></head>
 <body>
 <aside class="science-sidebar">
