@@ -118,7 +118,7 @@ button{font:inherit;color:#eaf8ff;background:#18334d;border:1px solid #365a76;bo
 <button type="button" id="cityInfoToggle" aria-expanded="false">都市情報・経営</button>
 </nav>
 <div class="notice" id="notice">道路を敷いて、自分の都市をつくろう。左ドラッグで視点移動・右ドラッグで回転・ホイールでズーム。建設は建設モード中のみ。</div>
-<div class="login hidden" id="login"><div class="login-card"><h1>都市データを保存するには</h1><p>理科キッズのアカウントでログインしてください。ログインしていない場合も、お試しプレイはできますが、クラウド保存はできません。</p><button onclick="location.href='./account.html'">ログイン・新規登録</button><button onclick="location.reload()">ログイン済みなら再読み込み</button></div></div>
+<div class="login hidden" id="login"><div class="login-card"><h1>都市データを保存するには</h1><p>ログインなしでもゲストとして遊べます。都市データはこのブラウザに保存されます。アカウントを使うとクラウド保存や端末間の引き継ぎができます。</p><button onclick="location.href='./account.html'">ログイン・新規登録</button><button onclick="location.reload()">ログイン済みなら再読み込み</button></div></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./playtime.js"></script>
@@ -1802,7 +1802,7 @@ window.addEventListener("pointerup",e=>{
  if(selected==="remove"){
   const item=findAt(p.x,p.z);if(!item)return;
   const refund=item.zoneType?Math.floor(zoneCosts[item.zoneType]/2):item.autoBuilt?0:item.type?(defs[item.type]?Math.floor((item.type==="airport"?0:defs[item.type].cost)/2):Math.floor(transitCosts[item.type]/2)):250;
-  (async()=>{if(user){try{const {data,error}=await cityRefund(refund);if(error)throw error;cash=Number(data);}catch(err){notice("返金に失敗したため撤去を中止しました: "+err.message);await refreshWallet();return;}}else{notice("返金・撤去にはログインが必要です。");return;}
+  (async()=>{try{const {data,error}=await cityRefund(refund);if(error)throw error;cash=Number(data);}catch(err){notice("返金に失敗したため撤去を中止しました: "+err.message);await refreshWallet();return;}
    if(item.group)scene.remove(item.group);if(item.zoneType)zones=zones.filter(z=>z!==item);else if(item.type&&item.type in defs){if(item.zoneId){const z=zones.find(q=>q.x+":"+q.z===item.zoneId);if(z){z.developed=false;z.group.visible=true;}}buildings=buildings.filter(b=>b!==item);}else if(item.type)transit=transit.filter(t=>t!==item);else{roads=roads.filter(r=>r!==item);refreshRoadVisuals();}
    if(selectedObject===item)selectedObject=null;rebuildTransitVehicles();rebuildCarRoutes();updateUI();scheduleSave();notice("撤去しました。$"+refund.toLocaleString("en-US")+"（費用の50%）を返金しました。");
   })();return;
