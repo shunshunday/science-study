@@ -125,8 +125,9 @@ footer{margin-left:238px}
   <div class="science-topbar-inner">
     <p class="science-topbar-tagline">学んで、集めて、理科を楽しもう。</p>
     <div class="science-topbar-actions">
-      <a class="science-account-link" href="./account.html">ログイン・プロフィール</a>
-      <div class="science-wallet"><span>◉</span><strong>理科キッズ</strong></div>
+      <a class="science-account-link" id="accountOpen" href="./account.html">ログイン・プロフィール</a>
+      <button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true">ふりがな　ON</button>
+      <div class="science-wallet"><span>◉</span><strong id="topWallet">$0</strong></div>
     </div>
   </div>
 </header>
@@ -154,5 +155,44 @@ footer{margin-left:238px}
     </nav>
   </div>
 </footer>
+
+<script>
+(()=>{
+ const SUPABASE_URL="https://tmgfcmzufamxuzsuedza.supabase.co";
+ const SUPABASE_ANON_KEY="sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng";
+ const walletNode=document.getElementById('topWallet');
+ const getGuestWallet=()=>{try{const raw=localStorage.getItem('rikakids-guest-wallet');const n=Number(raw??0);return Number.isFinite(n)&&n>=0?n:0;}catch(e){return 0;}};
+ const showWallet=async()=>{
+  if(!walletNode)return;
+  try{
+   const client=window.supabase?.createClient?.(SUPABASE_URL,SUPABASE_ANON_KEY);
+   if(!client){walletNode.textContent='
+</html>+getGuestWallet().toLocaleString('en-US');return;}
+   const {data:{session},error:sessionError}=await client.auth.getSession();
+   if(sessionError)throw sessionError;
+   if(!session){walletNode.textContent='
+</html>+getGuestWallet().toLocaleString('en-US');return;}
+   const {data,error}=await client.rpc('get_city_wallet');
+   if(error)throw error;
+   const wallet=Array.isArray(data)?data[0]:data;
+   walletNode.textContent='
+</html>+Number(wallet?.balance||0).toLocaleString('en-US');
+  }catch(error){
+   console.error('通知ページの所持金取得に失敗',error);
+   walletNode.textContent='
+</html>+getGuestWallet().toLocaleString('en-US');
+  }
+ };
+ const toggle=document.getElementById('furiganaToggle');
+ if(toggle){
+  let on=true;try{on=localStorage.getItem('rikakids-furigana')!=='off';}catch(e){}
+  const paint=()=>{toggle.textContent='ふりがな　'+(on?'ON':'OFF');toggle.setAttribute('aria-pressed',String(on));document.documentElement.dataset.furigana=on?'on':'off';};
+  paint();
+  toggle.addEventListener('click',()=>{on=!on;try{localStorage.setItem('rikakids-furigana',on?'on':'off');}catch(e){}paint();});
+ }
+ showWallet();
+})();
+</script>
+
 </body>
 </html>
