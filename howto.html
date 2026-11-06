@@ -32,7 +32,7 @@ main{margin-left:277px;padding:36px 46px 75px;max-width:1300px}
 .guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .guide-card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:23px 24px;box-shadow:0 5px 18px #153d2508}
 .guide-number{width:38px;height:38px;display:grid;place-items:center;border-radius:10px;background:var(--pale);color:var(--green);font-weight:900;font-size:17px;margin-bottom:12px}
-.guide-card h2{font-size:19px;margin:0 0 8px}.guide-card p{font-size:13px;color:#637487;margin:0 0 12px}
+.guide-intro{margin-bottom:16px}.guide-detail{margin-top:12px!important;padding:10px 12px;background:#f1f7f2;border-radius:8px;color:#42624c!important}.guide-card h2{font-size:19px;margin:0 0 8px}.guide-card p{font-size:13px;color:#637487;margin:0 0 12px}
 .guide-card ol,.guide-card ul{padding-left:21px;margin:0;color:#526477;font-size:13px}.guide-card li{margin:5px 0}
 .guide-link{display:inline-block;margin-top:15px;color:var(--green);font-size:13px;font-weight:850;text-decoration:none}.guide-link:hover{text-decoration:underline}
 .tip{margin-top:20px;padding:17px 20px;border:1px solid #d5e9da;background:#eef7f0;border-radius:12px;color:#42624c;font-size:13px}
@@ -57,16 +57,79 @@ main{margin-left:277px;padding:36px 46px 75px;max-width:1300px}
   <div class="science-topbar-actions"><a class="science-account-link" href="./account.html">ログイン・プロフィール</a><div class="science-wallet">◉　理科キッズ</div></div>
 </div></header>
 <main>
-  <section class="page-heading"><div class="eyebrow">HOW TO PLAY</div><h1>遊び方</h1><p>理科キッズの楽しみ方を紹介します。初めての人も、ここから始めよう！</p></section>
+  <section class="page-heading"><div class="eyebrow">HOW TO PLAY</div><h1>遊び方ガイド</h1><p>理科キッズの各機能を、初めて使う人にも分かるように説明します。目的に合わせて読み進めてください。</p></section>
+
+  <section class="guide-card guide-intro">
+    <h2>まずはホームから始めよう</h2>
+    <p>ホームでは、理科用語を調べたり、分野を選んでクイズに挑戦したりできます。画面左の固定メニューから「クイズで学ぶ」「わたしの町」「通知」「遊び方」へ移動できます。</p>
+  </section>
+
   <div class="guide-grid">
-    <section class="guide-card"><div class="guide-number">01</div><h2>クイズで学ぶ</h2><p>中学理科の問題に挑戦して、楽しみながら知識を身につけよう。</p><ol><li>ホームの「クイズで学ぶ」を開く</li><li>化学・物理・生物・地学など、挑戦したい分野を選ぶ</li><li>表示された問題の答えを選ぶ</li><li>正解・不正解と解説を確認して、次の問題へ進む</li></ol><a class="guide-link" href="./#quiz">クイズを始める →</a></section>
-    <section class="guide-card"><div class="guide-number">02</div><h2>理科用語を調べる</h2><p>わからない言葉や化学式を調べて、クイズの復習にも役立てよう。</p><ul><li>用語一覧でキーワードを検索</li><li>分野の絞り込みを使って探す</li><li>意味や説明を読んで覚える</li></ul><a class="guide-link" href="./#terms">用語一覧を見る →</a></section>
-    <section class="guide-card"><div class="guide-number">03</div><h2>わたしの町</h2><p>自分の町をつくって、少しずつ発展させよう。</p><ul><li>町の画面で道路や地区、施設などのメニューを確認</li><li>資金や町の状況を見ながら建設・整備する</li><li>町のデータを保存して、続きから遊ぶ</li></ul><a class="guide-link" href="./city.html">わたしの町へ →</a></section>
-    <section class="guide-card"><div class="guide-number">04</div><h2>記録・ランキング</h2><p>学習を続けて、自分の成長や称号を確認しよう。</p><ul><li>アカウントにログインして学習記録を保存</li><li>プロフィールで自分の情報を確認</li><li>ランキングや称号一覧で現在の成果をチェック</li></ul><a class="guide-link" href="./ranking.html">ランキングを見る →</a></section>
-    <section class="guide-card"><div class="guide-number">05</div><h2>通知をチェック</h2><p>新しい遊びや機能追加、アップデートのお知らせを確認できます。</p><ul><li>左のメニューから「通知」を開く</li><li>新しいお知らせが掲載されたら内容を確認</li></ul><a class="guide-link" href="./notifications.html">通知を見る →</a></section>
-    <section class="guide-card"><div class="guide-number">06</div><h2>困ったときは</h2><p>ページがうまく動かないときは、再読み込みしてみてください。</p><ul><li>ログインが必要な機能はアカウントにログイン</li><li>表示が古い場合は Ctrl + F5 で再読み込み</li><li>解決しない場合はお問い合わせから連絡</li></ul><a class="guide-link" href="https://forms.gle/Fp5vCWwTv7TZuBq7A" target="_blank" rel="noopener noreferrer">お問い合わせ →</a></section>
+    <section class="guide-card"><div class="guide-number">01</div><h2>クイズで学ぶ</h2>
+      <p>中学理科の知識を、選択式の問題で確認する機能です。</p>
+      <ol><li>ホーム画面の「クイズで学ぶ」まで移動します。</li><li>出題したい分野を選びます。化学・物理・生物・地学から選択できます。全分野を対象にすることもできます。</li><li>「出題」ボタンを押すと問題が始まります。</li><li>問題文を読み、表示された選択肢から答えを1つ選びます。</li><li>回答後は正解・不正解を確認します。解説が表示された場合は、答えだけでなく理由も読んで理解しましょう。</li><li>「次へ」で次の問題に進みます。出題が終わると結果が表示されます。</li></ol>
+      <p class="guide-detail">チャレンジはランダムに5問出題するモードです。最後に正解数を確認できます。結果画面の「チャレンジ終了」から、分野選択画面に戻れます。</p>
+      <a class="guide-link" href="./#quiz">クイズを始める →</a>
+    </section>
+
+    <section class="guide-card"><div class="guide-number">02</div><h2>理科用語を検索する</h2>
+      <p>授業の予習・復習や、クイズで分からなかった言葉の確認に使います。</p>
+      <ol><li>ホーム画面の「理科用語一覧」までスクロールします。</li><li>検索欄に用語・キーワード・化学式などを入力します。</li><li>分野ボタンで化学・物理・生物・地学などに絞り込めます。</li><li>表示されたカードの用語名と説明を読みます。</li><li>見つからないときは、言葉の一部や別の表記でも検索してみましょう。</li></ol>
+      <p class="guide-detail">用語を覚えるときは、名前だけでなく「どんな意味か」「どんな場面で使うか」まで確認するのがおすすめです。</p>
+      <a class="guide-link" href="./#terms">用語一覧を見る →</a>
+    </section>
+
+    <section class="guide-card"><div class="guide-number">03</div><h2>わたしの町を開く</h2>
+      <p>自分の都市をつくり、道路・地区・施設を整えて発展させるシミュレーションです。</p>
+      <ol><li>左メニューの「わたしの町」を開きます。</li><li>都市の所持資金・人口・電力・幸福度などを確認します。</li><li>画面下の建設カテゴリから、道路・地区・施設など使いたい項目を選びます。</li><li>建設モードが有効なときに、選んだツールに応じて地面をクリックまたはドラッグして操作します。</li><li>住宅・商業・工業・オフィス地区は、用途を選んで範囲をドラッグ指定します。地区指定は無料で、需要や道路アクセスなどに応じて建物が自動的に成長します。</li><li>道路や施設、電線・水道管・下水管などを整備し、都市の状況を見ながら少しずつ拡張します。</li></ol>
+      <p class="guide-detail">一般建物は1棟ずつ購入して置く方式ではありません。地区を指定し、需要や雇用・供給などの条件を整えて成長を待ちます。</p>
+      <a class="guide-link" href="./city.html">わたしの町を開く →</a>
+    </section>
+
+    <section class="guide-card"><div class="guide-number">04</div><h2>都市画面のカメラ操作</h2>
+      <p>広い都市を見渡すための基本操作です。</p>
+      <ul><li>マウス左ボタンをドラッグ：視点を移動します。</li><li>マウス右ボタンをドラッグ：カメラを回転します。</li><li>マウスホイール：拡大・縮小します。</li><li>キーボードの矢印キー：カメラを前後左右に移動します。</li><li>建設は建設モード中のみ行われます。カメラ操作と施設の設置を混同しないよう、選択中のツールを確認してください。</li></ul>
+      <p class="guide-detail">施設を置くときは、先に建設カテゴリと施設を選びます。配置後に位置や向きを調整できる施設では「移動・回転」ツールを使います。</p>
+    </section>
+
+    <section class="guide-card"><div class="guide-number">05</div><h2>都市の道路・地区・ライフライン</h2>
+      <p>町を機能させるには、建物だけでなく道路やインフラも必要です。</p>
+      <ul><li>道路・交通：道路ツールを選び、地面をクリックまたはドラッグして道路を敷きます。曲線道路や交差点も整備できます。</li><li>地区：住宅・商業・工業・オフィスの用途を選び、範囲をドラッグして指定します。</li><li>電力：電線ツールで発電施設などから電線をつなぎます。発電量と需要を確認します。</li><li>水道・下水：水道管と下水管をそれぞれ敷設し、供給・処理の状態を確認します。</li><li>公共サービス：消防・警察・医療・ごみ処理などの施設を整え、住民の暮らしを支えます。</li></ul>
+      <p class="guide-detail">施設を増やすだけでなく、電力・水・下水・道路アクセスや働く人が足りているかも確認しましょう。</p>
+    </section>
+
+    <section class="guide-card"><div class="guide-number">06</div><h2>都市のお金・税金・銀行融資</h2>
+      <p>都市情報・経営の画面では、収入と支出を確認して運営方針を調整できます。</p>
+      <ul><li>税率：住宅・商業・工業・オフィスごとに税率を調整できます。税率を上げると税収に影響しますが、住民や企業の満足度・活動にも注意が必要です。</li><li>公共サービス予算：サービスごとの予算を調整できます。予算を下げると維持費は減りますが、施設の効率や供給能力も低下します。</li><li>銀行融資：50,000ドルまたは100,000ドルを借り入れできます。借入には月利1.2%がかかり、借入上限は500,000ドルです。</li><li>返済：10,000ドルずつ、または全額返済を選べます。借入残高と利息を確認して計画的に返済しましょう。</li></ul>
+      <p class="guide-detail">借入金は使える資金になりますが、返済が必要です。収入と支出を確認し、返済できる範囲で利用してください。</p>
+    </section>
+
+    <section class="guide-card"><div class="guide-number">07</div><h2>アカウント・保存について</h2>
+      <p>学習記録や都市データを利用するには、アカウントへのログインが必要な機能があります。</p>
+      <ol><li>上部の「ログイン・プロフィール」からアカウント画面を開きます。</li><li>アカウントを持っている場合はログイン、初めての場合は新規登録を行います。</li><li>都市画面でクラウド保存を利用する場合は、理科キッズのアカウントでログインしてください。</li><li>都市画面の保存操作を行い、保存完了の表示を確認します。</li></ol>
+      <p class="guide-detail">ログインしていない状態でも都市を試しに遊べますが、その場合はクラウド保存できません。大切な都市データを残すにはログインして保存してください。</p>
+      <a class="guide-link" href="./account.html">アカウントを確認する →</a>
+    </section>
+
+    <section class="guide-card"><div class="guide-number">08</div><h2>プロフィール・ランキング・称号</h2>
+      <p>学習の成果やアカウント情報を確認できます。</p>
+      <ul><li>プロフィール：自分のアカウント情報や学習の記録を確認します。</li><li>ランキング：正解数などの順位を確認します。</li><li>称号一覧：条件を達成して獲得した称号を確認します。</li><li>都市ランキング：都市画面の都市情報から、都市の評価を確認できます。</li></ul>
+      <p class="guide-detail">学習記録を反映させるため、ログイン状態を確認してから利用しましょう。</p>
+      <a class="guide-link" href="./profile.html">プロフィールを見る →</a>
+    </section>
+
+    <section class="guide-card"><div class="guide-number">09</div><h2>通知を確認する</h2>
+      <p>新しい遊びや機能追加、アップデート情報を掲載するページです。</p>
+      <ol><li>左側の固定メニューから「通知」を選びます。</li><li>お知らせのタイトルと内容を読みます。</li><li>新しい機能が追加されたときは、案内にあるリンクから該当ページを開きます。</li></ol>
+      <a class="guide-link" href="./notifications.html">通知ページを見る →</a>
+    </section>
+
+    <section class="guide-card"><div class="guide-number">10</div><h2>困ったときは</h2>
+      <ul><li>ページの表示がおかしい：再読み込みしてください。更新が反映されない場合は Ctrl + F5 を試します。</li><li>ログインできない：アカウント画面でログイン状態を確認します。</li><li>都市が保存されない：ログインしているか、保存完了の表示が出たかを確認します。</li><li>操作が分からない：この遊び方ページの該当項目を読み直してください。</li><li>解決しない：お問い合わせフォームから、発生したページと症状を伝えてください。</li></ul>
+      <a class="guide-link" href="https://forms.gle/Fp5vCWwTv7TZuBq7A" target="_blank" rel="noopener noreferrer">お問い合わせ →</a>
+    </section>
   </div>
-  <div class="tip">💡 まずはクイズに挑戦してみよう！正解を重ねながら、理科の知識を増やしていこう。</div>
+  <div class="tip"><strong>おすすめの進め方：</strong> まず用語を調べ、クイズで理解度を確認しましょう。慣れてきたら「わたしの町」で道路や地区、ライフラインを整えて、自分だけの都市づくりにも挑戦してみてください。</div>
 </main>
 </body>
 </html>
