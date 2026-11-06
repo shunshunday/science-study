@@ -94,7 +94,7 @@ body{background:var(--science-shell);color:#1b344a}
 .science-side-caption{margin:46px 12px 14px;color:#9fb4c7;font-size:12px;letter-spacing:.08em}
 .science-side-nav{display:grid;gap:5px}
 .science-side-nav a{min-height:0;display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:0;color:#d6e1eb;text-decoration:none;font-size:.9375rem;font-weight:750;transition:background .15s,color .15s}
-.science-side-nav a span{width:24px;text-align:center;font-size:1.3rem;color:#c5d8e9}
+.science-side-nav a span{width:24px;text-align:center;font-size:1.3rem;color:#c5d8e9;font-family:inherit}
 .science-side-nav a:hover{background:#29465f;color:#fff}
 .science-side-nav a.active{background:#eaf6ee;color:#126b38}
 .science-side-nav a.active span{color:#168b4c}
@@ -455,8 +455,8 @@ button,input,select,textarea{font-family:inherit;color:inherit}
   <nav class="science-side-nav" aria-label="メインメニュー">
     <a class="active" href="#quiz"><span>✎</span> クイズで学ぶ</a>
     <a href="./city.html"><span>⌂</span> わたしの町</a>
-    <a href="./notifications.html"><span>♢</span> 通知</a>
-    <a href="./howto.html"><span>？</span> 遊び方</a>
+    <a href="./notifications.html"><span aria-hidden="true">🔔</span> 通知</a>
+    <a href="./howto.html"><span aria-hidden="true">?</span>遊び方</a>
   </nav>
   <p class="science-side-foot">理科を学んで、知識を集めよう。<br>毎日の学習を応援します。</p>
 </aside>
