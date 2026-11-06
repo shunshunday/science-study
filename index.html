@@ -940,9 +940,57 @@ async function refreshTopWallet(){
  const walletNode=document.getElementById('topWallet');
  if(!walletNode)return;
  try{
-  if(!supabaseClient){walletNode.textContent='$'+getGuestWallet().toLocaleString('en-US')+'（ゲスト）';return;}
+  if(!supabaseClient){walletNode.textContent=';return;}
   const {data:{session}}=await supabaseClient.auth.getSession();
   if(!session){walletNode.textContent='$'+getGuestWallet().toLocaleString('en-US')+'（ゲスト）';return;}
+  const {data,error}=await supabaseClient.rpc('get_city_wallet');
+  if(error)throw error;
+  const wallet=Array.isArray(data)?data[0]:data;
+  walletNode.textContent='$'+Number(wallet?.balance||0).toLocaleString('en-US');
+ }catch(e){walletNode.textContent='資産を読み込めません';}
+}
+refreshTopWallet();
+if(supabaseClient)supabaseClient.auth.onAuthStateChange(()=>refreshTopWallet());
+
+
+</script>
+<footer class="rika-global-footer">
+  <div class="rika-footer-inner">
+    <p class="rika-footer-tagline">理科キッズ — 1問ずつ、理科がわかる。</p>
+    <nav class="rika-footer-links" aria-label="フッターメニュー">
+      <a href="https://forms.gle/Fp5vCWwTv7TZuBq7A" target="_blank" rel="noopener noreferrer">お問い合わせ</a>
+      <a href="./operator.html" target="_blank" rel="noopener noreferrer">運営者情報</a>
+      <a href="./privacy.html" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>
+      <a href="./credits.html" target="_blank" rel="noopener noreferrer">クレジット</a>
+    </nav>
+  </div>
+</footer>
+</body></html>+getGuestWallet().toLocaleString('en-US');return;}
+  const {data:{session}}=await supabaseClient.auth.getSession();
+  if(!session){walletNode.textContent=';return;}
+  const {data,error}=await supabaseClient.rpc('get_city_wallet');
+  if(error)throw error;
+  const wallet=Array.isArray(data)?data[0]:data;
+  walletNode.textContent='$'+Number(wallet?.balance||0).toLocaleString('en-US');
+ }catch(e){walletNode.textContent='資産を読み込めません';}
+}
+refreshTopWallet();
+if(supabaseClient)supabaseClient.auth.onAuthStateChange(()=>refreshTopWallet());
+
+
+</script>
+<footer class="rika-global-footer">
+  <div class="rika-footer-inner">
+    <p class="rika-footer-tagline">理科キッズ — 1問ずつ、理科がわかる。</p>
+    <nav class="rika-footer-links" aria-label="フッターメニュー">
+      <a href="https://forms.gle/Fp5vCWwTv7TZuBq7A" target="_blank" rel="noopener noreferrer">お問い合わせ</a>
+      <a href="./operator.html" target="_blank" rel="noopener noreferrer">運営者情報</a>
+      <a href="./privacy.html" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>
+      <a href="./credits.html" target="_blank" rel="noopener noreferrer">クレジット</a>
+    </nav>
+  </div>
+</footer>
+</body></html>+getGuestWallet().toLocaleString('en-US');return;}
   const {data,error}=await supabaseClient.rpc('get_city_wallet');
   if(error)throw error;
   const wallet=Array.isArray(data)?data[0]:data;
