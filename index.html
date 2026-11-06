@@ -130,7 +130,7 @@ footer{margin-left:277px}
   <nav class="science-side-nav" aria-label="メインメニュー">
     <a class="active" href="#quiz"><span>✎</span> クイズで学ぶ</a>
     <a href="./city.html"><span>⌂</span> わたしの町</a>
-    <a href="#notifications" id="scienceNotificationsLink"><span>♢</span> 通知</a>
+    <a href="./notifications.html"><span>♢</span> 通知</a>
     <a href="#howto"><span>？</span> 遊び方</a>
   </nav>
   <p class="science-side-foot">理科を学んで、知識を集めよう。<br>毎日の学習を応援します。</p>
@@ -942,8 +942,5 @@ refreshTopWallet();
 if(supabaseClient)supabaseClient.auth.onAuthStateChange(()=>refreshTopWallet());
 
 
-// Sidebar notification shortcut
-const scienceNotificationsLink=document.getElementById('scienceNotificationsLink');
-if(scienceNotificationsLink){scienceNotificationsLink.addEventListener('click',event=>{event.preventDefault();alert('現在、新しい通知はありません。');});}
 </script>
 </body></html>
