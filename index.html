@@ -474,7 +474,9 @@ button,input,select,textarea{font-family:inherit;color:inherit}
     <div class="science-topbar-actions">
       <a class="science-account-link" id="accountOpen" href="./account.html">ログイン</a>
       <button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true">ふりがな　ON</button>
-      
+      <button class="science-wallet" id="walletBtn" type="button" aria-label="所持金">
+        <span aria-hidden="true">$</span><strong id="moneyValue">0</strong>
+      </button>
     </div>
   </div>
 </header>
@@ -1199,9 +1201,9 @@ document.getElementById('logoutButton').addEventListener('click',async()=>{if(!s
 function getGuestWallet(){try{const raw=localStorage.getItem('rikakids-guest-wallet');if(raw===null)return 0;let n=Number(raw);if(!localStorage.getItem('rikakids-guest-wallet-v2')){if(n===100000)n=0;localStorage.setItem('rikakids-guest-wallet-v2','1');localStorage.setItem('rikakids-guest-wallet',String(n));}return Number.isFinite(n)&&n>=0?n:0;}catch(e){return 0;}}
 function setGuestWallet(value){try{localStorage.setItem('rikakids-guest-wallet',String(Math.max(0,Math.floor(Number(value)||0))));}catch(e){}}
 async function saveCorrectAnswer(unit){
- if(!supabaseClient){setGuestWallet(getGuestWallet()+100);return true;}
+ if(!supabaseClient){setGuestWallet(getGuestWallet()+100);await refreshTopWallet();return true;}
  try{
-  const {data:{user},error:authError}=await supabaseClient.auth.getUser();if(authError||!user){setGuestWallet(getGuestWallet()+100);return true;}
+  const {data:{user},error:authError}=await supabaseClient.auth.getUser();if(authError||!user){setGuestWallet(getGuestWallet()+100);await refreshTopWallet();return true;}
   const {error:rewardError}=await supabaseClient.rpc('earn_quiz_reward',{p_unit:unit});
   if(rewardError)throw rewardError;
   const {data:walletData,error:walletError}=await supabaseClient.rpc('get_city_wallet');
@@ -1211,10 +1213,11 @@ async function saveCorrectAnswer(unit){
   document.getElementById('profileRank').textContent=scienceTitle(assets);
   profileView.classList.toggle('profile-view-nobel',assets>=500000&&assets<1000000);
   profileView.classList.toggle('profile-view-haki',assets>=1000000);
+  await refreshTopWallet();
   return true;
  }catch(e){console.error('資金の保存に失敗しました',e);return false;}
 }
-if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else stopPlaytimeTracking();if(accountModal.classList.contains('open'))refreshAccount();});}
+if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else stopPlaytimeTracking();refreshTopWallet();if(accountModal.classList.contains('open'))refreshAccount();});}
 if(new URLSearchParams(location.search).get('login')==='1') showAccount();
 
 
@@ -1227,8 +1230,24 @@ if(furiganaToggle){
  furiganaToggle.addEventListener('click',()=>{furiganaOn=!furiganaOn;try{localStorage.setItem('rikakids-furigana',furiganaOn?'on':'off');}catch(e){}paintFurigana();});
 }
 async function refreshTopWallet(){
- // 画面上部の残高表示更新処理は現在使用していないため、空の関数として閉じる。
+ const balanceElement=document.getElementById('moneyValue');
+ if(!balanceElement)return;
+ let amount=getGuestWallet();
+ try{
+  if(supabaseClient){
+   const {data:{user},error:authError}=await supabaseClient.auth.getUser();
+   if(!authError&&user){
+    const {data,error}=await supabaseClient.rpc('get_city_wallet');
+    if(!error){
+     const wallet=Array.isArray(data)?data[0]:data;
+     amount=Math.max(0,Number(wallet?.balance)||0);
+    }
+   }
+  }
+ }catch(error){console.warn('所持金の表示を更新できませんでした',error);}
+ balanceElement.textContent=Math.floor(amount).toLocaleString('en-US');
 }
+refreshTopWallet();
 </script>
 <footer class="rika-global-footer">
   <div class="rika-footer-inner">
