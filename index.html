@@ -559,7 +559,7 @@ aside.science-sidebar .science-side-brand .science-side-logo,
   <div class="science-topbar-inner">
     <p class="science-topbar-tagline">学んで、集めて、科学を楽しもう。</p>
     <div class="science-topbar-actions">
-      <a class="science-account-link" id="accountOpen" href="./profile.html">ログイン</a>
+      <a class="science-account-link" id="accountOpen" href="./profile.html">ログイン・新規会員登録</a>
       <style id="science-furigana-gap">.science-furigana{display:inline-flex!important;align-items:center!important;gap:.9em!important;word-spacing:normal!important}</style>
       <button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true"><span>ふりがな</span><span id="furiganaState">ON</span></button>
       <button class="science-wallet" id="walletBtn" type="button" aria-label="所持金">
@@ -1249,10 +1249,10 @@ function usernameEmail(username){return username.toLowerCase()+'@accounts.rikaki
 function scienceTitle(n){if(n>=1000000)return "覇者";if(n>=500000)return "ノーベル賞";if(n>=200000)return "伝説の科学者";if(n>=100000)return "科学の天才";if(n>=60000)return "科学博士";if(n>=30000)return "科学マスター";if(n>=10000)return "科学チャレンジャー";return "科学ビギナー";}
 async function refreshAccount(){
  const accountOpen=document.getElementById('accountOpen');
- if(!supabaseClient){accountOpen.textContent='ログイン';authView.hidden=false;profileView.hidden=true;document.getElementById('accountSetup').hidden=false;return;}
+ if(!supabaseClient){accountOpen.textContent='ログイン・新規会員登録';authView.hidden=false;profileView.hidden=true;document.getElementById('accountSetup').hidden=false;return;}
  document.getElementById('accountSetup').hidden=true;
  const {data:{session}}=await supabaseClient.auth.getSession();
- if(!session){stopPlaytimeTracking();accountOpen.textContent='ログイン';authView.hidden=false;profileView.hidden=true;return;}
+ if(!session){stopPlaytimeTracking();accountOpen.textContent='ログイン・新規会員登録';authView.hidden=false;profileView.hidden=true;return;}
  startPlaytimeTracking(session.user.id);
  authView.hidden=true;profileView.hidden=false;
  const {data:profile,error}=await supabaseClient.from('profiles').select('username').eq('id',session.user.id).single();
@@ -1309,10 +1309,10 @@ async function saveCorrectAnswer(unit){
 async function refreshTopAccountButton(){
  const link=document.getElementById('accountOpen');
  if(!link)return;
- if(!supabaseClient){link.textContent='ログイン';return;}
+ if(!supabaseClient){link.textContent='ログイン・新規会員登録';return;}
  try{
   const {data:{session}}=await supabaseClient.auth.getSession();
-  if(!session){link.textContent='ログイン';link.setAttribute('aria-label','ログイン・新規登録');return;}
+  if(!session){link.textContent='ログイン・新規会員登録';link.setAttribute('aria-label','ログイン・新規登録');return;}
   const {data:profile}=await supabaseClient.from('profiles').select('username').eq('id',session.user.id).maybeSingle();
   const username=profile?.username||session.user.user_metadata?.username||'会員';
   link.textContent=username+'・ログイン中';
