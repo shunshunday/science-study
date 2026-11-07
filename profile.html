@@ -301,7 +301,7 @@ async function api(path,options={},token=accessToken){
 async function ensureSession(){
  let session=readSession();
  if(!session?.access_token||!session?.user)throw new Error("ログイン情報が見つかりません。ホーム画面からログインしてください。");
- if(session.expires_at&&session.expires_at*10000<Date.now()+60000){
+ if(session.expires_at&&session.expires_at*1000<Date.now()+60000){
   if(!session.refresh_token)throw new Error("ログイン期限が切れています。ホーム画面から再ログインしてください。");
   const refreshed=await api("/auth/v1/token?grant_type=refresh_token",{method:"POST",body:JSON.stringify({refresh_token:session.refresh_token})},null);
   saveSession(refreshed);
@@ -378,8 +378,7 @@ document.addEventListener("visibilitychange",()=>{
 });
 window.addEventListener("focus",()=>{profilePlaytimeLastTick=Date.now();profilePlaytimeWasActive=profilePageActive();});
 window.addEventListener("blur",()=>flushProfilePlaytime(true));
-window.addEventListener("focus",refreshProfileAsset);
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refreshProfileAsset();});
+// プロフィール表示の再読込は手動の再読み込みボタンで行う。未定義関数の呼び出しを置かない。
 window.addEventListener("pagehide",()=>flushProfilePlaytime(true));
 
 async function refreshProfile(){
@@ -393,9 +392,8 @@ async function refreshProfile(){
   document.getElementById("username").textContent=data.username||"ユーザー";
   showAvatar(data.avatar_url||"");
   loadPlaytime(data.playtime_seconds);
-  const walletResult=await supabaseClient.rpc("get_city_wallet");
-  if(walletResult.error)throw walletResult.error;
-  const wallet=Array.isArray(walletResult.data)?walletResult.data[0]:walletResult.data;
+  const walletData=await api("/rest/v1/rpc/get_city_wallet",{method:"POST",body:JSON.stringify({})});
+  const wallet=Array.isArray(walletData)?walletData[0]:walletData;
   const assets=Math.max(0,Number(wallet?.balance)||0);
   document.getElementById("rank").textContent=titleFor(assets);
   const titleBar=document.querySelector(".member-rank");
