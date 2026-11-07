@@ -1101,5 +1101,24 @@ aside.science-sidebar .science-side-brand .science-side-logo,
  el.textContent=Math.floor(amount).toLocaleString('en-US');
 })();
 </script>
+
+<script id="science-account-state-sync">
+(async function(){
+ const link=document.getElementById('accountOpen');
+ if(!link||!window.supabase?.createClient)return;
+ try{
+  const client=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
+  const paint=async(session)=>{
+   let user=session?.user;
+   if(!user){const result=await client.auth.getUser();user=result.data?.user||null;}
+   link.textContent=user?'マイページ':'ログイン';
+   link.setAttribute('aria-label',user?'マイページを開く':'ログイン・新規登録');
+  };
+  const {data:{session}}=await client.auth.getSession();
+  await paint(session);
+  client.auth.onAuthStateChange((_event,session)=>{paint(session);});
+ }catch(error){console.warn('アカウント表示を更新できませんでした',error);}
+})();
+</script>
 </body>
 </html>
