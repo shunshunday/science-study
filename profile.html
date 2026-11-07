@@ -489,8 +489,8 @@ async function refreshProfile(){
   document.getElementById("moneyBalance").textContent="$"+Math.floor(assets).toLocaleString("en-US");
   document.getElementById("rank").textContent=titleFor(assets);
   const titleBar=document.querySelector(".member-rank");
-  titleBar.classList.toggle("nobel",assets>=500000&&assets<1000000);
-  titleBar.classList.toggle("haisha",assets>=1000000);
+  titleBar.classList.toggle("nobel",assets>=50000&&assets<100000);
+  titleBar.classList.toggle("haisha",assets>=100000);
   const isGold=assets>=10000;
   const card=document.getElementById("memberCard");
   card.classList.toggle("gold",isGold);
