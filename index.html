@@ -540,7 +540,7 @@ aside.science-sidebar .science-side-brand .science-side-logo,
 .science-side-brand .science-side-logo,
 .science-side-logo{background:#168b4c!important;background-color:#168b4c!important;background-image:none!important;color:#fff!important}
 </style>
-<style id="science-furigana-spacing">.science-furigana{word-spacing:1px!important}</style>
+
 </head>
 <body>
 <aside class="science-sidebar">
@@ -560,7 +560,8 @@ aside.science-sidebar .science-side-brand .science-side-logo,
     <p class="science-topbar-tagline">学んで、集めて、科学を楽しもう。</p>
     <div class="science-topbar-actions">
       <a class="science-account-link" id="accountOpen" href="./account.html">ログイン</a>
-      <button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true">ふりがな ON</button>
+      <style id="science-furigana-gap">.science-furigana{display:inline-flex!important;align-items:center!important;gap:.9em!important;word-spacing:normal!important}</style>
+      <button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true"><span>ふりがな</span><span id="furiganaState">ON</span></button>
       <button class="science-wallet" id="walletBtn" type="button" aria-label="所持金">
         <span aria-hidden="true">◉</span><strong id="moneyValue">0</strong><span class="science-wallet-currency">$</span>
       </button>
@@ -1312,7 +1313,7 @@ const furiganaToggle=document.getElementById('furiganaToggle');
 if(furiganaToggle){
  let furiganaOn=true;
  try{furiganaOn=localStorage.getItem('rikakids-furigana')!=='off';}catch(e){}
- const paintFurigana=()=>{furiganaToggle.textContent='ふりがな　'+(furiganaOn?'ON':'OFF');furiganaToggle.setAttribute('aria-pressed',String(furiganaOn));document.documentElement.dataset.furigana=furiganaOn?'on':'off';};
+ const paintFurigana=()=>{furiganaToggle.querySelector('#furiganaState').textContent=furiganaOn?'ON':'OFF';furiganaToggle.setAttribute('aria-pressed',String(furiganaOn));document.documentElement.dataset.furigana=furiganaOn?'on':'off';};
  paintFurigana();
  furiganaToggle.addEventListener('click',()=>{furiganaOn=!furiganaOn;try{localStorage.setItem('rikakids-furigana',furiganaOn?'on':'off');}catch(e){}paintFurigana();});
 }
