@@ -211,5 +211,24 @@ html.science-furigana-hidden ruby rt{visibility:hidden!important}
 <script id="science-furigana-toggle-handler">
 (function(){const b=document.getElementById('furiganaToggle');if(!b)return;b.addEventListener('click',function(){const on=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',String(on));b.textContent=on?'ふりがな ON':'ふりがな OFF';document.documentElement.classList.toggle('science-furigana-hidden',!on);});})();
 </script>
+
+<script id="science-account-state-sync">
+(async function(){
+ const link=document.getElementById('accountOpen');
+ if(!link||!window.supabase?.createClient)return;
+ try{
+  const client=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
+  const paint=async(session)=>{
+   let user=session?.user;
+   if(!user){const result=await client.auth.getUser();user=result.data?.user||null;}
+   link.textContent=user?'マイページ':'ログイン';
+   link.setAttribute('aria-label',user?'マイページを開く':'ログイン・新規登録');
+  };
+  const {data:{session}}=await client.auth.getSession();
+  await paint(session);
+  client.auth.onAuthStateChange((_event,session)=>{paint(session);});
+ }catch(error){console.warn('アカウント表示を更新できませんでした',error);}
+})();
+</script>
 </body>
 </html>
