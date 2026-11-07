@@ -61,8 +61,8 @@ h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:
 .member-card .member-rank strong{color:#26343b}
 
 /* 称号名は中央、マークは「現在の称号」の右 */
-.member-rank .haisha-mark{display:inline-block;width:30px;height:30px;object-fit:contain;vertical-align:middle;filter:drop-shadow(0 0 5px #c52d78aa)}
-.member-rank .haisha-mark[hidden]{display:none!important}
+.member-rank .title-mark{display:inline-flex;flex:none;width:30px;height:30px;align-items:center;justify-content:center;font-size:25px;line-height:1;vertical-align:middle}
+.member-rank .title-mark.haisha{background:url("./assets/haisha-crown.svg") center/contain no-repeat;font-size:0;filter:drop-shadow(0 0 5px #c52d78aa)}
 .member-rank{justify-content:flex-start}
 .member-rank>span{flex:none}
 .member-rank>img{flex:none;margin-left:0}
@@ -266,7 +266,7 @@ main{flex:1 0 auto}
       <div class="member-stat"><span>累計プレイ時間</span><strong id="playtime">0分</strong></div>
      </div>
     </div>
-    <div class="member-rank"><span>現在の称号</span><img id="titleMark" class="haisha-mark" src="./assets/haisha-crown.svg" alt="覇者の紋章" hidden><strong id="rank">科学ビギナー</strong></div>
+    <div class="member-rank"><span>現在の称号</span><span id="titleMark" class="title-mark" aria-hidden="true">🧪</span><strong id="rank">科学ビギナー</strong></div>
     <div class="member-footer"><span>SCIENCE KIDS MEMBERSHIP</span><span>LEARN • DISCOVER • GROW</span></div>
    </div>
    <p style="margin:10px 0 0;padding:10px 12px;border:1px dashed #16834a;border-radius:9px;background:#16834a0d;color:var(--text);font-size:13px;text-align:center;font-weight:700">画像を会員証の丸いプロフィール画像にドラッグ＆ドロップして設定できます。</p>
@@ -496,7 +496,12 @@ async function refreshProfile(){
   document.getElementById("moneyBalance").textContent="$"+Math.floor(assets).toLocaleString("en-US");
   const rankElement=document.getElementById("rank");
   rankElement.textContent=titleFor(assets);
-  document.getElementById("titleMark").hidden=assets<100000;
+  const titleMark=document.getElementById("titleMark");
+  const titleIcons={"科学ビギナー":"🧪","科学チャレンジャー":"🔬","科学マスター":"⚗️","科学博士":"📘","科学の天才":"💡","伝説の科学者":"🌟","ノーベル科学賞":"🏅","覇者":""};
+  const currentTitle=titleFor(assets);
+  titleMark.textContent=titleIcons[currentTitle]??"🔬";
+  titleMark.classList.toggle("haisha",currentTitle==="覇者");
+  titleMark.setAttribute("aria-label",currentTitle+"のマーク");
   const titleBar=document.querySelector(".member-rank");
   titleBar.classList.toggle("nobel",assets>=50000&&assets<100000);
   titleBar.classList.toggle("haisha",assets>=100000);
