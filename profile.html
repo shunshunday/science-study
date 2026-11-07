@@ -199,9 +199,11 @@ html.science-furigana-hidden ruby rt{visibility:hidden!important}
 </style>
 <style id="science-furigana-label-spacing">.science-furigana{word-spacing:.35em!important}</style>
 <style id="science-profile-footer-bottom-gap-fix">
-/* マイプロフィールのフッター直下に残る body の余白をなくす */
+/* マイプロフィール下部のフッター周辺の余白をコンパクトにする */
 html,body{margin-bottom:0!important;padding-bottom:0!important}
-body .rika-global-footer{width:calc(100% + 32px)!important;max-width:none!important;margin-left:-16px!important;margin-right:-16px!important}
+body .rika-global-footer{width:calc(100% + 32px)!important;max-width:none!important;margin:16px -16px 0!important;padding:12px 24px!important;box-sizing:border-box!important}
+body .rika-footer-inner{gap:8px!important}
+@media(max-width:650px){body .rika-global-footer{margin-top:12px!important;padding:10px 16px!important}body .rika-footer-inner{gap:6px!important}}
 </style>
 </head>
 <body>
