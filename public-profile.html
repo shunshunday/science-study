@@ -6,7 +6,7 @@
 <link rel="icon" type="image/svg+xml" href="./rika-kids-icon.svg?v=white-photo">
 <link rel="apple-touch-icon" href="./rika-kids-favicon.png?v=2">
 <meta name="robots" content="noindex,follow">
-<title>プレイヤープロフィール｜理科キッズ</title>
+<title>プレイヤープロフィール｜科学キッズ</title>
 <style>
 *{box-sizing:border-box}body{margin:0;min-height:100vh;padding:28px 16px;background:#f2f7f3;color:#203128;font-family:"Noto Sans JP","Yu Gothic",Meiryo,system-ui,sans-serif}
 main{width:min(100%,620px);margin:0 auto}.card{background:#fff;border:1px solid #dfebe2;border-radius:20px;padding:26px;box-shadow:0 12px 35px #153d2510}
@@ -74,16 +74,16 @@ a.action{display:block;text-align:center;text-decoration:none;border-radius:10px
 <body>
 <main>
 <section class="card">
-<a class="brand" href="./"><span class="logo">理</span><span>理科キッズ</span></a>
+<a class="brand" href="./"><span class="logo">理</span><span>科学キッズ</span></a>
 <h1>プレイヤープロフィール</h1><p class="lead">ランキングからプレイヤーのプロフィールを見ています。</p>
 <div id="status">プロフィールを読み込んでいます…</div>
 <div id="profile" hidden>
  <div class="public-member-wrap">
-  <h2 class="public-member-heading">理科キッズ会員証</h2>
+  <h2 class="public-member-heading">科学キッズ会員証</h2>
   <div class="member-card normal" id="memberCard">
    <div class="member-top"><div class="member-brand">RIKA KIDS<br><span style="font-size:10px;letter-spacing:.08em;font-weight:700">OFFICIAL MEMBER CARD</span></div><div class="member-mark">理</div></div>
    <div class="member-body">
-    <div class="member-identity"><div class="avatar-wrap"><img id="avatarImage" alt="プロフィール写真" hidden><span id="avatarFallback">理</span></div><div style="min-width:0"><div class="member-label">MEMBER NAME</div><div class="member-name" id="username"></div><div class="member-sub">理科キッズ メンバー</div></div></div>
+    <div class="member-identity"><div class="avatar-wrap"><img id="avatarImage" alt="プロフィール写真" hidden><span id="avatarFallback">理</span></div><div style="min-width:0"><div class="member-label">MEMBER NAME</div><div class="member-name" id="username"></div><div class="member-sub">科学キッズ メンバー</div></div></div>
     <div class="member-stats">
      <div class="member-stat"><span>会員ランク</span><strong id="memberStatus" style="font-size:13px">通常会員</strong></div>
      <div class="member-stat"><span>累計プレイ時間</span><strong id="playtime">0分</strong></div>
@@ -128,7 +128,7 @@ function playtime(s){const m=Math.floor(Math.max(0,Number(s)||0)/60),h=Math.floo
  try{data=await getPublicPlayer(username);}
  catch(error){console.error("公開プロフィール取得エラー:",error);const status=document.getElementById("status");status.textContent=error.name==="AbortError"?"読み込みがタイムアウトしました。ページを再読み込みしてください。":(error.message||"プロフィールを読み込めませんでした。");status.classList.add("error");return;}
  if(!data){document.getElementById("status").textContent="このプレイヤーは見つかりませんでした。";return;}
- document.title=data.username+"のプロフィール｜理科キッズ";
+ document.title=data.username+"のプロフィール｜科学キッズ";
  document.getElementById("username").textContent=data.username;
  const assets=Math.max(0,Number(data.balance)||0);
  document.getElementById("balance").textContent="$"+assets.toLocaleString("en-US");
@@ -151,7 +151,7 @@ function playtime(s){const m=Math.floor(Math.max(0,Number(s)||0)/60),h=Math.floo
 </script>
 <footer class="rika-global-footer">
   <div class="rika-footer-inner">
-    <p class="rika-footer-tagline">理科キッズ — 1問ずつ、理科がわかる。</p>
+    <p class="rika-footer-tagline">科学キッズ — 1問ずつ、理科がわかる。</p>
     <nav class="rika-footer-links" aria-label="フッターメニュー">
       <a href="https://forms.gle/Fp5vCWwTv7TZuBq7A" target="_blank" rel="noopener noreferrer">お問い合わせ</a>
       <a href="./operator.html" target="_blank" rel="noopener noreferrer">運営者情報</a>
