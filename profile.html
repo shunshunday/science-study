@@ -30,7 +30,7 @@ h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:
 .member-label{margin:0 0 5px;color:#697781;font-size:9px;font-weight:900;letter-spacing:.18em}
 .member-identity{display:flex;align-items:center;gap:11px;min-width:0}.avatar-wrap{width:64px;height:64px;flex:none;border-radius:50%;overflow:hidden;border:2px solid #cbd3da;background:#e9f2eb;display:grid;place-items:center;color:#16834a;font-size:25px;font-weight:950}.avatar-wrap img{width:100%;height:100%;object-fit:cover;display:block}.avatar-wrap img[hidden]{display:none!important}.avatar-wrap{cursor:copy;transition:box-shadow .15s,border-color .15s}.avatar-wrap.avatar-drag-over{border-color:#16834a;box-shadow:0 0 0 5px #16834a35}.member-card.gold .avatar-wrap{border-color:#b88a1b}.member-name{font-size:clamp(18px,3.5vw,25px);font-weight:950;letter-spacing:.02em;overflow-wrap:anywhere;color:#1f2d35;line-height:1.25}
 .member-sub{margin-top:5px;color:#65737b;font-size:10px}
-.member-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.member-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
 .member-stat{min-width:0;padding:10px 8px;border:1px solid #cbd3da;border-radius:9px;background:#ffffffb8}
 .member-stat span{display:block;color:#687680;font-size:9px;font-weight:800;line-height:1.35}
 .member-stat strong{display:block;margin-top:5px;color:#25343c;font-size:17px;font-weight:950;line-height:1.2;overflow-wrap:anywhere}
@@ -98,7 +98,7 @@ button:disabled{opacity:.55;cursor:wait}
 @media(max-width:650px){.rika-global-footer{margin:30px 0 0;padding:22px 16px}.rika-footer-inner{align-items:flex-start;flex-direction:column;gap:12px}.rika-footer-links{gap:12px 18px}}
 </style></head>
 <body>
-<header class="site-header"><div class="header-inner"><a class="home-brand" href="./" aria-label="理科キッズ ホーム"><div class="logo" aria-hidden="true">理</div><div class="brand">理科キッズ<small>SCIENCE KIDS</small></div></a><div class="header-tag">中学1〜3年生・理科用語集</div><a class="ranking-open" href="./ranking.html">🏆 ランキング</a><a class="ranking-open" href="./titles.html">🎖️ 称号一覧</a><a class="ranking-open" href="./city.html">🌆 自分の都市</a><a class="account-open" id="accountOpen" href="./account.html">ログイン・プロフィール</a></div></header>
+<header class="site-header"><div class="header-inner"><a class="home-brand" href="./" aria-label="理科キッズ ホーム"><div class="logo" aria-hidden="true">理</div><div class="brand">理科キッズ<small>SCIENCE KIDS</small></div></a><div class="header-tag">中学1〜3年生・理科用語集</div><a class="ranking-open" href="./ranking.html">🏆 ランキング</a><a class="ranking-open" href="./titles.html">🎖️ 称号一覧</a><a class="account-open" id="accountOpen" href="./account.html">ログイン・プロフィール</a></div></header>
 <main>
  <h1>マイプロフィール</h1>
  <p class="lead">理科キッズの会員証・学習記録を確認できます。</p>
@@ -113,7 +113,7 @@ button:disabled{opacity:.55;cursor:wait}
     <div class="member-body">
      <div class="member-identity"><div class="avatar-wrap"><img id="avatarPreview" alt="プロフィール写真" hidden><span id="avatarFallback">理</span></div><div style="min-width:0"><div class="member-label">MEMBER NAME</div><div class="member-name" id="username"></div><div class="member-sub">理科キッズ メンバー</div></div></div>
      <div class="member-stats">
-      <div class="member-stat"><span>資産（都市の所持金）</span><strong id="earnedMoney">$0</strong></div>
+      
       
       <div class="member-stat"><span>会員ランク</span><strong id="memberStatus" style="font-size:13px">通常会員</strong></div>
       <div class="member-stat"><span>累計プレイ時間</span><strong id="playtime">0分</strong></div>
@@ -128,7 +128,7 @@ button:disabled{opacity:.55;cursor:wait}
    <button class="primary" id="avatarUploadButton" type="button">写真をアップロードして変更</button>
    <p id="avatarMessage" role="status" style="font-size:12px;text-align:center;color:var(--muted);margin:10px 0 0;min-height:18px">画像は2MBまで（PNG・JPG・WebP・GIF）</p>
    <a class="action secondary" href="./titles.html">称号の条件・一覧を見る</a>
-   <a class="action primary" href="./city.html">🌆 自分の都市を見る</a>
+   
   </div>
   <form class="panel" id="passwordForm">
    <h2>パスワードの変更</h2>
@@ -229,18 +229,6 @@ function showAvatar(url){
  if(imageUrl){fallback.hidden=true;img.hidden=false;img.src=imageUrl;}
  else{img.onerror=null;img.removeAttribute("src");img.hidden=true;fallback.hidden=false;}
 }
-let profileAssetTimer=null;
-let profileAssetSyncing=false;
-async function refreshProfileAsset(){
- if(!currentUser||profileAssetSyncing)return;
- profileAssetSyncing=true;
- try{
-  const rows=await api("/rest/v1/city_wallets?select=balance&user_id=eq."+encodeURIComponent(currentUser.id),{method:"GET",cache:"no-store",headers:{"Cache-Control":"no-cache"}});
-  const balance=Array.isArray(rows)&&rows.length?Math.max(0,Number(rows[0].balance)||0):0;
-  document.getElementById("earnedMoney").textContent="$"+balance.toLocaleString("en-US");
- }catch(error){console.error("都市資産の同期に失敗:",error);}
- finally{profileAssetSyncing=false;}
-}
 let profilePlaytimeUserId=null;
 let profilePlaytimeTimer=null;
 let profilePlaytimeLastTick=0;
@@ -317,10 +305,10 @@ async function refreshProfile(){
   document.getElementById("username").textContent=data.username||"ユーザー";
   showAvatar(data.avatar_url||"");
   loadPlaytime(data.playtime_seconds);
-  const walletRows=await api("/rest/v1/city_wallets?select=balance&user_id=eq."+encodeURIComponent(session.user.id),{method:"GET",cache:"no-store",headers:{"Cache-Control":"no-cache"}});
-  const assets=Array.isArray(walletRows)&&walletRows.length?Math.max(0,Number(walletRows[0].balance)||0):0;
-  await refreshProfileAsset();
-  if(!profileAssetTimer)profileAssetTimer=setInterval(refreshProfileAsset,5000);
+  const walletResult=await supabaseClient.rpc("get_city_wallet");
+  if(walletResult.error)throw walletResult.error;
+  const wallet=Array.isArray(walletResult.data)?walletResult.data[0]:walletResult.data;
+  const assets=Math.max(0,Number(wallet?.balance)||0);
   document.getElementById("rank").textContent=titleFor(assets);
   const titleBar=document.querySelector(".member-rank");
   titleBar.classList.toggle("nobel",assets>=500000&&assets<1000000);
