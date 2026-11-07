@@ -126,35 +126,66 @@ html.science-furigana-hidden ruby rt{visibility:hidden!important}
 }
 </style>
 <style id="science-furigana-label-spacing">.science-furigana{word-spacing:.35em!important}</style>
+
+<style id="science-account-historykids-design">
+.account-page{min-height:calc(100vh - 78px);display:block;padding:clamp(42px,7vw,82px) 20px 54px;background:linear-gradient(180deg,#f5f8f5 0%,#f8faf8 100%)}
+.account-shell{width:min(100%,760px);margin:0 auto}
+.account-intro{text-align:center;margin:0 auto 34px}
+.account-eyebrow,.account-section-kicker{margin:0 0 17px;color:#718477;font-size:10px;font-weight:850;letter-spacing:.2em;line-height:1.5}
+.account-intro h1{margin:0;color:#1d3426;font-size:clamp(34px,6vw,52px);font-weight:900;letter-spacing:-.055em;line-height:1.24}
+.account-intro-copy{margin:19px 0 20px;color:#53665a;font-size:clamp(15px,2vw,18px);font-weight:650;line-height:1.9}
+.account-promises{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}
+.account-promises span{display:inline-flex;align-items:center;min-height:31px;padding:5px 12px;border:1px solid #dce8df;border-radius:30px;background:#fff;color:#54715d;font-size:11px;font-weight:750}
+.account-card{width:min(100%,520px);margin:0 auto;padding:clamp(23px,5vw,34px);border:1px solid #e1e9e3;border-radius:17px;background:#fff;box-shadow:0 14px 40px #203b2a0b}
+.account-card h2{margin:0 0 5px;color:#20372a;font-size:23px;font-weight:850;letter-spacing:-.025em}
+.account-section-kicker{margin:0 0 8px;color:#16834a;font-size:9px;letter-spacing:.19em}
+.account-lead{margin:0 0 19px;color:#718078;font-size:12px}
+.auth-tabs{margin:18px 0 19px}
+#authForm label{margin:13px 0 6px;color:#405348;font-size:12px;font-weight:800}
+#authForm input{height:48px;border-color:#dfe8e1;border-radius:9px;background:#fbfdfb;font-size:14px}
+.auth-submit{min-height:47px;border-radius:9px;background:#168b4c;font-size:13px;letter-spacing:.02em}
+.auth-note{margin-top:12px;color:#829087}
+.profile-user{margin:18px 0}
+.account-footnote{margin:26px 0 0;text-align:center;color:#8a988e;font-size:10px;font-weight:700;letter-spacing:.12em}
+@media(max-width:650px){.account-page{padding:36px 15px 42px}.account-intro{margin-bottom:25px}.account-intro h1{font-size:36px}.account-intro-copy{font-size:14px}.account-card{padding:23px 19px}.account-footnote{font-size:9px}}
+</style>
 </head><body><header class="science-topbar"><div class="science-topbar-inner"><div class="science-topbar-left"><p class="science-topbar-tagline">学んで、集めて、科学を楽しもう。</p><nav class="science-topbar-extra" aria-label="ページメニュー"><a href="./ranking.html">🏆 ランキング</a><a href="./titles.html">🎖️ 称号一覧</a></nav></div><div class="science-topbar-actions"><a class="science-account-link" id="accountOpen" href="./account.html">ログイン</a><button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true">ふりがな ON</button><a class="science-wallet" id="walletBtn" href="./account.html" aria-label="所持金"><span aria-hidden="true">◉</span><strong id="moneyValue">0</strong><span class="science-wallet-currency">$</span></a></div></div></header><main class="account-page">
-
- <section class="account-card" aria-labelledby="accountTitle">
-
-  <div class="account-brand"><span class="account-logo">科</span></div>
-  <div id="authView">
-   <h2 id="accountTitle">アカウント</h2>
-   <p class="account-lead">科学キッズ専用のユーザー名とパスワードで利用できます。</p>
-   <div class="auth-tabs"><button type="button" class="auth-tab active" data-auth-tab="login">ログイン</button><button type="button" class="auth-tab" data-auth-tab="signup">新規登録</button></div>
-   <form id="authForm">
-    <label for="authUsername">ユーザー名</label><input id="authUsername" name="username" autocomplete="username" minlength="3" maxlength="20" required placeholder="3〜20文字の英数字・_・-">
-    <label for="authPassword">パスワード</label><input id="authPassword" name="password" type="password" autocomplete="current-password" minlength="8" required placeholder="8文字以上">
-    <button class="auth-submit" id="authSubmit" type="submit">ログイン</button>
-   </form>
-   <p class="auth-message" id="authMessage" role="status" aria-live="polite"></p>
-   <p class="auth-note">メールアドレスやGoogleアカウントは不要です。</p>
-  </div>
-  <div id="profileView" hidden>
-   <h2 id="profileHeading">マイプロフィール</h2>
-   <div class="profile-honors">✦ SCIENCE HONORS · NOBEL LEVEL ✦</div>
-   <div class="profile-user"><div class="profile-avatar"><img id="accountAvatar" alt="プロフィール写真" hidden><span id="accountAvatarFallback">科</span></div><div><strong id="profileUsername">ユーザー</strong><small>科学キッズ メンバー</small></div></div>
-   <div class="profile-rank"><span>現在の称号</span><strong id="profileRank">科学ビギナー</strong></div>
-   <p class="profile-caption"></p>
-   <a class="auth-submit" style="display:block;text-align:center;text-decoration:none" href="profile.html">プロフィールページを開く</a>
-   <a class="profile-page-link" href="./profile.html">マイページを開く</a><button class="auth-submit" id="logoutButton" type="button">ログアウト</button>
-   <p class="auth-message" id="profileMessage" role="status"></p>
-  </div>
-  <p class="account-setup" id="accountSetup" hidden>アカウント機能の接続設定がまだ完了していません。管理者によるデータベース接続が必要です。</p>
- </section>
+ <div class="account-shell">
+  <section class="account-intro" aria-labelledby="accountHeroTitle">
+   <p class="account-eyebrow">YOUR SCIENCE, WHEREVER YOU LEARN</p>
+   <h1 id="accountHeroTitle">いつもの学びへ、<br>ログイン。</h1>
+   <p class="account-intro-copy">学んだことも、集めた称号も。<br>ひとつのアカウントに。</p>
+   <div class="account-promises"><span>メールアドレス不要</span><span>アカウント名とパスワードだけ</span></div>
+  </section>
+  <section class="account-card" aria-labelledby="accountTitle">
+   <div id="authView">
+    <p class="account-section-kicker">YOUR ACCOUNT</p>
+    <h2 id="accountTitle">アカウントにログイン</h2>
+    <p class="account-lead">科学キッズの学習を、いつものアカウントで続けよう。</p>
+    <div class="auth-tabs"><button type="button" class="auth-tab active" data-auth-tab="login">ログイン</button><button type="button" class="auth-tab" data-auth-tab="signup">新規登録</button></div>
+    <form id="authForm">
+     <label for="authUsername">アカウント名</label><input id="authUsername" name="username" autocomplete="username" minlength="3" maxlength="20" required placeholder="例：science_kids">
+     <label for="authPassword">パスワード</label><input id="authPassword" name="password" type="password" autocomplete="current-password" minlength="8" required placeholder="8文字以上">
+     <button class="auth-submit" id="authSubmit" type="submit">ログイン</button>
+    </form>
+    <p class="auth-message" id="authMessage" role="status" aria-live="polite"></p>
+    <p class="auth-note">メールアドレスやGoogleアカウントは必要ありません。</p>
+   </div>
+   <div id="profileView" hidden>
+    <p class="account-section-kicker">YOUR ACCOUNT</p>
+    <h2 id="profileHeading">おかえりなさい。</h2>
+    <div class="profile-honors">✦ SCIENCE HONORS · NOBEL LEVEL ✦</div>
+    <div class="profile-user"><div class="profile-avatar"><img id="accountAvatar" alt="プロフィール写真" hidden><span id="accountAvatarFallback">科</span></div><div><strong id="profileUsername">ユーザー</strong><small>科学キッズ メンバー</small></div></div>
+    <div class="profile-rank"><span>現在の称号</span><strong id="profileRank">科学ビギナー</strong></div>
+    <p class="profile-caption"></p>
+    <a class="auth-submit" style="display:block;text-align:center;text-decoration:none" href="profile.html">プロフィールページを開く</a>
+    <a class="profile-page-link" href="./profile.html">マイページを開く</a><button class="auth-submit" id="logoutButton" type="button">ログアウト</button>
+    <p class="auth-message" id="profileMessage" role="status"></p>
+   </div>
+   <p class="account-setup" id="accountSetup" hidden>アカウント機能の接続設定がまだ完了していません。管理者によるデータベース接続が必要です。</p>
+  </section>
+  <p class="account-footnote">SCIENCE KIDS · 学んで、集めて、科学を楽しもう。</p>
+ </div>
 </main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>const supabaseClient=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");window.rikakidsSupabaseClient=supabaseClient;let authMode="login";const authView=document.getElementById("authView"),profileView=document.getElementById("profileView"),authMessage=document.getElementById("authMessage");function setAuthMode(mode){authMode=mode;document.querySelectorAll(".auth-tab").forEach(b=>b.classList.toggle("active",b.dataset.authTab===mode));document.getElementById("authSubmit").textContent=mode==="login"?"ログイン":"新規登録";document.getElementById("authPassword").autocomplete=mode==="login"?"current-password":"new-password";authMessage.textContent="";}document.querySelectorAll(".auth-tab").forEach(b=>b.addEventListener("click",()=>setAuthMode(b.dataset.authTab)));function usernameEmail(u){return u.toLowerCase()+"@accounts.rikakids.invalid";}function scienceTitle(n){if(n>=100000)return "覇者";if(n>=50000)return "ノーベル賞";if(n>=20000)return "伝説の科学者";if(n>=10000)return "科学の天才";if(n>=6000)return "科学博士";if(n>=3000)return "科学マスター";if(n>=1000)return "科学チャレンジャー";return "科学ビギナー";}async function refreshAccount(){const {data:{session}}=await supabaseClient.auth.getSession();if(!session){authView.hidden=false;profileView.hidden=true;return;}authView.hidden=true;profileView.hidden=false;const {data:p,error}=await supabaseClient.from("profiles").select("username,avatar_url").eq("id",session.user.id).single();if(error){document.getElementById("profileMessage").textContent="プロフィールを読み込めません。";return;}document.getElementById("profileUsername").textContent=p.username;const avatar=document.getElementById("accountAvatar"),avatarFallback=document.getElementById("accountAvatarFallback");avatar.hidden=true;avatarFallback.hidden=false;avatar.removeAttribute("src");if(typeof p.avatar_url==="string"&&p.avatar_url.trim()){avatar.onload=()=>{avatar.hidden=false;avatarFallback.hidden=true;};avatar.onerror=()=>{avatar.hidden=true;avatarFallback.hidden=false;};avatar.src=p.avatar_url.trim();}}document.getElementById("authForm").addEventListener("submit",async e=>{e.preventDefault();const u=document.getElementById("authUsername").value.trim(),p=document.getElementById("authPassword").value;if(!/^[a-zA-Z0-9_-]{3,20}$/.test(u)){authMessage.textContent="ユーザー名は半角英数字・_・-の3〜20文字にしてください。";return;}if(p.length<8){authMessage.textContent="パスワードは8文字以上にしてください。";return;}const b=document.getElementById("authSubmit");b.disabled=true;authMessage.textContent="処理しています…";try{if(authMode==="signup"){const {data,error}=await supabaseClient.auth.signUp({email:usernameEmail(u),password:p,options:{data:{username:u}}});if(error)throw error;if(!data.session){authMessage.textContent="登録できました。管理者側でメール確認を無効にする必要があります。";return;}}else{const {error}=await supabaseClient.auth.signInWithPassword({email:usernameEmail(u),password:p});if(error)throw error;}authMessage.textContent="";await refreshAccount();}catch(err){authMessage.textContent=authMode==="signup"?"登録できませんでした。ユーザー名が使用済みか、設定を確認してください。":"ログインできません。ユーザー名とパスワードを確認してください。";}finally{b.disabled=false;}});document.getElementById("logoutButton").addEventListener("click",async()=>{await supabaseClient.auth.signOut();await refreshAccount();});supabaseClient.auth.onAuthStateChange(()=>setTimeout(refreshAccount,0));refreshAccount();</script><script src="./playtime.js"></script><footer class="rika-global-footer">
   <div class="rika-footer-inner">
     <p class="rika-footer-tagline">科学キッズ — 1問ずつ、科学がわかる。</p>
