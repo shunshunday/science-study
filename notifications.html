@@ -471,6 +471,49 @@ aside.science-sidebar .science-side-brand .science-side-logo,
  .science-topbar-actions .science-wallet{min-height:34px!important;height:34px!important;padding:0 8px!important;gap:4px!important}
 }
 </style>
+<style id="science-topbar-exact-quiz-match">
+/* クイズで学ぶページの右上と同じ寸法・見た目・配置 */
+.science-topbar{height:78px!important;min-height:78px!important}
+.science-topbar-inner{height:100%!important;min-height:78px!important;padding:0 40px!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;box-sizing:border-box!important}
+.science-topbar-actions{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:12px!important;flex-wrap:nowrap!important;margin-left:auto!important}
+.science-topbar-actions .science-account-link{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;
+ min-height:40px!important;height:40px!important;padding:7px 12px!important;
+ border:1px solid #7b8e9a66!important;border-radius:8px!important;background:transparent!important;
+ color:#536b80!important;text-decoration:none!important;font-family:inherit!important;
+ font-size:12px!important;font-weight:400!important;line-height:1.5!important;
+ white-space:nowrap!important;box-shadow:none!important;box-sizing:border-box!important
+}
+.science-topbar-actions .science-furigana{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ min-height:38px!important;height:38px!important;padding:8px 9px!important;
+ border:0!important;border-radius:9px!important;background:#f4f6f8!important;
+ color:#172f45!important;font-family:inherit!important;font-size:11px!important;
+ font-weight:700!important;line-height:1!important;white-space:nowrap!important;
+ box-sizing:border-box!important
+}
+.science-topbar-actions .science-wallet{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ min-height:38px!important;height:38px!important;padding:8px 9px!important;gap:6px!important;
+ border:0!important;border-radius:9px!important;background:#fff2cf!important;
+ color:#172f45!important;text-decoration:none!important;font-family:inherit!important;
+ box-sizing:border-box!important;white-space:nowrap!important
+}
+.science-topbar-actions .science-wallet span:first-child{color:#b58b16!important;font-size:1.15rem!important;line-height:1!important}
+.science-topbar-actions .science-wallet strong,
+.science-topbar-actions .science-wallet .science-wallet-currency{
+ color:inherit!important;font-family:inherit!important;font-size:1.15rem!important;
+ font-weight:900!important;line-height:1!important
+}
+@media(max-width:700px){
+ .science-topbar{height:52px!important;min-height:52px!important}
+ .science-topbar-inner{height:52px!important;min-height:52px!important;padding:0 18px!important;gap:6px!important}
+ .science-topbar-actions{gap:6px!important}
+ .science-topbar-actions .science-account-link{min-height:38px!important;height:38px!important;padding:8px 9px!important;font-size:11px!important}
+ .science-topbar-actions .science-furigana{min-height:38px!important;height:38px!important;padding:8px 9px!important;font-size:11px!important}
+ .science-topbar-actions .science-wallet{min-height:38px!important;height:38px!important;padding:8px 9px!important;gap:6px!important}
+}
+</style>
 </head>
 <body>
 <aside class="science-sidebar">
