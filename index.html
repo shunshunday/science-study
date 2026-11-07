@@ -1333,6 +1333,13 @@ async function refreshTopAccountButton(sessionOverride){
 }
 refreshTopAccountButton();
 if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else stopPlaytimeTracking();refreshTopWallet();refreshTopAccountButton(session);if(accountModal.classList.contains('open'))refreshAccount();});}
+// ホームへ移動・ブラウザーの戻る操作で復帰したときも、保存済みの認証状態から表示を再同期
+window.addEventListener('pageshow',()=>{
+ refreshTopAccountButton();
+});
+document.addEventListener('visibilitychange',()=>{
+ if(document.visibilityState==='visible')refreshTopAccountButton();
+});
 if(new URLSearchParams(location.search).get('login')==='1') showAccount();
 
 
