@@ -219,8 +219,8 @@ html.science-furigana-hidden ruby rt{visibility:hidden!important}
 <script>
 const client=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
 window.rikakidsSupabaseClient=client;
-function titleFor(n){if(n>=1000000)return "覇者";if(n>=500000)return "ノーベル賞";if(n>=200000)return "伝説の科学者";if(n>=100000)return "科学の天才";if(n>=60000)return "科学博士";if(n>=30000)return "科学マスター";if(n>=10000)return "科学チャレンジャー";return "科学ビギナー";}
-function titleMarkFor(n){if(n>=1000000)return "";if(n>=500000)return "♛";if(n>=200000)return "🌟";if(n>=100000)return "💡";if(n>=60000)return "🧪";if(n>=30000)return "🔬";if(n>=10000)return "⚗️";return "🌱";}
+function titleFor(n){if(n>=100000)return "覇者";if(n>=50000)return "ノーベル賞";if(n>=20000)return "伝説の科学者";if(n>=10000)return "科学の天才";if(n>=6000)return "科学博士";if(n>=3000)return "科学マスター";if(n>=1000)return "科学チャレンジャー";return "科学ビギナー";}
+function titleMarkFor(n){if(n>=100000)return "";if(n>=50000)return "♛";if(n>=20000)return "🌟";if(n>=10000)return "💡";if(n>=6000)return "🧪";if(n>=3000)return "🔬";if(n>=1000)return "⚗️";return "🌱";}
 (async()=>{
  const status=document.getElementById("status"),list=document.getElementById("list");
  const {data,error}=await client.from("public_leaderboard").select("username,balance,lifetime_earned").order("balance",{ascending:false}).order("username",{ascending:true}).limit(100);
