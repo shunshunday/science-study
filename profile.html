@@ -55,7 +55,7 @@ h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:
 .member-rank strong{font-size:15px;font-weight:950;color:#26343b;text-align:right}
 .member-card.gold .member-rank{border-color:#a77a17;background:linear-gradient(100deg,#fff4bd,#e6bd42);color:#513b08}
 .member-card.gold .member-rank span{color:#795a16}.member-card.gold .member-rank strong{color:#513b08}
-/* 会員証の称号欄：通常称号は白、ノーベル賞は金、覇者は深紫 */
+/* 会員証の称号欄：通常称号は白、ノーベル科学賞は金、覇者は深紫 */
 .member-card .member-rank{background:#fff;border-color:#d7dde3;color:#26343b}
 .member-card .member-rank span{color:#687680}
 .member-card .member-rank strong{color:#26343b}
@@ -316,7 +316,7 @@ function loadPlaytime(seconds){
 }
 function titleFor(n){
  if(n>=100000)return "覇者";
- if(n>=50000)return "ノーベル賞";
+ if(n>=50000)return "ノーベル科学賞";
  if(n>=20000)return "伝説の科学者";
  if(n>=10000)return "科学の天才";
  if(n>=6000)return "科学博士";
