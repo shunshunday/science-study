@@ -185,7 +185,7 @@ html.science-furigana-hidden ruby rt{visibility:hidden!important}
 </style>
 </head>
 <body>
-<header class="science-topbar"><div class="science-topbar-inner"><div class="science-topbar-left"><p class="science-topbar-tagline">学んで、集めて、科学を楽しもう。</p><nav class="science-topbar-extra" aria-label="ページメニュー"><a href="./ranking.html">🏆 ランキング</a><a href="./titles.html">🎖️ 称号一覧</a></nav></div><div class="science-topbar-actions"><a class="science-account-link" id="accountOpen" href="./account.html">ログイン</a><button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true">ふりがな　ON</button><a class="science-wallet" id="walletBtn" href="./account.html" aria-label="所持金"><span aria-hidden="true">◉</span><strong id="moneyValue">0</strong><span class="science-wallet-currency">$</span></a></div></div></header>
+<header class="science-topbar"><div class="science-topbar-inner"><div class="science-topbar-left"><p class="science-topbar-tagline">学んで、集めて、科学を楽しもう。</p><nav class="science-topbar-extra" aria-label="ページメニュー"><a href="./ranking.html">🏆 ランキング</a><a href="./titles.html">🎖️ 称号一覧</a></nav></div><div class="science-topbar-actions"><a class="science-account-link" id="accountOpen" href="./account.html">ログイン</a><button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true">ふりがな ON</button><a class="science-wallet" id="walletBtn" href="./account.html" aria-label="所持金"><span aria-hidden="true">◉</span><strong id="moneyValue">0</strong><span class="science-wallet-currency">$</span></a></div></div></header>
 <main>
  <h1>マイプロフィール</h1>
  <p class="lead">科学キッズの会員証・学習記録を確認できます。</p>
@@ -562,7 +562,7 @@ refreshProfile();
 </script>
 
 <script id="science-furigana-toggle-handler">
-(function(){const b=document.getElementById('furiganaToggle');if(!b)return;b.addEventListener('click',function(){const on=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',String(on));b.textContent=on?'ふりがな　ON':'ふりがな　OFF';document.documentElement.classList.toggle('science-furigana-hidden',!on);});})();
+(function(){const b=document.getElementById('furiganaToggle');if(!b)return;b.addEventListener('click',function(){const on=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',String(on));b.textContent=on?'ふりがな ON':'ふりがな OFF';document.documentElement.classList.toggle('science-furigana-hidden',!on);});})();
 </script>
 </body>
 </html>
