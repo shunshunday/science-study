@@ -402,6 +402,24 @@ aside.science-sidebar .science-side-brand .science-side-logo,
 .science-side-brand .science-side-logo,
 .science-side-logo{background:#168b4c!important;background-color:#168b4c!important;background-image:none!important;color:#fff!important}
 </style>
+
+<style id="notification-cards-style">
+.notification-main{max-width:980px}
+.notification-heading{margin:0 0 28px}
+.notification-heading .eyebrow{font-size:11px;letter-spacing:.16em;color:#688198;font-weight:700}
+.notification-heading h1{margin:7px 0 8px;color:#1b344a;font-size:34px;line-height:1.35}
+.notification-heading p{margin:0;color:#718395;font-size:14px}
+.notification-list{display:grid;gap:12px}
+.notification-card{padding:20px 22px;background:#fff;border:1px solid #dce3e9;border-radius:12px;transition:border-color .15s,box-shadow .15s}
+.notification-card:hover{border-color:#b8d8c2;box-shadow:0 5px 18px #172f4509}
+.notification-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px}
+.notification-category{display:inline-block;padding:3px 9px;border-radius:5px;background:#eaf6ee;color:#16834a;font-size:11px;font-weight:800}
+.notification-card time{color:#8a98a4;font-size:11px;font-variant-numeric:tabular-nums}
+.notification-card h2{margin:0 0 5px;color:#1b344a;font-size:17px;line-height:1.5}
+.notification-card p{margin:0;color:#647787;font-size:13px;line-height:1.8}
+.notification-note{margin-top:18px;padding:13px 16px;border:1px solid #dce3e9;border-radius:9px;background:#fff;color:#718395;font-size:12px}
+@media(max-width:650px){.notification-heading h1{font-size:28px}.notification-card{padding:17px}.notification-card h2{font-size:15px}}
+</style>
 </head>
 <body>
 <aside class="science-sidebar">
@@ -433,12 +451,24 @@ aside.science-sidebar .science-side-brand .science-side-logo,
     <h1>通知</h1>
     <p>新しい遊びやアップデートの通知を、届けます。</p>
   </section>
-  <section class="notification-empty" aria-live="polite">
-    <div class="notification-empty-icon">♢</div>
-    <h2>お知らせをお楽しみに！</h2>
-    <p>新しい遊びや機能の追加、アップデート情報はここでお知らせします。</p>
+  <section class="notification-list" aria-label="お知らせ一覧">
+    <article class="notification-card">
+      <div class="notification-card-top"><span class="notification-category">サイト更新</span><time datetime="2026-11-07">2026.11.07</time></div>
+      <h2>科学キッズのデザインを更新しました</h2>
+      <p>ページ上部とメニューの表示を整え、どのページからでも使いやすいデザインにしました。</p>
+    </article>
+    <article class="notification-card">
+      <div class="notification-card-top"><span class="notification-category">学習コンテンツ</span><time datetime="2026-11-07">2026.11.07</time></div>
+      <h2>科学の年表を拡充しました</h2>
+      <p>科学の発見や歴史上の出来事を追加し、年代順にたどって学べるようにしました。</p>
+    </article>
+    <article class="notification-card">
+      <div class="notification-card-top"><span class="notification-category">クイズ</span><time datetime="2026-11-07">2026.11.07</time></div>
+      <h2>クイズ画面を見やすく調整しました</h2>
+      <p>問題と解答エリアの配置を見直し、学習に集中しやすい画面にしました。</p>
+    </article>
   </section>
-  <div class="notification-note">このページに、科学キッズの最新情報を掲載していきます。</div>
+  <div class="notification-note">これからも、新しい機能や学習コンテンツのお知らせを掲載していきます。</div>
 </main>
 <footer class="rika-global-footer">
   <div class="rika-footer-inner">
