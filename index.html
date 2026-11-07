@@ -1256,8 +1256,9 @@ async function refreshAccount(){
  startPlaytimeTracking(session.user.id);
  authView.hidden=true;profileView.hidden=false;
  const {data:profile,error}=await supabaseClient.from('profiles').select('username').eq('id',session.user.id).single();
- if(error){accountOpen.textContent='マイページ';document.getElementById('profileMessage').textContent='プロフィールを読み込めません。';return;}
- accountOpen.textContent='マイページ';
+ if(error){accountOpen.textContent='ログイン中';accountOpen.setAttribute('aria-label','ログイン中。マイページを開く');document.getElementById('profileMessage').textContent='プロフィールを読み込めません。';return;}
+ accountOpen.textContent=(profile.username||'会員')+'・ログイン中';
+ accountOpen.setAttribute('aria-label',(profile.username||'会員')+'としてログイン中。マイページを開く');
  document.getElementById('profileUsername').textContent=profile.username;
  const walletResult=await supabaseClient.rpc('get_city_wallet');
  if(walletResult.error)throw walletResult.error;
