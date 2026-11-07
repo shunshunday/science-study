@@ -324,6 +324,61 @@ button,input,select,textarea{font-family:inherit}
 @media(max-width:760px){.timeline-heading{padding-right:0;min-height:0}.timeline-heading p{position:static;transform:none;width:auto;margin-top:10px;font-size:24px;text-align:left}}@media(max-width:700px){.timeline-heading h1{font-size:27px}.science-timeline{margin-left:6px;padding-left:22px}.science-event{grid-template-columns:62px minmax(0,1fr);gap:8px}.science-event:before{left:-31px}.science-event-year{font-size:16px}.science-event-card{padding:13px}.nobel-controls{grid-template-columns:1fr 1fr}.nobel-search-label{grid-column:1/-1}.timeline-tab{padding:11px 13px}}
 </style>
 <style>.science-wallet .science-wallet-currency{color:#172f45!important}</style>
+<style id="history-kids-header-sidebar-match">
+/* History Kids app.css に合わせた上部バー・左メニュー */
+.science-sidebar{
+  width:238px;padding:36px 20px;background:#172f45;color:#fff;
+}
+.science-side-brand{gap:12px;padding:0 8px}
+.science-side-logo{width:40px;height:46px;background:#e45d28;border-radius:5px;font-family:serif;font-size:1.6rem}
+.science-side-name{font-size:1.3rem;font-weight:900;line-height:1.25;letter-spacing:0}
+.science-side-name small{margin-top:0;color:#c9d6df;font-size:.6875rem;letter-spacing:.2em}
+.science-side-caption{margin:46px 12px 14px;color:#a2b5c5;font-size:.75rem;letter-spacing:0}
+.science-side-nav{display:grid;gap:8px}
+.science-side-nav a{
+  text-align:left;border:0;background:none;color:#cbd7e1;display:flex;align-items:center;
+  gap:14px;padding:13px 16px;border-radius:0;font-size:.9375rem;font-weight:400;
+}
+.science-side-nav a span{font-size:1.3rem;width:24px;flex:none;text-align:center;color:inherit}
+.science-side-nav a:hover{background:#254358;color:#fff}
+.science-side-nav a.active{background:#fff0e7;color:#ac4119}
+.science-side-nav a.active span{color:inherit}
+.science-side-foot{margin-top:auto;padding:32px 12px 0;color:#a2b5c5;font-size:.8125rem;line-height:1.7}
+.science-topbar{height:78px;margin-left:238px;background:#fff}
+.science-topbar-inner{height:100%;padding:0 40px;gap:12px}
+.science-topbar-tagline{font-size:.8125rem;color:#647787;letter-spacing:0}
+.science-topbar-actions{gap:12px}
+.science-account-link{
+  min-height:44px;display:inline-flex;align-items:center;padding:10px 16px;
+  border:0;border-radius:9px;background:#f4f6f8;color:#172f45;
+  font-size:.8125rem;font-weight:700;
+}
+.science-furigana{
+  min-height:44px;height:auto;padding:10px 16px;border:0;border-radius:9px;
+  background:#f4f6f8;color:#172f45;font-size:.8125rem;font-weight:700;
+}
+.science-wallet{gap:6px;background:#fff2cf}
+.science-wallet span:first-child{color:#b58b16;font-size:1.15rem}
+.science-wallet strong,.science-wallet .science-wallet-currency{font-size:1.15rem}
+@media(max-width:900px){
+  .science-sidebar{width:80px;padding:26px 10px}
+  .science-side-name,.science-side-caption,.science-side-foot{display:none}
+  .science-side-brand{padding:0;justify-content:center}
+  .science-side-nav{margin-top:36px;gap:8px}
+  .science-side-nav a{font-size:0;display:grid;place-items:center;padding:12px 0;gap:0}
+  .science-side-nav a span{font-size:1.5rem;width:auto}
+  .science-topbar{margin-left:80px}
+  main{margin-left:80px}
+}
+@media(max-width:650px){
+  .science-topbar-inner{padding:0 18px;gap:6px}
+  .science-topbar-actions{gap:6px}
+  .science-account-link,.science-furigana{min-height:38px;padding:8px 9px;font-size:.6875rem}
+  .science-wallet{min-height:38px;padding:8px 9px}
+  .science-wallet strong,.science-wallet .science-wallet-currency{font-size:1rem}
+  .science-wallet span:first-child{font-size:1rem}
+}
+</style>
 </head>
 <body>
 <aside class="science-sidebar">
