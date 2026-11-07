@@ -1306,21 +1306,33 @@ async function saveCorrectAnswer(unit){
   return true;
  }catch(e){console.error('資金の保存に失敗しました',e);return false;}
 }
-async function refreshTopAccountButton(){
+async function refreshTopAccountButton(sessionOverride){
  const link=document.getElementById('accountOpen');
  if(!link)return;
  if(!supabaseClient){link.textContent='ログイン・新規会員登録';return;}
  try{
-  const {data:{session}}=await supabaseClient.auth.getSession();
-  if(!session){link.textContent='ログイン・新規会員登録';link.setAttribute('aria-label','ログイン・新規登録');return;}
+  // 認証状態変更時はSupabaseから渡された最新sessionを直接使い、再読み込みを不要にする
+  let session=sessionOverride;
+  if(sessionOverride===undefined){
+   const {data:{session:currentSession}}=await supabaseClient.auth.getSession();
+   session=currentSession;
+  }
+  if(!session){
+   link.textContent='ログイン・新規会員登録';
+   link.setAttribute('aria-label','ログイン・新規会員登録');
+   return;
+  }
+  const fallbackName=session.user.user_metadata?.username||'会員';
+  link.textContent=fallbackName+'・ログイン中';
+  link.setAttribute('aria-label',fallbackName+'としてログイン中。マイページを開く');
   const {data:profile}=await supabaseClient.from('profiles').select('username').eq('id',session.user.id).maybeSingle();
-  const username=profile?.username||session.user.user_metadata?.username||'会員';
+  const username=profile?.username||fallbackName;
   link.textContent=username+'・ログイン中';
   link.setAttribute('aria-label',username+'としてログイン中。マイページを開く');
  }catch(error){console.warn('会員名の表示を更新できませんでした',error);}
 }
 refreshTopAccountButton();
-if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else stopPlaytimeTracking();refreshTopWallet();refreshTopAccountButton();if(accountModal.classList.contains('open'))refreshAccount();});}
+if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else stopPlaytimeTracking();refreshTopWallet();refreshTopAccountButton(session);if(accountModal.classList.contains('open'))refreshAccount();});}
 if(new URLSearchParams(location.search).get('login')==='1') showAccount();
 
 
