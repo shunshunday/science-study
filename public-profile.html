@@ -134,8 +134,8 @@ function playtime(s){const m=Math.floor(Math.max(0,Number(s)||0)/60),h=Math.floo
  document.getElementById("balance").textContent="$"+assets.toLocaleString("en-US");
  const title=titleFor(assets);
  document.getElementById("title").textContent=title;
- document.getElementById("memberStatus").textContent=assets>=100000?"ゴールド会員":"通常会員";
- document.getElementById("memberCard").classList.toggle("gold",assets>=100000);
+ document.getElementById("memberStatus").textContent=assets>=10000?"ゴールド会員":"通常会員";
+ document.getElementById("memberCard").classList.toggle("gold",assets>=10000);
  const rank=document.getElementById("memberRank");
  rank.classList.toggle("nobel",assets>=50000&&assets<100000);
  rank.classList.toggle("haisha",assets>=100000);
