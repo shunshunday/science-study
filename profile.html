@@ -198,12 +198,11 @@ html.science-furigana-hidden ruby rt{visibility:hidden!important}
 }
 </style>
 <style id="science-furigana-label-spacing">.science-furigana{word-spacing:.35em!important}</style>
-<style id="science-profile-footer-bottom-gap-fix">
-/* マイプロフィール下部のフッター周辺の余白をコンパクトにする */
-html,body{margin-bottom:0!important;padding-bottom:0!important}
-body .rika-global-footer{width:calc(100% + 32px)!important;max-width:none!important;margin:16px -16px 0!important;padding:12px 24px!important;box-sizing:border-box!important}
-body .rika-footer-inner{gap:8px!important}
-@media(max-width:650px){body .rika-global-footer{margin-top:12px!important;padding:10px 16px!important}body .rika-footer-inner{gap:6px!important}}
+<style id="science-profile-viewport-height">
+/* 内容が少ないときもページ全体を画面の高さまで広げ、フッターを下端へ */
+body{display:flex;flex-direction:column;min-height:100vh;min-height:100svh;padding-bottom:0}
+main{flex:1 0 auto}
+.rika-global-footer{flex:0 0 auto}
 </style>
 </head>
 <body>
