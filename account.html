@@ -52,8 +52,23 @@ aside.science-sidebar .science-side-brand .science-side-logo,
 .science-side-brand .science-side-logo,
 .science-side-logo{background:#168b4c!important;background-color:#168b4c!important;background-image:none!important;color:#fff!important}
 </style>
-</head><body><header class="site-header"><div class="header-inner"><a class="home-brand" href="./" aria-label="科学キッズ ホーム"><div class="logo" aria-hidden="true">科</div><div class="brand">科学キッズ<small>SCIENCE KIDS</small></div></a><div class="header-tag">中学1〜3年生・科学用語集</div><a class="ranking-open" href="./ranking.html">🏆 ランキング</a><a class="ranking-open" href="./titles.html">🎖️ 称号一覧</a><a class="account-open" id="accountOpen" href="./account.html">ログイン・プロフィール</a>
-<a class="science-wallet" id="walletBtn" href="./account.html" aria-label="所持金"><span aria-hidden="true">◉</span><strong id="moneyValue">0</strong><span class="science-wallet-currency">$</span></a></div></header><main class="account-page">
+
+<style id="science-topbar-unified">
+.science-topbar{height:62.5px!important;min-height:62.5px!important;background:#fff!important;border-bottom:1px solid #dce3e9!important;box-sizing:border-box!important}
+.science-topbar-inner{height:100%!important;min-height:0!important;padding:0 24px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;box-sizing:border-box!important}
+.science-topbar-tagline{display:block!important;flex:1 1 auto!important;min-width:0!important;margin:0!important;font-size:10.35px!important;font-weight:400!important;letter-spacing:.02em!important;color:#6f8090!important;line-height:1.5!important}
+.science-topbar-actions{display:flex!important;flex:0 0 auto!important;align-items:center!important;justify-content:flex-end!important;gap:10px!important;width:auto!important;min-width:0!important;flex-wrap:nowrap!important}
+.science-account-link,.science-furigana,.science-wallet{height:38px!important;min-height:38px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;border-radius:10px!important;white-space:nowrap!important;line-height:1!important;font-family:inherit!important}
+.science-account-link{padding:0 15px!important;border:1px solid #d2dce4!important;background:#fff!important;color:#536b80!important;font-size:12px!important;font-weight:500!important;text-decoration:none!important}
+.science-furigana{padding:0 14px!important;border:1px solid #dce5e9!important;background:#f3f7f5!important;color:#315b47!important;font-size:12px!important;font-weight:600!important;cursor:pointer!important}
+.science-wallet{min-width:82px!important;padding:0 13px!important;gap:7px!important;border:1px solid #ead9a9!important;background:#fff4d7!important;color:#71551b!important;text-decoration:none!important;font-size:14px!important}
+.science-wallet span{font-size:17px!important;line-height:1!important}.science-wallet strong,.science-wallet .science-wallet-currency{font-size:14px!important;font-weight:700!important;line-height:1!important;color:#172f45!important}
+.science-topbar-left{display:flex;align-items:center;gap:18px;flex:1 1 auto;min-width:0}
+.science-topbar-extra{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.science-topbar-extra a{height:34px;display:inline-flex;align-items:center;justify-content:center;padding:0 11px;border:1px solid #dce5e9;border-radius:9px;background:#f7faf8;color:#536b80;font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap}
+@media(max-width:650px){.science-topbar{height:auto!important;min-height:52px!important}.science-topbar-inner{min-height:52px!important;height:auto!important;padding:7px 10px!important;gap:8px!important;justify-content:flex-end!important}.science-topbar-tagline{display:none!important}.science-topbar-left{flex:0 1 auto;gap:6px}.science-topbar-extra{gap:4px}.science-topbar-extra a{height:32px;padding:0 7px;font-size:10px}.science-topbar-actions{gap:6px!important}.science-account-link,.science-furigana,.science-wallet{height:34px!important;min-height:34px!important}.science-account-link{padding:0 9px!important;font-size:11px!important}.science-furigana{padding:0 8px!important;font-size:11px!important}.science-wallet{padding:0 8px!important;min-width:0!important}.science-wallet span{font-size:15px!important}.science-wallet strong,.science-wallet .science-wallet-currency{font-size:12px!important}}
+</style>
+</head><body><header class="science-topbar"><div class="science-topbar-inner"><div class="science-topbar-left"><p class="science-topbar-tagline">学んで、集めて、科学を楽しもう。</p><nav class="science-topbar-extra" aria-label="ページメニュー"><a href="./ranking.html">🏆 ランキング</a><a href="./titles.html">🎖️ 称号一覧</a></nav></div><div class="science-topbar-actions"><a class="science-account-link" id="accountOpen" href="./account.html">ログイン・プロフィール</a><button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true">ふりがな　ON</button><a class="science-wallet" id="walletBtn" href="./account.html" aria-label="所持金"><span aria-hidden="true">◉</span><strong id="moneyValue">0</strong><span class="science-wallet-currency">$</span></a></div></div></header><main class="account-page">
 
  <section class="account-card" aria-labelledby="accountTitle">
 
@@ -97,5 +112,9 @@ aside.science-sidebar .science-side-brand .science-side-logo,
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (async function(){const el=document.getElementById('moneyValue');if(!el)return;let amount=0;try{const raw=localStorage.getItem('rikakids-guest-wallet');if(raw!==null){const n=Number(raw);if(Number.isFinite(n)&&n>=0)amount=n;}if(window.supabase?.createClient){const client=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");const {data:{user},error:authError}=await client.auth.getUser();if(!authError&&user){const {data,error}=await client.rpc('get_city_wallet');if(!error){const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0);}}}}catch(e){console.warn('所持金を読み込めませんでした',e);}el.textContent=Math.floor(amount).toLocaleString('en-US');})();
+</script>
+
+<script id="science-furigana-toggle-handler">
+(function(){const b=document.getElementById('furiganaToggle');if(!b)return;b.addEventListener('click',function(){const on=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',String(on));b.textContent=on?'ふりがな　ON':'ふりがな　OFF';document.documentElement.classList.toggle('science-furigana-hidden',!on);});})();
 </script>
 </body></html>
