@@ -438,7 +438,7 @@ button,input,select,textarea{font-family:inherit}
  {year:"2022年",title:"ジェイムズ・ウェッブ宇宙望遠鏡が本格観測を開始",text:"赤外線で遠方の銀河や星形成領域、系外惑星の大気などを観測し、初期宇宙や惑星の研究を進めた。",era:"space"},
  {year:"2022年",title:"核融合で投入エネルギーを上回る出力を達成",text:"アメリカの国立点火施設で、レーザー核融合の燃料からレーザーが燃料に与えたエネルギーを上回る核融合エネルギーが得られた。",era:"space"}
  );
- events.sort((a,b)=>{const y=s=>{const n=parseInt(s,10);return s.startsWith("紀元前")?-n:n};return y(a.year)-y(b.year)});
+ events.sort((a,b)=>{const y=s=>{s=String(s||"");if(s==="紀元前")return -100000;const m=s.match(/(\\d+)/);if(!m)return 0;const n=Number(m[1]);if(s.startsWith("紀元前"))return -(s.includes("世紀")?(n-1)*100+50:n);return n};return y(a.year)-y(b.year)});
  const timeline=document.getElementById("scienceTimeline");const periodButtons=[...document.querySelectorAll("[data-period]")];const fieldButtons=[...document.querySelectorAll("[data-field]")];let selectedPeriod="all",selectedField="all";
  const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",[String.fromCharCode(34)]:"&quot;"}[c]));
  function renderHistory(){timeline.innerHTML=events.filter(e=>{const n=parseInt(e.year,10);const period=e.year.indexOf("紀元前")===0?"ancient":n<1500?"medieval":n<1900?"modern":"contemporary";return (selectedPeriod==="all"||period===selectedPeriod)&&(selectedField==="all"||e.era===selectedField)}).map(e=>"<article class=\"science-event\"><div class=\"science-event-year\">"+e.year+"</div><div class=\"science-event-card\"><h3>"+esc(e.title)+"</h3><p>"+esc(e.text)+"</p></div></article>").join("");}
