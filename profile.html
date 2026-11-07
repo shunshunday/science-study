@@ -89,6 +89,7 @@ button,a.action{display:block;width:100%;text-align:center;border:0;border-radiu
 .danger-button{background:var(--red);color:white}.warning{font-size:12px;line-height:1.7;color:#8a4444;margin:0}
 #status,#passwordMessage,#deleteMessage{font-size:12px;text-align:center;color:var(--muted);margin:12px 0 0;min-height:18px}
 #profile[hidden]{display:none}
+#profileAuth[hidden]{display:none}
 button:disabled{opacity:.55;cursor:wait}
 .site-header{background:#fff;border-bottom:1px solid var(--line)}
 .home-brand{display:flex;align-items:center;gap:13px;text-decoration:none;color:inherit;flex:none}
@@ -217,6 +218,23 @@ body .rika-global-footer{width:calc(100% + 32px)!important;max-width:none!import
   </a>
  </div>
  <p id="status">ログイン状態を確認しています…</p>
+ <section class="panel" id="profileAuth" hidden>
+  <h2>ログイン・新規会員登録</h2>
+  <p style="margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.7">科学キッズ専用のユーザー名とパスワードでログインできます。初めての方は新規登録してください。</p>
+  <div style="display:flex;gap:8px">
+   <button class="secondary" id="profileLoginTab" type="button" aria-pressed="true" style="flex:1">ログイン</button>
+   <button class="secondary" id="profileSignupTab" type="button" aria-pressed="false" style="flex:1">新規会員登録</button>
+  </div>
+  <form id="profileAuthForm">
+   <label for="profileAuthUsername">ユーザー名</label>
+   <input id="profileAuthUsername" name="username" autocomplete="username" minlength="3" maxlength="20" required placeholder="3〜20文字の英数字・_・-">
+   <label for="profileAuthPassword">パスワード</label>
+   <input id="profileAuthPassword" name="password" type="password" autocomplete="current-password" minlength="8" required placeholder="8文字以上">
+   <button class="primary" id="profileAuthSubmit" type="submit">ログイン</button>
+  </form>
+  <p id="profileAuthMessage" role="status" aria-live="polite" style="font-size:12px;line-height:1.7;text-align:center;color:var(--muted);margin:12px 0 0;min-height:18px"></p>
+  <p style="font-size:11px;color:var(--muted);text-align:center;margin:8px 0 0">メールアドレスやGoogleアカウントは不要です。</p>
+ </section>
  <section id="profile" hidden>
   <div class="panel">
    <h2>科学キッズ会員証</h2>
@@ -299,6 +317,46 @@ function titleFor(n){
  return "科学ビギナー";
 }
 function showStatus(message){statusElement.hidden=false;statusElement.textContent=message;}
+function usernameEmail(username){return username.toLowerCase()+"@accounts.rikakids.invalid";}
+let profileAuthMode="login";
+function setProfileAuthMode(mode){
+ profileAuthMode=mode;
+ const login=mode==="login";
+ document.getElementById("profileLoginTab").setAttribute("aria-pressed",String(login));
+ document.getElementById("profileSignupTab").setAttribute("aria-pressed",String(!login));
+ document.getElementById("profileAuthSubmit").textContent=login?"ログイン":"新規登録";
+ document.getElementById("profileAuthPassword").autocomplete=login?"current-password":"new-password";
+ document.getElementById("profileAuthMessage").textContent="";
+}
+document.getElementById("profileLoginTab").addEventListener("click",()=>setProfileAuthMode("login"));
+document.getElementById("profileSignupTab").addEventListener("click",()=>setProfileAuthMode("signup"));
+document.getElementById("profileAuthForm").addEventListener("submit",async event=>{
+ event.preventDefault();
+ const username=document.getElementById("profileAuthUsername").value.trim();
+ const password=document.getElementById("profileAuthPassword").value;
+ const message=document.getElementById("profileAuthMessage");
+ const button=document.getElementById("profileAuthSubmit");
+ if(!/^[a-zA-Z0-9_-]{3,20}$/.test(username)){message.textContent="ユーザー名は半角英数字・_・-の3〜20文字にしてください。";return;}
+ if(password.length<8){message.textContent="パスワードは8文字以上にしてください。";return;}
+ button.disabled=true;message.textContent=profileAuthMode==="login"?"ログインしています…":"アカウントを登録しています…";
+ try{
+  if(profileAuthMode==="signup"){
+   const result=await api("/auth/v1/signup",{method:"POST",body:JSON.stringify({email:usernameEmail(username),password,data:{username}})},null);
+   if(!result?.access_token||!result?.user){
+    message.textContent="登録処理は完了しましたが、ログインセッションが発行されませんでした。ホーム画面から設定を確認するか、メール確認が必要な場合は確認後にログインしてください。";
+    return;
+   }
+   saveSession(result);
+  }else{
+   const session=await api("/auth/v1/token?grant_type=password",{method:"POST",body:JSON.stringify({email:usernameEmail(username),password})},null);
+   saveSession(session);
+  }
+  message.textContent="ログインしました。プロフィールを読み込んでいます…";
+  await refreshProfile();
+ }catch(error){
+  message.textContent=profileAuthMode==="login"?"ログインできません。ユーザー名とパスワードを確認してください。":(error.message||"新規登録できませんでした。ユーザー名が使用済みか、設定を確認してください。");
+ }finally{button.disabled=false;}
+});
 function saveSession(session){
  currentSession=session;
  accessToken=session?.access_token||null;
@@ -431,9 +489,17 @@ async function refreshProfile(){
   card.classList.toggle("normal",!isGold);
   document.getElementById("memberStatus").textContent=isGold?"ゴールド会員":"通常会員";
   statusElement.hidden=true;
+  document.getElementById("profileAuth").hidden=true;
   document.getElementById("profile").hidden=false;
  }catch(error){
   console.error("Profile loading failed:",error);
+  if((error.message||"").includes("ログイン情報が見つかりません")||(error.message||"").includes("ログイン期限が切れています")){
+   statusElement.hidden=true;
+   document.getElementById("profile").hidden=true;
+   document.getElementById("profileAuth").hidden=false;
+   document.getElementById("profileAuthMessage").textContent="ログインしていない状態です。ログインするか、新規会員登録してください。";
+   return;
+  }
   showStatus(error.message||"ログイン情報を確認できません。ホーム画面からログインし直してください。");
  }
 }
