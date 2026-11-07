@@ -321,7 +321,7 @@ button,input,select,textarea{font-family:inherit}
   <p class="science-side-caption">きょうは、何を学ぶ？</p>
   <nav class="science-side-nav" aria-label="メインメニュー">
     <a href="./#quiz"><span aria-hidden="true">✎</span> クイズで学ぶ</a>
-    <a href="./city.html"><span aria-hidden="true">⌂</span> わたしの町</a>
+    
     <a class="active" href="./notifications.html"><span aria-hidden="true">🔔</span> 通知</a>
     <a href="./science-timeline.html"><span aria-hidden="true">⌁</span> 科学の年表</a>
     <a href="./howto.html"><span aria-hidden="true">?</span>遊び方</a>
@@ -334,7 +334,7 @@ button,input,select,textarea{font-family:inherit}
     <div class="science-topbar-actions">
       <a class="science-account-link" id="accountOpen" href="./account.html">ログイン</a>
       <button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true">ふりがな　ON</button>
-      <div class="science-wallet"><span>◉</span><strong id="topWallet">$0</strong></div>
+      
     </div>
   </div>
 </header>
@@ -365,31 +365,6 @@ button,input,select,textarea{font-family:inherit}
 
 <script>
 (()=>{
- const SUPABASE_URL="https://tmgfcmzufamxuzsuedza.supabase.co";
- const SUPABASE_ANON_KEY="sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng";
- const walletNode=document.getElementById('topWallet');
- const getGuestWallet=()=>{try{const raw=localStorage.getItem('rikakids-guest-wallet');const n=Number(raw??0);return Number.isFinite(n)&&n>=0?n:0;}catch(e){return 0;}};
- const showWallet=async()=>{
-  if(!walletNode)return;
-  try{
-   const client=window.supabase?.createClient?.(SUPABASE_URL,SUPABASE_ANON_KEY);
-   if(!client){walletNode.textContent='
-</html>+getGuestWallet().toLocaleString('en-US');return;}
-   const {data:{session},error:sessionError}=await client.auth.getSession();
-   if(sessionError)throw sessionError;
-   if(!session){walletNode.textContent='
-</html>+getGuestWallet().toLocaleString('en-US');return;}
-   const {data,error}=await client.rpc('get_city_wallet');
-   if(error)throw error;
-   const wallet=Array.isArray(data)?data[0]:data;
-   walletNode.textContent='
-</html>+Number(wallet?.balance||0).toLocaleString('en-US');
-  }catch(error){
-   console.error('通知ページの所持金取得に失敗',error);
-   walletNode.textContent='
-</html>+getGuestWallet().toLocaleString('en-US');
-  }
- };
  const toggle=document.getElementById('furiganaToggle');
  if(toggle){
   let on=true;try{on=localStorage.getItem('rikakids-furigana')!=='off';}catch(e){}
