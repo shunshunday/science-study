@@ -494,7 +494,7 @@ async function refreshProfile(){
   document.getElementById("moneyBalance").textContent="$"+Math.floor(assets).toLocaleString("en-US");
   const rankElement=document.getElementById("rank");
   rankElement.textContent=titleFor(assets);
-  if(assets>=100000){const mark=document.createElement("img");mark.className="haisha-mark";mark.src="./assets/haisha-crown.svg";mark.alt="覇者の紋章";rankElement.appendChild(mark);}
+  if(assets>=100000){const mark=document.createElement("img");mark.className="haisha-mark";mark.src="./assets/haisha-crown.svg";mark.alt="覇者の紋章";rankElement.prepend(mark);}
   const titleBar=document.querySelector(".member-rank");
   titleBar.classList.toggle("nobel",assets>=50000&&assets<100000);
   titleBar.classList.toggle("haisha",assets>=100000);
