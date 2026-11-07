@@ -18,6 +18,9 @@ main{width:min(100%,620px);margin:0 auto;background:#fff;border:1px solid var(--
 h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:0 0 22px}
 .panel{border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:14px}
 .member-card{position:relative;overflow:hidden;margin-top:18px;padding:20px;border-radius:16px;color:#263238;background:linear-gradient(145deg,#fff 0%,#f7f8fa 58%,#e9edf1 100%);box-shadow:0 14px 32px #172b3a18;border:1px solid #d7dde3;min-height:218px}
+.member-watermark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:serif;font-size:112px;font-weight:900;line-height:1;color:#16834a;opacity:.09;pointer-events:none;z-index:0}
+.member-card.gold .member-watermark{color:#8e6a18;opacity:.11}
+.member-top,.member-body,.member-rank,.member-footer{z-index:1}
 .member-card:before{content:"";position:absolute;width:230px;height:230px;border:1px solid #aeb8c225;border-radius:50%;right:-80px;top:-105px;box-shadow:0 0 0 18px #aeb8c208,0 0 0 38px #aeb8c206;pointer-events:none}
 .member-card.gold{color:#513b08;background:linear-gradient(135deg,#fff8cf 0%,#f4d45b 48%,#d9a91c 100%);border:1px solid #c89413;box-shadow:0 14px 32px #9b741d35}
 .member-card.gold:before{border-color:#fff8d966;box-shadow:0 0 0 18px #fff8d922,0 0 0 38px #fff8d914}
@@ -204,6 +207,7 @@ body .rika-global-footer{width:calc(100% + 32px)!important;max-width:none!import
   <div class="panel">
    <h2>科学キッズ会員証</h2>
    <div class="member-card normal" id="memberCard">
+    <div class="member-watermark" aria-hidden="true">科</div>
     <div class="member-top"><div class="member-brand">SCIENCE KIDS<br><span style="font-size:10px;letter-spacing:.08em;font-weight:700">OFFICIAL MEMBER CARD</span></div><div class="member-mark">科</div></div>
     <div class="member-body">
      <div class="member-identity"><div class="avatar-wrap"><img id="avatarPreview" alt="プロフィール写真" hidden><span id="avatarFallback">科</span></div><div style="min-width:0"><div class="member-label">MEMBER NAME</div><div class="member-name" id="username"></div><div class="member-sub">科学キッズ メンバー</div></div></div>
