@@ -30,7 +30,7 @@ h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:
 .member-label{margin:0 0 5px;color:#697781;font-size:9px;font-weight:900;letter-spacing:.18em}
 .member-identity{display:flex;align-items:center;gap:11px;min-width:0}.avatar-wrap{width:64px;height:64px;flex:none;border-radius:50%;overflow:hidden;border:2px solid #cbd3da;background:#e9f2eb;display:grid;place-items:center;color:#16834a;font-size:25px;font-weight:950}.avatar-wrap img{width:100%;height:100%;object-fit:cover;display:block}.avatar-wrap img[hidden]{display:none!important}.avatar-wrap{cursor:copy;transition:box-shadow .15s,border-color .15s}.avatar-wrap.avatar-drag-over{border-color:#16834a;box-shadow:0 0 0 5px #16834a35}.member-card.gold .avatar-wrap{border-color:#b88a1b}.member-name{font-size:clamp(18px,3.5vw,25px);font-weight:950;letter-spacing:.02em;overflow-wrap:anywhere;color:#1f2d35;line-height:1.25}
 .member-sub{margin-top:5px;color:#65737b;font-size:10px}
-.member-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.member-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
 .member-stat{min-width:0;padding:10px 8px;border:1px solid #cbd3da;border-radius:9px;background:#ffffffb8}
 .member-stat span{display:block;color:#687680;font-size:9px;font-weight:800;line-height:1.35}
 .member-stat strong{display:block;margin-top:5px;color:#25343c;font-size:17px;font-weight:950;line-height:1.2;overflow-wrap:anywhere}
@@ -60,7 +60,7 @@ h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:
 .member-card .member-rank.haisha strong{color:#f1d9ff}
 .member-footer{position:relative;display:flex;justify-content:space-between;gap:8px;margin-top:9px;padding-top:8px;border-top:1px solid #26323830;color:#65737b;font-size:8px;font-weight:800;letter-spacing:.06em}
 .member-card.gold .member-footer{border-color:#8e6a183d;color:#755719}
-@media(max-width:480px){.member-card{padding:14px;min-height:0}.member-body{grid-template-columns:minmax(0,.8fr) minmax(0,1.3fr);gap:8px}.member-stats{gap:5px}.member-stat{padding:8px 5px}.member-stat span{font-size:8px}.member-stat strong{font-size:14px}.member-rank{padding:8px}.member-rank strong{font-size:13px}.member-name{font-size:18px}.avatar-wrap{width:48px;height:48px;font-size:20px}.member-identity{gap:7px}.member-footer{font-size:7px}}
+@media(max-width:480px){.member-card{padding:14px;min-height:0}.member-body{grid-template-columns:minmax(0,.8fr) minmax(0,1.3fr);gap:8px}.member-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.member-stat{padding:8px 5px}.member-stat span{font-size:8px}.member-stat strong{font-size:14px}.member-rank{padding:8px}.member-rank strong{font-size:13px}.member-name{font-size:18px}.avatar-wrap{width:48px;height:48px;font-size:20px}.member-identity{gap:7px}.member-footer{font-size:7px}}
 .panel h2{font-size:16px;margin:0 0 13px}
 .user{background:#f3f8f4;padding:14px;border-radius:10px;margin-bottom:12px}.user strong{font-size:18px}
 .score{padding:17px;background:#edf7ef;border:1px solid #dceee1;border-radius:11px;text-align:center}
@@ -209,6 +209,7 @@ body .rika-global-footer{width:calc(100% + 32px)!important;max-width:none!import
       
       
       <div class="member-stat"><span>会員ランク</span><strong id="memberStatus" style="font-size:13px">通常会員</strong></div>
+      <div class="member-stat"><span>所持金</span><strong id="moneyBalance">$0</strong></div>
       <div class="member-stat"><span>累計プレイ時間</span><strong id="playtime">0分</strong></div>
      </div>
     </div>
@@ -400,6 +401,7 @@ async function refreshProfile(){
   const walletData=await api("/rest/v1/rpc/get_city_wallet",{method:"POST",body:JSON.stringify({})});
   const wallet=Array.isArray(walletData)?walletData[0]:walletData;
   const assets=Math.max(0,Number(wallet?.balance)||0);
+  document.getElementById("moneyBalance").textContent="$"+Math.floor(assets).toLocaleString("en-US");
   document.getElementById("rank").textContent=titleFor(assets);
   const titleBar=document.querySelector(".member-rank");
   titleBar.classList.toggle("nobel",assets>=500000&&assets<1000000);
