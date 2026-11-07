@@ -497,7 +497,7 @@ async function refreshProfile(){
   const rankElement=document.getElementById("rank");
   rankElement.textContent=titleFor(assets);
   const titleMark=document.getElementById("titleMark");
-  const titleIcons={"科学ビギナー":"🧪","科学チャレンジャー":"🔬","科学マスター":"⚗️","科学博士":"📘","科学の天才":"💡","伝説の科学者":"🌟","ノーベル科学賞":"🏅","覇者":""};
+  const titleIcons={"科学ビギナー":"🧪","科学チャレンジャー":"🔬","科学マスター":"⚗️","科学博士":"📘","科学の天才":"💡","伝説の科学者":"🌟","ノーベル科学賞":"♛","覇者":""};
   const currentTitle=titleFor(assets);
   titleMark.textContent=titleIcons[currentTitle]??"🔬";
   titleMark.classList.toggle("haisha",currentTitle==="覇者");
