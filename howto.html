@@ -251,6 +251,7 @@ button,input,select,textarea{font-family:inherit}
  .science-topbar-tagline{font-size:.75rem}
  .science-account-link,.science-furigana{font-size:.75rem}
  .science-wallet span,.science-wallet strong{font-size:1rem}
+.science-wallet .science-wallet-currency{color:inherit;font-weight:900}
 }
 .science-topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;height:100%}
 </style></head>
@@ -273,6 +274,7 @@ button,input,select,textarea{font-family:inherit}
     <div class="science-topbar-actions">
       <a class="science-account-link" id="accountOpen" href="./account.html">ログイン</a>
       <button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true">ふりがな　ON</button>
+      <button class="science-wallet" id="walletBtn" type="button" aria-label="所持金"><span aria-hidden="true">◉</span><strong id="moneyValue">0</strong><span class="science-wallet-currency">$</span></button>
       
     </div>
   </div>
@@ -310,5 +312,25 @@ button,input,select,textarea{font-family:inherit}
 })();
 </script>
 
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(async function(){
+ const el=document.getElementById('moneyValue'); if(!el)return;
+ const url="https://tmgfcmzufamxuzsuedza.supabase.co";
+ const key="sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng";
+ let amount=0;
+ try{
+  const raw=localStorage.getItem('rikakids-guest-wallet');
+  if(raw!==null){const n=Number(raw);if(Number.isFinite(n)&&n>=0)amount=n;}
+  if(window.supabase?.createClient){
+   const client=window.supabase.createClient(url,key);
+   const {data:{user},error:authError}=await client.auth.getUser();
+   if(!authError&&user){const {data,error}=await client.rpc('get_city_wallet');if(!error){const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0);}}
+  }
+ }catch(e){console.warn('所持金を読み込めませんでした',e);}
+ el.textContent=Math.floor(amount).toLocaleString('en-US');
+})();
+</script>
 </body>
 </html>
