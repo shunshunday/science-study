@@ -327,7 +327,7 @@ button,input,select,textarea{font-family:inherit}
 <aside class="science-sidebar">
   <a class="science-side-brand" href="./" aria-label="理科キッズ ホーム"><span class="science-side-logo">理</span><span class="science-side-name">理科キッズ<small>理科キッズ</small></span></a>
   <p class="science-side-caption">きょうは、何を学ぶ？</p>
-  <nav class="science-side-nav" aria-label="メインメニュー"><a href="./#quiz"><span aria-hidden="true">✎</span> クイズで学ぶ</a><a href="./city.html"><span aria-hidden="true">⌂</span> わたしの町</a><a class="active" href="./science-timeline.html"><span aria-hidden="true">⌁</span> 科学の年表</a><a href="./notifications.html"><span aria-hidden="true">🔔</span> 通知</a><a href="./howto.html"><span aria-hidden="true">?</span>遊び方</a></nav>
+  <nav class="science-side-nav" aria-label="メインメニュー"><a href="./#quiz"><span aria-hidden="true">✎</span> クイズで学ぶ</a><a class="active" href="./science-timeline.html"><span aria-hidden="true">⌁</span> 科学の年表</a><a href="./notifications.html"><span aria-hidden="true">🔔</span> 通知</a><a href="./howto.html"><span aria-hidden="true">?</span>遊び方</a></nav>
   <p class="science-side-foot">理科を学んで、知識を集めよう。<br>毎日の学習を応援します。</p>
 </aside>
 <header class="science-topbar">
@@ -336,7 +336,7 @@ button,input,select,textarea{font-family:inherit}
     <div class="science-topbar-actions">
       <a class="science-account-link" id="accountOpen" href="./account.html">ログイン</a>
       <button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true">ふりがな　ON</button>
-      <div class="science-wallet"><span>◉</span><strong id="topWallet">$0</strong></div>
+      
     </div>
   </div>
 </header>
@@ -361,7 +361,7 @@ button,input,select,textarea{font-family:inherit}
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>(()=>{const w=document.getElementById("topWallet");const fallback=()=>{try{return Number(localStorage.getItem("rikakids-guest-wallet")||0)}catch(e){return 0}};const paint=async()=>{if(!w)return;try{const c=window.supabase?.createClient?.("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");if(!c){w.textContent="$"+fallback().toLocaleString("en-US");return}const s=await c.auth.getSession();if(!s.data.session){w.textContent="$"+fallback().toLocaleString("en-US");return}const r=await c.rpc("get_city_wallet");if(r.error)throw r.error;const v=Array.isArray(r.data)?r.data[0]:r.data;w.textContent="$"+Number(v?.balance||0).toLocaleString("en-US")}catch(e){w.textContent="$"+fallback().toLocaleString("en-US")}};const t=document.getElementById("furiganaToggle");if(t){let on=true;try{on=localStorage.getItem("rikakids-furigana")!=="off"}catch(e){}const draw=()=>{t.textContent="ふりがな　"+(on?"ON":"OFF");t.setAttribute("aria-pressed",String(on));document.documentElement.dataset.furigana=on?"on":"off"};draw();t.addEventListener("click",()=>{on=!on;try{localStorage.setItem("rikakids-furigana",on?"on":"off")}catch(e){}draw()})}paint()})();</script><script>
+<script>
 (()=>{
  const events=[
  {year:"1990年",title:"ハッブル宇宙望遠鏡が打ち上げられる",text:"宇宙空間から遠い銀河や星を詳しく観測できるようになった。",era:"space"},
