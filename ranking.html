@@ -157,6 +157,32 @@ html.science-furigana-hidden ruby rt{visibility:hidden!important}
   line-height:1.7!important;
 }
 </style>
+<style id="science-topbar-button-size-match">
+.science-topbar-actions{display:flex!important;align-items:center!important;gap:12px!important;flex-wrap:nowrap!important}
+.science-topbar-actions .science-account-link{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  min-height:44px!important;height:auto!important;padding:10px 16px!important;
+  border:0!important;border-radius:9px!important;background:#f4f6f8!important;
+  color:#172f45!important;font-size:.8125rem!important;font-weight:700!important;
+  line-height:1.5!important;box-sizing:border-box!important;
+}
+.science-topbar-actions .science-furigana{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  min-height:38px!important;height:38px!important;padding:8px 9px!important;
+  font-size:.6875rem!important;line-height:1!important;box-sizing:border-box!important;
+}
+.science-topbar-actions .science-wallet{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  min-height:38px!important;height:38px!important;padding:8px 9px!important;
+  gap:6px!important;box-sizing:border-box!important;
+}
+@media(max-width:700px){
+ .science-topbar-actions{gap:6px!important}
+ .science-topbar-actions .science-account-link{min-height:34px!important;height:34px!important;padding:0 9px!important;font-size:11px!important}
+ .science-topbar-actions .science-furigana{min-height:34px!important;height:34px!important;padding:0 8px!important;font-size:11px!important}
+ .science-topbar-actions .science-wallet{min-height:34px!important;height:34px!important;padding:0 8px!important;gap:4px!important}
+}
+</style>
 </head>
 <body>
 <header class="science-topbar"><div class="science-topbar-inner"><div class="science-topbar-left"><p class="science-topbar-tagline">学んで、集めて、科学を楽しもう。</p><nav class="science-topbar-extra" aria-label="ページメニュー"><a href="./ranking.html">🏆 ランキング</a><a href="./titles.html">🎖️ 称号一覧</a></nav></div><div class="science-topbar-actions"><a class="science-account-link" id="accountOpen" href="./account.html">ログイン・プロフィール</a><button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true">ふりがな　ON</button><a class="science-wallet" id="walletBtn" href="./account.html" aria-label="所持金"><span aria-hidden="true">◉</span><strong id="moneyValue">0</strong><span class="science-wallet-currency">$</span></a></div></div></header>
