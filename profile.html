@@ -62,6 +62,11 @@ h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:
 
 /* 称号名は中央、マークは「現在の称号」の右 */
 .member-rank .haisha-mark{display:inline-block;width:30px;height:30px;object-fit:contain;vertical-align:middle;filter:drop-shadow(0 0 5px #c52d78aa)}
+.member-rank .haisha-mark[hidden]{display:none!important}
+.member-rank{justify-content:flex-start}
+.member-rank>span{flex:none}
+.member-rank>img{flex:none;margin-left:0}
+.member-rank>strong{left:50%;transform:translateX(-50%);text-align:center}
 /* ゴールド会員でも通常称号欄は白。称号そのものが特別な場合だけ色を付ける */
 .member-card.gold .member-rank:not(.nobel):not(.haisha){background:#fff;border-color:#d7dde3;color:#26343b}
 .member-card.gold .member-rank:not(.nobel):not(.haisha) span{color:#687680}
