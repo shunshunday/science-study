@@ -468,6 +468,20 @@ button,input,select,textarea{font-family:inherit}
  {year:"2023年",title:"CRISPRを使った遺伝子治療薬が承認される",text:"鎌状赤血球症などに対するCRISPR-Cas9を利用した遺伝子編集治療薬が英国で初めて承認され、ゲノム編集医療の新しい段階が始まった。",era:"life"}
  );
 
+
+ events.push(
+ {year:"紀元前3世紀",title:"アリスタルコスが太陽中心の宇宙を考える",text:"古代ギリシャのアリスタルコスは、地球が自転し、太陽の周りを公転するという地動説に近い考えを提案した。地球中心の考え方が広く受け入れられる時代より前の重要な試みだった。",era:"space"},
+ {year:"紀元前2世紀",title:"ヒッパルコスが天体の位置を精密に記録",text:"恒星の位置や明るさを観測し、天体の運動を数学的に扱う天文学を発展させた。その成果は後の天動説の体系にも受け継がれた。",era:"space"},
+ {year:"2世紀ごろ",title:"プトレマイオスが天動説を体系化",text:"地球を宇宙の中心に置き、太陽や惑星が地球の周りを動くとする天動説を数学的なモデルとして整理した。周転円などを用いて惑星の複雑な動きを説明し、この体系は長くヨーロッパや中東の天文学に影響を与えた。",era:"space"},
+ {year:"1543年",title:"コペルニクスが地動説を体系的に発表",text:"ニコラウス・コペルニクスが、地球を含む惑星が太陽の周りを公転し、地球も自転するとする太陽中心の体系を著書『天球の回転について』で示した。",era:"space"},
+ {year:"1572年",title:"ティコ・ブラーエが新星を観測",text:"ティコ・ブラーエが星の位置を精密に観測し、天体は変化しないという従来の考えに疑問を投げかけた。彼は地球を中心に太陽が回り、ほかの惑星は太陽の周りを回る独自の宇宙体系も提案した。",era:"space"},
+ {year:"1609年",title:"ガリレオが木星の衛星を発見",text:"ガリレオ・ガリレイが望遠鏡で木星の周りを回る四つの衛星を観測した。すべての天体が地球の周りを回るわけではないことを示す発見となった。",era:"space"},
+ {year:"1610年",title:"ガリレオが金星の満ち欠けを観測",text:"金星が月のように満ち欠けすることを観測した。この現象は金星が太陽の周りを回ることを示し、プトレマイオスの伝統的な天動説では説明できなかった。",era:"space"},
+ {year:"1610年",title:"ガリレオが『星界の報告』を出版",text:"月面の凹凸や天の川の無数の星、木星の衛星など望遠鏡による観測結果を公表し、宇宙についての見方を大きく変えた。",era:"space"},
+ {year:"1619年",title:"ケプラーが惑星運動の法則を完成",text:"ヨハネス・ケプラーが惑星の軌道は楕円であることなど、惑星の運動を表す三つの法則をまとめた。地動説を精密な観測と数学で支える重要な成果となった。",era:"space"},
+ {year:"1687年",title:"ニュートンが万有引力で惑星運動を説明",text:"アイザック・ニュートンが運動の法則と万有引力の法則を発表し、惑星が太陽の周りを公転する理由を力学によって説明した。",era:"space"}
+ );
+
  events.sort((a,b)=>{const y=s=>{s=String(s||"");const m=s.match(/(\d+)/);if(!m)return 0;const n=Number(m[1]);if(s.startsWith("紀元前"))return s.includes("世紀")?-(n-1)*100-50:-n;return n};return y(a.year)-y(b.year)});
  const timeline=document.getElementById("scienceTimeline");const periodButtons=[...document.querySelectorAll("[data-period]")];const fieldButtons=[...document.querySelectorAll("[data-field]")];let selectedPeriod="all",selectedField="all";
  const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",[String.fromCharCode(34)]:"&quot;"}[c]));
