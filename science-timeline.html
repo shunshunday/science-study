@@ -482,6 +482,19 @@ button,input,select,textarea{font-family:inherit}
  {year:"1687年",title:"ニュートンが万有引力で惑星運動を説明",text:"アイザック・ニュートンが運動の法則と万有引力の法則を発表し、惑星が太陽の周りを公転する理由を力学によって説明した。",era:"space"}
  );
 
+
+ events.push(
+ {year:"紀元前3000年ごろ",title:"古代エジプトで太陽暦が使われる",text:"ナイル川の氾濫やシリウスの出現などを手がかりに、1年を365日とする暦が使われた。12か月を各30日とし、年末に5日を加える仕組みだった。",era:"space"},
+ {year:"紀元前2000年ごろ",title:"メソポタミアで太陰太陽暦が発達",text:"月の満ち欠けを基準に1か月を定め、季節とのずれを調整するため、ときどき閏月を加える暦が発達した。",era:"space"},
+ {year:"紀元前700年ごろ",title:"バビロニアで太陰暦の計算が進む",text:"月の満ち欠けをもとにした月の長さや、太陽年とのずれを記録・計算し、暦を調整する天文学が発展した。",era:"space"},
+ {year:"紀元前432年ごろ",title:"メトン周期が考案される",text:"ギリシャのメトンは、19太陽年がおよそ235朔望月に等しいことを利用し、太陰太陽暦で季節と月の暦を合わせる方法を示した。",era:"space"},
+ {year:"紀元前46年",title:"ユリウス暦が制定される",text:"ローマのユリウス・カエサルが暦を改革し、1年を365日、4年に一度の閏年を設ける太陽暦を導入した。紀元前45年から運用された。",era:"space"},
+ {year:"622年",title:"イスラム暦の紀元が始まる",text:"ムハンマドのヒジュラ（移住）を元年とする太陰暦が用いられるようになった。1年は約354日で、季節に合わせる閏月を置かないため、月や祭日の季節は毎年少しずつ移る。",era:"space"},
+ {year:"604年ごろ",title:"日本で中国由来の暦法が使われ始める",text:"日本では中国の暦法を取り入れ、月の満ち欠けと太陽の季節を組み合わせた太陰太陽暦が用いられるようになった。暦の制度はその後、朝廷のもとで整えられていった。",era:"space"},
+ {year:"1582年",title:"グレゴリオ暦が導入される",text:"ローマ教皇グレゴリウス13世がユリウス暦のずれを修正する暦を導入した。現在、世界の多くの国で使われる太陽暦の基礎で、閏年の規則も改められた。",era:"space"},
+ {year:"1873年",title:"日本で太陽暦（グレゴリオ暦）が採用される",text:"明治政府が旧暦の太陰太陽暦から太陽暦へ改暦し、明治6年（1873年）1月1日からグレゴリオ暦を採用した。",era:"space"}
+ );
+
  events.sort((a,b)=>{const y=s=>{s=String(s||"");const m=s.match(/(\d+)/);if(!m)return 0;const n=Number(m[1]);if(s.startsWith("紀元前"))return s.includes("世紀")?-(n-1)*100-50:-n;return n};return y(a.year)-y(b.year)});
  const timeline=document.getElementById("scienceTimeline");const periodButtons=[...document.querySelectorAll("[data-period]")];const fieldButtons=[...document.querySelectorAll("[data-field]")];let selectedPeriod="all",selectedField="all";
  const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",[String.fromCharCode(34)]:"&quot;"}[c]));
