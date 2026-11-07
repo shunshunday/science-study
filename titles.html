@@ -221,8 +221,15 @@ html.science-furigana-hidden ruby rt{visibility:hidden!important}
   const paint=async(session)=>{
    let user=session?.user;
    if(!user){const result=await client.auth.getUser();user=result.data?.user||null;}
-   link.textContent=user?'マイページ':'ログイン';
-   link.setAttribute('aria-label',user?'マイページを開く':'ログイン・新規登録');
+   if(user){
+    const {data:profile}=await client.from('profiles').select('username').eq('id',user.id).maybeSingle();
+    const username=profile?.username||user.user_metadata?.username||'会員';
+    link.textContent=username+'・ログイン中';
+    link.setAttribute('aria-label',username+'としてログイン中。マイページを開く');
+   }else{
+    link.textContent='ログイン';
+    link.setAttribute('aria-label','ログイン・新規登録');
+   }
   };
   const {data:{session}}=await client.auth.getSession();
   await paint(session);
