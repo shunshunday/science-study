@@ -364,22 +364,7 @@ button,input,select,textarea{font-family:inherit}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>(()=>{const w=document.getElementById("topWallet");const fallback=()=>{try{return Number(localStorage.getItem("rikakids-guest-wallet")||0)}catch(e){return 0}};const paint=async()=>{if(!w)return;try{const c=window.supabase?.createClient?.("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");if(!c){w.textContent="$"+fallback().toLocaleString("en-US");return}const s=await c.auth.getSession();if(!s.data.session){w.textContent="$"+fallback().toLocaleString("en-US");return}const r=await c.rpc("get_city_wallet");if(r.error)throw r.error;const v=Array.isArray(r.data)?r.data[0]:r.data;w.textContent="$"+Number(v?.balance||0).toLocaleString("en-US")}catch(e){w.textContent="$"+fallback().toLocaleString("en-US")}};const t=document.getElementById("furiganaToggle");if(t){let on=true;try{on=localStorage.getItem("rikakids-furigana")!=="off"}catch(e){}const draw=()=>{t.textContent="ふりがな　"+(on?"ON":"OFF");t.setAttribute("aria-pressed",String(on));document.documentElement.dataset.furigana=on?"on":"off"};draw();t.addEventListener("click",()=>{on=!on;try{localStorage.setItem("rikakids-furigana",on?"on":"off")}catch(e){}draw()})}paint()})();</script><script>
 (()=>{
  const events=[
- {year:"紀元前",title:"古代ギリシャで自然哲学が発展",text:"自然現象を神話だけでなく、観察や論理で説明しようとする考え方が広がった。",era:"space"},
- {year:"1021年ごろ",title:"光の研究が進む",text:"イブン・アル＝ハイサムが視覚や光の性質を実験と観察で研究し、光学の発展に貢献した。",era:"space"},
- {year:"1543年",title:"地動説が広まる",text:"コペルニクスが、地球を含む惑星が太陽の周りを回るという地動説を発表した。",era:"space"},
- {year:"1609年",title:"望遠鏡による天体観測",text:"ガリレオが望遠鏡で月の表面や木星の衛星などを観測し、天文学を大きく進めた。",era:"space"},
- {year:"1687年",title:"ニュートンの運動法則と万有引力",text:"運動の法則と万有引力の考え方がまとめられ、物体の運動や惑星の動きを説明する土台になった。",era:"space"},
- {year:"1789年",title:"近代化学の基礎が整う",text:"ラボアジエが質量保存の法則などを示し、化学を定量的に研究する方法を発展させた。",era:"chemistry"},
- {year:"1869年",title:"周期表が発表される",text:"メンデレーエフが元素を性質に従って並べ、まだ見つかっていない元素の存在も予測した。",era:"chemistry"},
- {year:"1895年",title:"X線が発見される",text:"レントゲンがX線を発見。体を切らずに骨の様子を調べる医療画像技術につながった。",era:"space"},
- {year:"1900年",title:"量子論の始まり",text:"プランクがエネルギーは連続ではなく、とびとびの単位でやり取りされるという考え方を示した。",era:"space"},
- {year:"1905年",title:"特殊相対性理論が発表される",text:"アインシュタインが時間や空間の見方を変える理論を発表した。",era:"space"},
- {year:"1928年",title:"ペニシリンが発見される",text:"フレミングが細菌の増殖を抑える物質を発見し、抗生物質の時代への道を開いた。",era:"life"},
- {year:"1953年",title:"DNAの二重らせん構造が提案される",text:"DNAの構造の解明が進み、遺伝情報がどのように保存・伝達されるかを理解する大きな手がかりになった。",era:"life"},
- {year:"1960年代",title:"プレートテクトニクスが確立する",text:"大陸や海洋底が動くという考え方が広まり、地震・火山・山脈の成り立ちを一つのしくみで説明できるようになった。",era:"earth"},
- {year:"1969年",title:"人類が初めて月面に着陸",text:"アポロ11号の乗組員が月面に到達し、月の岩石や地形の調査が進んだ。",era:"space"},
  {year:"1990年",title:"ハッブル宇宙望遠鏡が打ち上げられる",text:"宇宙空間から遠い銀河や星を詳しく観測できるようになった。",era:"space"},
- {year:"2012年",title:"ヒッグス粒子の発見が発表される",text:"CERNの大型ハドロン衝突型加速器で新しい粒子が見つかり、素粒子の標準模型を確かめる重要な成果となった。",era:"space"},
  {year:"2019年",title:"ブラックホールの影が初撮影される",text:"イベント・ホライズン・テレスコープが、銀河M87の中心にあるブラックホールの影の画像を公開した。",era:"space"}
  ];
  events.push(
@@ -438,7 +423,7 @@ button,input,select,textarea{font-family:inherit}
  {year:"2022年",title:"ジェイムズ・ウェッブ宇宙望遠鏡が本格観測を開始",text:"赤外線で遠方の銀河や星形成領域、系外惑星の大気などを観測し、初期宇宙や惑星の研究を進めた。",era:"space"},
  {year:"2022年",title:"核融合で投入エネルギーを上回る出力を達成",text:"アメリカの国立点火施設で、レーザー核融合の燃料からレーザーが燃料に与えたエネルギーを上回る核融合エネルギーが得られた。",era:"space"}
  );
- events.sort((a,b)=>{const y=s=>{s=String(s||"");if(s==="紀元前")return -100000;const m=s.match(/(\\d+)/);if(!m)return 0;const n=Number(m[1]);if(s.startsWith("紀元前"))return -(s.includes("世紀")?(n-1)*100+50:n);return n};return y(a.year)-y(b.year)});
+ events.sort((a,b)=>{const y=s=>{s=String(s||"");const m=s.match(/(\\d+)/);if(!m)return 0;const n=Number(m[1]);if(s.startsWith("紀元前"))return s.includes("世紀")?-(n-1)*100-50:-n;return n};return y(a.year)-y(b.year)});
  const timeline=document.getElementById("scienceTimeline");const periodButtons=[...document.querySelectorAll("[data-period]")];const fieldButtons=[...document.querySelectorAll("[data-field]")];let selectedPeriod="all",selectedField="all";
  const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",[String.fromCharCode(34)]:"&quot;"}[c]));
  function renderHistory(){timeline.innerHTML=events.filter(e=>{const n=parseInt(e.year,10);const period=e.year.indexOf("紀元前")===0?"ancient":n<1500?"medieval":n<1900?"modern":"contemporary";return (selectedPeriod==="all"||period===selectedPeriod)&&(selectedField==="all"||e.era===selectedField)}).map(e=>"<article class=\"science-event\"><div class=\"science-event-year\">"+e.year+"</div><div class=\"science-event-card\"><h3>"+esc(e.title)+"</h3><p>"+esc(e.text)+"</p></div></article>").join("");}
