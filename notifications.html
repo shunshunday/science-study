@@ -492,7 +492,7 @@ aside.science-sidebar .science-side-brand .science-side-logo,
   text-decoration:none!important;
 }
 </style>
-<style id="science-furigana-spacing">.science-furigana{word-spacing:1px!important}</style>
+
 </head>
 <body>
 <aside class="science-sidebar">
@@ -512,7 +512,8 @@ aside.science-sidebar .science-side-brand .science-side-logo,
     <p class="science-topbar-tagline">学んで、集めて、科学を楽しもう。</p>
     <div class="science-topbar-actions">
       <a class="science-account-link" id="accountOpen" href="./account.html">ログイン</a>
-      <button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true">ふりがな ON</button>
+      <style id="science-furigana-gap">.science-furigana{display:inline-flex!important;align-items:center!important;gap:.9em!important;word-spacing:normal!important}</style>
+      <button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true"><span>ふりがな</span><span id="furiganaState">ON</span></button>
       <button class="science-wallet" id="walletBtn" type="button" aria-label="所持金"><span aria-hidden="true">◉</span><strong id="moneyValue">0</strong><span class="science-wallet-currency">$</span></button>
       
     </div>
@@ -560,7 +561,7 @@ aside.science-sidebar .science-side-brand .science-side-logo,
  const toggle=document.getElementById('furiganaToggle');
  if(toggle){
   let on=true;try{on=localStorage.getItem('rikakids-furigana')!=='off';}catch(e){}
-  const paint=()=>{toggle.textContent='ふりがな　'+(on?'ON':'OFF');toggle.setAttribute('aria-pressed',String(on));document.documentElement.dataset.furigana=on?'on':'off';};
+  const paint=()=>{toggle.querySelector('#furiganaState').textContent=on?'ON':'OFF';toggle.setAttribute('aria-pressed',String(on));document.documentElement.dataset.furigana=on?'on':'off';};
   paint();
   toggle.addEventListener('click',()=>{on=!on;try{localStorage.setItem('rikakids-furigana',on?'on':'off');}catch(e){}paint();});
  }
