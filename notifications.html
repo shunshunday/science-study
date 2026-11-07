@@ -190,6 +190,9 @@ button,input,select,textarea{font-family:inherit;color:inherit}
   .science-wallet span{font-size:1rem}
 }
 
+
+.science-wallet{height:36px;min-width:0;padding:0 10px;display:inline-flex;align-items:center;gap:5px;border:0;border-radius:9px;background:#fff1cf;color:#172f45;text-decoration:none;white-space:nowrap;font:inherit}
+.science-wallet span:first-child{font-size:18px;color:#b78b26}.science-wallet strong,.science-wallet .science-wallet-currency{font-size:1rem;font-weight:900;color:#172f45}
 </style>
 <style>
 .notification-main{max-width:none}
@@ -334,6 +337,7 @@ button,input,select,textarea{font-family:inherit}
     <div class="science-topbar-actions">
       <a class="science-account-link" id="accountOpen" href="./account.html">ログイン</a>
       <button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true">ふりがな　ON</button>
+      <button class="science-wallet" id="walletBtn" type="button" aria-label="所持金"><span aria-hidden="true">◉</span><strong id="moneyValue">0</strong><span class="science-wallet-currency">$</span></button>
       
     </div>
   </div>
@@ -376,5 +380,10 @@ button,input,select,textarea{font-family:inherit}
 })();
 </script>
 
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(async function(){const el=document.getElementById('moneyValue');if(!el)return;let amount=0;try{const raw=localStorage.getItem('rikakids-guest-wallet');if(raw!==null){const n=Number(raw);if(Number.isFinite(n)&&n>=0)amount=n;}if(window.supabase?.createClient){const client=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");const {data:{user},error:authError}=await client.auth.getUser();if(!authError&&user){const {data,error}=await client.rpc('get_city_wallet');if(!error){const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0);}}}}catch(e){console.warn('所持金を読み込めませんでした',e);}el.textContent=Math.floor(amount).toLocaleString('en-US');})();
+</script>
 </body>
 </html>
