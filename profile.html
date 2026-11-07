@@ -19,7 +19,10 @@ h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:
 .profile-heading-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
 .profile-heading-copy{min-width:0}
 .profile-heading-copy .lead{margin-bottom:0}
-.profile-heading-logo{width:40px;height:46px;flex:0 0 40px;display:grid;place-items:center;border-radius:5px;background:#168b4c;color:#fff;font-family:serif;font-size:1.6rem;font-weight:400;line-height:1;box-shadow:inset 0 -3px 0 #0d6d3a;padding-bottom:2px}
+.profile-heading-brand{display:flex;align-items:center;gap:12px;flex:0 0 auto;color:#203128}
+.profile-heading-logo{width:40px;height:46px;flex:0 0 40px;display:flex;align-items:center;justify-content:center;border-radius:5px;background:#168b4c;color:#fff;font-family:serif;font-size:1.6rem;font-weight:400;line-height:1;box-shadow:inset 0 -3px 0 #0d6d3a;padding-bottom:2px}
+.profile-heading-name{font-size:1.3rem;font-weight:900;line-height:1.25;letter-spacing:.02em;white-space:nowrap}
+.profile-heading-name small{display:block;margin-top:5px;font-size:10px;letter-spacing:.2em;color:#839087;font-weight:700}
 .panel{border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:14px}
 .member-card{position:relative;overflow:hidden;margin-top:18px;padding:20px;border-radius:16px;color:#263238;background:linear-gradient(145deg,#fff 0%,#f7f8fa 58%,#e9edf1 100%);box-shadow:0 14px 32px #172b3a18;border:1px solid #d7dde3;min-height:218px}
 .member-watermark{position:absolute;left:calc(100% - 35px);top:10px;transform:translate(-50%,-50%);font-family:serif;font-size:120px;font-weight:900;line-height:1;color:#16834a;opacity:.12;pointer-events:none;z-index:0}
@@ -207,7 +210,10 @@ body .rika-global-footer{width:calc(100% + 32px)!important;max-width:none!import
    <h1>マイプロフィール</h1>
    <p class="lead">科学キッズの会員証・学習記録を確認できます。</p>
   </div>
-  <span class="profile-heading-logo" aria-label="科学キッズ">科</span>
+  <div class="profile-heading-brand" aria-label="科学キッズ">
+   <span class="profile-heading-logo">科</span>
+   <span class="profile-heading-name">科学キッズ<small>SCIENCE KIDS</small></span>
+  </div>
  </div>
  <p id="status">ログイン状態を確認しています…</p>
  <section id="profile" hidden>
