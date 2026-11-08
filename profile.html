@@ -398,6 +398,21 @@ function titleFor(n){
 }
 function showStatus(message){statusElement.hidden=false;statusElement.textContent=message;}
 function usernameEmail(username){return username.toLowerCase()+"@accounts.rikakids.invalid";}
+const GUEST_WALLET_IMPORT_KEY="rikakids-guest-wallet-import-pending";
+function getGuestWallet(){
+ try{const raw=localStorage.getItem("rikakids-guest-wallet");if(raw===null)return 0;const amount=Number(raw);return Number.isFinite(amount)&&amount>=0?Math.floor(amount):0;}catch(e){return 0;}
+}
+async function importPendingGuestWallet(){
+ let amount=0;
+ try{amount=Math.floor(Number(localStorage.getItem(GUEST_WALLET_IMPORT_KEY)||0));}catch(e){throw e;}
+ if(!Number.isFinite(amount)||amount<=0)return 0;
+ const data=await api("/rest/v1/rpc/import_guest_wallet",{method:"POST",body:JSON.stringify({p_balance:amount})});
+ const wallet=Array.isArray(data)?data[0]:data;
+ if(!wallet||!Number.isFinite(Number(wallet.balance)))throw new Error("所持金の引き継ぎ結果を確認できませんでした。");
+ localStorage.setItem("rikakids-guest-wallet","0");
+ localStorage.removeItem(GUEST_WALLET_IMPORT_KEY);
+ return amount;
+}
 let profileAuthMode="login";
 function setProfileAuthMode(mode){
  profileAuthMode=mode;
@@ -421,6 +436,9 @@ document.getElementById("profileAuthForm").addEventListener("submit",async event
  button.disabled=true;message.textContent=profileAuthMode==="login"?"ログインしています…":"アカウントを登録しています…";
  try{
   if(profileAuthMode==="signup"){
+   // 会員登録前のブラウザ所持金を退避し、登録後または次回ログイン時に会員残高へ移す
+   const guestBalance=getGuestWallet();
+   if(guestBalance>0)localStorage.setItem(GUEST_WALLET_IMPORT_KEY,String(guestBalance));
    const result=await api("/auth/v1/signup",{method:"POST",body:JSON.stringify({email:usernameEmail(username),password,data:{username}})},null);
    if(!result?.access_token||!result?.user){
     message.textContent="登録処理は完了しましたが、ログインセッションが発行されませんでした。ホーム画面から設定を確認するか、メール確認が必要な場合は確認後にログインしてください。";
@@ -548,6 +566,7 @@ async function refreshProfile(){
  try{
   showStatus("ログイン状態を確認しています…");
   const session=await ensureSession();
+  try{await importPendingGuestWallet();}catch(importError){console.error("ブラウザ所持金の会員データへの引き継ぎに失敗:",importError);}
   startProfilePlaytime(session.user.id);
   const rows=await api("/rest/v1/profiles?select=username,avatar_url,playtime_seconds&id=eq."+encodeURIComponent(session.user.id),{method:"GET",cache:"no-store",headers:{"Cache-Control":"no-cache"}});
   const data=Array.isArray(rows)?rows[0]:null;
