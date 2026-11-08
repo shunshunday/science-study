@@ -329,8 +329,8 @@ function titleBadge(balance){
 function renderRanking(list){
  const order=["first","second","third"];
  podiumEl.classList.toggle("three",list.length>=3);
- podiumEl.innerHTML=list.slice(0,3).map((p,i)=>'<article class="podium-card '+order[i]+'"><span class="podium-rank">'+(i+1)+' 位</span>'+avatarMarkup(p.username,p.avatar_url,"podium-avatar")+'<div class="podium-identity"><strong class="podium-name">'+safeText(p.username||"会員")+'</strong>'+titleBadge(p.balance)+'</div>'+'<div class="podium-score">$ '+Number(p.balance||0).toLocaleString("ja-JP")+'</div></article>').join("");
- rowsEl.innerHTML=list.slice(3).map((p,i)=>'<div class="ranking-row"><span class="rank-number">'+(i+4)+'</span><div class="rank-user">'+avatarMarkup(p.username,p.avatar_url,"rank-avatar")+'<strong>'+safeText(p.username||"会員")+'</strong>'+titleBadge(p.balance)+'</div><div class="rank-score">$ '+Number(p.balance||0).toLocaleString("ja-JP")+'</div></div>').join("");
+ podiumEl.innerHTML=list.slice(0,3).map((p,i)=>'<article class="podium-card '+order[i]+' '+titleForBalance(p.balance).cls+'"><span class="podium-rank">'+(i+1)+' 位</span>'+avatarMarkup(p.username,p.avatar_url,"podium-avatar")+'<div class="podium-identity"><strong class="podium-name">'+safeText(p.username||"会員")+'</strong>'+titleBadge(p.balance)+'</div>'+'<div class="podium-score">$ '+Number(p.balance||0).toLocaleString("ja-JP")+'</div></article>').join("");
+ rowsEl.innerHTML=list.slice(3).map((p,i)=>'<div class="ranking-row '+titleForBalance(p.balance).cls+'"><span class="rank-number">'+(i+4)+'</span><div class="rank-user">'+avatarMarkup(p.username,p.avatar_url,"rank-avatar")+'<strong>'+safeText(p.username||"会員")+'</strong>'+titleBadge(p.balance)+'</div><div class="rank-score">$ '+Number(p.balance||0).toLocaleString("ja-JP")+'</div></div>').join("");
  tableEl.hidden=list.length<=3;
  if(!list.length){statusEl.hidden=false;statusEl.textContent="まだ所持金ランキングに表示できる記録がありません。街づくりでお金を集めよう！"}
  else statusEl.hidden=true;
@@ -434,4 +434,24 @@ document.getElementById("furiganaToggle").addEventListener("click",()=>{
  if(a&&n){const b=document.createElement("span");b.className="rika-notice";b.textContent=n>99?"99+":String(n);a.append(b)}
 })();
 })();
-</script></body></html>
+</script>
+<style id="ranking-full-title-themes">
+/* 所持金ランクに応じてランキングカード全体を称号カラーにする */
+.podium-card.haisha,.ranking-row.haisha{background:linear-gradient(110deg,#251036,#54205f 72%,#382047)!important;border:1px solid #bd6bd0!important;color:#ffe0ff!important;box-shadow:0 3px 14px #8d2fd833}
+.podium-card.nobel,.ranking-row.nobel{background:linear-gradient(110deg,#fff5cf,#f0d98e 72%,#fff9e8)!important;border:1px solid #d5b45d!important;color:#805d13!important;box-shadow:0 3px 12px #b58a2425}
+.podium-card.legend,.ranking-row.legend{background:linear-gradient(110deg,#ffe8e3,#f4c1b5 72%,#fff5f1)!important;border:1px solid #e7a99a!important;color:#963f2c!important}
+.podium-card.genius,.ranking-row.genius{background:linear-gradient(110deg,#f0e8ff,#d8c4ff 72%,#faf6ff)!important;border:1px solid #b99be8!important;color:#633a9c!important}
+.podium-card.doctor,.ranking-row.doctor{background:linear-gradient(110deg,#e8edff,#c5d0ff 72%,#f7f8ff)!important;border:1px solid #aab9f2!important;color:#354f9f!important}
+.podium-card.master,.ranking-row.master{background:linear-gradient(110deg,#dff3f5,#a9dfe3 72%,#f4fcfc)!important;border:1px solid #8bcbd1!important;color:#126b74!important}
+.podium-card.challenger,.ranking-row.challenger{background:linear-gradient(110deg,#e4f5e9,#b8e2c5 72%,#f5fcf7)!important;border:1px solid #9bd2ad!important;color:#216b3d!important}
+.podium-card.beginner,.ranking-row.beginner{background:linear-gradient(110deg,#edf1f4,#d9e0e6 72%,#fff)!important;border:1px solid #cbd4dc!important;color:#596b79!important}
+.podium-card.haisha .podium-name,.ranking-row.haisha .rank-user strong,.podium-card.haisha .podium-rank,.ranking-row.haisha .rank-number{color:#ffe0ff!important}
+.podium-card.nobel .podium-name,.ranking-row.nobel .rank-user strong,.podium-card.nobel .podium-rank,.ranking-row.nobel .rank-number{color:#805d13!important}
+.podium-card.haisha .podium-score,.ranking-row.haisha .rank-score{color:#ffe0ff!important}
+.podium-card.nobel .podium-score,.ranking-row.nobel .rank-score{color:#805d13!important}
+.podium-card.haisha .podium-avatar,.ranking-row.haisha .rank-avatar{border:2px solid #bd6bd0!important;box-shadow:0 0 9px #8d2fd855}
+.podium-card.nobel .podium-avatar,.ranking-row.nobel .rank-avatar{border:2px solid #d5b45d!important;box-shadow:0 0 8px #b58a2440}
+.podium-card.haisha .ranking-title-badge,.ranking-row.haisha .ranking-title-badge{background:#ffe0ff!important;color:#54205f!important;border-color:#e5a5ed!important;box-shadow:none}
+.podium-card.nobel .ranking-title-badge,.ranking-row.nobel .ranking-title-badge{background:#805d13!important;color:#fff5cf!important;border-color:#b58a24!important;box-shadow:none}
+</style>
+</body></html>
