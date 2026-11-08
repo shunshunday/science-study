@@ -454,4 +454,23 @@ document.getElementById("furiganaToggle").addEventListener("click",()=>{
 .podium-card.haisha .ranking-title-badge,.ranking-row.haisha .ranking-title-badge{background:#ffe0ff!important;color:#54205f!important;border-color:#e5a5ed!important;box-shadow:none}
 .podium-card.nobel .ranking-title-badge,.ranking-row.nobel .ranking-title-badge{background:#805d13!important;color:#fff5cf!important;border-color:#b58a24!important;box-shadow:none}
 </style>
+
+<style id="ranking-title-name-larger">
+/* 称号名を読みやすく大きく表示 */
+.ranking-title-badge{
+  font-size:15px!important;
+  font-weight:950!important;
+  padding:5px 13px!important;
+  line-height:1.55!important;
+  letter-spacing:.02em!important;
+}
+.podium-card .ranking-title-badge{font-size:16px!important;padding:6px 15px!important}
+.ranking-title-mark{width:24px!important;height:24px!important;flex-basis:24px!important;font-size:20px!important}
+@media(max-width:650px){
+  .ranking-title-badge{font-size:12px!important;padding:4px 9px!important}
+  .podium-card .ranking-title-badge{font-size:13px!important;padding:4px 10px!important}
+  .ranking-title-mark{width:20px!important;height:20px!important;flex-basis:20px!important;font-size:17px!important}
+}
+</style>
+
 </body></html>
