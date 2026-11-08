@@ -656,6 +656,49 @@ aside.science-sidebar .science-side-foot{
  aside.science-sidebar .science-side-nav a span:first-child{flex:0 0 20px!important;width:20px!important;font-size:17px!important}
 }
 </style>
+<style id="science-sidebar-brand-one-source">
+/* 全ページ共通：左上の「科学キッズ / SCIENCE KIDS」ロゴ・文字・位置 */
+aside.science-sidebar .science-side-brand{
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ gap:12px!important;margin:0!important;padding:0 8px!important;
+ min-height:46px!important;width:auto!important;box-sizing:border-box!important;
+ font-family:inherit!important;text-decoration:none!important;
+}
+aside.science-sidebar .science-side-logo{
+ display:grid!important;place-items:center!important;flex:0 0 40px!important;
+ width:40px!important;height:46px!important;margin:0!important;padding:0!important;
+ border-radius:5px!important;background:#168b4c!important;color:#fff!important;
+ font-family:serif!important;font-size:25.6px!important;font-weight:900!important;
+ line-height:1!important;box-sizing:border-box!important;
+}
+aside.science-sidebar .science-side-name{
+ display:block!important;margin:0!important;padding:0!important;
+ color:#fff!important;font-family:inherit!important;font-size:20.8px!important;
+ font-weight:900!important;line-height:1.25!important;letter-spacing:0!important;
+ white-space:nowrap!important;
+}
+aside.science-sidebar .science-side-name small{
+ display:block!important;margin:5px 0 0!important;padding:0!important;
+ color:#c2d0dc!important;font-family:inherit!important;font-size:10px!important;
+ font-weight:400!important;line-height:1.2!important;letter-spacing:.2em!important;
+ white-space:nowrap!important;
+}
+@media(max-width:900px) and (min-width:651px){
+ aside.science-sidebar .science-side-brand{justify-content:center!important;padding:0!important}
+ aside.science-sidebar .science-side-name{display:none!important}
+}
+@media(max-width:650px){
+ aside.science-sidebar .science-side-brand{
+  justify-content:flex-start!important;gap:10px!important;
+  min-height:40px!important;padding:5px 7px 10px!important;
+ }
+ aside.science-sidebar .science-side-logo{
+  flex-basis:36px!important;width:36px!important;height:40px!important;font-size:23px!important;
+ }
+ aside.science-sidebar .science-side-name{display:block!important;font-size:18px!important}
+ aside.science-sidebar .science-side-name small{margin-top:4px!important;font-size:9px!important}
+}
+</style>
 </head>
 <body>
 <aside class="science-sidebar">
