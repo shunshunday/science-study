@@ -700,28 +700,12 @@ aside.science-sidebar .science-side-name small{
 }
 </style>
 <style id="wallet-copy-science-timeline">
-/* 科学の年表ページの所持金枠をそのまま反映 */
-.science-topbar-actions .science-wallet{
- height:auto!important;min-width:0!important;padding:5px 8px!important;
- display:flex!important;align-items:center!important;gap:4px!important;
- border:0!important;border-radius:9px!important;background:#fff1cf!important;
- color:#71551b!important;white-space:nowrap!important;box-sizing:border-box!important;
-}
-.science-topbar-actions .science-wallet span:first-child{
- font-size:12px!important;color:#b78b26!important;line-height:1!important;
-}
-.science-topbar-actions .science-wallet strong{
- font-size:11px!important;font-weight:600!important;line-height:1!important;color:#172f45!important;
-}
-.science-topbar-actions .science-wallet .science-wallet-currency{
- font-size:11px!important;font-weight:600!important;line-height:1!important;color:#172f45!important;
-}
-@media(max-width:650px){
- .science-topbar-actions .science-wallet{height:40px!important;padding:0 10px!important;gap:4px!important}
- .science-topbar-actions .science-wallet span:first-child{font-size:12px!important}
- .science-topbar-actions .science-wallet strong,
- .science-topbar-actions .science-wallet .science-wallet-currency{font-size:11px!important}
-}
+/* 科学の年表ページと同じ大きな所持金枠 */
+.science-topbar-actions .science-wallet{display:flex!important;align-items:center!important;gap:6px!important;min-width:0!important;min-height:44px!important;height:auto!important;padding:10px 16px!important;border:0!important;border-radius:9px!important;background:#fff2cf!important;color:#172f45!important;box-sizing:border-box!important;white-space:nowrap!important}
+.science-topbar-actions .science-wallet span:first-child{font-size:1.15rem!important;line-height:1!important;color:#b58b16!important}
+.science-topbar-actions .science-wallet strong{margin-left:6px!important;font-size:1.15rem!important;font-weight:700!important;line-height:1!important;color:#172f45!important}
+.science-topbar-actions .science-wallet .science-wallet-currency{font-size:1.15rem!important;font-weight:700!important;line-height:1!important;color:#172f45!important}
+@media(max-width:650px){.science-topbar-actions .science-wallet{min-height:38px!important;height:auto!important;padding:8px 9px!important;gap:6px!important}.science-topbar-actions .science-wallet span:first-child{font-size:1rem!important}.science-topbar-actions .science-wallet strong,.science-topbar-actions .science-wallet .science-wallet-currency{font-size:1rem!important}}
 </style>
 </head>
 <body>
