@@ -356,6 +356,46 @@ aside.science-sidebar .science-side-nav a:not(.active):hover{background:#254358!
 @media(max-width:900px) and (min-width:651px){aside.science-sidebar{width:80px!important;min-width:80px!important;max-width:80px!important;padding:26px 10px!important}aside.science-sidebar .science-side-name,aside.science-sidebar .science-side-caption{display:none!important}aside.science-sidebar .science-side-nav{margin-top:24px!important;gap:8px!important}aside.science-sidebar .science-side-nav a{justify-content:center!important;padding:0!important;gap:0!important;font-size:0!important}aside.science-sidebar .science-side-nav a span:first-child{font-size:21px!important}}
 @media(max-width:650px){aside.science-sidebar{position:relative!important;inset:auto!important;width:100%!important;min-width:0!important;max-width:none!important;height:auto!important;padding:10px 12px!important;margin:0 0 14px!important;display:flex!important;flex-direction:column!important}aside.science-sidebar .science-side-name{display:block!important}aside.science-sidebar .science-side-caption{display:none!important}aside.science-sidebar .science-side-nav{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;gap:6px!important;margin:8px 0 0!important}aside.science-sidebar .science-side-nav a{flex:1 1 30%!important;width:auto!important;min-width:0!important;height:40px!important;min-height:40px!important;max-height:40px!important;padding:0 7px!important;justify-content:center!important;gap:6px!important;font-size:12px!important}aside.science-sidebar .science-side-nav a span:first-child{flex:0 0 20px!important;width:20px!important;font-size:17px!important}}
 </style>
+<style id="science-sidebar-operator-typography">
+/* 運営者情報ページ基準：左バー内の文字・アイコン・間隔を全ページ統一 */
+aside.science-sidebar .science-side-caption{
+ display:block!important;margin:46px 12px 14px!important;
+ color:#a2b5c5!important;font-size:12px!important;font-weight:400!important;
+ line-height:1.5!important;letter-spacing:0!important;
+}
+aside.science-sidebar .science-side-nav{
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ gap:0!important;margin:0!important;padding:0!important;
+}
+aside.science-sidebar .science-side-nav a{
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ gap:14px!important;width:100%!important;min-height:0!important;height:auto!important;max-height:none!important;
+ flex:0 0 auto!important;margin:0!important;padding:13px 16px!important;box-sizing:border-box!important;
+ border:0!important;border-radius:0!important;font-family:inherit!important;
+ font-size:15px!important;font-weight:400!important;line-height:1.5!important;
+ white-space:normal!important;text-align:left!important;text-decoration:none!important;
+}
+aside.science-sidebar .science-side-nav a span:first-child{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ flex:0 0 24px!important;width:24px!important;height:auto!important;margin:0!important;
+ font-size:20.8px!important;line-height:1.5!important;text-align:center!important;
+}
+aside.science-sidebar .science-side-foot{
+ display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+ margin:auto 0 0!important;padding:32px 12px 0!important;
+ color:#a2b5c5!important;font-size:13px!important;font-weight:400!important;line-height:1.7!important;
+}
+@media(max-width:900px) and (min-width:651px){
+ aside.science-sidebar .science-side-caption,aside.science-sidebar .science-side-foot{display:none!important}
+}
+@media(max-width:650px){
+ aside.science-sidebar .science-side-caption{display:none!important}
+ aside.science-sidebar .science-side-foot{display:none!important}
+ aside.science-sidebar .science-side-nav{flex-direction:row!important;flex-wrap:wrap!important;gap:6px!important;margin:8px 0 0!important}
+ aside.science-sidebar .science-side-nav a{flex:1 1 30%!important;width:auto!important;min-width:0!important;min-height:40px!important;height:40px!important;padding:0 7px!important;justify-content:center!important;gap:6px!important;font-size:12px!important}
+ aside.science-sidebar .science-side-nav a span:first-child{flex:0 0 20px!important;width:20px!important;font-size:17px!important}
+}
+</style>
 </head><body>
 <aside class="science-sidebar"><a class="science-side-brand" href="https://shunshunday.github.io/science-study/?top=1"><span class="science-side-logo">科</span><span class="science-side-name">科学キッズ<small>SCIENCE KIDS</small></span></a><p class="science-side-caption">きょうは、何を学ぶ？</p><nav class="science-side-nav" aria-label="メインメニュー">
 <a href="./index.html?top=1"><span aria-hidden="true">✎</span>クイズで学ぶ</a>
