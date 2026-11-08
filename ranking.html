@@ -497,4 +497,38 @@ document.getElementById("furiganaToggle").addEventListener("click",()=>{
 }
 </style>
 
+
+<style id="ranking-title-match-membership-card">
+/* マイプロフィール会員証の称号名と同じ文字サイズ・太さ・色。枠は付けない */
+.ranking-title-badge{
+ display:inline!important;
+ padding:0!important;
+ margin:0!important;
+ border:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ font-family:inherit!important;
+ font-size:20px!important;
+ font-weight:950!important;
+ line-height:1.3!important;
+ letter-spacing:0!important;
+ color:#26343b!important;
+ white-space:normal!important;
+}
+.podium-card .ranking-title-badge{font-size:20px!important}
+.ranking-title-mark{
+ width:30px!important;height:30px!important;flex:0 0 30px!important;
+ font-size:25px!important;
+}
+.ranking-title-badge.nobel{color:#916719!important}
+.ranking-title-badge.haisha{color:#f1d9ff!important}
+.podium-card.nobel .ranking-title-badge,.ranking-row.nobel .ranking-title-badge{color:#916719!important;background:transparent!important;border:0!important}
+.podium-card.haisha .ranking-title-badge,.ranking-row.haisha .ranking-title-badge{color:#f1d9ff!important;background:transparent!important;border:0!important}
+@media(max-width:650px){
+ .ranking-title-badge,.podium-card .ranking-title-badge{font-size:20px!important}
+ .ranking-title-mark{width:30px!important;height:30px!important;flex-basis:30px!important;font-size:25px!important}
+}
+</style>
+
 </body></html>
