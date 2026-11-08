@@ -269,7 +269,9 @@ page-note{margin:14px 2px 0;color:#8794a0;font-size:11px}
 .ranking-topline>div{display:flex!important;align-items:baseline!important;gap:12px!important;flex-wrap:wrap!important}
 .ranking-topline strong,.ranking-topline small{display:inline-block!important;margin:0!important}
 .ranking-topline small{font-size:12px!important}
-.ranking-title-mark{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;flex:0 0 18px;font-size:15px;font-weight:950;object-fit:contain}.ranking-title-badge{display:inline-flex;align-items:center;justify-content:center;max-width:100%;padding:3px 9px;border:1px solid transparent;border-radius:999px;font-size:10px;font-weight:900;line-height:1.5;white-space:nowrap}
+.ranking-title-mark{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;flex:0 0 18px;font-size:15px;font-weight:950;object-fit:contain}
+/* マイプロフィールと同じ、覇者の王冠に控えめな輝き */
+.ranking-title-mark.haisha{filter:drop-shadow(0 0 5px #c52d78aa)}.ranking-title-badge{display:inline-flex;align-items:center;justify-content:center;max-width:100%;padding:3px 9px;border:1px solid transparent;border-radius:999px;font-size:10px;font-weight:900;line-height:1.5;white-space:nowrap}
 .ranking-title-badge.beginner{background:#edf1f4;color:#657786;border-color:#d9e0e6}
 .ranking-title-badge.challenger{background:#e4f5e9;color:#247b45;border-color:#b8e2c5}
 .ranking-title-badge.master{background:#dff3f5;color:#167783;border-color:#a9dfe3}
@@ -323,7 +325,7 @@ function titleForBalance(balance){
 }
 function titleBadge(balance){
  const t=titleForBalance(balance);
- const mark=t.mark==="haisha"?'<img src="./assets/haisha-crown.svg" alt="" class="ranking-title-mark">':t.mark==="nobel"?'<img src="./assets/nobel-chemistry-medal.svg" alt="" class="ranking-title-mark">':'<span class="ranking-title-mark">'+safeText(t.mark)+'</span>';
+ const mark=t.mark==="haisha"?'<img src="./assets/haisha-crown.svg" alt="" class="ranking-title-mark haisha">':t.mark==="nobel"?'<img src="./assets/nobel-chemistry-medal.svg" alt="" class="ranking-title-mark">':'<span class="ranking-title-mark">'+safeText(t.mark)+'</span>';
   return mark+'<span class="ranking-title-badge '+t.cls+'">'+safeText(t.name)+'</span>';
 }
 function renderRanking(list){
