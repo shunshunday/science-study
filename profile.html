@@ -402,6 +402,21 @@ const GUEST_WALLET_IMPORT_KEY="rikakids-guest-wallet-import-pending";
 function getGuestWallet(){
  try{const raw=localStorage.getItem("rikakids-guest-wallet");if(raw===null)return 0;const amount=Number(raw);return Number.isFinite(amount)&&amount>=0?Math.floor(amount):0;}catch(e){return 0;}
 }
+const GUEST_PLAYTIME_KEY="rikakids-guest-playtime-seconds";
+const GUEST_PLAYTIME_IMPORT_KEY="rikakids-guest-playtime-import-pending";
+async function importGuestPlaytimeForMember(){
+ let amount=0;
+ try{
+  amount=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_IMPORT_KEY)||0)));
+  if(!amount){amount=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0)));if(amount>0)localStorage.setItem(GUEST_PLAYTIME_IMPORT_KEY,String(amount));}
+ }catch(e){return 0;}
+ if(!amount)return 0;
+ await api("/rest/v1/rpc/import_legacy_playtime",{method:"POST",body:JSON.stringify({p_seconds:Math.min(604800,amount)})});
+ const remaining=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0))-amount);
+ localStorage.setItem(GUEST_PLAYTIME_KEY,String(remaining));
+ localStorage.removeItem(GUEST_PLAYTIME_IMPORT_KEY);
+ return amount;
+}
 async function importPendingGuestWallet(){
  let amount=0;
  try{
@@ -570,6 +585,7 @@ async function refreshProfile(){
  try{
   showStatus("ログイン状態を確認しています…");
   const session=await ensureSession();
+  try{await importGuestPlaytimeForMember();}catch(importError){console.error("ブラウザ保存のプレイ時間引き継ぎに失敗:",importError);}
   try{await importPendingGuestWallet();}catch(importError){console.error("ブラウザ所持金の会員データへの引き継ぎに失敗:",importError);}
   startProfilePlaytime(session.user.id);
   const rows=await api("/rest/v1/profiles?select=username,avatar_url,playtime_seconds&id=eq."+encodeURIComponent(session.user.id),{method:"GET",cache:"no-store",headers:{"Cache-Control":"no-cache"}});
