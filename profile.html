@@ -62,7 +62,7 @@ h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:
 
 /* 称号名は中央、マークは「現在の称号」の右 */
 .member-rank .title-mark{display:inline-flex;flex:none;width:30px;height:30px;align-items:center;justify-content:center;font-size:25px;line-height:1;vertical-align:middle}
-.member-rank .title-mark.nobel{background:url("./assets/nobel-chemistry-medal.svg") center/contain no-repeat;font-size:0;filter:drop-shadow(0 1px 3px #9a741d88)}
+.member-rank .title-mark.nobel{background:none!important;font-size:25px!important;color:#c49a2c!important;text-shadow:0 1px 2px #8a641d66;filter:drop-shadow(0 1px 3px #9a741d88)}
 .member-rank .title-mark.haisha{background:url("./assets/haisha-crown.svg") center/contain no-repeat;font-size:0;filter:drop-shadow(0 0 5px #c52d78aa)}
 .member-rank{justify-content:flex-start}
 .member-rank>span{flex:none}
@@ -743,7 +743,7 @@ async function refreshProfile(){
   const rankElement=document.getElementById("rank");
   rankElement.textContent=titleFor(assets);
   const titleMark=document.getElementById("titleMark");
-  const titleIcons={"科学ビギナー":"🧪","科学チャレンジャー":"🔬","科学マスター":"⚗️","科学博士":"📘","科学の天才":"💡","伝説の科学者":"🌟","ノーベル化学賞":"","覇者":""};
+  const titleIcons={"科学ビギナー":"🧪","科学チャレンジャー":"🔬","科学マスター":"⚗️","科学博士":"📘","科学の天才":"💡","伝説の科学者":"🌟","ノーベル化学賞":"♛","覇者":""};
   const currentTitle=titleFor(assets);
   titleMark.textContent=titleIcons[currentTitle]??"🔬";
   titleMark.classList.toggle("nobel",currentTitle==="ノーベル化学賞");
