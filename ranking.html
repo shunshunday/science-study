@@ -271,7 +271,7 @@ header.science-topbar .science-wallet .science-wallet-currency{
 .ranking-topline small{font-size:12px!important}
 .ranking-title-mark{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;flex:0 0 18px;font-size:15px;font-weight:950;object-fit:contain}
 /* マイプロフィールと同じ、覇者の王冠に控えめな輝き */
-.ranking-title-mark.haisha{filter:drop-shadow(0 0 5px #c52d78aa)}.ranking-title-badge{display:inline-flex;align-items:center;justify-content:center;max-width:100%;padding:3px 9px;border:1px solid transparent;border-radius:999px;font-size:10px;font-weight:900;line-height:1.5;white-space:nowrap}
+.ranking-title-mark.haisha{filter:drop-shadow(0 0 5px #c52d78aa)}.ranking-title-mark.nobel{color:#c49a2c;font-size:27px;text-shadow:0 1px 2px #8a641d66}.ranking-title-badge{display:inline-flex;align-items:center;justify-content:center;max-width:100%;padding:3px 9px;border:1px solid transparent;border-radius:999px;font-size:10px;font-weight:900;line-height:1.5;white-space:nowrap}
 .ranking-title-badge.beginner{background:#edf1f4;color:#657786;border-color:#d9e0e6}
 .ranking-title-badge.challenger{background:#e4f5e9;color:#247b45;border-color:#b8e2c5}
 .ranking-title-badge.master{background:#dff3f5;color:#167783;border-color:#a9dfe3}
@@ -315,7 +315,7 @@ function avatarMarkup(name,url,cls){
 function titleForBalance(balance){
  const n=Number(balance)||0;
  if(n>=100000)return {name:"覇者",cls:"haisha",mark:"haisha"};
- if(n>=50000)return {name:"ノーベル化学賞",cls:"nobel",mark:"nobel"};
+ if(n>=50000)return {name:"ノーベル化学賞",cls:"nobel",mark:"♛"};
  if(n>=20000)return {name:"伝説の科学者",cls:"legend",mark:"◆"};
  if(n>=10000)return {name:"科学の天才",cls:"genius",mark:"★"};
  if(n>=6000)return {name:"科学博士",cls:"doctor",mark:"⚛"};
