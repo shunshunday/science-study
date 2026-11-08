@@ -531,4 +531,23 @@ document.getElementById("furiganaToggle").addEventListener("click",()=>{
 }
 </style>
 
+
+<style id="ranking-member-name-larger">
+/* ランキングの会員名を称号名と同じくらい見やすく */
+.podium-card .podium-name{
+ font-size:22px!important;
+ font-weight:950!important;
+ line-height:1.35!important;
+}
+.ranking-row .rank-user>strong{
+ font-size:19px!important;
+ font-weight:950!important;
+ line-height:1.35!important;
+}
+@media(max-width:650px){
+ .podium-card .podium-name{font-size:19px!important}
+ .ranking-row .rank-user>strong{font-size:16px!important}
+}
+</style>
+
 </body></html>
