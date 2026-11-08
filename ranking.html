@@ -269,7 +269,7 @@ const statusEl=document.getElementById("rankingStatus"),podiumEl=document.getEle
 function safeText(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function avatarMarkup(name,url,cls){const valid=/^https?:\/\//i.test(String(url||""));return '<span class="'+cls+'">'+(valid?'<img src="'+safeText(url)+'" alt="" loading="lazy" referrerpolicy="no-referrer">':safeText((name||"?").slice(0,1).toUpperCase()))+'</span>'}
 function renderRanking(list){const order=["first","second","third"];podiumEl.classList.toggle("three",list.length>=3);podiumEl.innerHTML=list.slice(0,3).map((p,i)=>'<article class="podium-card '+order[i]+'"><span class="podium-rank">'+(i+1)+' 位</span>'+avatarMarkup(p.username,p.avatar_url,"podium-avatar")+'<strong class="podium-name">'+safeText(p.username||"会員")+'</strong><div class="podium-score">$ '+Number(p.balance||0).toLocaleString("ja-JP")+'</div></article>').join("");rowsEl.innerHTML=list.slice(3).map((p,i)=>'<div class="ranking-row"><span class="rank-number">'+(i+4)+'</span><div class="rank-user">'+avatarMarkup(p.username,p.avatar_url,"rank-avatar")+'<strong>'+safeText(p.username||"会員")+'</strong></div><div class="rank-score">$ '+Number(p.balance||0).toLocaleString("ja-JP")+'</div></div>').join("");tableEl.hidden=list.length<=3;if(!list.length){statusEl.hidden=false;statusEl.textContent="まだ所持金ランキングに表示できる記録がありません。街づくりでお金を集めよう！"}else statusEl.hidden=true}
-let rankingLoading=false;async function loadRanking(){if(rankingLoading||!supabase)return;rankingLoading=true;const initial=!podiumEl.children.length;if(initial){statusEl.hidden=false;statusEl.textContent="ランキングを読み込んでいます…";}try{const {data,error}=await supabase.rpc("get_city_wallet_leaderboard");if(error)throw error;const list=(data||[]).map(p=>({...p,id:p.user_id}));renderRanking(list);const {data:{user}}=await supabase.auth.getUser();if(user){const own=list.find(p=>p.user_id===user.id);const {data:walletData,error:walletError}=await supabase.rpc("get_city_wallet");if(!walletError){const wallet=Array.isArray(walletData)?walletData[0]:walletData;myRankEl.hidden=false;document.getElementById("myRankNumber").textContent=own?(list.findIndex(p=>p.user_id===user.id)+1)+"位":"圏外";document.getElementById("myRankName").textContent=own?.username||"あなた";document.getElementById("myRankScore").textContent="$ "+Number(wallet?.balance||0).toLocaleString("ja-JP")}}}catch(error){console.error(error);if(initial){statusEl.hidden=false;statusEl.textContent="ランキングを読み込めませんでした。通信状態を確認してください。"}}finally{rankingLoading=false;}}
+let rankingLoading=false;async function loadRanking(){if(rankingLoading||!supabase)return;rankingLoading=true;const initial=!podiumEl.children.length;if(initial){statusEl.hidden=false;statusEl.textContent="ランキングを読み込んでいます…";}try{const {data,error}=await supabase.rpc("get_city_wallet_leaderboard");if(error)throw error;const list=(data||[]).map(p=>({...p,id:p.user_id}));renderRanking(list);const session=await getRankingSession();const user=session?.user;if(user){const own=list.find(p=>p.user_id===user.id);const {data:walletData,error:walletError}=await supabase.rpc("get_city_wallet");const wallet=Array.isArray(walletData)?walletData[0]:walletData;const balance=!walletError&&wallet?.balance!=null?Number(wallet.balance):Number(own?.balance||0);myRankEl.hidden=false;document.getElementById("myRankNumber").textContent=own?(list.findIndex(p=>p.user_id===user.id)+1)+"位":"圏外";document.getElementById("myRankName").textContent=own?.username||user.user_metadata?.username||"あなた";document.getElementById("myRankScore").textContent="$ "+balance.toLocaleString("ja-JP")}}catch(error){console.error(error);if(initial){statusEl.hidden=false;statusEl.textContent="ランキングを読み込めませんでした。通信状態を確認してください。"}}finally{rankingLoading=false;}}
 loadRanking();setInterval(()=>{if(!document.hidden)loadRanking()},30000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)loadRanking()});
 });
 </script><footer class="rika-global-footer"><div class="rika-footer-inner"><p class="rika-footer-tagline">科学キッズ — 1問ずつ、科学がわかる。</p><nav class="rika-footer-links" aria-label="フッターメニュー"><a href="https://forms.gle/Fp5vCWwTv7TZuBq7A" target="_blank" rel="noopener noreferrer">お問い合わせ</a><a href="./operator.html">運営者情報</a><a href="./privacy.html">プライバシーポリシー</a><a href="./credits.html">クレジット</a></nav></div></footer>
@@ -277,21 +277,35 @@ loadRanking();setInterval(()=>{if(!document.hidden)loadRanking()},30000);documen
 const SUPABASE_URL="https://tmgfcmzufamxuzsuedza.supabase.co",SUPABASE_KEY="sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng";
 const supabase=window.supabase?.createClient?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
 const accountLink=document.getElementById("accountOpen");
+async function getRankingSession(){
+ if(!supabase)return null;
+ try{const {data,error}=await supabase.auth.getSession();if(!error&&data?.session)return data.session;}catch(e){}
+ try{
+  const raw=localStorage.getItem("sb-tmgfcmzufamxuzsuedza-auth-token");
+  if(!raw)return null;
+  const saved=JSON.parse(raw),stored=saved?.currentSession||saved;
+  if(!stored?.access_token||!stored?.refresh_token)return null;
+  const {data,error}=await supabase.auth.setSession({access_token:stored.access_token,refresh_token:stored.refresh_token});
+  if(!error&&data?.session)return data.session;
+  return stored?.user?stored:null;
+ }catch(e){console.warn("保存済みログイン情報を読み込めません:",e);return null}
+}
 async function updateHeader(session){
  let amount=0;
  try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}
  let user=session?.user||null;
  if(supabase){
   try{
-   if(session===undefined){const {data,error}=await supabase.auth.getSession();if(!error)user=data?.session?.user||null}
+   if(session===undefined){const activeSession=await getRankingSession();user=activeSession?.user||null}
    if(user){
     let username=user.user_metadata?.username||user.user_metadata?.display_name||"";
     const {data:p,error:profileError}=await supabase.from("profiles").select("username").eq("id",user.id).maybeSingle();
     if(!profileError&&p?.username)username=p.username;
     accountLink.textContent=(username||"アカウント")+"・ログイン中";
     const {data,error}=await supabase.rpc("get_city_wallet");
-    if(!error){const w=Array.isArray(data)?data[0]:data;if(w&&w.balance!==undefined&&w.balance!==null)amount=Math.max(0,Number(w.balance)||0)}
-    else{
+    const w=Array.isArray(data)?data[0]:data;
+    if(!error&&w?.balance!==undefined&&w?.balance!==null)amount=Math.max(0,Number(w.balance)||0);
+    if(error||amount===0){
      const {data:rankingData}=await supabase.rpc("get_city_wallet_leaderboard");
      const own=(rankingData||[]).find(row=>row.user_id===user.id);
      if(own)amount=Math.max(0,Number(own.balance)||0);
@@ -302,6 +316,6 @@ async function updateHeader(session){
  document.getElementById("moneyValue").textContent=amount.toLocaleString("en-US");
 }
 updateHeader();
-if(supabase){supabase.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>updateHeader(session),0)})}let furiganaOn=true;try{furiganaOn=localStorage.getItem("rikakids-furigana")!=="off"}catch(e){}function paintFurigana(){document.getElementById("furiganaState").textContent=furiganaOn?"ON":"OFF";document.documentElement.dataset.furigana=furiganaOn?"on":"off";document.getElementById("furiganaToggle").setAttribute("aria-pressed",String(furiganaOn))}paintFurigana();document.getElementById("furiganaToggle").addEventListener("click",()=>{furiganaOn=!furiganaOn;try{localStorage.setItem("rikakids-furigana",furiganaOn?"on":"off")}catch(e){}paintFurigana()});
+if(supabase){supabase.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>{updateHeader(session);loadRanking()},0)})}window.addEventListener("pageshow",()=>{updateHeader();loadRanking()});let furiganaOn=true;try{furiganaOn=localStorage.getItem("rikakids-furigana")!=="off"}catch(e){}function paintFurigana(){document.getElementById("furiganaState").textContent=furiganaOn?"ON":"OFF";document.documentElement.dataset.furigana=furiganaOn?"on":"off";document.getElementById("furiganaToggle").setAttribute("aria-pressed",String(furiganaOn))}paintFurigana();document.getElementById("furiganaToggle").addEventListener("click",()=>{furiganaOn=!furiganaOn;try{localStorage.setItem("rikakids-furigana",furiganaOn?"on":"off")}catch(e){}paintFurigana()});
 (function(){const ids=["2026-11-07-design","2026-11-07-timeline","2026-11-07-quiz","2026-11-08-unread-badge"],key="science-kids-read-notifications-v1";let read=[];try{read=JSON.parse(localStorage.getItem(key)||"[]")}catch(e){}const n=ids.filter(x=>!read.includes(x)).length;const a=document.querySelector('.science-side-nav a[href="./notifications.html"]');if(a&&n){const b=document.createElement("span");b.className="rika-notice";b.textContent=n>99?"99+":String(n);a.append(b)}})();
 </script></body></html>
