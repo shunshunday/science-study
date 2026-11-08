@@ -562,6 +562,15 @@ document.getElementById("furiganaToggle").addEventListener("click",()=>{
 }
 </style>
 
+
+<style id="ranking-podium-rank-medal-colors">
+/* 1〜3位の順位表示だけを金・銀・銅に。4位以下は通常色 */
+.podium-card.first .podium-rank{color:#c69216!important;text-shadow:0 1px 0 #f8e7a8!important}
+.podium-card.second .podium-rank{color:#87939d!important;text-shadow:0 1px 0 #e5eaee!important}
+.podium-card.third .podium-rank{color:#ad6b3d!important;text-shadow:0 1px 0 #f1d1b8!important}
+.ranking-row .rank-number{color:#718395!important;text-shadow:none!important}
+</style>
+
 </body></html>
 <style id="ranking-non-special-title-marks-only">
 /* 覇者・ノーベル化学賞以外は称号カラーを使わず、マークだけ表示 */
