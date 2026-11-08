@@ -1565,13 +1565,7 @@ window.addEventListener('pageshow',(event)=>{
  }
  refreshTopAccountButton();
 });
-// 左上のロゴ・「クイズで学ぶ」は常に最新のホームHTMLを開く
-document.querySelectorAll('.science-side-brand,.science-side-nav a.active').forEach(link=>{
- link.addEventListener('click',event=>{
-  event.preventDefault();
-  window.location.href='./index.html&nav='+Date.now();
- });
-});
+// 左上のロゴと「クイズで学ぶ」は通常のリンクでホームへ移動する。
 document.addEventListener('visibilitychange',()=>{
  if(document.visibilityState==='visible')refreshTopAccountButton();
 });
