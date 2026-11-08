@@ -702,10 +702,10 @@ aside.science-sidebar .science-side-name small{
 </head>
 <body>
 <aside class="science-sidebar">
-  <a class="science-side-brand" href="./index.html?top=1" aria-label="科学キッズ ホーム"><span class="science-side-logo">科</span><span class="science-side-name">科学キッズ<small>SCIENCE KIDS</small></span></a>
+  <a class="science-side-brand" href="./index.html" aria-label="科学キッズ ホーム"><span class="science-side-logo">科</span><span class="science-side-name">科学キッズ<small>SCIENCE KIDS</small></span></a>
   <p class="science-side-caption">きょうは、何を学ぶ？</p>
   <nav class="science-side-nav" aria-label="メインメニュー">
-  <a class="active" href="./index.html?top=1"><span aria-hidden="true">✎</span>クイズで学ぶ</a>
+  <a class="active" href="./index.html"><span aria-hidden="true">✎</span>クイズで学ぶ</a>
   <a  href="./science-timeline.html"><span aria-hidden="true">⚛</span>科学の年表</a>
   <a  href="./ranking.html"><span aria-hidden="true">🏆</span>ランキング</a>
   <a  href="./notifications.html"><span aria-hidden="true">🔔</span>通知<span class="science-notification-badge" id="scienceNotificationBadge" aria-label="未読通知 0 件" hidden>0</span></a>
@@ -1569,7 +1569,7 @@ window.addEventListener('pageshow',(event)=>{
 document.querySelectorAll('.science-side-brand,.science-side-nav a.active').forEach(link=>{
  link.addEventListener('click',event=>{
   event.preventDefault();
-  window.location.href='./index.html?top=1&nav='+Date.now();
+  window.location.href='./index.html&nav='+Date.now();
  });
 });
 document.addEventListener('visibilitychange',()=>{
@@ -1605,15 +1605,6 @@ async function refreshTopWallet(){
  balanceElement.textContent=Math.floor(amount).toLocaleString('en-US');
 }
 refreshTopWallet();
-// 他ページからホームへ戻る際は、ブラウザーのスクロール復元より優先して最上部へ移動
-if(new URLSearchParams(location.search).get('top')==='1'){
- history.scrollRestoration='manual';
- window.addEventListener('pageshow',()=>{
-  window.scrollTo(0,0);
-  requestAnimationFrame(()=>window.scrollTo(0,0));
-  history.replaceState(null,'',location.pathname);
- });
-}
 </script>
 <footer class="rika-global-footer">
   <div class="rika-footer-inner">
