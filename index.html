@@ -1253,6 +1253,169 @@ async function refreshAccount(){
  document.getElementById('accountSetup').hidden=true;
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){stopPlaytimeTracking();accountOpen.textContent='ログイン・新規会員登録';authView.hidden=false;profileView.hidden=true;return;}
+ try{
+  const importedAmount=await importPendingGuestWallet();
+  if(importedAmount>0)authMessage.textContent='ブラウザに保存されていた所持金 
+ authView.hidden=true;profileView.hidden=false;
+ const {data:profile,error}=await supabaseClient.from('profiles').select('username').eq('id',session.user.id).single();
+ if(error){accountOpen.textContent='ログイン中';accountOpen.setAttribute('aria-label','ログイン中。マイページを開く');document.getElementById('profileMessage').textContent='プロフィールを読み込めません。';return;}
+ accountOpen.textContent=(profile.username||'会員')+'・ログイン中';
+ accountOpen.setAttribute('aria-label',(profile.username||'会員')+'としてログイン中。マイページを開く');
+ document.getElementById('profileUsername').textContent=profile.username;
+ const walletResult=await supabaseClient.rpc('get_city_wallet');
+ if(walletResult.error)throw walletResult.error;
+ const wallet=Array.isArray(walletResult.data)?walletResult.data[0]:walletResult.data;
+ const assets=Math.max(0,Number(wallet?.balance)||0);
+ document.getElementById('profileRank').textContent=scienceTitle(assets);
+ profileView.classList.toggle('profile-view-nobel',assets>=500000&&assets<1000000);profileView.classList.toggle('profile-view-haki',assets>=1000000);
+}
+document.getElementById('authForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(!supabaseClient){authMessage.textContent='現在、アカウント機能の接続設定中です。';return;}
+ const username=document.getElementById('authUsername').value.trim();
+ const password=document.getElementById('authPassword').value;
+ if(!/^[a-zA-Z0-9_-]{3,20}$/.test(username)){authMessage.textContent='ユーザー名は半角英数字・_・-の3〜20文字にしてください。';return;}
+ if(password.length<8){authMessage.textContent='パスワードは8文字以上にしてください。';return;}
+ const submit=document.getElementById('authSubmit');submit.disabled=true;authMessage.textContent='処理しています…';
+ try{
+  if(authMode==='signup'){
+   // 登録前にブラウザへ保存されていた所持金を、登録後に安全に引き継げるよう退避
+   const guestBalance=getGuestWallet();
+   if(guestBalance>0){try{localStorage.setItem(GUEST_WALLET_IMPORT_KEY,String(guestBalance));}catch(storageError){console.warn('所持金引き継ぎ用データを準備できませんでした:',storageError);}}
+   const {data,error}=await supabaseClient.auth.signUp({email:usernameEmail(username),password,options:{data:{username}}});
+   if(error)throw error;
+   if(!data.session){authMessage.textContent='登録できました。管理者側でメール確認を無効にする必要があります。';return;}
+  }else{
+   const {error}=await supabaseClient.auth.signInWithPassword({email:usernameEmail(username),password});if(error)throw error;
+  }
+  authMessage.textContent='';await refreshAccount();
+ }catch(err){authMessage.textContent=authMode==='signup'?'登録できませんでした。ユーザー名が使用済みか、設定を確認してください。':'ログインできません。ユーザー名とパスワードを確認してください。';}
+ finally{submit.disabled=false;}
+});
+document.getElementById('logoutButton').addEventListener('click',async()=>{if(!supabaseClient)return;stopPlaytimeTracking();await supabaseClient.auth.signOut();await refreshAccount();});
+function getGuestWallet(){try{const raw=localStorage.getItem('rikakids-guest-wallet');if(raw===null)return 0;let n=Number(raw);if(!localStorage.getItem('rikakids-guest-wallet-v2')){if(n===100000)n=0;localStorage.setItem('rikakids-guest-wallet-v2','1');localStorage.setItem('rikakids-guest-wallet',String(n));}return Number.isFinite(n)&&n>=0?n:0;}catch(e){return 0;}}
+function setGuestWallet(value){try{localStorage.setItem('rikakids-guest-wallet',String(Math.max(0,Math.floor(Number(value)||0))));}catch(e){}}
+const GUEST_WALLET_IMPORT_KEY='rikakids-guest-wallet-import-pending';
+async function importPendingGuestWallet(){
+ let amount=0;
+ try{amount=Math.floor(Number(localStorage.getItem(GUEST_WALLET_IMPORT_KEY)||0));}catch(e){return 0;}
+ if(!Number.isFinite(amount)||amount<=0)return 0;
+ const {data,error}=await supabaseClient.rpc('import_guest_wallet',{p_balance:amount});
+ if(error)throw error;
+ const wallet=Array.isArray(data)?data[0]:data;
+ if(!wallet||!Number.isFinite(Number(wallet.balance)))throw new Error('引き継ぎ結果を確認できませんでした。');
+ setGuestWallet(0);
+ localStorage.removeItem(GUEST_WALLET_IMPORT_KEY);
+ await refreshTopWallet();
+ return amount;
+}
+async function saveCorrectAnswer(unit){
+ if(!supabaseClient){setGuestWallet(getGuestWallet()+100);await refreshTopWallet();return true;}
+ try{
+  const {data:{user},error:authError}=await supabaseClient.auth.getUser();if(authError||!user){setGuestWallet(getGuestWallet()+100);await refreshTopWallet();return true;}
+  const {error:rewardError}=await supabaseClient.rpc('earn_quiz_reward',{p_unit:unit});
+  if(rewardError)throw rewardError;
+  const {data:walletData,error:walletError}=await supabaseClient.rpc('get_city_wallet');
+  if(walletError)throw walletError;
+  const wallet=Array.isArray(walletData)?walletData[0]:walletData;
+  const assets=Math.max(0,Number(wallet?.balance)||0);
+  document.getElementById('profileRank').textContent=scienceTitle(assets);
+  profileView.classList.toggle('profile-view-nobel',assets>=500000&&assets<1000000);
+  profileView.classList.toggle('profile-view-haki',assets>=1000000);
+  await refreshTopWallet();
+  return true;
+ }catch(e){console.error('資金の保存に失敗しました',e);return false;}
+}
+async function refreshTopAccountButton(sessionOverride){
+ const link=document.getElementById('accountOpen');
+ if(!link)return;
+ if(!supabaseClient){link.textContent='ログイン・新規会員登録';return;}
+ try{
+  // 認証状態変更時はSupabaseから渡された最新sessionを直接使い、再読み込みを不要にする
+  let session=sessionOverride;
+  if(sessionOverride===undefined){
+   const {data:{session:currentSession}}=await supabaseClient.auth.getSession();
+   session=currentSession;
+  }
+  if(!session){
+   link.textContent='ログイン・新規会員登録';
+   link.setAttribute('aria-label','ログイン・新規会員登録');
+   return;
+  }
+  const fallbackName=session.user.user_metadata?.username||'会員';
+  link.textContent=fallbackName+'・ログイン中';
+  link.setAttribute('aria-label',fallbackName+'としてログイン中。マイページを開く');
+  const {data:profile}=await supabaseClient.from('profiles').select('username').eq('id',session.user.id).maybeSingle();
+  const username=profile?.username||fallbackName;
+  link.textContent=username+'・ログイン中';
+  link.setAttribute('aria-label',username+'としてログイン中。マイページを開く');
+ }catch(error){console.warn('会員名の表示を更新できませんでした',error);}
+}
+refreshTopAccountButton();
+if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else stopPlaytimeTracking();refreshTopWallet();refreshTopAccountButton(session);if(accountModal.classList.contains('open'))refreshAccount();});}
+// ホームへ移動・ブラウザーの戻る操作で復帰したときも、保存済みの認証状態から表示を再同期
+window.addEventListener('pageshow',()=>{
+ refreshTopAccountButton();
+});
+document.addEventListener('visibilitychange',()=>{
+ if(document.visibilityState==='visible')refreshTopAccountButton();
+});
+if(new URLSearchParams(location.search).get('login')==='1') showAccount();
+
+
+const furiganaToggle=document.getElementById('furiganaToggle');
+if(furiganaToggle){
+ let furiganaOn=true;
+ try{furiganaOn=localStorage.getItem('rikakids-furigana')!=='off';}catch(e){}
+ const paintFurigana=()=>{furiganaToggle.querySelector('#furiganaState').textContent=furiganaOn?'ON':'OFF';furiganaToggle.setAttribute('aria-pressed',String(furiganaOn));document.documentElement.dataset.furigana=furiganaOn?'on':'off';};
+ paintFurigana();
+ furiganaToggle.addEventListener('click',()=>{furiganaOn=!furiganaOn;try{localStorage.setItem('rikakids-furigana',furiganaOn?'on':'off');}catch(e){}paintFurigana();});
+}
+async function refreshTopWallet(){
+ const balanceElement=document.getElementById('moneyValue');
+ if(!balanceElement)return;
+ let amount=getGuestWallet();
+ try{
+  if(supabaseClient){
+   const {data:{user},error:authError}=await supabaseClient.auth.getUser();
+   if(!authError&&user){
+    const {data,error}=await supabaseClient.rpc('get_city_wallet');
+    if(!error){
+     const wallet=Array.isArray(data)?data[0]:data;
+     amount=Math.max(0,Number(wallet?.balance)||0);
+    }
+   }
+  }
+ }catch(error){console.warn('所持金の表示を更新できませんでした',error);}
+ balanceElement.textContent=Math.floor(amount).toLocaleString('en-US');
+}
+refreshTopWallet();
+// 他ページからホームへ戻る際は、ブラウザーのスクロール復元より優先して最上部へ移動
+if(new URLSearchParams(location.search).get('top')==='1'){
+ history.scrollRestoration='manual';
+ window.addEventListener('pageshow',()=>{
+  window.scrollTo(0,0);
+  requestAnimationFrame(()=>window.scrollTo(0,0));
+  history.replaceState(null,'',location.pathname);
+ });
+}
+</script>
+<footer class="rika-global-footer">
+  <div class="rika-footer-inner">
+    <p class="rika-footer-tagline">科学キッズ — 1問ずつ、科学がわかる。</p>
+    <nav class="rika-footer-links" aria-label="フッターメニュー">
+      <a href="https://forms.gle/Fp5vCWwTv7TZuBq7A" target="_blank" rel="noopener noreferrer">お問い合わせ</a>
+      <a href="./operator.html">運営者情報</a>
+      <a href="./privacy.html">プライバシーポリシー</a>
+      <a href="./credits.html">クレジット</a>
+    </nav>
+  </div>
+</footer>
+</body></html>
++importedAmount.toLocaleString('en-US')+' を会員データへ引き継ぎました。';
+ }catch(importError){
+  console.error('ゲスト所持金の引き継ぎに失敗しました:',importError);
+  authMessage.textContent='会員登録・ログインは完了しましたが、所持金の引き継ぎは未完了です。再度ログインすると自動で再試行します。';
+ }
  startPlaytimeTracking(session.user.id);
  authView.hidden=true;profileView.hidden=false;
  const {data:profile,error}=await supabaseClient.from('profiles').select('username').eq('id',session.user.id).single();
@@ -1289,6 +1452,20 @@ document.getElementById('authForm').addEventListener('submit',async e=>{
 document.getElementById('logoutButton').addEventListener('click',async()=>{if(!supabaseClient)return;stopPlaytimeTracking();await supabaseClient.auth.signOut();await refreshAccount();});
 function getGuestWallet(){try{const raw=localStorage.getItem('rikakids-guest-wallet');if(raw===null)return 0;let n=Number(raw);if(!localStorage.getItem('rikakids-guest-wallet-v2')){if(n===100000)n=0;localStorage.setItem('rikakids-guest-wallet-v2','1');localStorage.setItem('rikakids-guest-wallet',String(n));}return Number.isFinite(n)&&n>=0?n:0;}catch(e){return 0;}}
 function setGuestWallet(value){try{localStorage.setItem('rikakids-guest-wallet',String(Math.max(0,Math.floor(Number(value)||0))));}catch(e){}}
+const GUEST_WALLET_IMPORT_KEY='rikakids-guest-wallet-import-pending';
+async function importPendingGuestWallet(){
+ let amount=0;
+ try{amount=Math.floor(Number(localStorage.getItem(GUEST_WALLET_IMPORT_KEY)||0));}catch(e){return 0;}
+ if(!Number.isFinite(amount)||amount<=0)return 0;
+ const {data,error}=await supabaseClient.rpc('import_guest_wallet',{p_balance:amount});
+ if(error)throw error;
+ const wallet=Array.isArray(data)?data[0]:data;
+ if(!wallet||!Number.isFinite(Number(wallet.balance)))throw new Error('引き継ぎ結果を確認できませんでした。');
+ setGuestWallet(0);
+ localStorage.removeItem(GUEST_WALLET_IMPORT_KEY);
+ await refreshTopWallet();
+ return amount;
+}
 async function saveCorrectAnswer(unit){
  if(!supabaseClient){setGuestWallet(getGuestWallet()+100);await refreshTopWallet();return true;}
  try{
