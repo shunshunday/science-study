@@ -489,12 +489,20 @@ aside.science-sidebar .science-side-brand .science-side-logo,
 @media(max-width:900px){.science-side-nav a[href="./notifications.html"] .science-notification-badge{position:absolute;top:2px;right:2px;margin:0;min-width:17px;height:17px;padding:0 4px;font-size:10px!important}}
 @media(max-width:650px){.science-side-nav a[href="./notifications.html"] .science-notification-badge{top:0;right:0}}
 </style>
+
+<style id="science-sidebar-unified">
+@media (min-width: 761px){
+.science-side-nav{display:grid!important;grid-auto-flow:row!important;gap:5px!important;margin-top:36px!important;overflow:visible!important;padding:0!important}
+.science-side-nav a{display:flex!important;align-items:center!important;gap:14px!important;min-height:42px!important;padding:13px 16px!important;box-sizing:border-box!important;font-size:15px!important;line-height:1.5!important;white-space:normal!important;border-radius:0!important}
+.science-side-nav a span:first-child{display:inline-block!important;flex:0 0 24px!important;width:24px!important;font-size:21px!important;text-align:center!important}
+}
+</style>
 </head>
 <body>
 <aside class="science-sidebar">
   <a class="science-side-brand" href="https://shunshunday.github.io/science-study/?top=1" aria-label="科学キッズ ホーム"><span class="science-side-logo">科</span><span class="science-side-name">科学キッズ<small>SCIENCE KIDS</small></span></a>
   <p class="science-side-caption">きょうは、何を学ぶ？</p>
-  <nav class="science-side-nav" aria-label="メインメニュー"><a href="https://shunshunday.github.io/science-study/?top=1"><span aria-hidden="true">✎</span> クイズで学ぶ</a><a class="active" href="./science-timeline.html"><span aria-hidden="true">⚛</span> 科学の年表</a><a href="./notifications.html"><span aria-hidden="true">🔔</span> 通知<span class="science-notification-badge" id="scienceNotificationBadge" aria-label="未読通知 0 件" hidden>0</span></a><a href="./howto.html"><span aria-hidden="true">?</span>遊び方</a></nav>
+  <nav class="science-side-nav" aria-label="メインメニュー"><a class="active" class="active" href="./science-timeline.html"><span aria-hidden="true">⚛</span> 科学の年表</a><a href="./notifications.html"><span aria-hidden="true">🔔</span> 通知<span class="science-notification-badge" id="scienceNotificationBadge" aria-label="未読通知 0 件" hidden>0</span></a><a href="./ranking.html"><span aria-hidden="true">🏆</span> ランキング</a><a href="./howto.html"><span aria-hidden="true">?</span>遊び方</a></nav>
   <p class="science-side-foot">科学を学んで、知識を集めよう。<br>毎日の学習を応援します。</p>
 </aside>
 <header class="science-topbar">
