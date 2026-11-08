@@ -316,7 +316,7 @@ button,input,select,textarea{font-family:inherit}
 }
 .science-topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;height:100%}
 </style><style>
-.timeline-main{max-width:1180px}.timeline-heading{position:relative;margin:10px 0 25px;padding-right:48%;min-height:76px}.timeline-heading .eyebrow{font-size:11px;letter-spacing:.14em;font-weight:850}.timeline-heading h1{font-size:34px;margin:7px 0;color:#1b344a}.timeline-heading p{position:absolute;right:0;top:50%;transform:translateY(-35%);width:48%;margin:0;color:#1b344a;font-size:30px;font-weight:900;line-height:1.5;text-align:right;letter-spacing:.02em}.timeline-heading .timeline-past{color:inherit}.timeline-heading .timeline-future{display:inline-block;font-size:1.16em;color:#b8860b;background-image:radial-gradient(ellipse 78% 155% at var(--spec-x,50%) var(--spec-y,50%),rgba(255,255,255,.98) 0%,rgba(255,250,225,.92) 7%,rgba(255,232,160,.74) 17%,rgba(255,213,104,.38) 34%,rgba(255,213,104,0) 66%),linear-gradient(var(--spec-angle,110deg),#503506 0%,#986b12 13%,#f2d66f 25%,#fff9d7 34%,#b8841b 44%,#684609 55%,#e6c15b 68%,#fff1b0 78%,#80570c 90%,#f7e49a 100%);background-size:100% 100%;background-position:center;background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:none;}
+.timeline-main{max-width:1180px}.timeline-heading{position:relative;margin:10px 0 25px;padding-right:48%;min-height:76px}.timeline-heading .eyebrow{font-size:11px;letter-spacing:.14em;font-weight:850}.timeline-heading h1{font-size:34px;margin:7px 0;color:#1b344a}.timeline-heading p{position:absolute;right:0;top:50%;transform:translateY(-35%);width:48%;margin:0;color:#1b344a;font-size:30px;font-weight:900;line-height:1.5;text-align:right;letter-spacing:.02em}.timeline-heading .timeline-past{color:inherit}.timeline-heading .timeline-future{display:inline-block;font-size:1.16em;color:#b8860b;background-image:radial-gradient(ellipse 24% 58% at var(--spec-x,50%) var(--spec-y,50%),rgba(255,255,255,.98) 0%,rgba(255,250,226,.88) 12%,rgba(255,231,160,.58) 29%,rgba(255,213,104,.16) 52%,transparent 76%),radial-gradient(ellipse 62% 125% at var(--spec-x,50%) var(--spec-y,50%),rgba(255,255,255,.24) 0%,rgba(255,245,204,.13) 28%,transparent 72%),linear-gradient(var(--spec-angle,110deg),#503506 0%,#986b12 13%,#f2d66f 25%,#fff9d7 34%,#b8841b 44%,#684609 55%,#e6c15b 68%,#fff1b0 78%,#80570c 90%,#f7e49a 100%);background-size:100% 100%,100% 100%,240% 240%;background-position:center,center,var(--metal-bg-x,50%) var(--metal-bg-y,50%);background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:none;}
 .timeline-tabs{position:relative;display:flex;gap:8px;margin:0 0 20px;border-bottom:1px solid #dce3e9}.timeline-tabs::after{content:"";position:absolute;left:0;bottom:-1px;width:80px;height:3px;background:#168b4c;transform:translateX(0);transition:transform .32s cubic-bezier(.22,.8,.3,1);pointer-events:none}.timeline-tabs:has(.timeline-tab[data-view="nobel"][aria-selected="true"])::after{transform:translateX(100px)}.timeline-tab{border:0;border-bottom:0;background:transparent;padding:12px 18px;color:#6c7f90;font:inherit;font-size:14px;font-weight:750;cursor:pointer}.timeline-tab.active{color:#168b4c}
 .timeline-intro{margin:0 0 16px}.timeline-intro h2{margin:0 0 5px;font-size:20px;color:#1b344a}.timeline-intro p{margin:0;color:#718395;font-size:13px}.timeline-filter-heading{margin:18px 0 8px;color:#536b80;font-size:12px;font-weight:750}.timeline-filters{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 16px}.timeline-filter{padding:8px 13px;border:1px solid #d7e0e8;border-radius:8px;background:#fff;color:#536b80;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.timeline-filter.active{background:#eaf6ee;border-color:#168b4c;color:#126b38}
 .science-timeline{margin:20px 0 0 20px;max-width:920px;border-left:2px solid #cad6df;padding-left:30px}.science-event{position:relative;display:grid;grid-template-columns:86px minmax(0,1fr);gap:14px;margin:0 0 18px;align-items:start}.science-event:before{content:"";width:12px;height:12px;border:3px solid #f3f5f7;background:#168b4c;position:absolute;left:-39px;top:22px;border-radius:50%}.science-event-year{font-size:20px;font-weight:800;padding-top:12px;color:#1b344a}.science-event-card{background:#fff;border:1px solid #dce3e9;border-radius:11px;padding:15px 18px}.science-event-card h3{margin:0 0 5px;font-size:15px;color:#1b344a}.science-event-card p{margin:0;color:#718395;font-size:13px;line-height:1.8}
@@ -1129,30 +1129,55 @@ aside.science-sidebar .science-side-brand .science-side-logo,
 </script>
 <script id="timeline-gold-reflection">
 (function(){
- const target=document.querySelector('.timeline-heading .timeline-future');
- if(!target)return;
+ const word=document.querySelector('.timeline-heading .timeline-future');
+ if(!word)return;
+ let pointerX=window.innerWidth*.5, pointerY=window.innerHeight*.35;
  let raf=0;
- let pointerX=window.innerWidth*.5;
- let pointerY=window.innerHeight*.35;
- function render(){
-  raf=0;
-  const r=target.getBoundingClientRect();
-  // Project the actual screen-space light (pointer) onto the moving word.
-  const x=Math.max(-.8,Math.min(1.8,(pointerX-r.left)/Math.max(1,r.width)));
-  const y=Math.max(-1,Math.min(2,(pointerY-r.top)/Math.max(1,r.height)));
-  const cx=r.left+r.width*.5, cy=r.top+r.height*.5;
-  const dx=pointerX-cx, dy=pointerY-cy;
-  const angle=(Math.atan2(dy,dx)*180/Math.PI+360)%360;
-  target.style.setProperty('--spec-x',(x*100).toFixed(1)+'%');
-  target.style.setProperty('--spec-y',(y*100).toFixed(1)+'%');
-  target.style.setProperty('--spec-angle',angle.toFixed(1)+'deg');
+ let current={x:50,y:50,a:110,bx:50,by:50};
+ let desired={...current};
+ function measure(){
+  const r=word.getBoundingClientRect();
+  const w=Math.max(1,r.width),h=Math.max(1,r.height);
+  // The pointer is the point light. Its position is measured against the word
+  // in viewport coordinates, so scrolling naturally changes the reflection.
+  const px=(pointerX-r.left)/w*100;
+  const py=(pointerY-r.top)/h*100;
+  desired.x=Math.max(-100,Math.min(200,px));
+  desired.y=Math.max(-120,Math.min(220,py));
+  const dx=pointerX-(r.left+r.width/2);
+  const dy=pointerY-(r.top+r.height/2);
+  desired.a=Math.atan2(dy,dx)*180/Math.PI+90;
+  desired.bx=Math.max(0,Math.min(100,50+(50-px)*.55));
+  desired.by=Math.max(0,Math.min(100,50+(50-py)*.55));
+  animate();
  }
- function schedule(){if(!raf)raf=requestAnimationFrame(render)}
- function pointer(e){pointerX=e.clientX;pointerY=e.clientY;schedule()}
- document.addEventListener('pointermove',pointer,{passive:true});
- window.addEventListener('scroll',schedule,{passive:true});
- window.addEventListener('resize',schedule,{passive:true});
- render();
+ function animate(){
+  if(raf)return;
+  function tick(){
+   const ease=.16;
+   current.x+=(desired.x-current.x)*ease;
+   current.y+=(desired.y-current.y)*ease;
+   let da=((desired.a-current.a+540)%360)-180;
+   current.a+=da*ease;
+   current.bx+=(desired.bx-current.bx)*ease;
+   current.by+=(desired.by-current.by)*ease;
+   word.style.setProperty('--spec-x',current.x.toFixed(2)+'%');
+   word.style.setProperty('--spec-y',current.y.toFixed(2)+'%');
+   word.style.setProperty('--spec-angle',current.a.toFixed(2)+'deg');
+   word.style.setProperty('--metal-bg-x',current.bx.toFixed(2)+'%');
+   word.style.setProperty('--metal-bg-y',current.by.toFixed(2)+'%');
+   const moving=Math.abs(desired.x-current.x)+Math.abs(desired.y-current.y)+Math.abs(da)+Math.abs(desired.bx-current.bx)+Math.abs(desired.by-current.by);
+   if(moving>.08)raf=requestAnimationFrame(tick);
+   else raf=0;
+  }
+  raf=requestAnimationFrame(tick);
+ }
+ function onPointer(e){pointerX=e.clientX;pointerY=e.clientY;measure()}
+ function onViewportChange(){measure()}
+ document.addEventListener('pointermove',onPointer,{passive:true});
+ window.addEventListener('scroll',onViewportChange,{passive:true});
+ window.addEventListener('resize',onViewportChange,{passive:true});
+ measure();
 })();
 </script>
 </body>
