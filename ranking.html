@@ -325,7 +325,7 @@ function titleForBalance(balance){
 }
 function titleBadge(balance){
  const t=titleForBalance(balance);
- const mark=t.mark==="haisha"?'<img src="./assets/haisha-crown.svg" alt="" class="ranking-title-mark haisha">':t.mark==="nobel"?'<img src="./assets/nobel-chemistry-medal.svg" alt="" class="ranking-title-mark">':'<span class="ranking-title-mark">'+safeText(t.mark)+'</span>';
+ const mark=t.mark==="haisha"?'<img src="./assets/haisha-crown.svg" alt="" class="ranking-title-mark haisha">':'<span class="ranking-title-mark '+(t.cls==="nobel"?"nobel":"")+'">'+safeText(t.mark)+'</span>';
   return mark+'<span class="ranking-title-badge '+t.cls+'">'+safeText(t.name)+'</span>';
 }
 function renderRanking(list){
