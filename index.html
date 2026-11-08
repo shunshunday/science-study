@@ -1296,7 +1296,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAccount();});
 function setAuthMode(mode){authMode=mode;document.querySelectorAll('.auth-tab').forEach(b=>b.classList.toggle('active',b.dataset.authTab===mode));document.getElementById('authSubmit').textContent=mode==='login'?'ログイン':'新規登録';document.getElementById('authPassword').autocomplete=mode==='login'?'current-password':'new-password';authMessage.textContent='';}
 document.querySelectorAll('.auth-tab').forEach(b=>b.addEventListener('click',()=>setAuthMode(b.dataset.authTab)));
 function usernameEmail(username){return username.toLowerCase()+'@accounts.rikakids.invalid';}
-function scienceTitle(n){if(n>=1000000)return "覇者";if(n>=500000)return "ノーベル賞";if(n>=200000)return "伝説の科学者";if(n>=100000)return "科学の天才";if(n>=60000)return "科学博士";if(n>=30000)return "科学マスター";if(n>=10000)return "科学チャレンジャー";return "科学ビギナー";}
+function scienceTitle(n){if(n>=100000)return "覇者";if(n>=50000)return "ノーベル化学賞";if(n>=20000)return "伝説の科学者";if(n>=10000)return "科学の天才";if(n>=6000)return "科学博士";if(n>=3000)return "科学マスター";if(n>=1000)return "科学チャレンジャー";return "科学ビギナー";}
 async function refreshAccount(){
  const accountOpen=document.getElementById('accountOpen');
  if(!supabaseClient){accountOpen.textContent='ログイン・新規会員登録';authView.hidden=false;profileView.hidden=true;document.getElementById('accountSetup').hidden=false;return;}
@@ -1322,7 +1322,7 @@ async function refreshAccount(){
  const wallet=Array.isArray(walletResult.data)?walletResult.data[0]:walletResult.data;
  const assets=Math.max(0,Number(wallet?.balance)||0);
  document.getElementById('profileRank').textContent=scienceTitle(assets);
- profileView.classList.toggle('profile-view-nobel',assets>=500000&&assets<1000000);profileView.classList.toggle('profile-view-haki',assets>=1000000);
+ profileView.classList.toggle('profile-view-nobel',assets>=50000&&assets<100000);profileView.classList.toggle('profile-view-haki',assets>=100000);
 }
 document.getElementById('authForm').addEventListener('submit',async e=>{
  e.preventDefault();if(!supabaseClient){authMessage.textContent='現在、アカウント機能の接続設定中です。';return;}
@@ -1374,8 +1374,8 @@ async function saveCorrectAnswer(unit){
   const wallet=Array.isArray(walletData)?walletData[0]:walletData;
   const assets=Math.max(0,Number(wallet?.balance)||0);
   document.getElementById('profileRank').textContent=scienceTitle(assets);
-  profileView.classList.toggle('profile-view-nobel',assets>=500000&&assets<1000000);
-  profileView.classList.toggle('profile-view-haki',assets>=1000000);
+  profileView.classList.toggle('profile-view-nobel',assets>=50000&&assets<100000);
+  profileView.classList.toggle('profile-view-haki',assets>=100000);
   await refreshTopWallet();
   return true;
  }catch(e){console.error('資金の保存に失敗しました',e);return false;}
