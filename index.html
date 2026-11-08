@@ -541,6 +541,14 @@ aside.science-sidebar .science-side-brand .science-side-logo,
 .science-side-logo{background:#168b4c!important;background-color:#168b4c!important;background-image:none!important;color:#fff!important}
 </style>
 
+
+<style id="science-notification-badge-style">
+.science-side-nav a[href="./notifications.html"]{position:relative}
+.science-notification-badge{width:auto!important;min-width:20px;height:20px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center;margin-left:auto;border-radius:999px;background:#f04452;color:#fff!important;font-family:inherit;font-size:11px!important;font-weight:900;line-height:1;box-shadow:0 1px 4px #0003}
+.science-notification-badge[hidden]{display:none!important}
+@media(max-width:900px){.science-side-nav a[href="./notifications.html"] .science-notification-badge{position:absolute;top:2px;right:2px;margin:0;min-width:17px;height:17px;padding:0 4px;font-size:10px!important}}
+@media(max-width:650px){.science-side-nav a[href="./notifications.html"] .science-notification-badge{top:0;right:0}}
+</style>
 </head>
 <body>
 <aside class="science-sidebar">
@@ -550,7 +558,7 @@ aside.science-sidebar .science-side-brand .science-side-logo,
     <a class="active" href="./index.html?top=1"><span>✎</span> クイズで学ぶ</a>
     
     <a href="./science-timeline.html"><span aria-hidden="true">⚛</span> 科学の年表</a>
-    <a href="./notifications.html"><span aria-hidden="true">🔔</span> 通知</a>
+    <a href="./notifications.html"><span aria-hidden="true">🔔</span> 通知<span class="science-notification-badge" id="scienceNotificationBadge" aria-label="未読通知 0 件" hidden>0</span></a>
     <a href="./howto.html"><span aria-hidden="true">?</span>遊び方</a>
   </nav>
   <p class="science-side-foot">科学を学んで、知識を集めよう。<br>毎日の学習を応援します。</p>
@@ -1468,4 +1476,22 @@ if(new URLSearchParams(location.search).get('top')==='1'){
     </nav>
   </div>
 </footer>
+
+<script id="science-notification-unread-counter">
+(function(){
+ const ids=["2026-11-07-design","2026-11-07-timeline","2026-11-07-quiz"];
+ const key="science-kids-read-notifications-v1";
+ let read=[];
+ try{read=JSON.parse(localStorage.getItem(key)||"[]");if(!Array.isArray(read))read=[];}catch(e){read=[];}
+ const badge=document.getElementById("scienceNotificationBadge");
+ const isNotificationsPage=location.pathname.endsWith("/notifications.html")||location.pathname.endsWith("notifications.html");
+ if(isNotificationsPage){
+  try{localStorage.setItem(key,JSON.stringify(Array.from(new Set([...read,...ids]))));}catch(e){}
+  if(badge){badge.hidden=true;badge.textContent="0";badge.setAttribute("aria-label","未読通知 0 件");}
+  return;
+ }
+ const count=ids.filter(id=>!read.includes(id)).length;
+ if(badge){badge.textContent=count>99?"99+":String(count);badge.hidden=count===0;badge.setAttribute("aria-label","未読通知 "+count+" 件");}
+})();
+</script>
 </body></html>
