@@ -316,18 +316,17 @@ function titleForBalance(balance){
  const n=Number(balance)||0;
  if(n>=100000)return {name:"覇者",cls:"haisha",mark:"haisha"};
  if(n>=50000)return {name:"ノーベル化学賞",cls:"nobel",mark:"♛"};
- if(n>=20000)return {name:"伝説の科学者",cls:"legend",mark:"◆"};
- if(n>=10000)return {name:"科学の天才",cls:"genius",mark:"★"};
- if(n>=6000)return {name:"科学博士",cls:"doctor",mark:"⚛"};
- if(n>=3000)return {name:"科学マスター",cls:"master",mark:"✧"};
- if(n>=1000)return {name:"科学チャレンジャー",cls:"challenger",mark:"✦"};
- return {name:"科学ビギナー",cls:"beginner",mark:"⚗"};
+ if(n>=20000)return {name:"伝説の科学者",cls:"legend",mark:"🌟"};
+ if(n>=10000)return {name:"科学の天才",cls:"genius",mark:"💡"};
+ if(n>=6000)return {name:"科学博士",cls:"doctor",mark:"📘"};
+ if(n>=3000)return {name:"科学マスター",cls:"master",mark:"⚗️"};
+ if(n>=1000)return {name:"科学チャレンジャー",cls:"challenger",mark:"🔬"};
+ return {name:"科学ビギナー",cls:"beginner",mark:"🧪"};
 }
 function titleBadge(balance){
  const t=titleForBalance(balance);
  const mark=t.mark==="haisha"?'<img src="./assets/haisha-crown.svg" alt="" class="ranking-title-mark haisha">':'<span class="ranking-title-mark '+(t.cls==="nobel"?"nobel":"")+'">'+safeText(t.mark)+'</span>';
- if(t.cls==="haisha"||t.cls==="nobel")return mark+'<span class="ranking-title-badge '+t.cls+'">'+safeText(t.name)+'</span>';
- return mark;
+ return mark+'<span class="ranking-title-badge '+t.cls+'">'+safeText(t.name)+'</span>';
 }
 function renderRanking(list){
  const order=["first","second","third"];
@@ -574,5 +573,6 @@ document.getElementById("furiganaToggle").addEventListener("click",()=>{
 .podium-card.master .podium-score,.ranking-row.master .rank-score,
 .podium-card.challenger .podium-score,.ranking-row.challenger .rank-score,
 .podium-card.beginner .podium-score,.ranking-row.beginner .rank-score{color:inherit!important}
-.ranking-title-mark:not(.haisha):not(.nobel){color:#667784!important;text-shadow:none!important;filter:none!important}
+.ranking-title-mark:not(.haisha):not(.nobel){color:inherit!important;text-shadow:none!important;filter:none!important}
+.ranking-title-badge:not(.haisha):not(.nobel){background:#f1f3f5!important;color:#34424b!important;border-color:#e1e5e8!important;box-shadow:none!important}
 </style>
