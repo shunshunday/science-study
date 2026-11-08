@@ -219,7 +219,7 @@ const titleLevels=[
 {name:"科学の天才",min:10000,desc:"幅広い科学の問題に答えられる実力者。",mark:"★",cls:"genius"},
 {name:"伝説の科学者",min:20000,desc:"科学キッズでも一目置かれる知識の持ち主。",mark:"◆",cls:"legend"},
 {name:"ノーベル化学賞",min:50000,desc:"化学への深い探究心をたたえる、特別な金章。",mark:"nobel",cls:"nobel"},
-{name:"覇者",min:1000000,desc:"すべてを極めた者だけが到達できる最高位。",mark:"haisha",cls:"haisha"}
+{name:"覇者",min:100000,desc:"すべてを極めた者だけが到達できる最高位。",mark:"haisha",cls:"haisha"}
 ];
 const grid=document.getElementById("titleGrid");
 function emblem(level){if(level.cls==="haisha")return '<img src="./assets/haisha-crown.svg" alt="覇者の王冠">';if(level.cls==="nobel")return '<img src="./assets/nobel-chemistry-medal.svg" alt="ノーベル化学賞の金メダル">';return '<span aria-hidden="true">'+level.mark+'</span>'}
