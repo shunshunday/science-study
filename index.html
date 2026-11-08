@@ -1255,7 +1255,12 @@ async function refreshAccount(){
  if(!session){stopPlaytimeTracking();accountOpen.textContent='ログイン・新規会員登録';authView.hidden=false;profileView.hidden=true;return;}
  try{
   const importedAmount=await importPendingGuestWallet();
-  if(importedAmount>0)authMessage.textContent='ブラウザに保存されていた所持金 
+  if(importedAmount>0)authMessage.textContent='ブラウザに保存されていた所持金 '+importedAmount.toLocaleString('en-US')+' を会員データへ引き継ぎました。';
+ }catch(importError){
+  console.error('ゲスト所持金の引き継ぎに失敗しました:',importError);
+  authMessage.textContent='会員登録・ログインは完了しましたが、所持金の引き継ぎは未完了です。再度ログインすると自動で再試行します。';
+ }
+ startPlaytimeTracking(session.user.id);
  authView.hidden=true;profileView.hidden=false;
  const {data:profile,error}=await supabaseClient.from('profiles').select('username').eq('id',session.user.id).single();
  if(error){accountOpen.textContent='ログイン中';accountOpen.setAttribute('aria-label','ログイン中。マイページを開く');document.getElementById('profileMessage').textContent='プロフィールを読み込めません。';return;}
