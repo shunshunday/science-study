@@ -160,14 +160,7 @@ aside.science-sidebar .science-side-name small{
 }
 </style>
 </head><body>
-<aside class="science-sidebar"><a class="science-side-brand" href="./index.html"><span class="science-side-logo">科</span><span class="science-side-name">科学キッズ<small>SCIENCE KIDS</small></span></a><p class="science-side-caption">きょうは、何を学ぶ？</p>
-<nav class="science-side-nav" aria-label="メインメニュー">
-  <a  href="./index.html"><span aria-hidden="true">✎</span>クイズで学ぶ</a>
-  <a  href="./science-timeline.html"><span aria-hidden="true">⚛</span>科学の年表</a>
-  <a  href="./ranking.html"><span aria-hidden="true">🏆</span>ランキング</a>
-  <a  href="./notifications.html"><span aria-hidden="true">🔔</span>通知<span class="science-notification-badge" id="scienceNotificationBadge" aria-label="未読通知 0 件" hidden>0</span></a>
-  <a  href="./howto.html"><span aria-hidden="true">?</span>遊び方</a>
-</nav><p class="science-side-foot">科学を学んで、知識を集めよう。<br>毎日の学習を応援します。</p></aside>
+
 <header class="science-topbar"><div class="science-topbar-inner"><p class="science-topbar-tagline">学んで、集めて、科学を楽しもう。</p><div class="science-topbar-actions"><a class="science-account-link" id="accountOpen" href="./profile.html">ログイン・新規会員登録</a><button class="science-furigana" id="furiganaToggle" type="button"><span>ふりがな</span> <span id="furiganaState">ON</span></button><a class="science-wallet" href="./index.html#quiz" aria-label="所持金"><span>◉</span><strong id="moneyValue">0</strong><span>$</span></a></div></div></header>
 
 <main>
@@ -210,7 +203,7 @@ aside.science-sidebar .science-side-name small{
 @media(max-width:420px){.title-grid{grid-template-columns:1fr!important}.title-card{min-height:0!important;flex-direction:row!important;align-items:center!important}}
 </style>
 <script>
-document.querySelector('[data-nav="titles"]').classList.add("active");
+
 const titleLevels=[
 {name:"科学ビギナー",min:0,desc:"科学の世界へようこそ。ここから学びを始めよう。",mark:"⚗",cls:"beginner"},
 {name:"科学チャレンジャー",min:1000,desc:"クイズに挑戦し、知識を積み重ねている証。",mark:"✦",cls:"challenger"},
@@ -235,3 +228,4 @@ async function updateHeader(){let amount=0;try{amount=Math.max(0,Math.floor(Numb
 updateHeader();let furiganaOn=true;try{furiganaOn=localStorage.getItem("rikakids-furigana")!=="off"}catch(e){}function paintFurigana(){document.getElementById("furiganaState").textContent=furiganaOn?"ON":"OFF";document.documentElement.dataset.furigana=furiganaOn?"on":"off";document.getElementById("furiganaToggle").setAttribute("aria-pressed",String(furiganaOn))}paintFurigana();document.getElementById("furiganaToggle").addEventListener("click",()=>{furiganaOn=!furiganaOn;try{localStorage.setItem("rikakids-furigana",furiganaOn?"on":"off")}catch(e){}paintFurigana()});
 (function(){const ids=["2026-11-07-design","2026-11-07-timeline","2026-11-07-quiz","2026-11-08-unread-badge"],key="science-kids-read-notifications-v1";let read=[];try{read=JSON.parse(localStorage.getItem(key)||"[]")}catch(e){}const n=ids.filter(x=>!read.includes(x)).length;const a=document.querySelector('.science-side-nav a[href="./notifications.html"]');if(a&&n){const b=document.createElement("span");b.className="rika-notice";b.textContent=n>99?"99+":String(n);a.append(b)}})();
 </script></body></html>
+<style id="titles-page-no-sidebar">.science-topbar,.rika-global-footer{margin-left:0!important}main{margin-left:0!important;padding-left:40px!important;padding-right:40px!important}@media(max-width:650px){main{margin-left:0!important;padding:22px 14px 45px!important}.science-topbar{margin-left:0!important}}</style>
