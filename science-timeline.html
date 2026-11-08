@@ -1131,53 +1131,48 @@ aside.science-sidebar .science-side-brand .science-side-logo,
 (function(){
  const word=document.querySelector('.timeline-heading .timeline-future');
  if(!word)return;
- let pointerX=window.innerWidth*.5, pointerY=window.innerHeight*.35;
- let raf=0;
+ let pointerX=window.innerWidth*.5;
+ let pointerY=window.innerHeight*.35;
  let current={x:50,y:50,a:110,bx:50,by:50};
- let desired={...current};
- function measure(){
+ let target={...current};
+ let raf=0;
+ function updateTarget(){
   const r=word.getBoundingClientRect();
   const w=Math.max(1,r.width),h=Math.max(1,r.height);
-  // The pointer is the point light. Its position is measured against the word
-  // in viewport coordinates, so scrolling naturally changes the reflection.
   const px=(pointerX-r.left)/w*100;
   const py=(pointerY-r.top)/h*100;
-  desired.x=Math.max(-100,Math.min(200,px));
-  desired.y=Math.max(-120,Math.min(220,py));
+  target.x=Math.max(-100,Math.min(200,px));
+  target.y=Math.max(-120,Math.min(220,py));
   const dx=pointerX-(r.left+r.width/2);
   const dy=pointerY-(r.top+r.height/2);
-  desired.a=Math.atan2(dy,dx)*180/Math.PI+90;
-  desired.bx=Math.max(0,Math.min(100,50+(50-px)*.55));
-  desired.by=Math.max(0,Math.min(100,50+(50-py)*.55));
-  animate();
+  target.a=Math.atan2(dy,dx)*180/Math.PI+90;
+  target.bx=Math.max(0,Math.min(100,50+(50-px)*.55));
+  target.by=Math.max(0,Math.min(100,50+(50-py)*.55));
  }
- function animate(){
-  if(raf)return;
-  function tick(){
-   const ease=.16;
-   current.x+=(desired.x-current.x)*ease;
-   current.y+=(desired.y-current.y)*ease;
-   let da=((desired.a-current.a+540)%360)-180;
-   current.a+=da*ease;
-   current.bx+=(desired.bx-current.bx)*ease;
-   current.by+=(desired.by-current.by)*ease;
-   word.style.setProperty('--spec-x',current.x.toFixed(2)+'%');
-   word.style.setProperty('--spec-y',current.y.toFixed(2)+'%');
-   word.style.setProperty('--spec-angle',current.a.toFixed(2)+'deg');
-   word.style.setProperty('--metal-bg-x',current.bx.toFixed(2)+'%');
-   word.style.setProperty('--metal-bg-y',current.by.toFixed(2)+'%');
-   const moving=Math.abs(desired.x-current.x)+Math.abs(desired.y-current.y)+Math.abs(da)+Math.abs(desired.bx-current.bx)+Math.abs(desired.by-current.by);
-   if(moving>.08)raf=requestAnimationFrame(tick);
-   else raf=0;
-  }
-  raf=requestAnimationFrame(tick);
+ function frame(){
+  // Recalculate every frame: pointer movement and page movement both continuously
+  // change the light-to-word geometry, not just during the first animation.
+  updateTarget();
+  const ease=.20;
+  current.x+=(target.x-current.x)*ease;
+  current.y+=(target.y-current.y)*ease;
+  const da=((target.a-current.a+540)%360)-180;
+  current.a+=da*ease;
+  current.bx+=(target.bx-current.bx)*ease;
+  current.by+=(target.by-current.by)*ease;
+  word.style.setProperty('--spec-x',current.x.toFixed(2)+'%');
+  word.style.setProperty('--spec-y',current.y.toFixed(2)+'%');
+  word.style.setProperty('--spec-angle',current.a.toFixed(2)+'deg');
+  word.style.setProperty('--metal-bg-x',current.bx.toFixed(2)+'%');
+  word.style.setProperty('--metal-bg-y',current.by.toFixed(2)+'%');
+  raf=requestAnimationFrame(frame);
  }
- function onPointer(e){pointerX=e.clientX;pointerY=e.clientY;measure()}
- function onViewportChange(){measure()}
+ function onPointer(e){pointerX=e.clientX;pointerY=e.clientY}
  document.addEventListener('pointermove',onPointer,{passive:true});
- window.addEventListener('scroll',onViewportChange,{passive:true});
- window.addEventListener('resize',onViewportChange,{passive:true});
- measure();
+ document.addEventListener('pointerdown',onPointer,{passive:true});
+ window.addEventListener('scroll',updateTarget,{passive:true});
+ window.addEventListener('resize',updateTarget,{passive:true});
+ if(!raf)raf=requestAnimationFrame(frame);
 })();
 </script>
 </body>
