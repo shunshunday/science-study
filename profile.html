@@ -404,7 +404,11 @@ function getGuestWallet(){
 }
 async function importPendingGuestWallet(){
  let amount=0;
- try{amount=Math.floor(Number(localStorage.getItem(GUEST_WALLET_IMPORT_KEY)||0));}catch(e){throw e;}
+ try{
+  amount=Math.floor(Number(localStorage.getItem(GUEST_WALLET_IMPORT_KEY)||0));
+  // すでに登録済みの人も、登録前のブラウザ残高が残っていれば回収する
+  if(!Number.isFinite(amount)||amount<=0){amount=getGuestWallet();if(amount>0)localStorage.setItem(GUEST_WALLET_IMPORT_KEY,String(amount));}
+ }catch(e){throw e;}
  if(!Number.isFinite(amount)||amount<=0)return 0;
  const data=await api("/rest/v1/rpc/import_guest_wallet",{method:"POST",body:JSON.stringify({p_balance:amount})});
  const wallet=Array.isArray(data)?data[0]:data;
