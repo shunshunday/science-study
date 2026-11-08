@@ -299,14 +299,25 @@ async function rankingApi(path,session){
  return data;
 }
 async function updateHeader(session){
- let amount=0;let activeSession=session||null;
- try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}
+ const amountEl=document.getElementById("moneyValue");
+ if(!accountLink||!amountEl)return;
+ let activeSession=session||null;
+ let amount=0;
  try{
+  // Supabase SDKのセッション復元を最優先。ホーム画面と同じ認証状態を読む。
+  if(!activeSession&&supabase){
+   const result=await supabase.auth.getSession();
+   if(!result.error)activeSession=result.data?.session||null;
+  }
+  // プロフィール画面が保存したRESTセッション形式にも対応
   if(!activeSession)activeSession=await getRankingSession();
-  const user=activeSession?.user||null;
-  if(user){
+  if(activeSession?.user){
+   const user=activeSession.user;
    let username=user.user_metadata?.username||user.user_metadata?.display_name||"";
-   try{const profiles=await rankingApi("/rest/v1/profiles?select=username&id=eq."+encodeURIComponent(user.id),activeSession);if(profiles?.[0]?.username)username=profiles[0].username}catch(e){console.warn("ユーザー名取得:",e)}
+   try{
+    const profiles=await rankingApi("/rest/v1/profiles?select=username&id=eq."+encodeURIComponent(user.id),activeSession);
+    if(profiles?.[0]?.username)username=profiles[0].username;
+   }catch(e){console.warn("ユーザー名取得:",e)}
    accountLink.textContent=(username||"アカウント")+"・ログイン中";
    accountLink.setAttribute("aria-label",(username||"アカウント")+"としてログイン中");
    try{
@@ -315,14 +326,21 @@ async function updateHeader(session){
     if(wallet?.balance!==undefined&&wallet?.balance!==null)amount=Math.max(0,Number(wallet.balance)||0);
    }catch(e){console.warn("所持金取得:",e)}
    if(amount===0){
-    try{const rows=await rankingApi("/rest/v1/rpc/get_city_wallet_leaderboard",activeSession);const own=(rows||[]).find(row=>row.user_id===user.id);if(own)amount=Math.max(0,Number(own.balance)||0)}catch(e){console.warn("ランキング残高取得:",e)}
+    try{
+     const rows=await rankingApi("/rest/v1/rpc/get_city_wallet_leaderboard",activeSession);
+     const own=(rows||[]).find(row=>row.user_id===user.id);
+     if(own)amount=Math.max(0,Number(own.balance)||0);
+    }catch(e){console.warn("ランキング残高取得:",e)}
    }
   }else{
    accountLink.textContent="ログイン・新規会員登録";
    accountLink.removeAttribute("aria-label");
+   try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}
   }
- }catch(e){console.error("ランキングヘッダー更新:",e)}
- document.getElementById("moneyValue").textContent=amount.toLocaleString("en-US");
+ }catch(e){
+  console.error("ランキングヘッダー更新:",e);
+ }
+ amountEl.textContent=amount.toLocaleString("en-US");
 }
 updateHeader();
 if(supabase){supabase.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>{updateHeader(session);loadRanking()},0)})}window.addEventListener("pageshow",()=>{updateHeader();loadRanking()});let furiganaOn=true;try{furiganaOn=localStorage.getItem("rikakids-furigana")!=="off"}catch(e){}function paintFurigana(){document.getElementById("furiganaState").textContent=furiganaOn?"ON":"OFF";document.documentElement.dataset.furigana=furiganaOn?"on":"off";document.getElementById("furiganaToggle").setAttribute("aria-pressed",String(furiganaOn))}paintFurigana();document.getElementById("furiganaToggle").addEventListener("click",()=>{furiganaOn=!furiganaOn;try{localStorage.setItem("rikakids-furigana",furiganaOn?"on":"off")}catch(e){}paintFurigana()});
