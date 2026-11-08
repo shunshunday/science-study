@@ -277,14 +277,30 @@ document.addEventListener("DOMContentLoaded",()=>{loadRanking();setInterval(()=>
 const SUPABASE_URL="https://tmgfcmzufamxuzsuedza.supabase.co",SUPABASE_KEY="sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng";
 const supabase=window.supabase?.createClient?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
 const accountLink=document.getElementById("accountOpen");
-async function updateHeader(session){let amount=0;try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}
-let user=session?.user||null;
-if(supabase){try{if(session===undefined){const {data,error}=await supabase.auth.getSession();if(!error)user=data?.session?.user||null}
-if(user){accountLink.textContent="アカウント設定";const {data:p}=await supabase.from("profiles").select("username").eq("id",user.id).maybeSingle();if(p?.username)accountLink.textContent=p.username+"・ログイン中";
-const {data,error}=await supabase.rpc("get_city_wallet");if(!error){const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0)}
-}else{accountLink.textContent="ログイン・新規会員登録"}
-}catch(e){console.warn("ランキングのログイン状態確認:",e);if(!user)accountLink.textContent="ログイン・新規会員登録"}}
-document.getElementById("moneyValue").textContent=amount.toLocaleString("en-US")}
+async function updateHeader(session){
+ let amount=0;
+ try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}
+ let user=session?.user||null;
+ if(supabase){
+  try{
+   if(session===undefined){const {data,error}=await supabase.auth.getSession();if(!error)user=data?.session?.user||null}
+   if(user){
+    let username=user.user_metadata?.username||user.user_metadata?.display_name||"";
+    const {data:p,error:profileError}=await supabase.from("profiles").select("username").eq("id",user.id).maybeSingle();
+    if(!profileError&&p?.username)username=p.username;
+    accountLink.textContent=(username||"アカウント")+"・ログイン中";
+    const {data,error}=await supabase.rpc("get_city_wallet");
+    if(!error){const w=Array.isArray(data)?data[0]:data;if(w&&w.balance!==undefined&&w.balance!==null)amount=Math.max(0,Number(w.balance)||0)}
+    else{
+     const {data:rankingData}=await supabase.rpc("get_city_wallet_leaderboard");
+     const own=(rankingData||[]).find(row=>row.user_id===user.id);
+     if(own)amount=Math.max(0,Number(own.balance)||0);
+    }
+   }else{accountLink.textContent="ログイン・新規会員登録"}
+  }catch(e){console.warn("ランキングのログイン状態・所持金確認:",e);if(!user)accountLink.textContent="ログイン・新規会員登録"}
+ }
+ document.getElementById("moneyValue").textContent=amount.toLocaleString("en-US");
+}
 updateHeader();
 if(supabase){supabase.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>updateHeader(session),0)})}let furiganaOn=true;try{furiganaOn=localStorage.getItem("rikakids-furigana")!=="off"}catch(e){}function paintFurigana(){document.getElementById("furiganaState").textContent=furiganaOn?"ON":"OFF";document.documentElement.dataset.furigana=furiganaOn?"on":"off";document.getElementById("furiganaToggle").setAttribute("aria-pressed",String(furiganaOn))}paintFurigana();document.getElementById("furiganaToggle").addEventListener("click",()=>{furiganaOn=!furiganaOn;try{localStorage.setItem("rikakids-furigana",furiganaOn?"on":"off")}catch(e){}paintFurigana()});
 (function(){const ids=["2026-11-07-design","2026-11-07-timeline","2026-11-07-quiz","2026-11-08-unread-badge"],key="science-kids-read-notifications-v1";let read=[];try{read=JSON.parse(localStorage.getItem(key)||"[]")}catch(e){}const n=ids.filter(x=>!read.includes(x)).length;const a=document.querySelector('.science-side-nav a[href="./notifications.html"]');if(a&&n){const b=document.createElement("span");b.className="rika-notice";b.textContent=n>99?"99+":String(n);a.append(b)}})();
