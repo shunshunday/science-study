@@ -316,7 +316,7 @@ button,input,select,textarea{font-family:inherit}
 }
 .science-topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;height:100%}
 </style><style>
-.timeline-main{max-width:1180px}.timeline-heading{position:relative;margin:10px 0 25px;padding-right:48%;min-height:76px}.timeline-heading .eyebrow{font-size:11px;letter-spacing:.14em;font-weight:850}.timeline-heading h1{font-size:34px;margin:7px 0;color:#1b344a}.timeline-heading p{position:absolute;right:0;top:50%;transform:translateY(-35%);width:48%;margin:0;color:#1b344a;font-size:30px;font-weight:900;line-height:1.5;text-align:right;letter-spacing:.02em}.timeline-heading .timeline-past{color:inherit}.timeline-heading .timeline-future{display:inline-block;font-size:1.16em;color:#b8860b;background-image:radial-gradient(ellipse 18% 72% at var(--spec-x,50%) var(--spec-y,50%),rgba(255,255,255,var(--spec-core,.98)) 0%,rgba(255,250,222,.92) 5%,rgba(255,231,158,.58) 16%,rgba(255,219,130,.18) 34%,transparent 62%),radial-gradient(ellipse 44% 120% at var(--spec-x,50%) var(--spec-y,50%),rgba(255,244,196,.32) 0%,rgba(255,220,130,.12) 35%,transparent 72%),linear-gradient(var(--metal-angle,115deg),#392604 0%,#8a6416 13%,#d8b34d 25%,#4a3308 38%,#f1d77e 49%,#694a0b 61%,#d8b34d 76%,#503707 89%,#e8c969 100%);background-size:100% 100%;background-position:center;background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:none;}
+.timeline-main{max-width:1180px}.timeline-heading{position:relative;margin:10px 0 25px;padding-right:48%;min-height:76px}.timeline-heading .eyebrow{font-size:11px;letter-spacing:.14em;font-weight:850}.timeline-heading h1{font-size:34px;margin:7px 0;color:#1b344a}.timeline-heading p{position:absolute;right:0;top:50%;transform:translateY(-35%);width:48%;margin:0;color:#1b344a;font-size:30px;font-weight:900;line-height:1.5;text-align:right;letter-spacing:.02em}.timeline-heading .timeline-past{color:inherit}.timeline-heading .timeline-future{display:inline-block;font-size:1.16em;color:inherit;background:none;-webkit-text-fill-color:currentColor;filter:none;}
 .timeline-tabs{position:relative;display:flex;gap:8px;margin:0 0 20px;border-bottom:1px solid #dce3e9}.timeline-tabs::after{content:"";position:absolute;left:0;bottom:-1px;width:80px;height:3px;background:#168b4c;transform:translateX(0);transition:transform .32s cubic-bezier(.22,.8,.3,1);pointer-events:none}.timeline-tabs:has(.timeline-tab[data-view="nobel"][aria-selected="true"])::after{transform:translateX(100px)}.timeline-tab{border:0;border-bottom:0;background:transparent;padding:12px 18px;color:#6c7f90;font:inherit;font-size:14px;font-weight:750;cursor:pointer}.timeline-tab.active{color:#168b4c}
 .timeline-intro{margin:0 0 16px}.timeline-intro h2{margin:0 0 5px;font-size:20px;color:#1b344a}.timeline-intro p{margin:0;color:#718395;font-size:13px}.timeline-filter-heading{margin:18px 0 8px;color:#536b80;font-size:12px;font-weight:750}.timeline-filters{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 16px}.timeline-filter{padding:8px 13px;border:1px solid #d7e0e8;border-radius:8px;background:#fff;color:#536b80;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.timeline-filter.active{background:#eaf6ee;border-color:#168b4c;color:#126b38}
 .science-timeline{margin:20px 0 0 20px;max-width:920px;border-left:2px solid #cad6df;padding-left:30px}.science-event{position:relative;display:grid;grid-template-columns:86px minmax(0,1fr);gap:14px;margin:0 0 18px;align-items:start}.science-event:before{content:"";width:12px;height:12px;border:3px solid #f3f5f7;background:#168b4c;position:absolute;left:-39px;top:22px;border-radius:50%}.science-event-year{font-size:20px;font-weight:800;padding-top:12px;color:#1b344a}.science-event-card{background:#fff;border:1px solid #dce3e9;border-radius:11px;padding:15px 18px}.science-event-card h3{margin:0 0 5px;font-size:15px;color:#1b344a}.science-event-card p{margin:0;color:#718395;font-size:13px;line-height:1.8}
@@ -1127,49 +1127,6 @@ aside.science-sidebar .science-side-brand .science-side-logo,
  }catch(error){console.warn('アカウント表示を更新できませんでした',error);}
 })();
 </script>
-<script id="timeline-gold-reflection">
-(function(){
- const word=document.querySelector('.timeline-heading .timeline-future');
- if(!word)return;
- let pointerX=innerWidth*.5,pointerY=innerHeight*.5;
- let lastX=pointerX,lastY=pointerY;
- let currentX=50,currentY=50;
- let raf=0;
- const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
- function updateTarget(){
-   const rect=word.getBoundingClientRect();
-   const cx=rect.left+rect.width*.5,cy=rect.top+rect.height*.5;
-   const dx=pointerX-cx,dy=pointerY-cy;
-   const distance=Math.hypot(dx,dy);
-   const angle=Math.atan2(dy,dx);
-   // The pointer is treated as a point light. Its direction controls the
-   // moving specular spot and the orientation of the metal's reflected bands.
-   const reach=Math.max(1,Math.hypot(innerWidth,innerHeight)*.62);
-   const intensity=1-clamp(distance/reach,0,1);
-   const tx=clamp(50+Math.cos(angle)*38,8,92);
-   const ty=clamp(50+Math.sin(angle)*38,8,92);
-   word.style.setProperty('--spec-target-x',tx.toFixed(2)+'%');
-   word.style.setProperty('--spec-target-y',ty.toFixed(2)+'%');
-   word.style.setProperty('--spec-core',(0.42+intensity*.56).toFixed(3));
-   word.style.setProperty('--metal-angle',(angle*180/Math.PI+90).toFixed(1)+'deg');
- }
- function frame(){
-   currentX+=(parseFloat(word.style.getPropertyValue('--spec-target-x'))-currentX)*.16;
-   currentY+=(parseFloat(word.style.getPropertyValue('--spec-target-y'))-currentY)*.16;
-   word.style.setProperty('--spec-x',currentX.toFixed(2)+'%');
-   word.style.setProperty('--spec-y',currentY.toFixed(2)+'%');
-   raf=requestAnimationFrame(frame);
- }
- function onPointer(e){pointerX=e.clientX;pointerY=e.clientY;updateTarget();}
- function onScroll(){updateTarget();}
- function onResize(){pointerX=clamp(pointerX,0,innerWidth);pointerY=clamp(pointerY,0,innerHeight);updateTarget();}
- document.addEventListener('pointermove',onPointer,{passive:true});
- document.addEventListener('pointerdown',onPointer,{passive:true});
- window.addEventListener('scroll',onScroll,{passive:true});
- window.addEventListener('resize',onResize,{passive:true});
- updateTarget();
- if(!raf)raf=requestAnimationFrame(frame);
-})();
-</script>
+
 </body>
 </html>
