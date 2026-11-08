@@ -316,7 +316,7 @@ button,input,select,textarea{font-family:inherit}
 }
 .science-topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;height:100%}
 </style><style>
-.timeline-main{max-width:1180px}.timeline-heading{position:relative;margin:10px 0 25px;padding-right:48%;min-height:76px}.timeline-heading .eyebrow{font-size:11px;letter-spacing:.14em;font-weight:850}.timeline-heading h1{font-size:34px;margin:7px 0;color:#1b344a}.timeline-heading p{position:absolute;right:0;top:50%;transform:translateY(-35%);width:48%;margin:0;color:#1b344a;font-size:30px;font-weight:900;line-height:1.5;text-align:right;letter-spacing:.02em}.timeline-heading .timeline-past{color:inherit}.timeline-heading .timeline-future{display:inline-block;font-size:1.16em;color:#b8860b;background-image:linear-gradient(180deg,#fff3b0 0%,#d8ad36 18%,#8f6410 34%,#f5dc78 48%,#a87512 63%,#e7c45a 78%,#9a6b13 90%,#f8e69a 100%),linear-gradient(var(--metal-reflection-angle,115deg),transparent 0%,rgba(255,255,255,0) 38%,rgba(255,255,255,.08) 44%,rgba(255,255,255,.92) 49%,rgba(255,255,255,.24) 52%,rgba(255,255,255,0) 59%,transparent 100%);background-size:100% 100%,260% 260%;background-position:center,var(--metal-reflection-x,50%) var(--metal-reflection-y,50%);background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.timeline-main{max-width:1180px}.timeline-heading{position:relative;margin:10px 0 25px;padding-right:48%;min-height:76px}.timeline-heading .eyebrow{font-size:11px;letter-spacing:.14em;font-weight:850}.timeline-heading h1{font-size:34px;margin:7px 0;color:#1b344a}.timeline-heading p{position:absolute;right:0;top:50%;transform:translateY(-35%);width:48%;margin:0;color:#1b344a;font-size:30px;font-weight:900;line-height:1.5;text-align:right;letter-spacing:.02em}.timeline-heading .timeline-past{color:inherit}.timeline-heading .timeline-future{display:inline-block;font-size:1.16em;color:#b8860b;background-image:radial-gradient(ellipse 31% 78% at var(--spec-x,50%) var(--spec-y,50%),rgba(255,255,255,.98) 0%,rgba(255,250,218,.88) 8%,rgba(255,239,174,.48) 19%,rgba(255,224,130,.13) 37%,transparent 66%),radial-gradient(ellipse 55% 100% at var(--spec-x,50%) var(--spec-y,50%),rgba(255,255,255,.18) 0%,rgba(255,246,206,.12) 28%,transparent 72%),linear-gradient(180deg,#fff3b0 0%,#d8ad36 13%,#80570b 25%,#f7e18b 37%,#9b6c12 49%,#fff0a8 56%,#77500a 68%,#e9c45a 81%,#704b0a 91%,#fff0a6 100%);background-size:100% 100%;background-position:center;background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:none;}
 .timeline-tabs{position:relative;display:flex;gap:8px;margin:0 0 20px;border-bottom:1px solid #dce3e9}.timeline-tabs::after{content:"";position:absolute;left:0;bottom:-1px;width:80px;height:3px;background:#168b4c;transform:translateX(0);transition:transform .32s cubic-bezier(.22,.8,.3,1);pointer-events:none}.timeline-tabs:has(.timeline-tab[data-view="nobel"][aria-selected="true"])::after{transform:translateX(100px)}.timeline-tab{border:0;border-bottom:0;background:transparent;padding:12px 18px;color:#6c7f90;font:inherit;font-size:14px;font-weight:750;cursor:pointer}.timeline-tab.active{color:#168b4c}
 .timeline-intro{margin:0 0 16px}.timeline-intro h2{margin:0 0 5px;font-size:20px;color:#1b344a}.timeline-intro p{margin:0;color:#718395;font-size:13px}.timeline-filter-heading{margin:18px 0 8px;color:#536b80;font-size:12px;font-weight:750}.timeline-filters{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 16px}.timeline-filter{padding:8px 13px;border:1px solid #d7e0e8;border-radius:8px;background:#fff;color:#536b80;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.timeline-filter.active{background:#eaf6ee;border-color:#168b4c;color:#126b38}
 .science-timeline{margin:20px 0 0 20px;max-width:920px;border-left:2px solid #cad6df;padding-left:30px}.science-event{position:relative;display:grid;grid-template-columns:86px minmax(0,1fr);gap:14px;margin:0 0 18px;align-items:start}.science-event:before{content:"";width:12px;height:12px;border:3px solid #f3f5f7;background:#168b4c;position:absolute;left:-39px;top:22px;border-radius:50%}.science-event-year{font-size:20px;font-weight:800;padding-top:12px;color:#1b344a}.science-event-card{background:#fff;border:1px solid #dce3e9;border-radius:11px;padding:15px 18px}.science-event-card h3{margin:0 0 5px;font-size:15px;color:#1b344a}.science-event-card p{margin:0;color:#718395;font-size:13px;line-height:1.8}
@@ -1134,17 +1134,24 @@ aside.science-sidebar .science-side-brand .science-side-logo,
  let frame=0;
  function updateReflection(){
   frame=0;
-  const root=document.scrollingElement||document.documentElement;
-  const maxX=Math.max(1,root.scrollWidth-root.clientWidth);
-  const maxY=Math.max(1,root.scrollHeight-root.clientHeight);
-  const x=Math.max(0,Math.min(1,(window.scrollX||root.scrollLeft||0)/maxX));
-  const y=Math.max(0,Math.min(1,(window.scrollY||root.scrollTop||0)/maxY));
-  const px=12+x*176;
-  const py=12+y*176;
-  const angle=105+(x-.5)*34+(y-.5)*26;
-  target.style.setProperty('--metal-reflection-x',px+'%');
-  target.style.setProperty('--metal-reflection-y',py+'%');
-  target.style.setProperty('--metal-reflection-angle',angle+'deg');
+  const rect=target.getBoundingClientRect();
+  const vw=document.documentElement.clientWidth||window.innerWidth;
+  const vh=window.innerHeight;
+  // A single fixed point light in the upper-left of the screen.
+  const light={x:vw*.12,y:vh*.14};
+  // Approximate the camera direction toward the center of the screen.
+  const center={x:rect.left+rect.width/2,y:rect.top+rect.height/2};
+  const lx=light.x-center.x, ly=light.y-center.y;
+  const vx=vw*.5-center.x, vy=vh*.5-center.y;
+  const ll=Math.hypot(lx,ly)||1, vl=Math.hypot(vx,vy)||1;
+  const hx=lx/ll+vx/vl, hy=ly/ll+vy/vl;
+  const hl=Math.hypot(hx,hy)||1;
+  // The half-vector determines where the microscopic metal facets catch the point light.
+  const nx=hx/hl, ny=hy/hl;
+  const px=Math.max(8,Math.min(92,50+nx*27));
+  const py=Math.max(8,Math.min(92,50+ny*42));
+  target.style.setProperty('--spec-x',px.toFixed(2)+'%');
+  target.style.setProperty('--spec-y',py.toFixed(2)+'%');
  }
  function requestUpdate(){if(!frame)frame=requestAnimationFrame(updateReflection)}
  updateReflection();
