@@ -326,7 +326,8 @@ function titleForBalance(balance){
 function titleBadge(balance){
  const t=titleForBalance(balance);
  const mark=t.mark==="haisha"?'<img src="./assets/haisha-crown.svg" alt="" class="ranking-title-mark haisha">':'<span class="ranking-title-mark '+(t.cls==="nobel"?"nobel":"")+'">'+safeText(t.mark)+'</span>';
-  return mark+'<span class="ranking-title-badge '+t.cls+'">'+safeText(t.name)+'</span>';
+ if(t.cls==="haisha"||t.cls==="nobel")return mark+'<span class="ranking-title-badge '+t.cls+'">'+safeText(t.name)+'</span>';
+ return mark;
 }
 function renderRanking(list){
  const order=["first","second","third"];
@@ -551,3 +552,27 @@ document.getElementById("furiganaToggle").addEventListener("click",()=>{
 </style>
 
 </body></html>
+<style id="ranking-non-special-title-marks-only">
+/* 覇者・ノーベル化学賞以外は称号カラーを使わず、マークだけ表示 */
+.podium-card.legend,.ranking-row.legend,
+.podium-card.genius,.ranking-row.genius,
+.podium-card.doctor,.ranking-row.doctor,
+.podium-card.master,.ranking-row.master,
+.podium-card.challenger,.ranking-row.challenger,
+.podium-card.beginner,.ranking-row.beginner{
+ background:#fff!important;border:1px solid #e1e7ec!important;color:#26343b!important;box-shadow:none!important;
+}
+.podium-card.legend .podium-name,.ranking-row.legend .rank-user strong,
+.podium-card.genius .podium-name,.ranking-row.genius .rank-user strong,
+.podium-card.doctor .podium-name,.ranking-row.doctor .rank-user strong,
+.podium-card.master .podium-name,.ranking-row.master .rank-user strong,
+.podium-card.challenger .podium-name,.ranking-row.challenger .rank-user strong,
+.podium-card.beginner .podium-name,.ranking-row.beginner .rank-user strong,
+.podium-card.legend .podium-score,.ranking-row.legend .rank-score,
+.podium-card.genius .podium-score,.ranking-row.genius .rank-score,
+.podium-card.doctor .podium-score,.ranking-row.doctor .rank-score,
+.podium-card.master .podium-score,.ranking-row.master .rank-score,
+.podium-card.challenger .podium-score,.ranking-row.challenger .rank-score,
+.podium-card.beginner .podium-score,.ranking-row.beginner .rank-score{color:inherit!important}
+.ranking-title-mark:not(.haisha):not(.nobel){color:#667784!important;text-shadow:none!important;filter:none!important}
+</style>
