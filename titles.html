@@ -159,6 +159,20 @@ aside.science-sidebar .science-side-name small{
  aside.science-sidebar .science-side-name small{margin-top:4px!important;font-size:9px!important}
 }
 </style>
+<style id="titles-header-match-home">
+/* トップページと同じ上部バー */
+.science-topbar{height:78px!important;margin-left:0!important;background:#fff!important;font-family:inherit!important}
+.science-topbar-inner{height:100%!important;padding:0 40px!important;gap:12px!important}
+.science-topbar-tagline{flex:1!important;margin:0!important;color:#647787!important;font-size:13px!important;font-weight:400!important;letter-spacing:0!important;line-height:1.7!important}
+.science-topbar-actions{display:flex!important;align-items:center!important;gap:12px!important}
+.science-account-link,.science-furigana{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:44px!important;height:auto!important;padding:10px 16px!important;border:0!important;border-radius:9px!important;background:#f4f6f8!important;color:#172f45!important;font-family:inherit!important;font-size:13px!important;font-weight:700!important;line-height:1.5!important;white-space:nowrap!important}
+.science-furigana{gap:.9em!important;cursor:pointer!important}
+.science-wallet{display:flex!important;align-items:center!important;gap:6px!important;min-width:0!important;min-height:44px!important;height:auto!important;padding:10px 16px!important;border:0!important;border-radius:9px!important;background:#fff2cf!important;color:#172f45!important;white-space:nowrap!important}
+.science-wallet span:first-child{font-size:1.15rem!important;line-height:1!important;color:#b58b16!important}
+.science-wallet strong{margin-left:6px!important;font-size:1.15rem!important;font-weight:700!important;line-height:1!important;color:#172f45!important}
+.science-wallet span:last-child{font-size:1.15rem!important;font-weight:700!important;line-height:1!important;color:#172f45!important}
+@media(max-width:650px){.science-topbar{height:54px!important}.science-topbar-inner{padding:0 10px!important;justify-content:flex-end!important}.science-topbar-tagline{display:none!important}.science-topbar-actions{gap:6px!important}.science-account-link,.science-furigana{min-height:38px!important;padding:8px 9px!important;font-size:11px!important}.science-wallet{min-height:38px!important;padding:8px 9px!important}.science-wallet span:first-child,.science-wallet strong,.science-wallet span:last-child{font-size:1rem!important}}
+</style>
 </head><body>
 
 <header class="science-topbar"><div class="science-topbar-inner"><p class="science-topbar-tagline">学んで、集めて、科学を楽しもう。</p><div class="science-topbar-actions"><a class="science-account-link" id="accountOpen" href="./profile.html">ログイン・新規会員登録</a><button class="science-furigana" id="furiganaToggle" type="button"><span>ふりがな</span> <span id="furiganaState">ON</span></button><a class="science-wallet" href="./index.html#quiz" aria-label="所持金"><span>◉</span><strong id="moneyValue">0</strong><span>$</span></a></div></div></header>
