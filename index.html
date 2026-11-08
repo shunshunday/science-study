@@ -1151,6 +1151,44 @@ document.getElementById('startQuiz').addEventListener('click',startQuiz);
 quizProgress.addEventListener('click',()=>{if(!quizProgress.classList.contains('is-result'))return;quizBox.classList.remove('show');quizPlay.hidden=false;quizResult.hidden=true;quizProgress.classList.remove('is-result');quizProgress.textContent='第1問 / 5問';quizScore.textContent='正解 0';document.getElementById('startQuiz').style.display='';});
 
 
+// 未ログイン時のプレイ時間もブラウザへ累計保存し、会員登録後に引き継ぐ
+const GUEST_PLAYTIME_KEY="rikakids-guest-playtime-seconds";
+const GUEST_PLAYTIME_IMPORT_KEY="rikakids-guest-playtime-import-pending";
+let guestPlaytimeTimer=null,guestPlaytimeLastTick=0,guestPlaytimeWasActive=false;
+function guestPageActive(){return document.visibilityState==="visible"&&document.hasFocus();}
+function flushGuestPlaytime(forcePreviousActive=false){
+ if(!guestPlaytimeLastTick)return;
+ const now=Date.now(),active=guestPageActive();
+ if(active||(forcePreviousActive&&guestPlaytimeWasActive)){
+  const elapsed=Math.min(30,Math.max(0,Math.floor((now-guestPlaytimeLastTick)/1000)));
+  if(elapsed>0){try{const old=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0)));localStorage.setItem(GUEST_PLAYTIME_KEY,String(old+elapsed));}catch(e){}}
+ }
+ guestPlaytimeLastTick=now;guestPlaytimeWasActive=active;
+}
+function startGuestPlaytimeTracking(){
+ if(guestPlaytimeTimer)return;
+ guestPlaytimeLastTick=Date.now();guestPlaytimeWasActive=guestPageActive();
+ guestPlaytimeTimer=setInterval(flushGuestPlaytime,10000);
+}
+function stopGuestPlaytimeTracking(){
+ flushGuestPlaytime();
+ if(guestPlaytimeTimer)clearInterval(guestPlaytimeTimer);
+ guestPlaytimeTimer=null;guestPlaytimeLastTick=0;
+}
+async function importGuestPlaytimeForMember(){
+ let amount=0;
+ try{
+  amount=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_IMPORT_KEY)||0)));
+  if(!amount){amount=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0)));if(amount>0)localStorage.setItem(GUEST_PLAYTIME_IMPORT_KEY,String(amount));}
+ }catch(e){return 0;}
+ if(!amount)return 0;
+ const {error}=await supabaseClient.rpc("import_legacy_playtime",{p_seconds:Math.min(604800,amount)});
+ if(error)throw error;
+ const remaining=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0))-amount);
+ localStorage.setItem(GUEST_PLAYTIME_KEY,String(remaining));
+ localStorage.removeItem(GUEST_PLAYTIME_IMPORT_KEY);
+ return amount;
+}
 // 表示中かつフォーカス中の時間だけをSupabaseへ累計保存
 let playtimeUserId=null;
 let playtimeTimer=null;
@@ -1202,6 +1240,8 @@ function stopPlaytimeTracking(){
 }
 async function startPlaytimeTracking(userId){
  if(!userId||!supabaseClient)return;
+ stopGuestPlaytimeTracking();
+ try{await importGuestPlaytimeForMember();}catch(e){console.error("ブラウザ保存のプレイ時間引き継ぎに失敗:",e);}
  if(playtimeUserId===userId)return;
  stopPlaytimeTracking();
  playtimeUserId=userId;
@@ -1230,7 +1270,7 @@ document.addEventListener("visibilitychange",()=>{
 });
 window.addEventListener("focus",()=>{lastPlaytimeTick=Date.now();playtimeWasActive=pageIsActivelyViewed();});
 window.addEventListener("blur",()=>flushPlaytime(true));
-window.addEventListener("pagehide",()=>flushPlaytime(true));
+window.addEventListener("pagehide",()=>{flushPlaytime(true);flushGuestPlaytime(true);});
 
 let authMode='login';
 const accountModal=document.getElementById('accountModal');
@@ -1356,7 +1396,8 @@ async function refreshTopAccountButton(sessionOverride){
  }catch(error){console.warn('会員名の表示を更新できませんでした',error);}
 }
 refreshTopAccountButton();
-if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else stopPlaytimeTracking();refreshTopWallet();refreshTopAccountButton(session);if(accountModal.classList.contains('open'))refreshAccount();});}
+if(!supabaseClient)startGuestPlaytimeTracking();
+if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else{stopPlaytimeTracking();startGuestPlaytimeTracking();}refreshTopWallet();refreshTopAccountButton(session);if(accountModal.classList.contains('open'))refreshAccount();});}
 // ホームへ移動・ブラウザーの戻る操作で復帰したときも、保存済みの認証状態から表示を再同期
 window.addEventListener('pageshow',(event)=>{
  // 戻る操作などで古い画面がBFCacheから復元された場合は、最新HTMLを読み直す
