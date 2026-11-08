@@ -558,12 +558,31 @@ aside.science-sidebar .science-side-brand .science-side-logo,
 .science-side-nav a span:first-child{display:inline-block!important;flex:0 0 24px!important;width:24px!important;font-size:21px!important;text-align:center!important}
 }
 </style>
+
+<style id="science-sidebar-final-consistency">
+/* 全ページ共通：左メニューの順番・間隔・サイズ */
+.science-side-nav{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:6px!important;margin:30px 0 0!important;padding:0!important}
+.science-side-nav a{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;width:100%!important;min-height:44px!important;height:44px!important;padding:0 14px!important;margin:0!important;box-sizing:border-box!important;border:0!important;border-radius:7px!important;font-family:inherit!important;font-size:14px!important;font-weight:500!important;line-height:1!important;white-space:nowrap!important;text-decoration:none!important}
+.science-side-nav a span:first-child{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 24px!important;width:24px!important;height:24px!important;margin:0!important;font-size:19px!important;line-height:1!important;text-align:center!important}
+.science-side-nav a.active{background:#fff0e7!important;color:#ac4119!important}
+.science-side-nav a.active span:first-child{color:#ac4119!important}
+.science-side-nav a:not(.active){color:#cbd7e1!important}
+.science-side-nav a:not(.active):hover{background:#254358!important;color:#fff!important}
+@media(max-width:900px){.science-side-nav{gap:6px!important}.science-side-nav a{height:44px!important;min-height:44px!important;padding:0 8px!important;justify-content:center!important;gap:0!important;font-size:0!important}.science-side-nav a span:first-child{font-size:21px!important;flex:0 0 24px!important}.science-side-nav a .science-notification-badge{display:none!important}}
+@media(max-width:650px){.science-side-nav{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;gap:6px!important;margin:8px 0 0!important}.science-side-nav a{width:auto!important;flex:1 1 30%!important;min-width:0!important;height:40px!important;min-height:40px!important;padding:0 8px!important;justify-content:center!important;gap:7px!important;font-size:12px!important}.science-side-nav a span:first-child{font-size:17px!important;flex:0 0 20px!important;width:20px!important}.science-side-nav a .science-notification-badge{display:inline-flex!important}}
+</style>
 </head>
 <body>
 <aside class="science-sidebar">
   <a class="science-side-brand" href="./index.html?top=1" aria-label="科学キッズ ホーム"><span class="science-side-logo">科</span><span class="science-side-name">科学キッズ<small>SCIENCE KIDS</small></span></a>
   <p class="science-side-caption">きょうは、何を学ぶ？</p>
-  <nav class="science-side-nav" aria-label="メインメニュー"><a class="active" href="./index.html?top=1"><span>✎</span> クイズで学ぶ</a><a href="./science-timeline.html"><span aria-hidden="true">⚛</span> 科学の年表</a><a href="./ranking.html"><span aria-hidden="true">🏆</span> ランキング</a><a href="./notifications.html"><span aria-hidden="true">🔔</span> 通知<span class="science-notification-badge" id="scienceNotificationBadge" aria-label="未読通知 0 件" hidden>0</span></a><a href="./howto.html"><span aria-hidden="true">?</span>遊び方</a></nav>
+  <nav class="science-side-nav" aria-label="メインメニュー">
+  <a class="active" href="./index.html?top=1"><span aria-hidden="true">✎</span>クイズで学ぶ</a>
+  <a  href="./science-timeline.html"><span aria-hidden="true">⚛</span>科学の年表</a>
+  <a  href="./ranking.html"><span aria-hidden="true">🏆</span>ランキング</a>
+  <a  href="./notifications.html"><span aria-hidden="true">🔔</span>通知<span class="science-notification-badge" id="scienceNotificationBadge" aria-label="未読通知 0 件" hidden>0</span></a>
+  <a  href="./howto.html"><span aria-hidden="true">?</span>遊び方</a>
+</nav>
   <p class="science-side-foot">科学を学んで、知識を集めよう。<br>毎日の学習を応援します。</p>
 </aside>
 <header class="science-topbar">
