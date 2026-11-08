@@ -535,6 +535,12 @@ aside.science-sidebar .science-side-brand .science-side-logo,
   </section>
   <section class="notification-list" aria-label="お知らせ一覧">
     <article class="notification-card">
+      <div class="notification-card-top"><span class="notification-category">機能追加</span><time datetime="2026-11-08">2026.11.08</time></div>
+      <h2>未読通知の件数表示を追加しました</h2>
+      <p>新しいお知らせが届くと、メニューの「通知」の右側に赤い数字で未読件数が表示されるようになりました。</p>
+    </article>
+
+    <article class="notification-card">
       <div class="notification-card-top"><span class="notification-category">サイト更新</span><time datetime="2026-11-07">2026.11.07</time></div>
       <h2>科学キッズのデザインを更新しました</h2>
       <p>ページ上部とメニューの表示を整え、どのページからでも使いやすいデザインにしました。</p>
@@ -611,7 +617,7 @@ aside.science-sidebar .science-side-brand .science-side-logo,
 
 <script id="science-notification-unread-counter">
 (function(){
- const ids=["2026-11-07-design","2026-11-07-timeline","2026-11-07-quiz"];
+ const ids=["2026-11-07-design","2026-11-07-timeline","2026-11-07-quiz","2026-11-08-unread-badge"];
  const key="science-kids-read-notifications-v1";
  let read=[];
  try{read=JSON.parse(localStorage.getItem(key)||"[]");if(!Array.isArray(read))read=[];}catch(e){read=[];}
