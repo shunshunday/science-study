@@ -263,6 +263,26 @@ header.science-topbar .science-wallet .science-wallet-currency{
 .my-rank{display:flex;align-items:center;gap:18px;margin-top:16px;padding:17px 22px;border-color:#b9d9c4;background:linear-gradient(110deg,#f0faf3,#fff)}.my-rank>div:first-child{min-width:70px;text-align:center}.mini-label{display:block;color:#168b4c;font-size:9px;font-weight:900;letter-spacing:.12em}.my-rank>div:first-child strong{display:block;color:#168b4c;font-size:28px}.my-rank>div:last-child span{display:block;font-size:13px;font-weight:850}.my-rank small{display:block;color:#718395;font-size:11px}.page-note{margin:14px 2px 0;color:#8794a0;font-size:11px}
 @media(max-width:650px){.panel{padding:16px!important}.podium{gap:6px}.podium-card{padding:14px 5px 12px}.podium-avatar{width:42px;height:42px}.podium-name{font-size:11px}.podium-score{font-size:16px}.table-head,.ranking-row{grid-template-columns:40px minmax(0,1fr) 74px;gap:7px;padding-left:8px;padding-right:8px}.rank-score{font-size:13px}}
 </style>
+
+<style id="ranking-title-colors">
+.ranking-topline{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:18px!important;flex-wrap:wrap!important}
+.ranking-topline>div{display:flex!important;align-items:baseline!important;gap:12px!important;flex-wrap:wrap!important}
+.ranking-topline strong,.ranking-topline small{display:inline-block!important;margin:0!important}
+.ranking-topline small{font-size:12px!important}
+.ranking-title-badge{display:inline-flex;align-items:center;justify-content:center;max-width:100%;padding:3px 9px;border:1px solid transparent;border-radius:999px;font-size:10px;font-weight:900;line-height:1.5;white-space:nowrap}
+.ranking-title-badge.beginner{background:#edf1f4;color:#657786;border-color:#d9e0e6}
+.ranking-title-badge.challenger{background:#e4f5e9;color:#247b45;border-color:#b8e2c5}
+.ranking-title-badge.master{background:#dff3f5;color:#167783;border-color:#a9dfe3}
+.ranking-title-badge.doctor{background:#e8edff;color:#405bb4;border-color:#c5d0ff}
+.ranking-title-badge.genius{background:#f0e8ff;color:#7545b5;border-color:#d8c4ff}
+.ranking-title-badge.legend{background:#ffe8e3;color:#b34e35;border-color:#f4c1b5}
+.ranking-title-badge.nobel{background:linear-gradient(110deg,#fff5cf,#f0d98e);color:#805d13;border-color:#d5b45d;box-shadow:0 1px 5px #b58a2430}
+.ranking-title-badge.haisha{background:linear-gradient(110deg,#251036,#54205f);color:#ffe0ff;border-color:#bd6bd0;box-shadow:0 0 9px #8d2fd855}
+.podium-card .ranking-title-badge{margin-top:7px}
+.rank-user{flex-wrap:wrap}
+.rank-user strong{flex:0 1 auto}
+@media(max-width:650px){.ranking-topline>div{gap:5px 9px}.ranking-title-badge{font-size:9px;padding:2px 7px}.rank-user{column-gap:7px;row-gap:4px}.rank-user .ranking-title-badge{margin-left:46px}}
+</style>
 <footer class="rika-global-footer"><div class="rika-footer-inner"><p class="rika-footer-tagline">科学キッズ — 1問ずつ、科学がわかる。</p><nav class="rika-footer-links" aria-label="フッターメニュー"><a href="https://forms.gle/Fp5vCWwTv7TZuBq7A" target="_blank" rel="noopener noreferrer">お問い合わせ</a><a href="./operator.html">運営者情報</a><a href="./privacy.html">プライバシーポリシー</a><a href="./credits.html">クレジット</a></nav></div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -290,11 +310,26 @@ function avatarMarkup(name,url,cls){
  const valid=/^https?:\/\//i.test(String(url||""));
  return '<span class="'+cls+'">'+(valid?'<img src="'+safeText(url)+'" alt="" loading="lazy" referrerpolicy="no-referrer">':safeText((name||"?").slice(0,1).toUpperCase()))+'</span>';
 }
+function titleForBalance(balance){
+ const n=Number(balance)||0;
+ if(n>=1000000)return {name:"覇者",cls:"haisha"};
+ if(n>=50000)return {name:"ノーベル化学賞",cls:"nobel"};
+ if(n>=20000)return {name:"伝説の科学者",cls:"legend"};
+ if(n>=10000)return {name:"科学の天才",cls:"genius"};
+ if(n>=6000)return {name:"科学博士",cls:"doctor"};
+ if(n>=3000)return {name:"科学マスター",cls:"master"};
+ if(n>=1000)return {name:"科学チャレンジャー",cls:"challenger"};
+ return {name:"科学ビギナー",cls:"beginner"};
+}
+function titleBadge(balance){
+ const t=titleForBalance(balance);
+ return '<span class="ranking-title-badge '+t.cls+'">'+safeText(t.name)+'</span>';
+}
 function renderRanking(list){
  const order=["first","second","third"];
  podiumEl.classList.toggle("three",list.length>=3);
- podiumEl.innerHTML=list.slice(0,3).map((p,i)=>'<article class="podium-card '+order[i]+'"><span class="podium-rank">'+(i+1)+' 位</span>'+avatarMarkup(p.username,p.avatar_url,"podium-avatar")+'<strong class="podium-name">'+safeText(p.username||"会員")+'</strong><div class="podium-score">$ '+Number(p.balance||0).toLocaleString("ja-JP")+'</div></article>').join("");
- rowsEl.innerHTML=list.slice(3).map((p,i)=>'<div class="ranking-row"><span class="rank-number">'+(i+4)+'</span><div class="rank-user">'+avatarMarkup(p.username,p.avatar_url,"rank-avatar")+'<strong>'+safeText(p.username||"会員")+'</strong></div><div class="rank-score">$ '+Number(p.balance||0).toLocaleString("ja-JP")+'</div></div>').join("");
+ podiumEl.innerHTML=list.slice(0,3).map((p,i)=>'<article class="podium-card '+order[i]+'"><span class="podium-rank">'+(i+1)+' 位</span>'+avatarMarkup(p.username,p.avatar_url,"podium-avatar")+'<strong class="podium-name">'+safeText(p.username||"会員")+'</strong>'+titleBadge(p.balance)+'<div class="podium-score">$ '+Number(p.balance||0).toLocaleString("ja-JP")+'</div></article>').join("");
+ rowsEl.innerHTML=list.slice(3).map((p,i)=>'<div class="ranking-row"><span class="rank-number">'+(i+4)+'</span><div class="rank-user">'+avatarMarkup(p.username,p.avatar_url,"rank-avatar")+'<strong>'+safeText(p.username||"会員")+'</strong>'+titleBadge(p.balance)+'</div><div class="rank-score">$ '+Number(p.balance||0).toLocaleString("ja-JP")+'</div></div>').join("");
  tableEl.hidden=list.length<=3;
  if(!list.length){statusEl.hidden=false;statusEl.textContent="まだ所持金ランキングに表示できる記録がありません。街づくりでお金を集めよう！"}
  else statusEl.hidden=true;
