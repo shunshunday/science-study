@@ -473,4 +473,28 @@ document.getElementById("furiganaToggle").addEventListener("click",()=>{
 }
 </style>
 
+
+<style id="ranking-title-plain-text">
+/* 称号は囲み枠なしの文字だけで表示 */
+.ranking-title-badge{
+  display:inline!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  font-size:16px!important;
+  font-weight:950!important;
+  line-height:1.5!important;
+  letter-spacing:.02em!important;
+}
+.podium-card .ranking-title-badge{font-size:17px!important}
+.podium-card.haisha .ranking-title-badge,.ranking-row.haisha .ranking-title-badge{background:transparent!important;color:#ffe0ff!important;border:0!important}
+.podium-card.nobel .ranking-title-badge,.ranking-row.nobel .ranking-title-badge{background:transparent!important;color:#805d13!important;border:0!important}
+@media(max-width:650px){
+  .ranking-title-badge{font-size:13px!important}
+  .podium-card .ranking-title-badge{font-size:14px!important}
+}
+</style>
+
 </body></html>
