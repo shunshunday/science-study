@@ -699,27 +699,28 @@ aside.science-sidebar .science-side-name small{
  aside.science-sidebar .science-side-name small{margin-top:4px!important;font-size:9px!important}
 }
 </style>
-<style id="wallet-size-match-other-pages">
-/* 称号一覧ページの所持金表示サイズに統一 */
+<style id="wallet-copy-science-timeline">
+/* 科学の年表ページの所持金枠をそのまま反映 */
 .science-topbar-actions .science-wallet{
- height:38px!important;min-height:38px!important;min-width:82px!important;
- padding:0 13px!important;gap:7px!important;
- border:1px solid #ead9a9!important;border-radius:10px!important;
- background:#fff4d7!important;color:#172f45!important;
- box-sizing:border-box!important;
+ height:auto!important;min-width:0!important;padding:5px 8px!important;
+ display:flex!important;align-items:center!important;gap:4px!important;
+ border:0!important;border-radius:9px!important;background:#fff1cf!important;
+ color:#71551b!important;white-space:nowrap!important;box-sizing:border-box!important;
 }
-.science-topbar-actions .science-wallet span{font-size:17px!important;line-height:1!important}
-.science-topbar-actions .science-wallet strong,
+.science-topbar-actions .science-wallet span:first-child{
+ font-size:12px!important;color:#b78b26!important;line-height:1!important;
+}
+.science-topbar-actions .science-wallet strong{
+ font-size:11px!important;font-weight:600!important;line-height:1!important;color:#172f45!important;
+}
 .science-topbar-actions .science-wallet .science-wallet-currency{
- font-size:14px!important;font-weight:700!important;line-height:1!important;color:#172f45!important;
+ font-size:11px!important;font-weight:600!important;line-height:1!important;color:#172f45!important;
 }
 @media(max-width:650px){
- .science-topbar-actions .science-wallet{
-  height:34px!important;min-height:34px!important;min-width:0!important;padding:0 8px!important;
- }
- .science-topbar-actions .science-wallet span{font-size:15px!important}
+ .science-topbar-actions .science-wallet{height:40px!important;padding:0 10px!important;gap:4px!important}
+ .science-topbar-actions .science-wallet span:first-child{font-size:12px!important}
  .science-topbar-actions .science-wallet strong,
- .science-topbar-actions .science-wallet .science-wallet-currency{font-size:12px!important}
+ .science-topbar-actions .science-wallet .science-wallet-currency{font-size:11px!important}
 }
 </style>
 </head>
