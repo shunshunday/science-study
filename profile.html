@@ -55,13 +55,14 @@ h1{font-size:25px;margin:0 0 6px}.lead{font-size:13px;color:var(--muted);margin:
 .member-rank strong{position:absolute;left:50%;transform:translateX(-50%);font-size:20px;font-weight:950;color:#26343b;text-align:center;white-space:nowrap}
 .member-card.gold .member-rank{border-color:#a77a17;background:linear-gradient(100deg,#fff4bd,#e6bd42);color:#513b08}
 .member-card.gold .member-rank span{color:#795a16}.member-card.gold .member-rank strong{color:#513b08}
-/* 会員証の称号欄：通常称号は白、ノーベル科学賞は金、覇者は深紫 */
+/* 会員証の称号欄：通常称号は白、ノーベル化学賞は金、覇者は深紫 */
 .member-card .member-rank{background:#fff;border-color:#d7dde3;color:#26343b}
 .member-card .member-rank span{color:#687680}
 .member-card .member-rank strong{color:#26343b}
 
 /* 称号名は中央、マークは「現在の称号」の右 */
 .member-rank .title-mark{display:inline-flex;flex:none;width:30px;height:30px;align-items:center;justify-content:center;font-size:25px;line-height:1;vertical-align:middle}
+.member-rank .title-mark.nobel{background:url("./assets/nobel-chemistry-medal.svg") center/contain no-repeat;font-size:0;filter:drop-shadow(0 1px 3px #9a741d88)}
 .member-rank .title-mark.haisha{background:url("./assets/haisha-crown.svg") center/contain no-repeat;font-size:0;filter:drop-shadow(0 0 5px #c52d78aa)}
 .member-rank{justify-content:flex-start}
 .member-rank>span{flex:none}
@@ -389,7 +390,7 @@ function loadPlaytime(seconds){
 }
 function titleFor(n){
  if(n>=100000)return "覇者";
- if(n>=50000)return "ノーベル科学賞";
+ if(n>=50000)return "ノーベル化学賞";
  if(n>=20000)return "伝説の科学者";
  if(n>=10000)return "科学の天才";
  if(n>=6000)return "科学博士";
@@ -602,9 +603,10 @@ async function refreshProfile(){
   const rankElement=document.getElementById("rank");
   rankElement.textContent=titleFor(assets);
   const titleMark=document.getElementById("titleMark");
-  const titleIcons={"科学ビギナー":"🧪","科学チャレンジャー":"🔬","科学マスター":"⚗️","科学博士":"📘","科学の天才":"💡","伝説の科学者":"🌟","ノーベル科学賞":"♛","覇者":""};
+  const titleIcons={"科学ビギナー":"🧪","科学チャレンジャー":"🔬","科学マスター":"⚗️","科学博士":"📘","科学の天才":"💡","伝説の科学者":"🌟","ノーベル化学賞":"","覇者":""};
   const currentTitle=titleFor(assets);
   titleMark.textContent=titleIcons[currentTitle]??"🔬";
+  titleMark.classList.toggle("nobel",currentTitle==="ノーベル化学賞");
   titleMark.classList.toggle("haisha",currentTitle==="覇者");
   titleMark.setAttribute("aria-label",currentTitle+"のマーク");
   const titleBar=document.querySelector(".member-rank");
