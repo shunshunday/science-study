@@ -224,6 +224,20 @@ main{max-width:1180px!important;margin:0 auto!important;padding:54px 42px 76px!i
 </style>
 <style id="titles-heading-home-link">.page-heading{position:relative!important}.page-heading-home{position:absolute;z-index:20;right:32px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:11px;padding:10px 13px;border:1px solid #ffffff55;border-radius:13px;background:#ffffff12;color:#fff;text-decoration:none;cursor:pointer;pointer-events:auto;transition:background .18s,transform .18s}.page-heading-home:hover{background:#ffffff25;transform:translateY(-50%) scale(1.03)}.page-heading-home-mark{display:grid;place-items:center;width:42px;height:42px;border-radius:7px;background:#168b4c;color:#fff;font-family:serif;font-size:25px;font-weight:900;line-height:1}.page-heading-home-name{font-size:16px;font-weight:900;line-height:1.2;white-space:nowrap}.page-heading-home-name small{display:block;margin-top:4px;color:#d9eee1;font-size:9px;letter-spacing:.16em}@media(max-width:650px){.page-heading-home{right:14px;top:14px;transform:none;padding:7px;gap:0}.page-heading-home:hover{transform:scale(1.03)}.page-heading-home-mark{width:34px;height:34px;font-size:21px}.page-heading-home-name{display:none}.page-heading{padding-top:68px!important}}</style>
 <style id="science-hide-furigana-button">.science-furigana,#furiganaToggle{display:none!important}</style>
+<style id="science-sidebar-hitbox-fix">
+/* サイドメニューの縦クリック範囲を40pxに統一。文字や配色などの見た目設定は変更しない */
+.science-sidebar .science-side-nav a{
+  position:relative!important;
+  box-sizing:border-box!important;
+  height:40px!important;
+  min-height:40px!important;
+  max-height:40px!important;
+  margin-block:0!important;
+  cursor:pointer!important;
+  pointer-events:auto!important;
+}
+.science-sidebar .science-side-nav a>*{pointer-events:none!important;}
+</style>
 </head><body>
 
 <main>
