@@ -1241,7 +1241,35 @@ aside.science-sidebar .science-side-name small{
  function safeText(v){return String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
  const rubyTerms={"生理学":"せいりがく","医学":"いがく","物理学":"ぶつりがく","化学賞":"かがくしょう","物理学賞":"ぶつりがくしょう","生理学・医学賞":"せいりがく・いがくしょう","受賞理由":"じゅしょうりゆう","受賞者":"じゅしょうしゃ","受賞年":"じゅしょうねん","出生国":"しゅっしょうこく","公式記録":"こうしききろく","最新":"さいしん","国籍":"こくせき","推測":"すいそく","公開":"こうかい","記録":"きろく","発見":"はっけん","研究":"けんきゅう","実験":"じっけん","原子":"げんし","分子":"ぶんし","細胞":"さいぼう","遺伝":"いでん","構造":"こうぞう","結晶":"けっしょう","現象":"げんしょう","物質":"ぶっしつ","機能":"きのう","仕組み":"しくみ","理解":"りかい","発展":"はってん","貢献":"こうけん","技術":"ぎじゅつ","開発":"かいはつ","観測":"かんそく","情報":"じょうほう","神経":"しんけい","量子":"りょうし","受賞":"じゅしょう","検索":"けんさく","部門":"ぶもん","表示":"ひょうじ","調節":"ちょうせつ","重要":"じゅうよう","可能性":"かのうせい"};
  function rubySafeHtml(v){let out=String(v??"");for(const word of Object.keys(rubyTerms).sort((a,b)=>b.length-a.length)){out=out.replaceAll(word,'<ruby>'+word+'<rt>'+rubyTerms[word]+'</rt></ruby>')}return out}
- function rubyText(v){return rubySafeHtml(safeText(v))}
+ let japaneseTokenizerPromise=null;
+ function loadKuromoji(){
+  if(japaneseTokenizerPromise)return japaneseTokenizerPromise;
+  japaneseTokenizerPromise=new Promise((resolve,reject)=>{
+   const build=()=>{try{kuromoji.builder({dicPath:"https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/"}).build((err,tokenizer)=>err?reject(err):resolve(tokenizer))}catch(e){reject(e)}};
+   if(window.kuromoji){build();return}
+   const script=document.createElement("script");
+   script.src="https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/build/kuromoji.js";
+   script.onload=build;script.onerror=()=>reject(new Error("日本語辞書を読み込めません"));
+   document.head.appendChild(script);
+  });
+  return japaneseTokenizerPromise;
+ }
+ function katakanaToHiragana(value){return String(value||"").replace(/[ァ-ヶ]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0x60))}
+ async function rubyText(v){
+  const source=String(v??"");
+  try{
+   const tokenizer=await loadKuromoji();
+   return tokenizer.tokenize(source).map(token=>{
+    const surface=token.surface_form||"";
+    if(!/[一-龯々]/.test(surface))return safeText(surface);
+    const reading=katakanaToHiragana(token.reading||"");
+    if(!reading||reading==="*")return rubySafeHtml(safeText(surface));
+    return '<ruby>'+safeText(surface)+'<rt>'+safeText(reading)+'</rt></ruby>';
+   }).join("");
+  }catch(error){
+   return rubySafeHtml(safeText(source));
+  }
+ }
  function makePeople(l){return (l||[]).map(x=>{const en=x.knownName?.en||x.orgName?.en||x.fullName?.en||"名前不明";if(x.orgName)return '<span class="nobel-person"><span class="nobel-name-en">'+safeText(en)+'</span></span>';const jp=japaneseNameMap.get(normalizeName(en));if(jp)return '<span class="nobel-person"><span class="nobel-name-en">'+safeText(en)+'</span><span class="nobel-name-kana nobel-name-kanji">'+safeText(jp)+'</span></span>';return '<span class="nobel-person"><span class="nobel-name-en">'+safeText(en)+'</span><span class="nobel-name-kana" data-name="'+safeText(en)+'" hidden></span></span>'}).join("、")}
  function renderNobel(){
   const selectedYear=year.value,selectedCategory=category.value,q=search.value.trim().toLocaleLowerCase("ja");
@@ -1269,7 +1297,7 @@ aside.science-sidebar .science-side-name small{
    try{japanese=await translateEnglish(english);if(!japanese)throw Error("翻訳結果なし");writeCache(key,japanese)}
    catch(e){if(loading){loading.textContent="受賞理由の翻訳を取得できませんでした。通信を確認して再読み込みしてください。";loading.hidden=false}return}
   }
-  if(target)target.innerHTML=rubyText(japanese);
+  if(target)target.innerHTML=await rubyText(japanese);
   if(box)box.hidden=false;
   if(loading)loading.hidden=true;
  }
