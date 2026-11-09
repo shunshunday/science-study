@@ -242,7 +242,7 @@ main{max-width:1180px!important;margin:0 auto!important;padding:54px 42px 76px!i
 
 <main>
 <div class="page-heading"><a class="page-heading-home" href="https://shunshunday.github.io/science-study/" aria-label="科学キッズ ホームへ"><span class="page-heading-home-mark">科</span><span class="page-heading-home-name">科学キッズ<small>SCIENCE KIDS</small></span></a><div class="eyebrow">SCIENCE KIDS / HONORS</div><h1>称号一覧</h1><p>クイズで集めた所持金に応じて、科学キッズの称号を獲得できます。</p></div>
-<section class="current-title-panel" aria-live="polite"><div class="current-title-label">あなたの現在の称号</div><div class="current-title-name" id="currentTitleName">読み込み中...</div><div class="current-title-balance" id="currentTitleBalance">所持金を確認しています</div></section>
+<section class="current-title-panel" aria-live="polite"><div class="current-title-label">あなたの現在の称号</div><div class="current-title-name" id="currentTitleName">🧪 科学ビギナー</div><div class="current-title-balance" id="currentTitleBalance">所持金を確認しています（取得後に更新）</div></section>
 <div class="list-heading"><h2>すべての称号</h2><span>全8段階</span></div><div class="title-mark-list" aria-label="称号とマーク">
 <div class="title-mark-item"><span class="title-mark-symbol">🧪</span><span>科学ビギナー</span><span class="title-mark-range">0＄～999＄</span></div>
 <div class="title-mark-item"><span class="title-mark-symbol">🔬</span><span>科学チャレンジャー</span><span class="title-mark-range">1,000＄～2,999＄</span></div>
@@ -291,7 +291,10 @@ main{max-width:1180px!important;margin:0 auto!important;padding:54px 42px 76px!i
 .title-status{top:12px!important;right:12px!important}
 @media(max-width:650px){.title-card,.title-card.nobel,.title-card.haisha{flex-basis:210px!important;width:210px!important;min-width:210px!important;min-height:180px!important;padding:14px!important}.title-emblem{width:54px!important;height:54px!important;flex-basis:54px!important}}
 </style>
-<script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+const SUPABASE_URL="https://tmgfcmzufamxuzsuedza.supabase.co",SUPABASE_KEY="sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng";
+const supabase=window.supabase?.createClient?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
 
 const titleLevels=[
 {name:"科学ビギナー",min:0,desc:"科学の世界へようこそ。ここから学びを始めよう。",mark:"●",cls:"beginner"},
@@ -334,10 +337,7 @@ async function loadTitles(){
   if(balance)balance.textContent="所持金を取得できませんでした。表示中："+amount.toLocaleString("ja-JP")+"＄";
  }
 }
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
-const SUPABASE_URL="https://tmgfcmzufamxuzsuedza.supabase.co",SUPABASE_KEY="sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng";
-const supabase=window.supabase?.createClient?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
+
 loadTitles();
 async function updateHeader(){let amount=0;try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}if(supabase){try{const {data:{user}}=await supabase.auth.getUser();if(user){const {data,error}=await supabase.rpc("get_city_wallet");if(!error){const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0)}const {data:p}=await supabase.from("profiles").select("username").eq("id",user.id).maybeSingle();if(p?.username&&document.getElementById("accountOpen"))document.getElementById("accountOpen").textContent=p.username+"・ログイン中"}}catch(e){}}const moneyValue=document.getElementById("moneyValue");if(moneyValue)moneyValue.textContent=amount.toLocaleString("en-US")}
 updateHeader();let furiganaOn=true;try{furiganaOn=localStorage.getItem("rikakids-furigana")!=="off"}catch(e){}function paintFurigana(){const state=document.getElementById("furiganaState"),toggle=document.getElementById("furiganaToggle");if(state)state.textContent=furiganaOn?"ON":"OFF";document.documentElement.dataset.furigana=furiganaOn?"on":"off";if(toggle)toggle.setAttribute("aria-pressed",String(furiganaOn))}paintFurigana();const furiganaToggle=document.getElementById("furiganaToggle");if(furiganaToggle)furiganaToggle.addEventListener("click",()=>{furiganaOn=!furiganaOn;try{localStorage.setItem("rikakids-furigana",furiganaOn?"on":"off")}catch(e){}paintFurigana()});
