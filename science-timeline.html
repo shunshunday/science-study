@@ -1257,7 +1257,22 @@ aside.science-sidebar .science-side-name small{
  function startVisibleTranslations(){pendingCards.length=0;if(observer)observer.disconnect();const cards=[...list.querySelectorAll(".nobel-card")];if("IntersectionObserver" in window){observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){observer.unobserve(e.target);enqueueCard(e.target)}})},{rootMargin:"220px"});cards.forEach(card=>observer.observe(card))}else cards.forEach(enqueueCard)}
  function enqueueCard(card){if(card.dataset.queued)return;card.dataset.queued="1";pendingCards.push(card);runTranslationQueue()}
  async function runTranslationQueue(){while(activeTranslations<2&&pendingCards.length){const card=pendingCards.shift();activeTranslations++;const jobs=[translateReason(card),...Array.from(card.querySelectorAll(".nobel-name-kana[data-name]"),el=>translateKana(el))];Promise.all(jobs).finally(()=>{activeTranslations--;runTranslationQueue()})}}
- function translateReason(card){const preset=card.dataset.jaReason,box=card.querySelector(".nobel-translation"),loading=card.querySelector(".nobel-reason-loading");if(preset){const target=box?.querySelector(".nobel-reason-ja");if(target)target.textContent=preset;if(box)box.hidden=false;if(loading)loading.hidden=true;return}if(loading){loading.textContent="受賞理由の日本語データがありません。";loading.hidden=false}if(box)box.hidden=true}
+ async function translateReason(card){
+  const english=card.dataset.reason||"",preset=card.dataset.jaReason||"";
+  const box=card.querySelector(".nobel-translation"),loading=card.querySelector(".nobel-reason-loading"),target=box?.querySelector(".nobel-reason-ja");
+  if(!english.trim()){if(box)box.hidden=true;if(loading){loading.textContent="公式データに受賞理由の記載がありません。";loading.hidden=false}return}
+  const key="rika-nobel-reason-ja-v1-"+simpleHash(english);
+  let japanese=preset||readCache(key);
+  if(!japanese){
+   if(loading){loading.textContent="受賞理由を日本語に翻訳しています…";loading.hidden=false}
+   if(box)box.hidden=true;
+   try{japanese=await translateEnglish(english);if(!japanese)throw Error("翻訳結果なし");writeCache(key,japanese)}
+   catch(e){if(loading){loading.textContent="受賞理由の翻訳を取得できませんでした。通信を確認して再読み込みしてください。";loading.hidden=false}return}
+  }
+  if(target)target.innerHTML=rubyText(japanese);
+  if(box)box.hidden=false;
+  if(loading)loading.hidden=true;
+ }
  async function translateKana(el){const en=el.dataset.name;if(!en)return;const key=kanaCacheKey(en);let kana=readCache(key);if(!kana){try{kana=await translateEnglish(en);if(!kana||kana===en||!/[ぁ-んァ-ヶ]/.test(kana))throw Error("読み方なし");writeCache(key,kana)}catch(e){el.textContent="（読み方確認中）";el.hidden=false;const retry=document.createElement("button");retry.type="button";retry.className="nobel-retry";retry.textContent="再取得";retry.addEventListener("click",()=>{retry.remove();el.textContent="";translateKana(el)});el.after(retry);return}}el.textContent="（"+kana+"）";el.hidden=false}
  async function fetchAll(endpoint){const firstUrl="https://api.nobelprize.org/2.1/"+endpoint+"?limit=1000&offset=0&sort=desc";const firstResponse=await fetch(firstUrl);if(!firstResponse.ok)throw Error("公式データ取得失敗："+endpoint);const first=await firstResponse.json();const key=endpoint==="nobelPrizes"?"nobelPrizes":"laureates";const all=[...(first[key]||[])];const count=Number(first.meta?.count||all.length);for(let offset=all.length;offset<count;offset+=1000){const r=await fetch("https://api.nobelprize.org/2.1/"+endpoint+"?limit=1000&offset="+offset+"&sort=desc");if(!r.ok)throw Error("公式データの続きの取得に失敗："+endpoint);const d=await r.json();const next=d[key]||[];if(!next.length)break;all.push(...next)}return all}
  async function loadNobel(){if(loaded)return;loaded=true;status.textContent="ノーベル賞の公式記録を読み込んでいます…";try{const [prizeRows,laureateRows]=await Promise.all([fetchAll("nobelPrizes"),fetchAll("laureates")]);prizes=prizeRows.filter(p=>names[codes[p.category?.en]]&&yearNumber(p));laureateCountries=new Map(laureateRows.map(l=>[String(l.id),l.birth?.place?.countryNow?.en||l.birth?.place?.country?.en||""]));if(!prizes.length)throw Error("受賞記録がありません");const maxYear=Math.max(...prizes.map(yearNumber));const options=[];for(let y=maxYear;y>=1901;y--)options.push('<option value="'+y+'">'+y+'年</option>');year.innerHTML='<option value="all">すべての年</option>'+options.join("");status.textContent="1901年から"+maxYear+"年までの公式記録を読み込みました。受賞がなかった年も選べます。";renderNobel()}catch(e){console.error(e);status.textContent="公式データを読み込めませんでした。時間をおいて再読み込みしてください。";loaded=false}}
