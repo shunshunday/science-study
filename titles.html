@@ -226,7 +226,16 @@ main{max-width:1180px!important;margin:0 auto!important;padding:54px 42px 76px!i
 
 <main>
 <div class="page-heading"><div class="eyebrow">SCIENCE KIDS / HONORS</div><h1>称号一覧</h1><p>クイズで集めた所持金に応じて、科学キッズの称号を獲得できます。</p></div>
-<div class="list-heading"><h2>すべての称号</h2><span>全8段階</span></div><div class="title-mark-list" id="titleMarkList" aria-label="称号とマーク"></div><section class="title-grid" id="titleGrid"></section><p class="page-note">※称号は現在の所持金（$）で判定します。所持金が条件に達すると自動で切り替わります。</p>
+<div class="list-heading"><h2>すべての称号</h2><span>全8段階</span></div><div class="title-mark-list" aria-label="称号とマーク">
+<div class="title-mark-item"><span class="title-mark-symbol">●</span><span>科学ビギナー</span></div>
+<div class="title-mark-item"><span class="title-mark-symbol">✦</span><span>科学チャレンジャー</span></div>
+<div class="title-mark-item"><span class="title-mark-symbol">✧</span><span>科学マスター</span></div>
+<div class="title-mark-item"><span class="title-mark-symbol">⚛</span><span>科学博士</span></div>
+<div class="title-mark-item"><span class="title-mark-symbol">★</span><span>科学の天才</span></div>
+<div class="title-mark-item"><span class="title-mark-symbol">◆</span><span>伝説の科学者</span></div>
+<div class="title-mark-item nobel"><span class="title-mark-symbol">♛</span><span>ノーベル化学賞</span></div>
+<div class="title-mark-item haisha"><span class="title-mark-symbol"><img src="./assets/haisha-crown.svg" alt="王冠"></span><span>覇者</span></div>
+</div><section class="title-grid" id="titleGrid"></section><p class="page-note">※称号は現在の所持金（$）で判定します。所持金が条件に達すると自動で切り替わります。</p>
 </main>
 <style>
 
@@ -280,9 +289,8 @@ const titleLevels=[
 const grid=document.getElementById("titleGrid");
 function emblem(level){if(level.cls==="haisha")return '<img src="./assets/haisha-crown.svg" alt="覇者の王冠">';return '<span aria-hidden="true">'+level.mark+'</span>'}
 function currentLevel(amount){let found=titleLevels[0];for(const level of titleLevels){if(amount>=level.min)found=level}return found}
-function renderTitleMarks(){const el=document.getElementById("titleMarkList");if(!el)return;el.innerHTML=titleLevels.map(level=>{const mark=level.cls==="haisha"?'<img src="./assets/haisha-crown.svg" alt="">' : '<span>'+level.mark+'</span>';return '<div class="title-mark-item '+level.cls+'"><span class="title-mark-symbol">'+mark+'</span><span>'+level.name+'</span></div>'}).join("")}
 function renderTitles(amount){const current=currentLevel(amount);grid.innerHTML=titleLevels.slice().reverse().map(level=>{const earned=amount>=level.min,isCurrent=level.name===current.name;return '<article class="title-card '+level.cls+(earned?" earned":" locked")+(isCurrent?" current":"")+'"><div class="title-card-copy"><h3>'+level.name+'</h3><span class="title-condition">'+level.min.toLocaleString("ja-JP")+' $ 以上</span></div></article>'}).join("")}
-async function loadTitles(){let amount=0;try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}if(supabase){try{const {data:{user}}=await supabase.auth.getUser();if(user){const {data,error}=await supabase.rpc("get_city_wallet");if(error)throw error;const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0)}}catch(e){console.warn("所持金を読み込めませんでした",e)}}renderTitleMarks();renderTitles(amount)}
+async function loadTitles(){let amount=0;try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}if(supabase){try{const {data:{user}}=await supabase.auth.getUser();if(user){const {data,error}=await supabase.rpc("get_city_wallet");if(error)throw error;const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0)}}catch(e){console.warn("所持金を読み込めませんでした",e)}}renderTitles(amount)}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const SUPABASE_URL="https://tmgfcmzufamxuzsuedza.supabase.co",SUPABASE_KEY="sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng";
