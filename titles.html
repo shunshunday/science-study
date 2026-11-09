@@ -177,6 +177,16 @@ main{max-width:1180px!important;margin:0 auto!important;padding:54px 42px 76px!i
 .page-note{padding:13px 16px!important;border-left:3px solid #83bd96!important;border-radius:0 9px 9px 0!important;background:#eaf3ed!important;color:#587362!important}
 @media(max-width:650px){main{padding:26px 14px 48px!important}.page-heading{padding:26px 22px!important;border-radius:17px!important}.page-heading:after{display:none}.page-heading h1{font-size:29px!important}.current-title{padding:18px!important}}
 </style>
+<style id="titles-name-and-condition-layout">
+.title-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;overflow:visible!important;padding:0!important}
+.title-card,.title-card.nobel,.title-card.haisha{box-sizing:border-box!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;flex:initial!important;width:auto!important;min-width:0!important;min-height:76px!important;padding:14px 16px!important;scroll-snap-align:none!important}
+.title-card-copy{width:100%!important;min-width:0!important}
+.title-card-copy h3{margin:0 0 7px!important;font-size:15px!important;line-height:1.4!important}
+.title-condition{margin-top:0!important;font-size:12px!important}
+.title-status,.title-emblem,.title-card-copy p{display:none!important}
+@media(max-width:850px){.title-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:520px){.title-grid{grid-template-columns:1fr!important}}
+</style>
 </head><body>
 
 <main>
@@ -235,7 +245,7 @@ const titleLevels=[
 const grid=document.getElementById("titleGrid");
 function emblem(level){if(level.cls==="haisha")return '<img src="./assets/haisha-crown.svg" alt="覇者の王冠">';return '<span aria-hidden="true">'+level.mark+'</span>'}
 function currentLevel(amount){let found=titleLevels[0];for(const level of titleLevels){if(amount>=level.min)found=level}return found}
-function renderTitles(amount){const current=currentLevel(amount);grid.innerHTML=titleLevels.slice().reverse().map(level=>{const earned=amount>=level.min,isCurrent=level.name===current.name;return '<article class="title-card '+level.cls+(earned?" earned":" locked")+(isCurrent?" current":"")+(isCurrent?"":"")+'"><div class="title-emblem">'+emblem(level)+'</div><div class="title-card-copy"><h3>'+level.name+'</h3><p>'+level.desc+'</p><span class="title-condition">'+level.min.toLocaleString("ja-JP")+' $ 以上</span></div><span class="title-status">'+(earned?"獲得済み":"未獲得")+'</span></article>'}).join("")}
+function renderTitles(amount){const current=currentLevel(amount);grid.innerHTML=titleLevels.slice().reverse().map(level=>{const earned=amount>=level.min,isCurrent=level.name===current.name;return '<article class="title-card '+level.cls+(earned?" earned":" locked")+(isCurrent?" current":"")+'"><div class="title-card-copy"><h3>'+level.name+'</h3><span class="title-condition">'+level.min.toLocaleString("ja-JP")+' $ 以上</span></div></article>'}).join("")}
 async function loadTitles(){let amount=0;try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}if(supabase){try{const {data:{user}}=await supabase.auth.getUser();if(user){const {data,error}=await supabase.rpc("get_city_wallet");if(error)throw error;const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0)}}catch(e){console.warn("所持金を読み込めませんでした",e)}}renderTitles(amount)}
 </script><footer class="rika-global-footer"><div class="rika-footer-inner"><p class="rika-footer-tagline">科学キッズ — 1問ずつ、科学がわかる。</p><nav class="rika-footer-links" aria-label="フッターメニュー"><a href="https://forms.gle/Fp5vCWwTv7TZuBq7A" target="_blank" rel="noopener noreferrer">お問い合わせ</a><a href="./operator.html">運営者情報</a><a href="./privacy.html">プライバシーポリシー</a><a href="./credits.html">クレジット</a></nav></div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
