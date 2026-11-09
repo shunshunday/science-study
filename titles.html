@@ -311,38 +311,57 @@ const grid=document.getElementById("titleGrid");
 function emblem(level){if(level.cls==="haisha")return '<img src="./assets/haisha-crown.svg" alt="覇者の王冠">';return '<span aria-hidden="true">'+level.mark+'</span>'}
 function currentLevel(amount){let found=titleLevels[0];for(const level of titleLevels){if(amount>=level.min)found=level}return found}
 function renderTitles(amount){const current=currentLevel(amount);const marks={"科学ビギナー":"🧪","科学チャレンジャー":"🔬","科学マスター":"⚗️","科学博士":"📘","科学の天才":"💡","伝説の科学者":"🌟","ノーベル化学賞":"♛","覇者":"👑"};const name=document.getElementById("currentTitleName"),balance=document.getElementById("currentTitleBalance");if(name)name.textContent=(marks[current.name]||"")+" "+current.name;if(balance)balance.textContent="現在の所持金："+amount.toLocaleString("ja-JP")+"＄";grid.innerHTML=titleLevels.slice().reverse().map(level=>{const earned=amount>=level.min,isCurrent=level.name===current.name;return '<article class="title-card '+level.cls+(earned?" earned":" locked")+(isCurrent?" current":"")+(isCurrent?'" aria-current="true' : '')+'"><div class="title-card-copy"><h3>'+level.name+'</h3><span class="title-condition">'+level.min.toLocaleString("ja-JP")+' $ 以上</span></div></article>'}).join("")}
+async function restoreTitleSession(){
+ if(!supabase)throw new Error("認証ライブラリを読み込めませんでした。ページを再読み込みしてください。");
+ const result=await supabase.auth.getSession();
+ if(result.data?.session?.user)return result.data.session;
+ // ランキング画面と同じ方法で、プロフィール画面が保存したセッションを復元
+ const raw=localStorage.getItem(STORAGE_KEY);
+ if(raw){
+  const saved=JSON.parse(raw);
+  const session=saved?.currentSession||saved;
+  if(session?.access_token&&session?.refresh_token){
+   const restored=await supabase.auth.setSession({access_token:session.access_token,refresh_token:session.refresh_token});
+   if(!restored.error&&restored.data?.session?.user)return restored.data.session;
+   if(restored.error)throw restored.error;
+  }
+ }
+ const retry=await supabase.auth.getSession();
+ if(retry.data?.session?.user)return retry.data.session;
+ throw new Error("ログイン情報が見つかりません。プロフィールからログインしてください。");
+}
 async function loadTitles(){
  const name=document.getElementById("currentTitleName");
  const balanceEl=document.getElementById("currentTitleBalance");
  const showError=(message)=>{if(name)name.textContent="称号を取得できません";if(balanceEl)balanceEl.textContent=message;};
+ let timeoutId;
  try{
-  // プロフィール画面と同じREST方式で保存済みログイン情報を読む
-  const raw=localStorage.getItem(STORAGE_KEY);
-  if(!raw)throw new Error("ログイン情報が見つかりません。プロフィールからログインしてください。");
-  const saved=JSON.parse(raw);
-  let session=saved?.currentSession||saved;
-  if(!session?.access_token||!session?.user?.id)throw new Error("ログイン情報が無効です。プロフィールから再ログインしてください。");
-  const headers={"apikey":SUPABASE_KEY,"Content-Type":"application/json","Authorization":"Bearer "+session.access_token};
-  // 期限切れ間近ならプロフィール画面と同じ更新APIでトークンを更新
-  if(session.expires_at&&session.expires_at*1000<Date.now()+60000){
-   if(!session.refresh_token)throw new Error("ログイン期限が切れています。プロフィールから再ログインしてください。");
-   const refreshResponse=await fetch(SUPABASE_URL+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{"apikey":SUPABASE_KEY,"Content-Type":"application/json"},body:JSON.stringify({refresh_token:session.refresh_token}),cache:"no-store"});
-   const refreshBody=await refreshResponse.json();
-   if(!refreshResponse.ok)throw new Error(refreshBody.msg||refreshBody.message||"ログイン情報を更新できませんでした。");
-   session=refreshBody;
-   localStorage.setItem(STORAGE_KEY,JSON.stringify(session));
-  }
-  const response=await fetch(SUPABASE_URL+"/rest/v1/rpc/get_city_wallet",{method:"POST",headers:{"apikey":SUPABASE_KEY,"Content-Type":"application/json","Authorization":"Bearer "+session.access_token},body:"{}",cache:"no-store"});
-  const body=await response.text();
-  let walletData;try{walletData=body?JSON.parse(body):null}catch(e){walletData=null}
-  if(!response.ok)throw new Error(walletData?.message||walletData?.details||"所持金を取得できませんでした（"+response.status+"）");
-  const wallet=Array.isArray(walletData)?walletData[0]:walletData;
-  if(!wallet||wallet.balance===undefined||wallet.balance===null)throw new Error("アカウントの所持金データが見つかりません。");
-  const amount=Math.max(0,Math.floor(Number(wallet.balance)||0));
-  renderTitles(amount);
+  // 通信が止まっても「取得中」のまま残らないよう、全体に制限時間を設ける
+  const task=(async()=>{
+   const session=await restoreTitleSession();
+   let amount=null;
+   const {data:walletData,error:walletError}=await supabase.rpc("get_city_wallet");
+   if(!walletError){
+    const wallet=Array.isArray(walletData)?walletData[0]:walletData;
+    if(wallet?.balance!==undefined&&wallet?.balance!==null)amount=Math.max(0,Math.floor(Number(wallet.balance)||0));
+   }
+   // 個別ウォレットRPCが空の場合は、ランキングと同じ本人分の公開ランキング値で再確認
+   if(amount===null||amount===0){
+    const {data:rows,error:rowsError}=await supabase.rpc("get_city_wallet_leaderboard");
+    if(!rowsError){
+     const own=(rows||[]).find(row=>row.user_id===session.user.id);
+     if(own?.balance!==undefined&&own?.balance!==null)amount=Math.max(0,Math.floor(Number(own.balance)||0));
+    }
+   }
+   if(amount===null)throw new Error("所持金を取得できませんでした。時間をおいて再読み込みしてください。");
+   renderTitles(amount);
+  })();
+  await Promise.race([task,new Promise((_,reject)=>{timeoutId=setTimeout(()=>reject(new Error("所持金の取得がタイムアウトしました。通信状態を確認して、もう一度再読み込みしてください。")),12000);})]);
  }catch(error){
   console.error("称号・所持金の取得に失敗:",error);
   showError(error.message||"所持金を取得できません。プロフィールからログイン状態を確認してください。");
+ }finally{
+  if(timeoutId)clearTimeout(timeoutId);
  }
 }
 loadTitles();
