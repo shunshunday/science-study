@@ -211,6 +211,15 @@ main{max-width:1180px!important;margin:0 auto!important;padding:54px 42px 76px!i
 @media(max-width:760px){.title-grid{grid-template-columns:1fr!important}}
 @media(max-width:650px){.title-card,.title-card.nobel,.title-card.haisha{min-height:108px!important;flex-direction:row!important;align-items:center!important;padding:14px!important}.title-emblem{width:58px!important;height:58px!important;flex-basis:58px!important}.title-card-copy h3{font-size:15px!important}}
 </style>
+<style id="titles-single-horizontal-row">
+.title-grid{display:flex!important;flex-flow:row nowrap!important;gap:14px!important;overflow-x:auto!important;overflow-y:hidden!important;padding:4px 2px 16px!important;scroll-snap-type:x mandatory!important;-webkit-overflow-scrolling:touch}
+.title-card,.title-card.nobel,.title-card.haisha{box-sizing:border-box!important;flex:0 0 230px!important;width:230px!important;min-width:230px!important;min-height:190px!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;gap:10px!important;padding:16px!important;scroll-snap-align:start!important}
+.title-card .title-emblem{width:58px!important;height:58px!important;flex:0 0 58px!important}
+.title-card-copy{width:100%!important}
+.title-card-copy h3{font-size:15px!important}
+.title-status{top:12px!important;right:12px!important}
+@media(max-width:650px){.title-card,.title-card.nobel,.title-card.haisha{flex-basis:210px!important;width:210px!important;min-width:210px!important;min-height:180px!important;padding:14px!important}.title-emblem{width:54px!important;height:54px!important;flex-basis:54px!important}}
+</style>
 <script>
 
 const titleLevels=[
