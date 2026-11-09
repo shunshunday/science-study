@@ -237,11 +237,12 @@ main{max-width:1180px!important;margin:0 auto!important;padding:54px 42px 76px!i
   pointer-events:auto!important;
 }
 .science-sidebar .science-side-nav a>*{pointer-events:none!important;}
-</style>
+.current-title-panel{margin:0 0 28px;padding:22px 26px;border:1px solid #b9ddc5;border-radius:18px;background:linear-gradient(115deg,#effaf2,#fff 68%);box-shadow:0 8px 22px #1d573012}.current-title-label{color:#527b60;font-size:12px;font-weight:800;letter-spacing:.08em}.current-title-name{margin-top:5px;color:#176b43;font-size:27px;font-weight:900;line-height:1.4}.current-title-balance{margin-top:4px;color:#718395;font-size:13px}@media(max-width:650px){.current-title-panel{padding:18px}.current-title-name{font-size:23px}}\n</style>
 </head><body>
 
 <main>
 <div class="page-heading"><a class="page-heading-home" href="https://shunshunday.github.io/science-study/" aria-label="科学キッズ ホームへ"><span class="page-heading-home-mark">科</span><span class="page-heading-home-name">科学キッズ<small>SCIENCE KIDS</small></span></a><div class="eyebrow">SCIENCE KIDS / HONORS</div><h1>称号一覧</h1><p>クイズで集めた所持金に応じて、科学キッズの称号を獲得できます。</p></div>
+<section class="current-title-panel" aria-live="polite"><div class="current-title-label">あなたの現在の称号</div><div class="current-title-name" id="currentTitleName">読み込み中...</div><div class="current-title-balance" id="currentTitleBalance">所持金を確認しています</div></section>
 <div class="list-heading"><h2>すべての称号</h2><span>全8段階</span></div><div class="title-mark-list" aria-label="称号とマーク">
 <div class="title-mark-item"><span class="title-mark-symbol">🧪</span><span>科学ビギナー</span><span class="title-mark-range">0＄～999＄</span></div>
 <div class="title-mark-item"><span class="title-mark-symbol">🔬</span><span>科学チャレンジャー</span><span class="title-mark-range">1,000＄～2,999＄</span></div>
@@ -305,7 +306,7 @@ const titleLevels=[
 const grid=document.getElementById("titleGrid");
 function emblem(level){if(level.cls==="haisha")return '<img src="./assets/haisha-crown.svg" alt="覇者の王冠">';return '<span aria-hidden="true">'+level.mark+'</span>'}
 function currentLevel(amount){let found=titleLevels[0];for(const level of titleLevels){if(amount>=level.min)found=level}return found}
-function renderTitles(amount){const current=currentLevel(amount);grid.innerHTML=titleLevels.slice().reverse().map(level=>{const earned=amount>=level.min,isCurrent=level.name===current.name;return '<article class="title-card '+level.cls+(earned?" earned":" locked")+(isCurrent?" current":"")+'"><div class="title-card-copy"><h3>'+level.name+'</h3><span class="title-condition">'+level.min.toLocaleString("ja-JP")+' $ 以上</span></div></article>'}).join("")}
+function renderTitles(amount){const current=currentLevel(amount);const marks={"科学ビギナー":"🧪","科学チャレンジャー":"🔬","科学マスター":"⚗️","科学博士":"📘","科学の天才":"💡","伝説の科学者":"🌟","ノーベル化学賞":"♛","覇者":"👑"};const name=document.getElementById("currentTitleName"),balance=document.getElementById("currentTitleBalance");if(name)name.textContent=(marks[current.name]||"")+" "+current.name;if(balance)balance.textContent="現在の所持金："+amount.toLocaleString("ja-JP")+"＄";grid.innerHTML=titleLevels.slice().reverse().map(level=>{const earned=amount>=level.min,isCurrent=level.name===current.name;return '<article class="title-card '+level.cls+(earned?" earned":" locked")+(isCurrent?" current":"")+(isCurrent?'" aria-current="true' : '')+'"><div class="title-card-copy"><h3>'+level.name+'</h3><span class="title-condition">'+level.min.toLocaleString("ja-JP")+' $ 以上</span></div></article>'}).join("")}
 async function loadTitles(){let amount=0;try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}if(supabase){try{const {data:{user}}=await supabase.auth.getUser();if(user){const {data,error}=await supabase.rpc("get_city_wallet");if(error)throw error;const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0)}}catch(e){console.warn("所持金を読み込めませんでした",e)}}renderTitles(amount)}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
