@@ -583,9 +583,8 @@ aside.science-sidebar .science-side-name small{
     var current=location.pathname.replace(/\\/$/,'');
     if(!current)current='/';
     function normalize(path){
-      path=path.replace(/\\/$/,'');
-      if(!path||path.endsWith('/index.html'))return path.replace(/index\\.html$/,'')||'/';
-      return path;
+      path=path.replace(/\\/index\\.html$/,'').replace(/\\/+$/,'');
+      return path||'/';
     }
     current=normalize(current);
     nav.querySelectorAll('a[href]').forEach(function(link){
