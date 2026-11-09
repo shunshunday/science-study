@@ -178,14 +178,48 @@ main{max-width:1180px!important;margin:0 auto!important;padding:54px 42px 76px!i
 @media(max-width:650px){main{padding:26px 14px 48px!important}.page-heading{padding:26px 22px!important;border-radius:17px!important}.page-heading:after{display:none}.page-heading h1{font-size:29px!important}.current-title{padding:18px!important}}
 </style>
 <style id="titles-name-and-condition-layout">
-.title-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;overflow:visible!important;padding:0!important}
-.title-card,.title-card.nobel,.title-card.haisha{box-sizing:border-box!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;flex:initial!important;width:auto!important;min-width:0!important;min-height:76px!important;padding:14px 16px!important;scroll-snap-align:none!important}
+/* 8つの称号を横一列に並べ、名前と獲得条件を見やすく表示 */
+.title-grid{
+ display:grid!important;
+ grid-auto-flow:column!important;
+ grid-auto-columns:minmax(170px,1fr)!important;
+ grid-template-columns:none!important;
+ gap:14px!important;
+ overflow-x:auto!important;
+ overflow-y:hidden!important;
+ padding:8px 4px 18px!important;
+ scroll-snap-type:x mandatory!important;
+ scrollbar-width:thin!important;
+}
+.title-card,.title-card.nobel,.title-card.haisha{
+ box-sizing:border-box!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:flex-start!important;
+ justify-content:center!important;
+ min-width:170px!important;
+ min-height:112px!important;
+ padding:20px 18px!important;
+ border:1px solid #dce8e3!important;
+ border-radius:16px!important;
+ background:linear-gradient(145deg,#ffffff 0%,#f3f8f6 100%)!important;
+ box-shadow:0 5px 16px #173d3012, inset 0 1px 0 #ffffff!important;
+ scroll-snap-align:start!important;
+}
+.title-card.earned{border-color:#9bcbb0!important;background:linear-gradient(145deg,#f4fff7,#e5f5eb)!important}
+.title-card.current{outline:2px solid #399b67!important;outline-offset:2px!important;box-shadow:0 8px 22px #27834b24!important}
+.title-card.nobel{border-color:#e5c66b!important;background:linear-gradient(145deg,#fff9e8,#f8e9bd)!important}
+.title-card.haisha{border-color:#9ab8e8!important;background:linear-gradient(145deg,#f1f6ff,#dce8ff)!important}
 .title-card-copy{width:100%!important;min-width:0!important}
-.title-card-copy h3{margin:0 0 7px!important;font-size:15px!important;line-height:1.4!important}
-.title-condition{margin-top:0!important;font-size:12px!important}
+.title-card-copy h3{margin:0 0 10px!important;font-size:16px!important;line-height:1.45!important;white-space:normal!important}
+.title-condition{display:block!important;margin:0!important;font-size:13px!important;font-weight:700!important;color:#60766c!important}
 .title-status,.title-emblem,.title-card-copy p{display:none!important}
-@media(max-width:850px){.title-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
-@media(max-width:520px){.title-grid{grid-template-columns:1fr!important}}
+@media(max-width:650px){
+ main{padding:26px 14px 48px!important}
+ .title-grid{grid-auto-columns:minmax(155px,72vw)!important}
+ .title-card,.title-card.nobel,.title-card.haisha{min-width:155px!important;min-height:104px!important}
+ .title-card-copy h3{font-size:15px!important}
+}
 </style>
 </head><body>
 
@@ -256,4 +290,3 @@ async function updateHeader(){let amount=0;try{amount=Math.max(0,Math.floor(Numb
 updateHeader();let furiganaOn=true;try{furiganaOn=localStorage.getItem("rikakids-furigana")!=="off"}catch(e){}function paintFurigana(){const state=document.getElementById("furiganaState"),toggle=document.getElementById("furiganaToggle");if(state)state.textContent=furiganaOn?"ON":"OFF";document.documentElement.dataset.furigana=furiganaOn?"on":"off";if(toggle)toggle.setAttribute("aria-pressed",String(furiganaOn))}paintFurigana();const furiganaToggle=document.getElementById("furiganaToggle");if(furiganaToggle)furiganaToggle.addEventListener("click",()=>{furiganaOn=!furiganaOn;try{localStorage.setItem("rikakids-furigana",furiganaOn?"on":"off")}catch(e){}paintFurigana()});
 (function(){const ids=["2026-11-07-design","2026-11-07-timeline","2026-11-07-quiz","2026-11-08-unread-badge"],key="science-kids-read-notifications-v1";let read=[];try{read=JSON.parse(localStorage.getItem(key)||"[]")}catch(e){}const n=ids.filter(x=>!read.includes(x)).length;const a=document.querySelector('.science-side-nav a[href="./notifications.html"]');if(a&&n){const b=document.createElement("span");b.className="rika-notice";b.textContent=n>99?"99+":String(n);a.append(b)}})();
 </script></body></html>
-<style id="titles-page-no-sidebar">.science-topbar,.rika-global-footer{margin-left:0!important}main{margin-left:0!important;padding-left:40px!important;padding-right:40px!important}@media(max-width:650px){main{margin-left:0!important;padding:22px 14px 45px!important}.science-topbar{margin-left:0!important}}</style>
