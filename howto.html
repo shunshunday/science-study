@@ -781,5 +781,24 @@ aside.science-sidebar .science-side-name small{
  save();
 })();
 </script>
+<style id="science-current-page-nav-style">
+.science-side-nav a[aria-current="page"]{pointer-events:none!important;cursor:default!important}
+.science-side-nav a[aria-current="page"]:hover{background:inherit}
+</style>
+<script id="science-current-page-nav">
+(function(){
+ const current=new URL(location.href).pathname.replace(/\\/+$/,'')||'/';
+ document.querySelectorAll('.science-side-nav a[href]').forEach(function(link){
+  const target=new URL(link.getAttribute('href'),location.href).pathname.replace(/\\/+$/,'')||'/';
+  if(target!==current)return;
+  link.classList.add('active');
+  link.setAttribute('aria-current','page');
+  link.setAttribute('aria-disabled','true');
+  link.setAttribute('tabindex','-1');
+  link.addEventListener('click',function(event){event.preventDefault();});
+ });
+})();
+</script>
+
 </body>
 </html>
