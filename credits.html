@@ -555,4 +555,37 @@ aside.science-sidebar .science-side-name small{
 })();
 </script>
 
+<style id="science-side-current-page-style">
+.science-side-nav a[aria-current="page"]{pointer-events:none!important;cursor:default!important}
+.science-side-nav a[aria-current="page"]:hover{filter:none!important}
+</style>
+<script id="science-side-current-page">
+(function(){
+  function disableCurrentMenu(){
+    var nav=document.querySelector('.science-side-nav');
+    if(!nav)return;
+    var current=location.pathname.replace(/\\/$/,'');
+    if(!current)current='/';
+    function normalize(path){
+      path=path.replace(/\\/$/,'');
+      if(!path||path.endsWith('/index.html'))return path.replace(/index\\.html$/,'')||'/';
+      return path;
+    }
+    current=normalize(current);
+    nav.querySelectorAll('a[href]').forEach(function(link){
+      try{
+        var target=normalize(new URL(link.getAttribute('href'),location.href).pathname);
+        if(target!==current)return;
+        link.classList.add('active');
+        link.setAttribute('aria-current','page');
+        link.setAttribute('aria-disabled','true');
+        link.setAttribute('tabindex','-1');
+        link.addEventListener('click',function(event){event.preventDefault();event.stopImmediatePropagation();},true);
+      }catch(e){}
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',disableCurrentMenu,{once:true});
+  else disableCurrentMenu();
+})();
+</script>
 </body></html>
