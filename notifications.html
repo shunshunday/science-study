@@ -668,10 +668,10 @@ aside.science-sidebar .science-side-name small{
   <div class="science-topbar-inner">
     <p class="science-topbar-tagline">学んで、集めて、科学を楽しもう。</p>
     <div class="science-topbar-actions">
-      <a class="science-account-link" id="accountOpen" href="./profile.html">ログイン・新規会員登録</a>
+      <a class="science-account-link" id="accountOpen" style="visibility:hidden" href="./profile.html">ログイン・新規会員登録</a>
       <style id="science-furigana-gap">.science-furigana{display:inline-flex!important;align-items:center!important;gap:.9em!important;word-spacing:normal!important}</style>
       <button class="science-furigana" id="furiganaToggle" type="button" aria-pressed="true"><span>ふりがな</span><span id="furiganaState">ON</span></button>
-      <button class="science-wallet" id="walletBtn" type="button" aria-label="所持金"><span aria-hidden="true">◉</span><strong id="moneyValue">0</strong><span class="science-wallet-currency">$</span></button>
+      <button class="science-wallet" id="walletBtn" type="button" aria-label="所持金"><span aria-hidden="true">◉</span><strong id="moneyValue" style="visibility:hidden">0</strong><span class="science-wallet-currency">$</span></button>
       
     </div>
   </div>
@@ -735,13 +735,13 @@ aside.science-sidebar .science-side-name small{
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-(async function(){const el=document.getElementById('moneyValue');if(!el)return;let amount=0;try{const raw=localStorage.getItem('rikakids-guest-wallet');if(raw!==null){const n=Number(raw);if(Number.isFinite(n)&&n>=0)amount=n;}if(window.supabase?.createClient){const client=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");const {data:{user},error:authError}=await client.auth.getUser();if(!authError&&user){const {data,error}=await client.rpc('get_city_wallet');if(!error){const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0);}}}}catch(e){console.warn('所持金を読み込めませんでした',e);}el.textContent=Math.floor(amount).toLocaleString('en-US');})();
+(async function(){const el=document.getElementById('moneyValue');if(!el)return;let amount=0;try{const raw=localStorage.getItem('rikakids-guest-wallet');if(raw!==null){const n=Number(raw);if(Number.isFinite(n)&&n>=0)amount=n;}if(window.supabase?.createClient){const client=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");const {data:{user},error:authError}=await client.auth.getUser();if(!authError&&user){const {data,error}=await client.rpc('get_city_wallet');if(!error){const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0);}}}}catch(e){console.warn('所持金を読み込めませんでした',e);}el.textContent=Math.floor(amount).toLocaleString('en-US');el.style.visibility='visible';})();
 </script>
 
 <script id="science-account-state-sync">
 (async function(){
  const link=document.getElementById('accountOpen');
- if(!link||!window.supabase?.createClient)return;
+ if(!link)return;if(!window.supabase?.createClient){link.style.visibility='visible';return;}
  try{
   const client=window.supabase.createClient("https://tmgfcmzufamxuzsuedza.supabase.co","sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng");
   const paint=async(session)=>{
@@ -760,7 +760,7 @@ aside.science-sidebar .science-side-name small{
   const {data:{session}}=await client.auth.getSession();
   await paint(session);
   client.auth.onAuthStateChange((_event,session)=>{paint(session);});
- }catch(error){console.warn('アカウント表示を更新できませんでした',error);}
+ }catch(error){console.warn('アカウント表示を更新できませんでした',error);link.style.visibility='visible';}
 })();
 </script>
 
