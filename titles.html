@@ -307,7 +307,33 @@ const grid=document.getElementById("titleGrid");
 function emblem(level){if(level.cls==="haisha")return '<img src="./assets/haisha-crown.svg" alt="覇者の王冠">';return '<span aria-hidden="true">'+level.mark+'</span>'}
 function currentLevel(amount){let found=titleLevels[0];for(const level of titleLevels){if(amount>=level.min)found=level}return found}
 function renderTitles(amount){const current=currentLevel(amount);const marks={"科学ビギナー":"🧪","科学チャレンジャー":"🔬","科学マスター":"⚗️","科学博士":"📘","科学の天才":"💡","伝説の科学者":"🌟","ノーベル化学賞":"♛","覇者":"👑"};const name=document.getElementById("currentTitleName"),balance=document.getElementById("currentTitleBalance");if(name)name.textContent=(marks[current.name]||"")+" "+current.name;if(balance)balance.textContent="現在の所持金："+amount.toLocaleString("ja-JP")+"＄";grid.innerHTML=titleLevels.slice().reverse().map(level=>{const earned=amount>=level.min,isCurrent=level.name===current.name;return '<article class="title-card '+level.cls+(earned?" earned":" locked")+(isCurrent?" current":"")+(isCurrent?'" aria-current="true' : '')+'"><div class="title-card-copy"><h3>'+level.name+'</h3><span class="title-condition">'+level.min.toLocaleString("ja-JP")+' $ 以上</span></div></article>'}).join("")}
-async function loadTitles(){let amount=0;try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}if(supabase){try{const {data:{user}}=await supabase.auth.getUser();if(user){const {data,error}=await supabase.rpc("get_city_wallet");if(error)throw error;const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0)}}catch(e){console.warn("所持金を読み込めませんでした",e)}}renderTitles(amount)}
+async function loadTitles(){
+ let amount=0;
+ try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}
+ // 通信待ちで「読み込み中...」のままにならないよう、まず端末内の所持金で表示する
+ renderTitles(amount);
+ if(!supabase)return;
+ try{
+  const sessionResult=await Promise.race([
+   supabase.auth.getSession(),
+   new Promise((_,reject)=>setTimeout(()=>reject(new Error("認証確認がタイムアウトしました")),8000))
+  ]);
+  const user=sessionResult?.data?.session?.user;
+  if(!user)return;
+  const walletResult=await Promise.race([
+   supabase.rpc("get_city_wallet"),
+   new Promise((_,reject)=>setTimeout(()=>reject(new Error("所持金取得がタイムアウトしました")),8000))
+  ]);
+  if(walletResult.error)throw walletResult.error;
+  const wallet=Array.isArray(walletResult.data)?walletResult.data[0]:walletResult.data;
+  amount=Math.max(0,Math.floor(Number(wallet?.balance)||0));
+  renderTitles(amount);
+ }catch(e){
+  console.warn("所持金を読み込めませんでした。端末内の保存額を表示します。",e);
+  const balance=document.getElementById("currentTitleBalance");
+  if(balance)balance.textContent="所持金を取得できませんでした。表示中："+amount.toLocaleString("ja-JP")+"＄";
+ }
+}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const SUPABASE_URL="https://tmgfcmzufamxuzsuedza.supabase.co",SUPABASE_KEY="sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng";
