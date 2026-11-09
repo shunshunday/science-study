@@ -398,6 +398,82 @@ updateHeader();let furiganaOn=true;try{furiganaOn=localStorage.getItem("rikakids
   else disableCurrentMenu();
 })();
 </script>
+<!-- titles-runtime-guard-v2 -->
+<script>
+(function(){
+ "use strict";
+ var started=false;
+ function run(){
+  if(started)return;started=true;
+  var name=document.getElementById("currentTitleName");
+  var balance=document.getElementById("currentTitleBalance");
+  var grid=document.getElementById("titleGrid");
+  if(!name||!balance||!grid)return;
+  name.textContent="称号情報を読み込んでいます…";
+  balance.textContent="ログイン情報と所持金を確認しています";
+  var base="https://tmgfcmzufamxuzsuedza.supabase.co";
+  var key="sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng";
+  var storage="sb-tmgfcmzufamxuzsuedza-auth-token";
+  var levels=[
+   {name:"覇者",min:100000,mark:"👑",cls:"haisha"},
+   {name:"ノーベル化学賞",min:50000,mark:"♛",cls:"nobel"},
+   {name:"伝説の科学者",min:20000,mark:"🌟",cls:"legend"},
+   {name:"科学の天才",min:10000,mark:"💡",cls:"genius"},
+   {name:"科学博士",min:6000,mark:"📘",cls:"doctor"},
+   {name:"科学マスター",min:3000,mark:"⚗️",cls:"master"},
+   {name:"科学チャレンジャー",min:1000,mark:"🔬",cls:"challenger"},
+   {name:"科学ビギナー",min:0,mark:"🧪",cls:"beginner"}
+  ];
+  function draw(amount){
+   var current=levels.find(function(x){return amount>=x.min})||levels[7];
+   name.textContent=current.mark+" "+current.name;
+   balance.textContent="現在の所持金："+amount.toLocaleString("ja-JP")+"＄";
+   grid.innerHTML=levels.map(function(x){
+    var earned=amount>=x.min,active=x.name===current.name;
+    return '<article class="title-card '+x.cls+(earned?' earned':' locked')+(active?' current':'')+'"'+(active?' aria-current="true"':'')+'><div class="title-card-copy"><h3>'+x.name+'</h3><span class="title-condition">'+x.min.toLocaleString("ja-JP")+' ＄以上</span></div></article>';
+   }).join("");
+  }
+  function fail(msg){name.textContent="称号を表示できません";balance.textContent=msg;}
+  function request(path,token,body){
+   var controller=new AbortController(),timer=setTimeout(function(){controller.abort()},10000);
+   return fetch(base+path,{method:"POST",headers:{"apikey":key,"Content-Type":"application/json","Authorization":"Bearer "+(token||key)},body:JSON.stringify(body||{}),cache:"no-store",signal:controller.signal})
+    .then(function(r){return r.text().then(function(t){var d;try{d=t?JSON.parse(t):null}catch(e){d={message:t}}if(!r.ok)throw new Error(d&& (d.message||d.msg||d.details)||"通信エラー ("+r.status+")");return d})})
+    .finally(function(){clearTimeout(timer)});
+  }
+  var watchdog=setTimeout(function(){fail("読み込みが完了しませんでした。ページを再読み込みしてください。")},15000);
+  (async function(){
+   try{
+    var raw=localStorage.getItem(storage);
+    if(!raw)throw new Error("ログイン情報がありません。プロフィールからログインしてください。");
+    var saved=JSON.parse(raw),session=saved.currentSession||saved;
+    if(!session.access_token||!session.user||!session.user.id)throw new Error("ログイン情報が無効です。プロフィールから再ログインしてください。");
+    if(session.expires_at&&session.expires_at*1000<Date.now()+60000){
+     if(!session.refresh_token)throw new Error("ログイン期限が切れています。プロフィールから再ログインしてください。");
+     session=await request("/auth/v1/token?grant_type=refresh_token",null,{refresh_token:session.refresh_token});
+     localStorage.setItem(storage,JSON.stringify(session));
+    }
+    var data=null;
+    try{data=await request("/rest/v1/rpc/get_city_wallet",session.access_token,{})}catch(e){console.warn("get_city_wallet failed",e)}
+    var wallet=Array.isArray(data)?data[0]:data;
+    var amount=wallet&&wallet.balance!=null?Number(wallet.balance):null;
+    if(amount===null||!Number.isFinite(amount)||amount===0){
+     try{
+      var rows=await request("/rest/v1/rpc/get_city_wallet_leaderboard",session.access_token,{});
+      var own=(rows||[]).find(function(x){return x.user_id===session.user.id});
+      if(own&&own.balance!=null)amount=Number(own.balance);
+     }catch(e){console.warn("leaderboard fallback failed",e)}
+    }
+    if(amount===null||!Number.isFinite(amount))throw new Error("所持金を取得できませんでした。プロフィールのログイン状態を確認してください。");
+    draw(Math.max(0,Math.floor(amount)));
+   }catch(e){
+    console.error("称号ページ独立読み込みエラー",e);
+    fail(e.name==="AbortError"?"所持金サーバーへの接続がタイムアウトしました。":(e.message||"所持金を読み込めませんでした。"));
+   }finally{clearTimeout(watchdog)}
+  })();
+ }
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run,{once:true});else run();
+})();
+</script>
 </body>
 
 </html>
