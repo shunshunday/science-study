@@ -708,11 +708,9 @@ aside.science-sidebar .science-side-name small{
 <style id="science-hide-furigana-button">.science-furigana,#furiganaToggle{display:none!important}</style>
 
 <style id="science-sidebar-hitbox-fix">
-/* メニューの色付き四角そのものをリンクのクリック範囲にする */
-.science-sidebar .science-side-nav{width:100%!important;}
-.science-sidebar .science-side-nav a{position:relative!important;display:flex!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;height:44px!important;min-height:44px!important;margin:0!important;cursor:pointer!important;pointer-events:auto!important;}
+/* リンク自身の実際の表示領域だけをクリック範囲にする。高さ・幅・余白は各画面用CSSに任せる */
+.science-sidebar .science-side-nav a{position:relative!important;box-sizing:border-box!important;cursor:pointer!important;pointer-events:auto!important;}
 .science-sidebar .science-side-nav a>*{pointer-events:none!important;}
-@media(max-width:650px){.science-sidebar .science-side-nav{width:100%!important}.science-sidebar .science-side-nav a{width:auto!important;min-width:44px!important;height:44px!important;min-height:44px!important}}
 </style>
 </head>
 <body>
