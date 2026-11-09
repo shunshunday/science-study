@@ -290,13 +290,5 @@ async function updateHeader(){let amount=0;try{amount=Math.max(0,Math.floor(Numb
 updateHeader();let furiganaOn=true;try{furiganaOn=localStorage.getItem("rikakids-furigana")!=="off"}catch(e){}function paintFurigana(){const state=document.getElementById("furiganaState"),toggle=document.getElementById("furiganaToggle");if(state)state.textContent=furiganaOn?"ON":"OFF";document.documentElement.dataset.furigana=furiganaOn?"on":"off";if(toggle)toggle.setAttribute("aria-pressed",String(furiganaOn))}paintFurigana();const furiganaToggle=document.getElementById("furiganaToggle");if(furiganaToggle)furiganaToggle.addEventListener("click",()=>{furiganaOn=!furiganaOn;try{localStorage.setItem("rikakids-furigana",furiganaOn?"on":"off")}catch(e){}paintFurigana()});
 (function(){const ids=["2026-11-07-design","2026-11-07-timeline","2026-11-07-quiz","2026-11-08-unread-badge"],key="science-kids-read-notifications-v1";let read=[];try{read=JSON.parse(localStorage.getItem(key)||"[]")}catch(e){}const n=ids.filter(x=>!read.includes(x)).length;const a=document.querySelector('.science-side-nav a[href="./notifications.html"]');if(a&&n){const b=document.createElement("span");b.className="rika-notice";b.textContent=n>99?"99+":String(n);a.append(b)}})();
 </script></body>
-<style id="titles-page-footer-left-fix">
-/* 称号一覧はサイドバーなし。フッターを画面左端から配置 */
-.rika-global-footer{margin-left:0!important;padding-left:40px!important;padding-right:40px!important}
-.rika-footer-inner{max-width:none!important;width:100%!important;margin:0!important;justify-content:flex-start!important;gap:18px!important}
-@media(max-width:650px){
- .rika-global-footer{margin-left:0!important;padding-left:14px!important;padding-right:14px!important}
- .rika-footer-inner{margin:0!important;align-items:flex-start!important}
-}
-</style>
+
 </html>
