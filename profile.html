@@ -771,7 +771,7 @@ async function refreshProfile(){
   const card=document.getElementById("memberCard");
   card.classList.toggle("gold",isGold);
   card.classList.toggle("normal",!isGold);
-  document.getElementById("memberStatus").textContent=isGold?"ゴールド会員":"通常会員";
+  document.getElementById("memberStatus").textContent=isGold?"ゴールド":"通常会員";
   statusElement.hidden=true;
   document.getElementById("profileAuth").hidden=true;
   document.getElementById("profile").hidden=false;
