@@ -242,7 +242,7 @@ main{max-width:1180px!important;margin:0 auto!important;padding:54px 42px 76px!i
 
 <main>
 <div class="page-heading"><a class="page-heading-home" href="https://shunshunday.github.io/science-study/" aria-label="科学キッズ ホームへ"><span class="page-heading-home-mark">科</span><span class="page-heading-home-name">科学キッズ<small>SCIENCE KIDS</small></span></a><div class="eyebrow">SCIENCE KIDS / HONORS</div><h1>称号一覧</h1><p>クイズで集めた所持金に応じて、科学キッズの称号を獲得できます。</p></div>
-<section class="current-title-panel" aria-live="polite"><div class="current-title-label">あなたの現在の称号</div><div class="current-title-name" id="currentTitleName">称号を取得中...</div><div class="current-title-balance" id="currentTitleBalance">本当の所持金を確認しています</div></section>
+
 <div class="list-heading"><h2>すべての称号</h2><span>全8段階</span></div><div class="title-mark-list" aria-label="称号とマーク">
 <div class="title-mark-item"><span class="title-mark-symbol">🧪</span><span>科学ビギナー</span><span class="title-mark-range">0＄～999＄</span></div>
 <div class="title-mark-item"><span class="title-mark-symbol">🔬</span><span>科学チャレンジャー</span><span class="title-mark-range">1,000＄～2,999＄</span></div>
@@ -309,62 +309,8 @@ const titleLevels=[
 ];
 const grid=document.getElementById("titleGrid");
 function emblem(level){if(level.cls==="haisha")return '<img src="./assets/haisha-crown.svg" alt="覇者の王冠">';return '<span aria-hidden="true">'+level.mark+'</span>'}
-function currentLevel(amount){let found=titleLevels[0];for(const level of titleLevels){if(amount>=level.min)found=level}return found}
-function renderTitles(amount){const current=currentLevel(amount);const marks={"科学ビギナー":"🧪","科学チャレンジャー":"🔬","科学マスター":"⚗️","科学博士":"📘","科学の天才":"💡","伝説の科学者":"🌟","ノーベル化学賞":"♛","覇者":"👑"};const name=document.getElementById("currentTitleName"),balance=document.getElementById("currentTitleBalance");if(name)name.textContent=(marks[current.name]||"")+" "+current.name;if(balance)balance.textContent="現在の所持金："+amount.toLocaleString("ja-JP")+"＄";grid.innerHTML=titleLevels.slice().reverse().map(level=>{const earned=amount>=level.min,isCurrent=level.name===current.name;return '<article class="title-card '+level.cls+(earned?" earned":" locked")+(isCurrent?" current":"")+(isCurrent?'" aria-current="true' : '')+'"><div class="title-card-copy"><h3>'+level.name+'</h3><span class="title-condition">'+level.min.toLocaleString("ja-JP")+' $ 以上</span></div></article>'}).join("")}
-async function restoreTitleSession(){
- const raw=localStorage.getItem(STORAGE_KEY);
- if(!raw)throw new Error("ログイン情報がありません。プロフィールからログインしてください。");
- let saved;
- try{saved=JSON.parse(raw)}catch(e){throw new Error("ログイン情報を読み取れません。プロフィールから再ログインしてください。")}
- let session=saved?.currentSession||saved;
- if(!session?.access_token||!session?.user?.id)throw new Error("ログイン情報が無効です。プロフィールから再ログインしてください。");
- if(session.expires_at&&session.expires_at*1000<Date.now()+60000){
-  if(!session.refresh_token)throw new Error("ログイン期限が切れています。プロフィールから再ログインしてください。");
-  const response=await fetch(SUPABASE_URL+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{"apikey":SUPABASE_KEY,"Content-Type":"application/json"},body:JSON.stringify({refresh_token:session.refresh_token}),cache:"no-store"});
-  const refreshed=await response.json().catch(()=>({}));
-  if(!response.ok)throw new Error(refreshed.message||refreshed.msg||"ログイン期限の更新に失敗しました。");
-  session=refreshed;
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(session));
- }
- return session;
-}
-async function loadTitles(){
- const name=document.getElementById("currentTitleName");
- const balanceEl=document.getElementById("currentTitleBalance");
- const showError=(message)=>{if(name)name.textContent="称号を表示できません";if(balanceEl)balanceEl.textContent=message;};
- if(name)name.textContent="称号情報を読み込んでいます…";
- if(balanceEl)balanceEl.textContent="ログイン情報と所持金を確認しています";
- const controller=new AbortController();
- const timeout=setTimeout(()=>controller.abort(),12000);
- try{
-  const session=await restoreTitleSession();
-  async function rpc(fn){
-   const response=await fetch(SUPABASE_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+session.access_token,"Content-Type":"application/json"},body:"{}",cache:"no-store",signal:controller.signal});
-   const data=await response.json().catch(()=>null);
-   if(!response.ok)throw new Error(data?.message||data?.msg||data?.details||("通信エラー ("+response.status+")"));
-   return data;
-  }
-  let amount=null;
-  try{
-   const data=await rpc("get_city_wallet");
-   const wallet=Array.isArray(data)?data[0]:data;
-   if(wallet?.balance!==null&&wallet?.balance!==undefined)amount=Number(wallet.balance);
-  }catch(e){console.warn("get_city_wallet:",e.message)}
-  if(amount===null||!Number.isFinite(amount)||amount===0){
-   try{
-    const rows=await rpc("get_city_wallet_leaderboard");
-    const own=(rows||[]).find(row=>row.user_id===session.user.id);
-    if(own?.balance!==null&&own?.balance!==undefined)amount=Number(own.balance);
-   }catch(e){console.warn("get_city_wallet_leaderboard:",e.message)}
-  }
-  if(amount===null||!Number.isFinite(amount))throw new Error("所持金を取得できません。プロフィールのログイン状態を確認してください。");
-  renderTitles(Math.max(0,Math.floor(amount)));
- }catch(error){
-  console.error("称号情報の読み込みエラー:",error);
-  showError(error.name==="AbortError"?"所持金サーバーへの接続がタイムアウトしました。":"読み込みエラー："+(error.message||"原因不明"));
- }finally{clearTimeout(timeout)}
-}
-loadTitles();
+function renderTitles(){grid.innerHTML=titleLevels.slice().reverse().map(level=>'<article class="title-card '+level.cls+'"><div class="title-emblem">'+emblem(level)+'</div><div class="title-card-copy"><h3>'+level.name+'</h3><p>'+level.desc+'</p><span class="title-condition">'+level.min.toLocaleString("ja-JP")+'＄以上</span></div></article>').join("")}
+renderTitles();
 async function updateHeader(){let amount=0;try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}if(supabase){try{const {data:{user}}=await supabase.auth.getUser();if(user){const {data,error}=await supabase.rpc("get_city_wallet");if(!error){const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0)}const {data:p}=await supabase.from("profiles").select("username").eq("id",user.id).maybeSingle();if(p?.username&&document.getElementById("accountOpen"))document.getElementById("accountOpen").textContent=p.username+"・ログイン中"}}catch(e){}}const moneyValue=document.getElementById("moneyValue");if(moneyValue)moneyValue.textContent=amount.toLocaleString("en-US")}
 updateHeader();let furiganaOn=true;try{furiganaOn=localStorage.getItem("rikakids-furigana")!=="off"}catch(e){}function paintFurigana(){const state=document.getElementById("furiganaState"),toggle=document.getElementById("furiganaToggle");if(state)state.textContent=furiganaOn?"ON":"OFF";document.documentElement.dataset.furigana=furiganaOn?"on":"off";if(toggle)toggle.setAttribute("aria-pressed",String(furiganaOn))}paintFurigana();const furiganaToggle=document.getElementById("furiganaToggle");if(furiganaToggle)furiganaToggle.addEventListener("click",()=>{furiganaOn=!furiganaOn;try{localStorage.setItem("rikakids-furigana",furiganaOn?"on":"off")}catch(e){}paintFurigana()});
 (function(){const ids=["2026-11-07-design","2026-11-07-timeline","2026-11-07-quiz","2026-11-08-unread-badge"],key="science-kids-read-notifications-v1";let read=[];try{read=JSON.parse(localStorage.getItem(key)||"[]")}catch(e){}const n=ids.filter(x=>!read.includes(x)).length;const a=document.querySelector('.science-side-nav a[href="./notifications.html"]');if(a&&n){const b=document.createElement("span");b.className="rika-notice";b.textContent=n>99?"99+":String(n);a.append(b)}})();
