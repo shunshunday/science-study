@@ -358,7 +358,9 @@ async function restoreSession(){
 let headerRequest=0;
 async function updateHeader(){
  const request=++headerRequest;
- let amount=0;
+ let amount=null;
+ let accountText=null;
+ let accountLabel=null;
  try{
   const session=await restoreSession();
   if(request!==headerRequest)return;
@@ -369,23 +371,38 @@ async function updateHeader(){
    const {data:profile,error:profileError}=await client.from("profiles").select("username").eq("id",user.id).maybeSingle();
    if(!profileError&&profile?.username)username=profile.username;
    if(request!==headerRequest)return;
-   accountLink.textContent=(username||"アカウント")+"・ログイン中";
-   accountLink.setAttribute("aria-label",(username||"アカウント")+"としてログイン中");
+   accountText=(username||"アカウント")+"・ログイン中";
+   accountLabel=(username||"アカウント")+"としてログイン中";
    const {data:walletData,error:walletError}=await client.rpc("get_city_wallet");
-   const wallet=Array.isArray(walletData)?walletData[0]:walletData;
-   if(!walletError&&wallet?.balance!==undefined&&wallet?.balance!==null)amount=Math.max(0,Number(wallet.balance)||0);
-   if(walletError||amount===0){
-    const {data:rows}=await client.rpc("get_city_wallet_leaderboard");
-    const own=(rows||[]).find(row=>row.user_id===user.id);
-    if(own)amount=Math.max(0,Number(own.balance)||0);
+   if(!walletError){
+    const wallet=Array.isArray(walletData)?walletData[0]:walletData;
+    if(wallet?.balance!==undefined&&wallet?.balance!==null)amount=Math.max(0,Number(wallet.balance)||0);
+   }
+   if(amount===null||amount===0){
+    const {data:rows,error:rowsError}=await client.rpc("get_city_wallet_leaderboard");
+    if(!rowsError){
+     const own=(rows||[]).find(row=>row.user_id===user.id);
+     if(own&&own.balance!==undefined&&own.balance!==null)amount=Math.max(0,Number(own.balance)||0);
+    }
    }
   }else{
-   accountLink.textContent="ログイン・新規会員登録";
-   accountLink.removeAttribute("aria-label");
+   accountText="ログイン・新規会員登録";
+   accountLabel="";
    amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)));
   }
  }catch(error){console.error("ランキングのアカウント情報:",error)}
- if(request===headerRequest){moneyValue.textContent=amount.toLocaleString("en-US");moneyValue.style.visibility="visible";accountLink.style.visibility="visible";}
+ if(request!==headerRequest)return;
+ if(accountText!==null){
+  accountLink.textContent=accountText;
+  if(accountLabel)accountLink.setAttribute("aria-label",accountLabel);
+  else accountLink.removeAttribute("aria-label");
+  accountLink.style.visibility="visible";
+ }
+ // 取得失敗時は0で上書きせず、最後に確認できた金額をそのまま表示する
+ if(amount!==null){
+  moneyValue.textContent=amount.toLocaleString("en-US");
+  moneyValue.style.visibility="visible";
+ }
 }
 let rankingLoading=false;
 async function loadRanking(){
