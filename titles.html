@@ -300,6 +300,39 @@ loadTitles();
 async function updateHeader(){let amount=0;try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}if(supabase){try{const {data:{user}}=await supabase.auth.getUser();if(user){const {data,error}=await supabase.rpc("get_city_wallet");if(!error){const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0)}const {data:p}=await supabase.from("profiles").select("username").eq("id",user.id).maybeSingle();if(p?.username&&document.getElementById("accountOpen"))document.getElementById("accountOpen").textContent=p.username+"・ログイン中"}}catch(e){}}const moneyValue=document.getElementById("moneyValue");if(moneyValue)moneyValue.textContent=amount.toLocaleString("en-US")}
 updateHeader();let furiganaOn=true;try{furiganaOn=localStorage.getItem("rikakids-furigana")!=="off"}catch(e){}function paintFurigana(){const state=document.getElementById("furiganaState"),toggle=document.getElementById("furiganaToggle");if(state)state.textContent=furiganaOn?"ON":"OFF";document.documentElement.dataset.furigana=furiganaOn?"on":"off";if(toggle)toggle.setAttribute("aria-pressed",String(furiganaOn))}paintFurigana();const furiganaToggle=document.getElementById("furiganaToggle");if(furiganaToggle)furiganaToggle.addEventListener("click",()=>{furiganaOn=!furiganaOn;try{localStorage.setItem("rikakids-furigana",furiganaOn?"on":"off")}catch(e){}paintFurigana()});
 (function(){const ids=["2026-11-07-design","2026-11-07-timeline","2026-11-07-quiz","2026-11-08-unread-badge"],key="science-kids-read-notifications-v1";let read=[];try{read=JSON.parse(localStorage.getItem(key)||"[]")}catch(e){}const n=ids.filter(x=>!read.includes(x)).length;const a=document.querySelector('.science-side-nav a[href="./notifications.html"]');if(a&&n){const b=document.createElement("span");b.className="rika-notice";b.textContent=n>99?"99+":String(n);a.append(b)}})();
-</script></body>
+</script><style id="science-side-current-page-style">
+.science-side-nav a[aria-current="page"]{pointer-events:none!important;cursor:default!important}
+.science-side-nav a[aria-current="page"]:hover{filter:none!important}
+</style>
+<script id="science-side-current-page">
+(function(){
+  function disableCurrentMenu(){
+    var nav=document.querySelector('.science-side-nav');
+    if(!nav)return;
+    var current=location.pathname.replace(/\\/$/,'');
+    if(!current)current='/';
+    function normalize(path){
+      path=path.replace(/\\/$/,'');
+      if(!path||path.endsWith('/index.html'))return path.replace(/index\\.html$/,'')||'/';
+      return path;
+    }
+    current=normalize(current);
+    nav.querySelectorAll('a[href]').forEach(function(link){
+      try{
+        var target=normalize(new URL(link.getAttribute('href'),location.href).pathname);
+        if(target!==current)return;
+        link.classList.add('active');
+        link.setAttribute('aria-current','page');
+        link.setAttribute('aria-disabled','true');
+        link.setAttribute('tabindex','-1');
+        link.addEventListener('click',function(event){event.preventDefault();event.stopImmediatePropagation();},true);
+      }catch(e){}
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',disableCurrentMenu,{once:true});
+  else disableCurrentMenu();
+})();
+</script>
+</body>
 
 </html>
