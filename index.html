@@ -710,8 +710,17 @@ aside.science-sidebar .science-side-name small{
 <style id="science-hide-furigana-button">.science-furigana,#furiganaToggle{display:none!important}</style>
 
 <style id="science-sidebar-hitbox-fix">
-/* リンク自身の実際の表示領域だけをクリック範囲にする。高さ・幅・余白は各画面用CSSに任せる */
-.science-sidebar .science-side-nav a{position:relative!important;box-sizing:border-box!important;cursor:pointer!important;pointer-events:auto!important;}
+/* サイドメニューの縦クリック範囲を40pxに統一。文字や配色などの見た目設定は変更しない */
+.science-sidebar .science-side-nav a{
+  position:relative!important;
+  box-sizing:border-box!important;
+  height:40px!important;
+  min-height:40px!important;
+  max-height:40px!important;
+  margin-block:0!important;
+  cursor:pointer!important;
+  pointer-events:auto!important;
+}
 .science-sidebar .science-side-nav a>*{pointer-events:none!important;}
 </style>
 </head>
