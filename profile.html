@@ -438,7 +438,7 @@ aside.science-sidebar .science-side-name small{
       
       
       <div class="member-stat"><span>会員ランク</span><strong id="memberStatus" style="font-size:13px">ノーマル</strong></div>
-      <div class="member-stat"><span>所持金</span><strong id="moneyBalance">$0</strong></div>
+      <div class="member-stat"><span>所持金</span><strong id="moneyBalance">0$</strong></div>
       <div class="member-stat"><span>累計プレイ時間</span><strong id="playtime">0分</strong></div>
      </div>
     </div>
@@ -754,7 +754,7 @@ async function refreshProfile(){
   const walletData=await api("/rest/v1/rpc/get_city_wallet",{method:"POST",body:JSON.stringify({})});
   const wallet=Array.isArray(walletData)?walletData[0]:walletData;
   const assets=Math.max(0,Number(wallet?.balance)||0);
-  document.getElementById("moneyBalance").textContent="$"+Math.floor(assets).toLocaleString("en-US");
+  document.getElementById("moneyBalance").textContent=Math.floor(assets).toLocaleString("en-US")+"$";
   const rankElement=document.getElementById("rank");
   rankElement.textContent=titleFor(assets);
   const titleMark=document.getElementById("titleMark");
