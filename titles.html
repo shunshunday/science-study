@@ -312,57 +312,57 @@ function emblem(level){if(level.cls==="haisha")return '<img src="./assets/haisha
 function currentLevel(amount){let found=titleLevels[0];for(const level of titleLevels){if(amount>=level.min)found=level}return found}
 function renderTitles(amount){const current=currentLevel(amount);const marks={"科学ビギナー":"🧪","科学チャレンジャー":"🔬","科学マスター":"⚗️","科学博士":"📘","科学の天才":"💡","伝説の科学者":"🌟","ノーベル化学賞":"♛","覇者":"👑"};const name=document.getElementById("currentTitleName"),balance=document.getElementById("currentTitleBalance");if(name)name.textContent=(marks[current.name]||"")+" "+current.name;if(balance)balance.textContent="現在の所持金："+amount.toLocaleString("ja-JP")+"＄";grid.innerHTML=titleLevels.slice().reverse().map(level=>{const earned=amount>=level.min,isCurrent=level.name===current.name;return '<article class="title-card '+level.cls+(earned?" earned":" locked")+(isCurrent?" current":"")+(isCurrent?'" aria-current="true' : '')+'"><div class="title-card-copy"><h3>'+level.name+'</h3><span class="title-condition">'+level.min.toLocaleString("ja-JP")+' $ 以上</span></div></article>'}).join("")}
 async function restoreTitleSession(){
- if(!supabase)throw new Error("認証ライブラリを読み込めませんでした。ページを再読み込みしてください。");
- const result=await supabase.auth.getSession();
- if(result.data?.session?.user)return result.data.session;
- // ランキング画面と同じ方法で、プロフィール画面が保存したセッションを復元
  const raw=localStorage.getItem(STORAGE_KEY);
- if(raw){
-  const saved=JSON.parse(raw);
-  const session=saved?.currentSession||saved;
-  if(session?.access_token&&session?.refresh_token){
-   const restored=await supabase.auth.setSession({access_token:session.access_token,refresh_token:session.refresh_token});
-   if(!restored.error&&restored.data?.session?.user)return restored.data.session;
-   if(restored.error)throw restored.error;
-  }
+ if(!raw)throw new Error("ログイン情報がありません。プロフィールからログインしてください。");
+ let saved;
+ try{saved=JSON.parse(raw)}catch(e){throw new Error("ログイン情報を読み取れません。プロフィールから再ログインしてください。")}
+ let session=saved?.currentSession||saved;
+ if(!session?.access_token||!session?.user?.id)throw new Error("ログイン情報が無効です。プロフィールから再ログインしてください。");
+ if(session.expires_at&&session.expires_at*1000<Date.now()+60000){
+  if(!session.refresh_token)throw new Error("ログイン期限が切れています。プロフィールから再ログインしてください。");
+  const response=await fetch(SUPABASE_URL+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{"apikey":SUPABASE_KEY,"Content-Type":"application/json"},body:JSON.stringify({refresh_token:session.refresh_token}),cache:"no-store"});
+  const refreshed=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(refreshed.message||refreshed.msg||"ログイン期限の更新に失敗しました。");
+  session=refreshed;
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(session));
  }
- const retry=await supabase.auth.getSession();
- if(retry.data?.session?.user)return retry.data.session;
- throw new Error("ログイン情報が見つかりません。プロフィールからログインしてください。");
+ return session;
 }
 async function loadTitles(){
  const name=document.getElementById("currentTitleName");
  const balanceEl=document.getElementById("currentTitleBalance");
- const showError=(message)=>{if(name)name.textContent="称号を取得できません";if(balanceEl)balanceEl.textContent=message;};
- let timeoutId;
+ const showError=(message)=>{if(name)name.textContent="称号を表示できません";if(balanceEl)balanceEl.textContent=message;};
+ if(name)name.textContent="称号情報を読み込んでいます…";
+ if(balanceEl)balanceEl.textContent="ログイン情報と所持金を確認しています";
+ const controller=new AbortController();
+ const timeout=setTimeout(()=>controller.abort(),12000);
  try{
-  // 通信が止まっても「取得中」のまま残らないよう、全体に制限時間を設ける
-  const task=(async()=>{
-   const session=await restoreTitleSession();
-   let amount=null;
-   const {data:walletData,error:walletError}=await supabase.rpc("get_city_wallet");
-   if(!walletError){
-    const wallet=Array.isArray(walletData)?walletData[0]:walletData;
-    if(wallet?.balance!==undefined&&wallet?.balance!==null)amount=Math.max(0,Math.floor(Number(wallet.balance)||0));
-   }
-   // 個別ウォレットRPCが空の場合は、ランキングと同じ本人分の公開ランキング値で再確認
-   if(amount===null||amount===0){
-    const {data:rows,error:rowsError}=await supabase.rpc("get_city_wallet_leaderboard");
-    if(!rowsError){
-     const own=(rows||[]).find(row=>row.user_id===session.user.id);
-     if(own?.balance!==undefined&&own?.balance!==null)amount=Math.max(0,Math.floor(Number(own.balance)||0));
-    }
-   }
-   if(amount===null)throw new Error("所持金を取得できませんでした。時間をおいて再読み込みしてください。");
-   renderTitles(amount);
-  })();
-  await Promise.race([task,new Promise((_,reject)=>{timeoutId=setTimeout(()=>reject(new Error("所持金の取得がタイムアウトしました。通信状態を確認して、もう一度再読み込みしてください。")),12000);})]);
+  const session=await restoreTitleSession();
+  async function rpc(fn){
+   const response=await fetch(SUPABASE_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+session.access_token,"Content-Type":"application/json"},body:"{}",cache:"no-store",signal:controller.signal});
+   const data=await response.json().catch(()=>null);
+   if(!response.ok)throw new Error(data?.message||data?.msg||data?.details||("通信エラー ("+response.status+")"));
+   return data;
+  }
+  let amount=null;
+  try{
+   const data=await rpc("get_city_wallet");
+   const wallet=Array.isArray(data)?data[0]:data;
+   if(wallet?.balance!==null&&wallet?.balance!==undefined)amount=Number(wallet.balance);
+  }catch(e){console.warn("get_city_wallet:",e.message)}
+  if(amount===null||!Number.isFinite(amount)||amount===0){
+   try{
+    const rows=await rpc("get_city_wallet_leaderboard");
+    const own=(rows||[]).find(row=>row.user_id===session.user.id);
+    if(own?.balance!==null&&own?.balance!==undefined)amount=Number(own.balance);
+   }catch(e){console.warn("get_city_wallet_leaderboard:",e.message)}
+  }
+  if(amount===null||!Number.isFinite(amount))throw new Error("所持金を取得できません。プロフィールのログイン状態を確認してください。");
+  renderTitles(Math.max(0,Math.floor(amount)));
  }catch(error){
-  console.error("称号・所持金の取得に失敗:",error);
-  showError(error.message||"所持金を取得できません。プロフィールからログイン状態を確認してください。");
- }finally{
-  if(timeoutId)clearTimeout(timeoutId);
- }
+  console.error("称号情報の読み込みエラー:",error);
+  showError(error.name==="AbortError"?"所持金サーバーへの接続がタイムアウトしました。":"読み込みエラー："+(error.message||"原因不明"));
+ }finally{clearTimeout(timeout)}
 }
 loadTitles();
 async function updateHeader(){let amount=0;try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}if(supabase){try{const {data:{user}}=await supabase.auth.getUser();if(user){const {data,error}=await supabase.rpc("get_city_wallet");if(!error){const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0)}const {data:p}=await supabase.from("profiles").select("username").eq("id",user.id).maybeSingle();if(p?.username&&document.getElementById("accountOpen"))document.getElementById("accountOpen").textContent=p.username+"・ログイン中"}}catch(e){}}const moneyValue=document.getElementById("moneyValue");if(moneyValue)moneyValue.textContent=amount.toLocaleString("en-US")}
@@ -396,82 +396,6 @@ updateHeader();let furiganaOn=true;try{furiganaOn=localStorage.getItem("rikakids
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',disableCurrentMenu,{once:true});
   else disableCurrentMenu();
-})();
-</script>
-<!-- titles-runtime-guard-v2 -->
-<script>
-(function(){
- "use strict";
- var started=false;
- function run(){
-  if(started)return;started=true;
-  var name=document.getElementById("currentTitleName");
-  var balance=document.getElementById("currentTitleBalance");
-  var grid=document.getElementById("titleGrid");
-  if(!name||!balance||!grid)return;
-  name.textContent="称号情報を読み込んでいます…";
-  balance.textContent="ログイン情報と所持金を確認しています";
-  var base="https://tmgfcmzufamxuzsuedza.supabase.co";
-  var key="sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng";
-  var storage="sb-tmgfcmzufamxuzsuedza-auth-token";
-  var levels=[
-   {name:"覇者",min:100000,mark:"👑",cls:"haisha"},
-   {name:"ノーベル化学賞",min:50000,mark:"♛",cls:"nobel"},
-   {name:"伝説の科学者",min:20000,mark:"🌟",cls:"legend"},
-   {name:"科学の天才",min:10000,mark:"💡",cls:"genius"},
-   {name:"科学博士",min:6000,mark:"📘",cls:"doctor"},
-   {name:"科学マスター",min:3000,mark:"⚗️",cls:"master"},
-   {name:"科学チャレンジャー",min:1000,mark:"🔬",cls:"challenger"},
-   {name:"科学ビギナー",min:0,mark:"🧪",cls:"beginner"}
-  ];
-  function draw(amount){
-   var current=levels.find(function(x){return amount>=x.min})||levels[7];
-   name.textContent=current.mark+" "+current.name;
-   balance.textContent="現在の所持金："+amount.toLocaleString("ja-JP")+"＄";
-   grid.innerHTML=levels.map(function(x){
-    var earned=amount>=x.min,active=x.name===current.name;
-    return '<article class="title-card '+x.cls+(earned?' earned':' locked')+(active?' current':'')+'"'+(active?' aria-current="true"':'')+'><div class="title-card-copy"><h3>'+x.name+'</h3><span class="title-condition">'+x.min.toLocaleString("ja-JP")+' ＄以上</span></div></article>';
-   }).join("");
-  }
-  function fail(msg){name.textContent="称号を表示できません";balance.textContent=msg;}
-  function request(path,token,body){
-   var controller=new AbortController(),timer=setTimeout(function(){controller.abort()},10000);
-   return fetch(base+path,{method:"POST",headers:{"apikey":key,"Content-Type":"application/json","Authorization":"Bearer "+(token||key)},body:JSON.stringify(body||{}),cache:"no-store",signal:controller.signal})
-    .then(function(r){return r.text().then(function(t){var d;try{d=t?JSON.parse(t):null}catch(e){d={message:t}}if(!r.ok)throw new Error(d&& (d.message||d.msg||d.details)||"通信エラー ("+r.status+")");return d})})
-    .finally(function(){clearTimeout(timer)});
-  }
-  var watchdog=setTimeout(function(){fail("読み込みが完了しませんでした。ページを再読み込みしてください。")},15000);
-  (async function(){
-   try{
-    var raw=localStorage.getItem(storage);
-    if(!raw)throw new Error("ログイン情報がありません。プロフィールからログインしてください。");
-    var saved=JSON.parse(raw),session=saved.currentSession||saved;
-    if(!session.access_token||!session.user||!session.user.id)throw new Error("ログイン情報が無効です。プロフィールから再ログインしてください。");
-    if(session.expires_at&&session.expires_at*1000<Date.now()+60000){
-     if(!session.refresh_token)throw new Error("ログイン期限が切れています。プロフィールから再ログインしてください。");
-     session=await request("/auth/v1/token?grant_type=refresh_token",null,{refresh_token:session.refresh_token});
-     localStorage.setItem(storage,JSON.stringify(session));
-    }
-    var data=null;
-    try{data=await request("/rest/v1/rpc/get_city_wallet",session.access_token,{})}catch(e){console.warn("get_city_wallet failed",e)}
-    var wallet=Array.isArray(data)?data[0]:data;
-    var amount=wallet&&wallet.balance!=null?Number(wallet.balance):null;
-    if(amount===null||!Number.isFinite(amount)||amount===0){
-     try{
-      var rows=await request("/rest/v1/rpc/get_city_wallet_leaderboard",session.access_token,{});
-      var own=(rows||[]).find(function(x){return x.user_id===session.user.id});
-      if(own&&own.balance!=null)amount=Number(own.balance);
-     }catch(e){console.warn("leaderboard fallback failed",e)}
-    }
-    if(amount===null||!Number.isFinite(amount))throw new Error("所持金を取得できませんでした。プロフィールのログイン状態を確認してください。");
-    draw(Math.max(0,Math.floor(amount)));
-   }catch(e){
-    console.error("称号ページ独立読み込みエラー",e);
-    fail(e.name==="AbortError"?"所持金サーバーへの接続がタイムアウトしました。":(e.message||"所持金を読み込めませんでした。"));
-   }finally{clearTimeout(watchdog)}
-  })();
- }
- if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run,{once:true});else run();
 })();
 </script>
 </body>
