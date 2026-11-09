@@ -242,7 +242,7 @@ main{max-width:1180px!important;margin:0 auto!important;padding:54px 42px 76px!i
 
 <main>
 <div class="page-heading"><a class="page-heading-home" href="https://shunshunday.github.io/science-study/" aria-label="科学キッズ ホームへ"><span class="page-heading-home-mark">科</span><span class="page-heading-home-name">科学キッズ<small>SCIENCE KIDS</small></span></a><div class="eyebrow">SCIENCE KIDS / HONORS</div><h1>称号一覧</h1><p>クイズで集めた所持金に応じて、科学キッズの称号を獲得できます。</p></div>
-<section class="current-title-panel" aria-live="polite"><div class="current-title-label">あなたの現在の称号</div><div class="current-title-name" id="currentTitleName">🧪 科学ビギナー</div><div class="current-title-balance" id="currentTitleBalance">所持金を確認しています（取得後に更新）</div></section>
+<section class="current-title-panel" aria-live="polite"><div class="current-title-label">あなたの現在の称号</div><div class="current-title-name" id="currentTitleName">称号を取得中...</div><div class="current-title-balance" id="currentTitleBalance">本当の所持金を確認しています</div></section>
 <div class="list-heading"><h2>すべての称号</h2><span>全8段階</span></div><div class="title-mark-list" aria-label="称号とマーク">
 <div class="title-mark-item"><span class="title-mark-symbol">🧪</span><span>科学ビギナー</span><span class="title-mark-range">0＄～999＄</span></div>
 <div class="title-mark-item"><span class="title-mark-symbol">🔬</span><span>科学チャレンジャー</span><span class="title-mark-range">1,000＄～2,999＄</span></div>
@@ -294,7 +294,8 @@ main{max-width:1180px!important;margin:0 auto!important;padding:54px 42px 76px!i
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const SUPABASE_URL="https://tmgfcmzufamxuzsuedza.supabase.co",SUPABASE_KEY="sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng";
-const supabase=window.supabase?.createClient?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
+const STORAGE_KEY="sb-tmgfcmzufamxuzsuedza-auth-token";
+const supabase=window.supabase?.createClient?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:STORAGE_KEY}}):null;
 
 const titleLevels=[
 {name:"科学ビギナー",min:0,desc:"科学の世界へようこそ。ここから学びを始めよう。",mark:"●",cls:"beginner"},
@@ -310,34 +311,57 @@ const grid=document.getElementById("titleGrid");
 function emblem(level){if(level.cls==="haisha")return '<img src="./assets/haisha-crown.svg" alt="覇者の王冠">';return '<span aria-hidden="true">'+level.mark+'</span>'}
 function currentLevel(amount){let found=titleLevels[0];for(const level of titleLevels){if(amount>=level.min)found=level}return found}
 function renderTitles(amount){const current=currentLevel(amount);const marks={"科学ビギナー":"🧪","科学チャレンジャー":"🔬","科学マスター":"⚗️","科学博士":"📘","科学の天才":"💡","伝説の科学者":"🌟","ノーベル化学賞":"♛","覇者":"👑"};const name=document.getElementById("currentTitleName"),balance=document.getElementById("currentTitleBalance");if(name)name.textContent=(marks[current.name]||"")+" "+current.name;if(balance)balance.textContent="現在の所持金："+amount.toLocaleString("ja-JP")+"＄";grid.innerHTML=titleLevels.slice().reverse().map(level=>{const earned=amount>=level.min,isCurrent=level.name===current.name;return '<article class="title-card '+level.cls+(earned?" earned":" locked")+(isCurrent?" current":"")+(isCurrent?'" aria-current="true' : '')+'"><div class="title-card-copy"><h3>'+level.name+'</h3><span class="title-condition">'+level.min.toLocaleString("ja-JP")+' $ 以上</span></div></article>'}).join("")}
-async function loadTitles(){
- let amount=0;
- try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}
- // 通信待ちで「読み込み中...」のままにならないよう、まず端末内の所持金で表示する
- renderTitles(amount);
- if(!supabase)return;
+async function restoreTitleSession(){
+ let result=await supabase.auth.getSession();
+ if(result.data?.session?.user)return result.data.session;
  try{
-  const sessionResult=await Promise.race([
-   supabase.auth.getSession(),
-   new Promise((_,reject)=>setTimeout(()=>reject(new Error("認証確認がタイムアウトしました")),8000))
-  ]);
-  const user=sessionResult?.data?.session?.user;
-  if(!user)return;
-  const walletResult=await Promise.race([
-   supabase.rpc("get_city_wallet"),
-   new Promise((_,reject)=>setTimeout(()=>reject(new Error("所持金取得がタイムアウトしました")),8000))
-  ]);
-  if(walletResult.error)throw walletResult.error;
-  const wallet=Array.isArray(walletResult.data)?walletResult.data[0]:walletResult.data;
-  amount=Math.max(0,Math.floor(Number(wallet?.balance)||0));
+  const raw=localStorage.getItem(STORAGE_KEY);
+  if(raw){
+   const saved=JSON.parse(raw);
+   const session=saved?.currentSession||saved;
+   if(session?.access_token&&session?.refresh_token){
+    const restored=await supabase.auth.setSession({access_token:session.access_token,refresh_token:session.refresh_token});
+    if(!restored.error&&restored.data?.session?.user)return restored.data.session;
+   }
+  }
+ }catch(error){console.warn("保存済みログイン情報の復元に失敗:",error)}
+ const retry=await supabase.auth.getSession();
+ return retry.data?.session||null;
+}
+async function loadTitles(){
+ const name=document.getElementById("currentTitleName");
+ const balanceEl=document.getElementById("currentTitleBalance");
+ let amount=null;
+ try{const raw=localStorage.getItem("rikakids-guest-wallet");if(raw!==null){const n=Number(raw);if(Number.isFinite(n)&&n>=0)amount=Math.floor(n)}}catch(e){}
+ if(!supabase){
+  if(name)name.textContent="称号を取得できません";
+  if(balanceEl)balanceEl.textContent="ログイン情報を読み込めません。再読み込みしてください";
+  return;
+ }
+ try{
+  const session=await restoreTitleSession();
+  if(session?.user){
+   const {data:walletData,error:walletError}=await supabase.rpc("get_city_wallet");
+   if(!walletError){
+    const wallet=Array.isArray(walletData)?walletData[0]:walletData;
+    if(wallet?.balance!==undefined&&wallet?.balance!==null)amount=Math.max(0,Math.floor(Number(wallet.balance)||0));
+   }
+   if(amount===null||amount===0){
+    const {data:rows,error:rowsError}=await supabase.rpc("get_city_wallet_leaderboard");
+    if(!rowsError){
+     const own=(rows||[]).find(row=>row.user_id===session.user.id);
+     if(own?.balance!==undefined&&own?.balance!==null)amount=Math.max(0,Math.floor(Number(own.balance)||0));
+    }
+   }
+   if(amount===null)throw new Error("アカウントの所持金を取得できませんでした");
+  }else if(amount===null){amount=0}
   renderTitles(amount);
  }catch(e){
-  console.warn("所持金を読み込めませんでした。端末内の保存額を表示します。",e);
-  const balance=document.getElementById("currentTitleBalance");
-  if(balance)balance.textContent="所持金を取得できませんでした。表示中："+amount.toLocaleString("ja-JP")+"＄";
+  console.error("称号と所持金の取得に失敗:",e);
+  if(name)name.textContent="称号を取得できません";
+  if(balanceEl)balanceEl.textContent="所持金を取得できません。ページを再読み込みしてください";
  }
 }
-
 loadTitles();
 async function updateHeader(){let amount=0;try{amount=Math.max(0,Math.floor(Number(localStorage.getItem("rikakids-guest-wallet")||0)))}catch(e){}if(supabase){try{const {data:{user}}=await supabase.auth.getUser();if(user){const {data,error}=await supabase.rpc("get_city_wallet");if(!error){const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0)}const {data:p}=await supabase.from("profiles").select("username").eq("id",user.id).maybeSingle();if(p?.username&&document.getElementById("accountOpen"))document.getElementById("accountOpen").textContent=p.username+"・ログイン中"}}catch(e){}}const moneyValue=document.getElementById("moneyValue");if(moneyValue)moneyValue.textContent=amount.toLocaleString("en-US")}
 updateHeader();let furiganaOn=true;try{furiganaOn=localStorage.getItem("rikakids-furigana")!=="off"}catch(e){}function paintFurigana(){const state=document.getElementById("furiganaState"),toggle=document.getElementById("furiganaToggle");if(state)state.textContent=furiganaOn?"ON":"OFF";document.documentElement.dataset.furigana=furiganaOn?"on":"off";if(toggle)toggle.setAttribute("aria-pressed",String(furiganaOn))}paintFurigana();const furiganaToggle=document.getElementById("furiganaToggle");if(furiganaToggle)furiganaToggle.addEventListener("click",()=>{furiganaOn=!furiganaOn;try{localStorage.setItem("rikakids-furigana",furiganaOn?"on":"off")}catch(e){}paintFurigana()});
