@@ -309,13 +309,11 @@ updateHeader();let furiganaOn=true;try{furiganaOn=localStorage.getItem("rikakids
   function disableCurrentMenu(){
     var nav=document.querySelector('.science-side-nav');
     if(!nav)return;
-    var current=location.pathname.replace(/\\/$/,'');
-    if(!current)current='/';
     function normalize(path){
-      path=path.replace(/\\/index\\.html$/,'').replace(/\\/+$/,'');
+      path=path.replace(/\/index\.html$/,'').replace(/\/+$/,'');
       return path||'/';
     }
-    current=normalize(current);
+    var current=normalize(location.pathname);
     nav.querySelectorAll('a[href]').forEach(function(link){
       try{
         var target=normalize(new URL(link.getAttribute('href'),location.href).pathname);
