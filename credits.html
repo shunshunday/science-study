@@ -503,4 +503,37 @@ aside.science-sidebar .science-side-name small{
  }catch(error){console.warn('アカウント表示を更新できませんでした',error);}
 })();
 </script>
+<script id="science-topbar-session-cache">
+(function(){
+ const KEY='science-kids-topbar-cache-v1';
+ const MAX_AGE=10*60*1000;
+ const account=document.getElementById('accountOpen');
+ const money=document.getElementById('moneyValue');
+ if(!account&&!money)return;
+ let cached={};
+ try{cached=JSON.parse(sessionStorage.getItem(KEY)||'{}')||{};}catch(e){}
+ if(cached.updatedAt&&Date.now()-cached.updatedAt<MAX_AGE){
+  if(account&&cached.accountText){account.textContent=cached.accountText;if(cached.accountLabel)account.setAttribute('aria-label',cached.accountLabel);else account.removeAttribute('aria-label');account.style.visibility='visible';}
+  if(money&&cached.moneyText!==undefined){money.textContent=cached.moneyText;money.style.visibility='visible';}
+ }
+ const save=()=>{
+  try{
+   const previous=JSON.parse(sessionStorage.getItem(KEY)||'{}')||{};
+   const next={...previous,updatedAt:Date.now()};
+   if(account&&account.textContent.trim()){
+    next.accountText=account.textContent.trim();
+    next.accountLabel=account.getAttribute('aria-label')||'';
+   }
+   if(money&&money.style.visibility!=='hidden'&&money.textContent.trim())next.moneyText=money.textContent.trim();
+   sessionStorage.setItem(KEY,JSON.stringify(next));
+  }catch(e){}
+ };
+ if(typeof MutationObserver!=='undefined'){
+  const observer=new MutationObserver(save);
+  if(account)observer.observe(account,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['aria-label','style']});
+  if(money)observer.observe(money,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['style']});
+ }
+ save();
+})();
+</script>
 </body></html>
