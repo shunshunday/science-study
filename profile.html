@@ -437,7 +437,7 @@ aside.science-sidebar .science-side-name small{
      <div class="member-stats">
       
       
-      <div class="member-stat"><span>会員ランク</span><strong id="memberStatus" style="font-size:13px">通常会員</strong></div>
+      <div class="member-stat"><span>会員ランク</span><strong id="memberStatus" style="font-size:13px">ノーマル</strong></div>
       <div class="member-stat"><span>所持金</span><strong id="moneyBalance">$0</strong></div>
       <div class="member-stat"><span>累計プレイ時間</span><strong id="playtime">0分</strong></div>
      </div>
@@ -771,7 +771,7 @@ async function refreshProfile(){
   const card=document.getElementById("memberCard");
   card.classList.toggle("gold",isGold);
   card.classList.toggle("normal",!isGold);
-  document.getElementById("memberStatus").textContent=isGold?"ゴールド":"通常会員";
+  document.getElementById("memberStatus").textContent=isGold?"ゴールド":"ノーマル";
   statusElement.hidden=true;
   document.getElementById("profileAuth").hidden=true;
   document.getElementById("profile").hidden=false;
