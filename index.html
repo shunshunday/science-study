@@ -1535,6 +1535,17 @@ document.getElementById('authForm').addEventListener('submit',async e=>{
    const {error}=await supabaseClient.auth.signInWithPassword({email:usernameEmail(username),password});if(error)throw error;
   }
   authMessage.textContent='';await refreshAccount();
+  // 新規登録後、会員データへの引き継ぎが成功して保留キーが消えた場合だけ、ゲスト時代の元データも念のため消去
+  if(authMode==='signup'){
+   try{
+    if(!localStorage.getItem(GUEST_WALLET_IMPORT_KEY)){
+     localStorage.removeItem('rikakids-guest-wallet');
+     localStorage.removeItem('rikakids-guest-wallet-v2');
+    }
+    if(!localStorage.getItem(GUEST_PLAYTIME_IMPORT_KEY))localStorage.removeItem(GUEST_PLAYTIME_KEY);
+   }catch(storageError){console.warn('会員登録後のブラウザ保存データ整理に失敗:',storageError);}
+   await refreshTopWallet();
+  }
  }catch(err){authMessage.textContent=authMode==='signup'?'登録できませんでした。ユーザー名が使用済みか、設定を確認してください。':'ログインできません。ユーザー名とパスワードを確認してください。';}
  finally{submit.disabled=false;}
 });
