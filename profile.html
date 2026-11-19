@@ -559,6 +559,12 @@ function titleFor(n){
 }
 function showStatus(message){statusElement.hidden=false;statusElement.textContent=message;}
 function usernameEmail(username){return username.toLowerCase()+"@accounts.rikakids.invalid";}
+ function isDuplicateUsernameError(error){
+  const code=String(error?.code||error?.error_code||'').toLowerCase();
+  const message=String(error?.message||error||'').toLowerCase();
+  return ['user_already_exists','email_exists','email_not_unique'].includes(code)
+   ||/(already registered|already exists|already been registered|already taken|user already|email.*already|already.*email|duplicate key)/.test(message);
+ }
 const GUEST_WALLET_IMPORT_KEY="rikakids-guest-wallet-import-pending";
 function getGuestWallet(){
  try{const raw=localStorage.getItem("rikakids-guest-wallet");if(raw===null)return 0;const amount=Number(raw);return Number.isFinite(amount)&&amount>=0?Math.floor(amount):0;}catch(e){return 0;}
@@ -668,7 +674,13 @@ document.getElementById("profileAuthForm").addEventListener("submit",async event
   message.textContent="ログインしました。プロフィールを読み込んでいます…";
   await refreshProfile();
  }catch(error){
-  message.textContent=profileAuthMode==="login"?"ログインできません。ユーザー名とパスワードを確認してください。":(error.message||"新規登録できませんでした。ユーザー名が使用済みか、設定を確認してください。");
+   if(profileAuthMode==="login"){
+    message.textContent="ログインできません。ユーザー名とパスワードを確認してください。";
+   }else{
+    message.textContent=isDuplicateUsernameError(error)
+     ?"このユーザー名はすでに使われています。別のユーザー名を入力してください。"
+     :"新規会員登録に失敗しました。入力内容を確認して、もう一度お試しください。";
+   }
  }finally{button.disabled=false;}
 });
 function saveSession(session){
