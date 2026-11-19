@@ -303,10 +303,10 @@ const titleLevels=[
 {name:"科学チャレンジャー",min:100000,desc:"クイズに挑戦し、知識を積み重ねている証。",mark:"✦",cls:"challenger"},
 {name:"科学マスター",min:300000,desc:"さまざまな分野の科学を身につけた証。",mark:"✧",cls:"master"},
 {name:"科学博士",min:600000,desc:"科学の知識を深く理解してきた証。",mark:"⚛",cls:"doctor"},
-{name:"科学の天才",min:100000000,desc:"幅広い科学の問題に答えられる実力者。",mark:"★",cls:"genius"},
+{name:"科学の天才",min:1000000,desc:"幅広い科学の問題に答えられる実力者。",mark:"★",cls:"genius"},
 {name:"伝説の科学者",min:2000000,desc:"科学キッズでも一目置かれる知識の持ち主。",mark:"◆",cls:"legend"},
 {name:"ノーベル化学賞",min:5000000,desc:"化学への深い探究心をたたえる、特別な金章。",mark:"♛",cls:"nobel"},
-{name:"覇者",min:100000000000,desc:"すべてを極めた者だけが到達できる最高位。",mark:"haisha",cls:"haisha"}
+{name:"覇者",min:10000000,desc:"すべてを極めた者だけが到達できる最高位。",mark:"haisha",cls:"haisha"}
 ];
 const grid=document.getElementById("titleGrid");
 function emblem(level){if(level.cls==="haisha")return '<img src="./assets/haisha-crown.svg" alt="覇者の王冠">';return '<span aria-hidden="true">'+level.mark+'</span>'}
