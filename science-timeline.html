@@ -659,6 +659,17 @@ aside.science-sidebar .science-side-name small{
 .science-sidebar .science-side-nav,.science-sidebar .science-side-nav a{pointer-events:auto!important}
 .science-sidebar .science-side-nav a[aria-current="page"]{pointer-events:auto!important;cursor:pointer!important}
 </style>
+<style id="science-timeline-control-hitbox">
+/* 年表ページの操作部品を、他ページのサイドメニューと同様に親要素側で確実にクリック判定させる */
+.timeline-tabs{position:relative;isolation:isolate}
+.timeline-tabs::after{z-index:0;pointer-events:none}
+.timeline-tabs .timeline-tab{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:104px;pointer-events:auto!important;cursor:pointer;touch-action:manipulation}
+.timeline-filters .timeline-filter{position:relative;z-index:1;min-height:40px;pointer-events:auto!important;cursor:pointer;touch-action:manipulation}
+.nobel-controls,.nobel-controls label{position:relative;z-index:1;pointer-events:auto}
+.nobel-controls select,.nobel-controls input{position:relative;z-index:2;min-height:42px;pointer-events:auto!important;cursor:pointer}
+.nobel-retry,.nobel-source a{position:relative;z-index:1;pointer-events:auto!important;cursor:pointer}
+#historyView[hidden],#nobelView[hidden]{display:none!important}
+</style>
 </head>
 <body>
 <aside class="science-sidebar">
