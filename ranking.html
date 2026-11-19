@@ -611,30 +611,38 @@ document.getElementById("furiganaToggle").addEventListener("click",()=>{
  const KEY='science-kids-topbar-cache-v1';
  const MAX_AGE=10*60*1000;
  const account=document.getElementById('accountOpen');
- const money=document.getElementById('moneyValue');
- if(!account&&!money)return;
+ if(!account)return;
  let cached={};
- try{cached=JSON.parse(sessionStorage.getItem(KEY)||'{}')||{};}catch(e){}
+ try{
+  cached=JSON.parse(sessionStorage.getItem(KEY)||'{}')||{};
+  if(Object.prototype.hasOwnProperty.call(cached,'moneyText')){
+   delete cached.moneyText;
+   sessionStorage.setItem(KEY,JSON.stringify(cached));
+  }
+ }catch(e){}
  if(cached.updatedAt&&Date.now()-cached.updatedAt<MAX_AGE){
-  if(account&&cached.accountText){account.textContent=cached.accountText;if(cached.accountLabel)account.setAttribute('aria-label',cached.accountLabel);else account.removeAttribute('aria-label');account.style.visibility='visible';}
-  if(money&&cached.moneyText!==undefined){money.textContent=cached.moneyText;money.style.visibility='visible';}
+  if(cached.accountText){
+   account.textContent=cached.accountText;
+   if(cached.accountLabel)account.setAttribute('aria-label',cached.accountLabel);
+   else account.removeAttribute('aria-label');
+   account.style.visibility='visible';
+  }
  }
  const save=()=>{
   try{
    const previous=JSON.parse(sessionStorage.getItem(KEY)||'{}')||{};
    const next={...previous,updatedAt:Date.now()};
-   if(account&&account.textContent.trim()){
+   delete next.moneyText;
+   if(account.textContent.trim()){
     next.accountText=account.textContent.trim();
     next.accountLabel=account.getAttribute('aria-label')||'';
    }
-   if(money&&money.style.visibility!=='hidden'&&money.textContent.trim())next.moneyText=money.textContent.trim();
    sessionStorage.setItem(KEY,JSON.stringify(next));
   }catch(e){}
  };
  if(typeof MutationObserver!=='undefined'){
   const observer=new MutationObserver(save);
-  if(account)observer.observe(account,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['aria-label','style']});
-  if(money)observer.observe(money,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['style']});
+  observer.observe(account,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['aria-label','style']});
  }
  save();
 })();
