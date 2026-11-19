@@ -1367,7 +1367,13 @@ async function importGuestPlaytimeForMember(){
    amount=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_IMPORT_KEY)||0)));
    if(!amount){amount=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0)));if(amount>0)localStorage.setItem(GUEST_PLAYTIME_IMPORT_KEY,String(amount));}
   }catch(e){return 0;}
-  if(!amount)return 0;
+  if(!amount){
+   try{
+    if(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0)<=0)localStorage.removeItem(GUEST_PLAYTIME_KEY);
+    if(Number(localStorage.getItem(GUEST_PLAYTIME_IMPORT_KEY)||0)<=0)localStorage.removeItem(GUEST_PLAYTIME_IMPORT_KEY);
+   }catch(e){}
+   return 0;
+  }
   const importSeconds=Math.min(604800,amount);
   const {error}=await supabaseClient.rpc("import_legacy_playtime",{p_seconds:importSeconds});
   if(error)throw error;
@@ -1585,8 +1591,14 @@ async function importPendingGuestWallet(){
   const wallet=Array.isArray(data)?data[0]:data;
   if(!wallet||!Number.isFinite(Number(wallet.balance)))throw new Error('引き継ぎ結果を確認できませんでした。');
   const afterBalance=Math.max(0,Number(wallet.balance)||0);
-  if(afterBalance<beforeBalance+amount)throw new Error('この会員への引き継ぎは既に実行済みか、残高の増加を確認できませんでした。元データは残しています。');
-  // DBの残高が増えたことを確認できた場合だけ、ブラウザ側の元データを削除する。
+  const newlyImported=afterBalance>=beforeBalance+amount;
+  if(!newlyImported){
+   // 二重引き継ぎ時は残高が増えないため、DBの記録金額が一致した場合だけ削除する。
+   const {data:recordedAmount,error:recordError}=await supabaseClient.rpc('get_guest_wallet_imported_amount');
+   if(recordError)throw recordError;
+   if(Number(recordedAmount)!==amount)throw new Error('引き継ぎ済み金額を確認できませんでした。元データは保持しています。');
+  }
+  // 新規保存、または同じ金額の保存済み記録を確認できた場合だけブラウザ側を削除する。
   localStorage.removeItem('rikakids-guest-wallet');
   localStorage.removeItem('rikakids-guest-wallet-v2');
   localStorage.removeItem(GUEST_WALLET_IMPORT_KEY);
