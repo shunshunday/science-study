@@ -120,7 +120,7 @@ async function getPublicPlayer(username){
   return data;
  }finally{clearTimeout(timer);}
 }
-function titleFor(n){if(n>=100000)return "覇者";if(n>=5000000)return "ノーベル賞";if(n>=2000000)return "伝説の科学者";if(n>=100000000)return "科学の天才";if(n>=600000)return "科学博士";if(n>=300000)return "科学マスター";if(n>=100000)return "科学チャレンジャー";return "科学ビギナー";}
+function titleFor(n){if(n>=10000000)return "覇者";if(n>=5000000)return "ノーベル賞";if(n>=2000000)return "伝説の科学者";if(n>=1000000)return "科学の天才";if(n>=600000)return "科学博士";if(n>=300000)return "科学マスター";if(n>=100000)return "科学チャレンジャー";return "科学ビギナー";}
 function playtime(s){const m=Math.floor(Math.max(0,Number(s)||0)/60),h=Math.floor(m/60);return h?h+"時間"+m%60+"分":m+"分";}
 (async()=>{
  const username=new URLSearchParams(location.search).get("user")||"";
