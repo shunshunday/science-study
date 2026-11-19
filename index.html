@@ -1300,7 +1300,7 @@ async function answerQuestion(choice,button){
  if(!correct)button.classList.add('wrong');
  if(correct){
   const earned=await saveCorrectAnswer(q.category);
-  quizFeedback.textContent=earned===true?'正解！ +$1,000 獲得！':(earned===null?'正解！ログインすると+$1,000が貯まります。':'正解！資金の保存に失敗しました。再ログインして確認してください。');
+  quizFeedback.textContent=earned===true?'正解！ +$1,000 獲得！':(earned===null?'正解！ログインすると+$1,000が貯まります。':(earned==='session-invalid'?'正解！ログイン情報が古くなっています。いったんログアウトして、現在の会員アカウントで再ログインしてください。':'正解！資金の保存に失敗しました。再ログインして確認してください。'));
  }else{
   quizFeedback.textContent='';
   const answerLine=document.createElement('div');
@@ -1586,7 +1586,12 @@ async function saveCorrectAnswer(unit){
   profileView.classList.toggle('profile-view-haki',assets>=10000000);
   await refreshTopWallet();
   return true;
- }catch(e){console.error('会員データへの所持金保存に失敗しました',e);return false;}
+ }catch(e){
+  console.error('会員データへの所持金保存に失敗しました',e);
+  // 削除済みアカウントの古いセッションが残っている場合、DBの外部キー違反になる。
+  if(e?.code==='23503'||String(e?.message||'').includes('quiz_attempts_user_id_fkey'))return 'session-invalid';
+  return false;
+ }
 }
 async function refreshTopAccountButton(sessionOverride){
  const link=document.getElementById('accountOpen');
