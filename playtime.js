@@ -14,7 +14,10 @@
     const {error}=await db.rpc("increment_playtime",{p_seconds:amount});
     if(error){console.error("プレイ時間の保存に失敗:",error);break;}
     pending-=amount;
-    try{localStorage.setItem(key(id),String(pending));}catch(e){}
+    try{
+     if(pending>0)localStorage.setItem(key(id),String(pending));
+     else localStorage.removeItem(key(id));
+    }catch(e){}
    }
   })();
   try{await syncing;}finally{syncing=null;}
@@ -32,7 +35,10 @@
   if(!id||userId===id)return;
   stop();
   userId=id;
-  try{pending=Math.max(0,Math.floor(Number(localStorage.getItem(key(id))||0)));}catch(e){pending=0;}
+  try{
+   pending=Math.max(0,Math.floor(Number(localStorage.getItem(key(id))||0)));
+   if(pending<=0)localStorage.removeItem(key(id));
+  }catch(e){pending=0;}
   try{
    const oldKey="rikakids-playtime-"+id,old=Number(localStorage.getItem(oldKey)||0);
    if(old>0){const {error}=await db.rpc("import_legacy_playtime",{p_seconds:Math.min(604800,Math.floor(old))});if(error)throw error;localStorage.removeItem(oldKey);}
