@@ -1358,19 +1358,24 @@ function stopGuestPlaytimeTracking(){
  if(guestPlaytimeTimer)clearInterval(guestPlaytimeTimer);
  guestPlaytimeTimer=null;guestPlaytimeLastTick=0;
 }
+let guestPlaytimeImportPromise=null;
 async function importGuestPlaytimeForMember(){
- let amount=0;
- try{
-  amount=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_IMPORT_KEY)||0)));
-  if(!amount){amount=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0)));if(amount>0)localStorage.setItem(GUEST_PLAYTIME_IMPORT_KEY,String(amount));}
- }catch(e){return 0;}
- if(!amount)return 0;
- const {error}=await supabaseClient.rpc("import_legacy_playtime",{p_seconds:Math.min(604800,amount)});
- if(error)throw error;
- const remaining=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0))-amount);
- localStorage.setItem(GUEST_PLAYTIME_KEY,String(remaining));
- localStorage.removeItem(GUEST_PLAYTIME_IMPORT_KEY);
- return amount;
+ if(guestPlaytimeImportPromise)return guestPlaytimeImportPromise;
+ guestPlaytimeImportPromise=(async()=>{
+  let amount=0;
+  try{
+   amount=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_IMPORT_KEY)||0)));
+   if(!amount){amount=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0)));if(amount>0)localStorage.setItem(GUEST_PLAYTIME_IMPORT_KEY,String(amount));}
+  }catch(e){return 0;}
+  if(!amount)return 0;
+  const {error}=await supabaseClient.rpc("import_legacy_playtime",{p_seconds:Math.min(604800,amount)});
+  if(error)throw error;
+  const remaining=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0))-amount);
+  localStorage.setItem(GUEST_PLAYTIME_KEY,String(remaining));
+  localStorage.removeItem(GUEST_PLAYTIME_IMPORT_KEY);
+  return amount;
+ })();
+ try{return await guestPlaytimeImportPromise;}finally{guestPlaytimeImportPromise=null;}
 }
 // 表示中かつフォーカス中の時間だけをSupabaseへ累計保存
 let playtimeUserId=null;
@@ -1476,14 +1481,21 @@ async function refreshAccount(){
  document.getElementById('accountSetup').hidden=true;
  const {data:{session}}=await supabaseClient.auth.getSession();
  if(!session){stopPlaytimeTracking();accountOpen.textContent='ログイン・新規会員登録';authView.hidden=false;profileView.hidden=true;return;}
+ let importedAmount=0,importedSeconds=0;
  try{
-  const importedAmount=await importPendingGuestWallet();
-  if(importedAmount>0)authMessage.textContent='ブラウザに保存されていた所持金 '+importedAmount.toLocaleString('en-US')+' を会員データへ引き継ぎました。';
+  importedAmount=await importPendingGuestWallet();
+  importedSeconds=await importGuestPlaytimeForMember();
+  if(importedAmount>0||importedSeconds>0){
+   const details=[];
+   if(importedAmount>0)details.push('所持金 '+importedAmount.toLocaleString('en-US'));
+   if(importedSeconds>0)details.push('プレイ時間 '+Math.floor(importedSeconds/60)+'分');
+   authMessage.textContent='ブラウザに保存されていた'+details.join('・')+'を会員データへ引き継ぎました。';
+  }
  }catch(importError){
-  console.error('ゲスト所持金の引き継ぎに失敗しました:',importError);
-  authMessage.textContent='会員登録・ログインは完了しましたが、所持金の引き継ぎは未完了です。再度ログインすると自動で再試行します。';
+  console.error('ブラウザ保存データの引き継ぎに失敗しました:',importError);
+  authMessage.textContent='ログインは完了しましたが、ブラウザ保存データの引き継ぎが一部未完了です。再読み込み後に自動で再試行します。';
  }
- startPlaytimeTracking(session.user.id);
+ await startPlaytimeTracking(session.user.id);
  authView.hidden=true;profileView.hidden=false;
  const {data:profile,error}=await supabaseClient.from('profiles').select('username').eq('id',session.user.id).single();
  if(error){accountOpen.textContent='ログイン中';accountOpen.setAttribute('aria-label','ログイン中。マイページを開く');document.getElementById('profileMessage').textContent='プロフィールを読み込めません。';return;}
@@ -1509,6 +1521,12 @@ document.getElementById('authForm').addEventListener('submit',async e=>{
    // 登録前にブラウザへ保存されていた所持金を、登録後に安全に引き継げるよう退避
    const guestBalance=getGuestWallet();
    if(guestBalance>0){try{localStorage.setItem(GUEST_WALLET_IMPORT_KEY,String(guestBalance));}catch(storageError){console.warn('所持金引き継ぎ用データを準備できませんでした:',storageError);}}
+   // 登録ボタンを押した時点までのゲストプレイ時間も確定して、会員データへ引き継ぐ
+   try{
+    flushGuestPlaytime(true);
+    const guestSeconds=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0)));
+    if(guestSeconds>0)localStorage.setItem(GUEST_PLAYTIME_IMPORT_KEY,String(guestSeconds));
+   }catch(storageError){console.warn('プレイ時間引き継ぎ用データを準備できませんでした:',storageError);}
    const {data,error}=await supabaseClient.auth.signUp({email:usernameEmail(username),password,options:{data:{username}}});
    if(error)throw error;
    if(!data.session){authMessage.textContent='登録できました。管理者側でメール確認を無効にする必要があります。';return;}
