@@ -34,7 +34,7 @@ main{margin:0 0 0 238px;padding:34px 40px 64px;min-height:calc(100vh - 78px)}.pa
 <style id="science-sidebar-one-source-final">
 /* 全ページ共通の最終寸法。過去の個別指定をこのルールで上書き */
 aside.science-sidebar{
- position:fixed!important;z-index:1000!important;top:0!important;bottom:0!important;left:0!important;right:auto!important;
+ position:fixed!important;z-index:100000!important;top:0!important;bottom:0!important;left:0!important;right:auto!important;
  width:238px!important;min-width:238px!important;max-width:238px!important;height:100vh!important;
  margin:0!important;padding:36px 20px!important;box-sizing:border-box!important;
  display:flex!important;flex-direction:column!important;align-items:stretch!important;
@@ -245,14 +245,14 @@ main{max-width:1180px!important;margin:0 auto!important;padding:54px 42px 76px!i
 <div class="page-heading"><a class="page-heading-home" href="https://shunshunday.github.io/science-study/" aria-label="科学キッズ ホームへ"><span class="page-heading-home-mark">科</span><span class="page-heading-home-name">科学キッズ<small>SCIENCE KIDS</small></span></a><div class="eyebrow">SCIENCE KIDS / HONORS</div><h1>称号一覧</h1><p>クイズで集めた所持金に応じて、科学キッズの称号を獲得できます。</p></div>
 
 <div class="list-heading"><h2>すべての称号</h2><span>全8段階</span></div><div class="title-mark-list" aria-label="称号とマーク">
-<div class="title-mark-item"><span class="title-mark-symbol">🧪</span><span>科学ビギナー</span><span class="title-mark-range">0＄～999＄</span></div>
-<div class="title-mark-item"><span class="title-mark-symbol">🔬</span><span>科学チャレンジャー</span><span class="title-mark-range">1,000＄～2,999＄</span></div>
-<div class="title-mark-item"><span class="title-mark-symbol">⚗️</span><span>科学マスター</span><span class="title-mark-range">3,000＄～5,999＄</span></div>
-<div class="title-mark-item"><span class="title-mark-symbol">📘</span><span>科学博士</span><span class="title-mark-range">6,000＄～9,999＄</span></div>
-<div class="title-mark-item"><span class="title-mark-symbol">💡</span><span>科学の天才</span><span class="title-mark-range">10,000＄～19,999＄</span></div>
-<div class="title-mark-item"><span class="title-mark-symbol">🌟</span><span>伝説の科学者</span><span class="title-mark-range">20,000＄～49,999＄</span></div>
-<div class="title-mark-item nobel"><span class="title-mark-symbol">♛</span><span>ノーベル化学賞</span><span class="title-mark-range">50,000＄～99,999＄</span></div>
-<div class="title-mark-item haisha"><span class="title-mark-symbol"><img src="./assets/haisha-crown.svg" alt="王冠"></span><span>覇者</span><span class="title-mark-range">100,000＄以上</span></div>
+<div class="title-mark-item"><span class="title-mark-symbol">🧪</span><span>科学ビギナー</span><span class="title-mark-range">0＄～99,999＄</span></div>
+<div class="title-mark-item"><span class="title-mark-symbol">🔬</span><span>科学チャレンジャー</span><span class="title-mark-range">100,000＄～299,999＄</span></div>
+<div class="title-mark-item"><span class="title-mark-symbol">⚗️</span><span>科学マスター</span><span class="title-mark-range">300,000＄～599,999＄</span></div>
+<div class="title-mark-item"><span class="title-mark-symbol">📘</span><span>科学博士</span><span class="title-mark-range">600,000＄～999,999＄</span></div>
+<div class="title-mark-item"><span class="title-mark-symbol">💡</span><span>科学の天才</span><span class="title-mark-range">1,000,000＄～1,999,999＄</span></div>
+<div class="title-mark-item"><span class="title-mark-symbol">🌟</span><span>伝説の科学者</span><span class="title-mark-range">2,000,000＄～4,999,999＄</span></div>
+<div class="title-mark-item nobel"><span class="title-mark-symbol">♛</span><span>ノーベル化学賞</span><span class="title-mark-range">5,000,000＄～9,999,999＄</span></div>
+<div class="title-mark-item haisha"><span class="title-mark-symbol"><img src="./assets/haisha-crown.svg" alt="王冠"></span><span>覇者</span><span class="title-mark-range">10,000,000＄以上</span></div>
 </div><section class="title-grid" id="titleGrid"></section><p class="page-note">※称号は現在の所持金（$）で判定します。所持金が条件に達すると自動で切り替わります。</p>
 </main>
 <style>
@@ -300,13 +300,13 @@ const supabase=window.supabase?.createClient?window.supabase.createClient(SUPABA
 
 const titleLevels=[
 {name:"科学ビギナー",min:0,desc:"科学の世界へようこそ。ここから学びを始めよう。",mark:"●",cls:"beginner"},
-{name:"科学チャレンジャー",min:1000,desc:"クイズに挑戦し、知識を積み重ねている証。",mark:"✦",cls:"challenger"},
-{name:"科学マスター",min:3000,desc:"さまざまな分野の科学を身につけた証。",mark:"✧",cls:"master"},
-{name:"科学博士",min:6000,desc:"科学の知識を深く理解してきた証。",mark:"⚛",cls:"doctor"},
-{name:"科学の天才",min:10000,desc:"幅広い科学の問題に答えられる実力者。",mark:"★",cls:"genius"},
-{name:"伝説の科学者",min:20000,desc:"科学キッズでも一目置かれる知識の持ち主。",mark:"◆",cls:"legend"},
-{name:"ノーベル化学賞",min:50000,desc:"化学への深い探究心をたたえる、特別な金章。",mark:"♛",cls:"nobel"},
-{name:"覇者",min:100000,desc:"すべてを極めた者だけが到達できる最高位。",mark:"haisha",cls:"haisha"}
+{name:"科学チャレンジャー",min:100000,desc:"クイズに挑戦し、知識を積み重ねている証。",mark:"✦",cls:"challenger"},
+{name:"科学マスター",min:300000,desc:"さまざまな分野の科学を身につけた証。",mark:"✧",cls:"master"},
+{name:"科学博士",min:600000,desc:"科学の知識を深く理解してきた証。",mark:"⚛",cls:"doctor"},
+{name:"科学の天才",min:100000000,desc:"幅広い科学の問題に答えられる実力者。",mark:"★",cls:"genius"},
+{name:"伝説の科学者",min:2000000,desc:"科学キッズでも一目置かれる知識の持ち主。",mark:"◆",cls:"legend"},
+{name:"ノーベル化学賞",min:5000000,desc:"化学への深い探究心をたたえる、特別な金章。",mark:"♛",cls:"nobel"},
+{name:"覇者",min:100000000000,desc:"すべてを極めた者だけが到達できる最高位。",mark:"haisha",cls:"haisha"}
 ];
 const grid=document.getElementById("titleGrid");
 function emblem(level){if(level.cls==="haisha")return '<img src="./assets/haisha-crown.svg" alt="覇者の王冠">';return '<span aria-hidden="true">'+level.mark+'</span>'}
