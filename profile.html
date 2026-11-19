@@ -631,6 +631,7 @@ async function importPendingGuestWallet(){
  try{
   const cached=JSON.parse(sessionStorage.getItem("science-kids-topbar-cache-v1")||"{}");
   cached.moneyText=afterBalance.toLocaleString("en-US");cached.updatedAt=Date.now();
+  delete cached.moneyText;
   sessionStorage.setItem("science-kids-topbar-cache-v1",JSON.stringify(cached));
  }catch(e){}
  return amount;
@@ -745,7 +746,10 @@ async function syncProfilePlaytime(){
     if(Number.isFinite(Number(total)))document.getElementById("playtime").textContent=formatPlaytime(Number(total));
    }catch(error){console.error("プレイ時間の保存に失敗:",error);break;}
    profilePendingSeconds-=chunk;
-   try{localStorage.setItem(profilePendingKey(id),String(profilePendingSeconds));}catch(e){}
+   try{
+    if(profilePendingSeconds>0)localStorage.setItem(profilePendingKey(id),String(profilePendingSeconds));
+    else localStorage.removeItem(profilePendingKey(id));
+   }catch(e){}
   }
  })();
  try{await profileSyncPromise;}finally{profileSyncPromise=null;}
@@ -766,7 +770,10 @@ function flushProfilePlaytime(forcePreviousActive=false){
 }
 async function startProfilePlaytime(id){
  profilePlaytimeUserId=id;
- try{profilePendingSeconds=Math.max(0,Math.floor(Number(localStorage.getItem(profilePendingKey(id))||0)));}catch(e){profilePendingSeconds=0;}
+ try{
+  profilePendingSeconds=Math.max(0,Math.floor(Number(localStorage.getItem(profilePendingKey(id))||0)));
+  if(profilePendingSeconds<=0)localStorage.removeItem(profilePendingKey(id));
+ }catch(e){profilePendingSeconds=0;}
  try{
   const legacyKey="rikakids-playtime-"+id;
   const legacySeconds=Number(localStorage.getItem(legacyKey)||0);
