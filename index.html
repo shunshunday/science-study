@@ -1407,7 +1407,10 @@ async function syncPendingPlaytime(){
     break;
    }
    pendingPlaytimeSeconds-=chunk;
-   try{localStorage.setItem(playtimePendingKey(userId),String(pendingPlaytimeSeconds));}catch(e){}
+   try{
+    if(pendingPlaytimeSeconds>0)localStorage.setItem(playtimePendingKey(userId),String(pendingPlaytimeSeconds));
+    else localStorage.removeItem(playtimePendingKey(userId));
+   }catch(e){}
   }
  })();
  try{await playtimeSyncPromise;}finally{playtimeSyncPromise=null;}
@@ -1443,6 +1446,7 @@ async function startPlaytimeTracking(userId){
  try{
   const pending=Number(localStorage.getItem(playtimePendingKey(userId))||0);
   pendingPlaytimeSeconds=Number.isFinite(pending)?Math.max(0,Math.floor(pending)):0;
+  if(pendingPlaytimeSeconds<=0)localStorage.removeItem(playtimePendingKey(userId));
  }catch(e){pendingPlaytimeSeconds=0;}
  // 旧バージョンで端末内にだけ保存されていた時間を一度だけ移行
  try{
@@ -1626,6 +1630,7 @@ async function importPendingGuestWallet(){
   try{
    const cached=JSON.parse(sessionStorage.getItem('science-kids-topbar-cache-v1')||'{}');
    cached.moneyText=afterBalance.toLocaleString('en-US');cached.updatedAt=Date.now();
+   delete cached.moneyText;
    sessionStorage.setItem('science-kids-topbar-cache-v1',JSON.stringify(cached));
   }catch(e){}
   await refreshTopWallet();
@@ -1779,37 +1784,38 @@ refreshTopWallet();
  const KEY='science-kids-topbar-cache-v1';
  const MAX_AGE=10*60*1000;
  const account=document.getElementById('accountOpen');
- const money=document.getElementById('moneyValue');
- if(!account&&!money)return;
+ if(!account)return;
  let cached={};
- try{cached=JSON.parse(sessionStorage.getItem(KEY)||'{}')||{};}catch(e){}
+ try{
+  cached=JSON.parse(sessionStorage.getItem(KEY)||'{}')||{};
+  if(Object.prototype.hasOwnProperty.call(cached,'moneyText')){
+   delete cached.moneyText;
+   sessionStorage.setItem(KEY,JSON.stringify(cached));
+  }
+ }catch(e){}
  if(cached.updatedAt&&Date.now()-cached.updatedAt<MAX_AGE){
-  if(account&&cached.accountText){account.textContent=cached.accountText;if(cached.accountLabel)account.setAttribute('aria-label',cached.accountLabel);else account.removeAttribute('aria-label');account.style.visibility='visible';}
-  if(money&&cached.moneyText!==undefined){money.textContent=cached.moneyText;money.style.visibility='visible';}
+  if(cached.accountText){
+   account.textContent=cached.accountText;
+   if(cached.accountLabel)account.setAttribute('aria-label',cached.accountLabel);
+   else account.removeAttribute('aria-label');
+   account.style.visibility='visible';
+  }
  }
  const save=()=>{
   try{
    const previous=JSON.parse(sessionStorage.getItem(KEY)||'{}')||{};
    const next={...previous,updatedAt:Date.now()};
-   if(account&&account.textContent.trim()){
+   delete next.moneyText;
+   if(account.textContent.trim()){
     next.accountText=account.textContent.trim();
     next.accountLabel=account.getAttribute('aria-label')||'';
-   }
-   if(money&&money.style.visibility!=='hidden'&&money.textContent.trim()){
-    const currentMoney=money.textContent.trim();
-    const previousMoney=Math.floor(Number(String(previous.moneyText||'').replace(/[^0-9]/g,'')));
-    const currentAmount=Math.floor(Number(currentMoney.replace(/[^0-9]/g,'')));
-    // 会員切替直後に0表示で上書きすると旧ブラウザ残高の引き継ぎ元を失うため、
-    // 0になった場合は以前の正のキャッシュを移行処理が確認するまで保持する。
-    if(currentAmount>0||!Number.isFinite(previousMoney)||previousMoney<=0)next.moneyText=currentMoney;
    }
    sessionStorage.setItem(KEY,JSON.stringify(next));
   }catch(e){}
  };
  if(typeof MutationObserver!=='undefined'){
   const observer=new MutationObserver(save);
-  if(account)observer.observe(account,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['aria-label','style']});
-  if(money)observer.observe(money,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['style']});
+  observer.observe(account,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['aria-label','style']});
  }
  save();
 })();
