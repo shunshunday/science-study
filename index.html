@@ -1481,6 +1481,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAccount();});
 function setAuthMode(mode){authMode=mode;document.querySelectorAll('.auth-tab').forEach(b=>b.classList.toggle('active',b.dataset.authTab===mode));document.getElementById('authSubmit').textContent=mode==='login'?'ログイン':'新規登録';document.getElementById('authPassword').autocomplete=mode==='login'?'current-password':'new-password';authMessage.textContent='';}
 document.querySelectorAll('.auth-tab').forEach(b=>b.addEventListener('click',()=>setAuthMode(b.dataset.authTab)));
 function usernameEmail(username){return username.toLowerCase()+'@accounts.rikakids.invalid';}
+function isDuplicateUsernameError(error){
+ const code=String(error?.code||error?.error_code||'').toLowerCase();
+ const message=String(error?.message||error||'').toLowerCase();
+ return ['user_already_exists','email_exists','email_not_unique'].includes(code)
+  ||/(already registered|already exists|already been registered|already taken|user already|email.*already|already.*email|duplicate key)/.test(message);
+}
 function scienceTitle(n){if(n>=10000000)return "覇者";if(n>=5000000)return "ノーベル化学賞";if(n>=2000000)return "伝説の科学者";if(n>=1000000)return "科学の天才";if(n>=600000)return "科学博士";if(n>=300000)return "科学マスター";if(n>=100000)return "科学チャレンジャー";return "科学ビギナー";}
 async function refreshAccount(){
  const accountOpen=document.getElementById('accountOpen');
@@ -1555,7 +1561,15 @@ document.getElementById('authForm').addEventListener('submit',async e=>{
    }catch(storageError){console.warn('会員登録後のブラウザ保存データ整理に失敗:',storageError);}
    await refreshTopWallet();
   }
- }catch(err){authMessage.textContent=authMode==='signup'?'登録できませんでした。ユーザー名が使用済みか、設定を確認してください。':'ログインできません。ユーザー名とパスワードを確認してください。';}
+ }catch(err){
+  if(authMode==='signup'){
+   authMessage.textContent=isDuplicateUsernameError(err)
+    ?'このユーザー名はすでに使われています。別のユーザー名を入力してください。'
+    :'新規会員登録に失敗しました。入力内容を確認して、もう一度お試しください。';
+  }else{
+   authMessage.textContent='ログインできません。ユーザー名とパスワードを確認してください。';
+  }
+ }
  finally{submit.disabled=false;}
 });
 document.getElementById('logoutButton').addEventListener('click',async()=>{if(!supabaseClient)return;stopPlaytimeTracking();await supabaseClient.auth.signOut();await refreshAccount();});
