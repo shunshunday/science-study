@@ -571,12 +571,20 @@ async function importGuestPlaytimeForMember(){
   amount=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_IMPORT_KEY)||0)));
   if(!amount){amount=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0)));if(amount>0)localStorage.setItem(GUEST_PLAYTIME_IMPORT_KEY,String(amount));}
  }catch(e){return 0;}
- if(!amount)return 0;
- await api("/rest/v1/rpc/import_legacy_playtime",{method:"POST",body:JSON.stringify({p_seconds:Math.min(604800,amount)})});
- const remaining=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0))-amount);
- localStorage.setItem(GUEST_PLAYTIME_KEY,String(remaining));
+ if(!amount){
+  try{
+   if(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0)<=0)localStorage.removeItem(GUEST_PLAYTIME_KEY);
+   if(Number(localStorage.getItem(GUEST_PLAYTIME_IMPORT_KEY)||0)<=0)localStorage.removeItem(GUEST_PLAYTIME_IMPORT_KEY);
+  }catch(e){}
+  return 0;
+ }
+ const importSeconds=Math.min(604800,amount);
+ await api("/rest/v1/rpc/import_legacy_playtime",{method:"POST",body:JSON.stringify({p_seconds:importSeconds})});
+ const remaining=Math.max(0,Math.floor(Number(localStorage.getItem(GUEST_PLAYTIME_KEY)||0))-importSeconds);
+ if(remaining>0)localStorage.setItem(GUEST_PLAYTIME_KEY,String(remaining));
+ else localStorage.removeItem(GUEST_PLAYTIME_KEY);
  localStorage.removeItem(GUEST_PLAYTIME_IMPORT_KEY);
- return amount;
+ return importSeconds;
 }
 function getCachedWalletAmount(){
  try{
@@ -601,7 +609,11 @@ async function importPendingGuestWallet(){
  const wallet=Array.isArray(data)?data[0]:data;
  if(!wallet||!Number.isFinite(Number(wallet.balance)))throw new Error("所持金の引き継ぎ結果を確認できませんでした。");
  const afterBalance=Math.max(0,Number(wallet.balance)||0);
- if(afterBalance<beforeBalance+amount)throw new Error("引き継ぎ済みか、残高の増加を確認できませんでした。元データは保持しています。");
+ const newlyImported=afterBalance>=beforeBalance+amount;
+ if(!newlyImported){
+  const recordedAmount=await api("/rest/v1/rpc/get_guest_wallet_imported_amount",{method:"POST",body:JSON.stringify({})});
+  if(Number(recordedAmount)!==amount)throw new Error("引き継ぎ済み金額を確認できませんでした。元データは保持しています。");
+ }
  localStorage.removeItem("rikakids-guest-wallet");
  localStorage.removeItem("rikakids-guest-wallet-v2");
  localStorage.removeItem(GUEST_WALLET_IMPORT_KEY);
