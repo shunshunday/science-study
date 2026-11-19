@@ -1652,7 +1652,16 @@ async function refreshTopAccountButton(sessionOverride){
 }
 refreshTopAccountButton();
 if(!supabaseClient)startGuestPlaytimeTracking();
-if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user?.id)startPlaytimeTracking(session.user.id);else{stopPlaytimeTracking();startGuestPlaytimeTracking();}refreshTopWallet();refreshTopAccountButton(session);if(accountModal.classList.contains('open'))refreshAccount();});}
+if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{
+ if(session?.user?.id){
+  startPlaytimeTracking(session.user.id);
+  // ページ再読み込み後も、保留中・旧ヘッダーキャッシュの引き継ぎを自動再試行する。
+  importPendingGuestWallet().then(()=>refreshTopWallet()).catch(error=>console.error('所持金の自動引き継ぎに失敗:',error));
+  importGuestPlaytimeForMember().catch(error=>console.error('プレイ時間の自動引き継ぎに失敗:',error));
+ }else{stopPlaytimeTracking();startGuestPlaytimeTracking();}
+ refreshTopWallet();refreshTopAccountButton(session);
+ if(accountModal.classList.contains('open'))refreshAccount();
+ });}
 // ホームへ移動・ブラウザーの戻る操作で復帰したときも、保存済みの認証状態から表示を再同期
 window.addEventListener('pageshow',(event)=>{
  // 戻る操作などで古い画面がBFCacheから復元された場合は、最新HTMLを読み直す
@@ -1753,7 +1762,14 @@ refreshTopWallet();
     next.accountText=account.textContent.trim();
     next.accountLabel=account.getAttribute('aria-label')||'';
    }
-   if(money&&money.style.visibility!=='hidden'&&money.textContent.trim())next.moneyText=money.textContent.trim();
+   if(money&&money.style.visibility!=='hidden'&&money.textContent.trim()){
+    const currentMoney=money.textContent.trim();
+    const previousMoney=Math.floor(Number(String(previous.moneyText||'').replace(/[^0-9]/g,'')));
+    const currentAmount=Math.floor(Number(currentMoney.replace(/[^0-9]/g,'')));
+    // 会員切替直後に0表示で上書きすると旧ブラウザ残高の引き継ぎ元を失うため、
+    // 0になった場合は以前の正のキャッシュを移行処理が確認するまで保持する。
+    if(currentAmount>0||!Number.isFinite(previousMoney)||previousMoney<=0)next.moneyText=currentMoney;
+   }
    sessionStorage.setItem(KEY,JSON.stringify(next));
   }catch(e){}
  };
