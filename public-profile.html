@@ -25,7 +25,7 @@ a.action{display:block;text-align:center;text-decoration:none;border-radius:10px
 .member-card.gold:before{border-color:#fff8d966;box-shadow:0 0 0 18px #fff8d922,0 0 0 38px #fff8d914}
 .member-top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid #26323830}
 .member-brand{font-size:11px;font-weight:900;letter-spacing:.14em;color:#35434b;line-height:1.5}
-.member-mark{width:38px;height:38px;display:grid;place-items:center;border:1px solid #116b39;border-radius:7px;background:#16834a;color:#fff;font-size:21px;font-weight:100000;box-shadow:0 3px 12px #0002;flex:none}
+.member-mark{width:38px;height:38px;display:grid;place-items:center;border:1px solid #116b39;border-radius:7px;background:#16834a;color:#fff;font-size:21px;font-weight:1000;box-shadow:0 3px 12px #0002;flex:none}
 .member-card.gold .member-top{border-color:#8e6a183d}.member-card.gold .member-brand{color:#624609}
 .member-card.gold .member-mark{border-color:#116b39;background:#16834a;color:#fff}
 .member-body{position:relative;display:grid;grid-template-columns:minmax(0, .9fr) minmax(0,1.5fr);align-items:center;gap:14px;padding:13px 0 10px}
@@ -135,11 +135,11 @@ function playtime(s){const m=Math.floor(Math.max(0,Number(s)||0)/60),h=Math.floo
  document.getElementById("balance").textContent="$"+assets.toLocaleString("en-US");
  const title=titleFor(assets);
  document.getElementById("title").textContent=title;
- document.getElementById("memberStatus").textContent=assets>=100000000?"ゴールド会員":"通常会員";
- document.getElementById("memberCard").classList.toggle("gold",assets>=100000000);
+ document.getElementById("memberStatus").textContent=assets>=10000?"ゴールド会員":"通常会員";
+ document.getElementById("memberCard").classList.toggle("gold",assets>=10000);
  const rank=document.getElementById("memberRank");
- rank.classList.toggle("nobel",assets>=5000000&&assets<100000000000);
- rank.classList.toggle("haisha",assets>=100000000000);
+ rank.classList.toggle("nobel",assets>=5000000&&assets<10000000);
+ rank.classList.toggle("haisha",assets>=10000000);
  document.getElementById("playtime").textContent=playtime(data.playtime_seconds);
  const avatar=document.getElementById("avatarImage"),fallback=document.getElementById("avatarFallback");
  if(data.avatar_url){
