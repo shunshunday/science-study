@@ -534,10 +534,13 @@ let accessToken=null;
 let currentSession=null;
 
 function formatPlaytime(seconds){
- const totalMinutes=Math.floor(Math.max(0,seconds)/60);
+ const totalSeconds=Math.max(0,Math.floor(Number(seconds)||0));
+ const totalMinutes=Math.floor(totalSeconds/60);
  const hours=Math.floor(totalMinutes/60);
  const minutes=totalMinutes%60;
- return hours>0?hours+"時間"+minutes+"分":totalMinutes+"分";
+ if(hours>0)return hours+"時間"+minutes+"分";
+ if(totalMinutes>0)return totalMinutes+"分"+(totalSeconds%60>0?(totalSeconds%60)+"秒":"");
+ return totalSeconds>0?totalSeconds+"秒":"0分";
 }
 function loadPlaytime(seconds){
  try{
@@ -575,19 +578,38 @@ async function importGuestPlaytimeForMember(){
  localStorage.removeItem(GUEST_PLAYTIME_IMPORT_KEY);
  return amount;
 }
+function getCachedWalletAmount(){
+ try{
+  const cached=JSON.parse(sessionStorage.getItem("science-kids-topbar-cache-v1")||"{}");
+  const amount=Math.floor(Number(String(cached.moneyText||"").replace(/[^0-9]/g,"")));
+  const age=Date.now()-Number(cached.updatedAt||0);
+  return Number.isFinite(amount)&&amount>0&&age>=0&&age<24*60*60*1000?amount:0;
+ }catch(e){return 0;}
+}
 async function importPendingGuestWallet(){
  let amount=0;
- try{
-  amount=Math.floor(Number(localStorage.getItem(GUEST_WALLET_IMPORT_KEY)||0));
-  // すでに登録済みの人も、登録前のブラウザ残高が残っていれば回収する
-  if(!Number.isFinite(amount)||amount<=0){amount=getGuestWallet();if(amount>0)localStorage.setItem(GUEST_WALLET_IMPORT_KEY,String(amount));}
- }catch(e){throw e;}
+ try{amount=Math.floor(Number(localStorage.getItem(GUEST_WALLET_IMPORT_KEY)||0));}catch(e){throw e;}
+ if(!Number.isFinite(amount)||amount<=0)amount=getGuestWallet();
+ const beforeData=await api("/rest/v1/rpc/get_city_wallet",{method:"POST",body:JSON.stringify({})});
+ const beforeWallet=Array.isArray(beforeData)?beforeData[0]:beforeData;
+ const beforeBalance=Math.max(0,Number(beforeWallet?.balance)||0);
+ // ヘッダーに旧残高だけが残っている場合も、新会員の残高が0なら回収対象にする。
+ if((!Number.isFinite(amount)||amount<=0)&&beforeBalance===0)amount=getCachedWalletAmount();
  if(!Number.isFinite(amount)||amount<=0)return 0;
+ localStorage.setItem(GUEST_WALLET_IMPORT_KEY,String(amount));
  const data=await api("/rest/v1/rpc/import_guest_wallet",{method:"POST",body:JSON.stringify({p_balance:amount})});
  const wallet=Array.isArray(data)?data[0]:data;
  if(!wallet||!Number.isFinite(Number(wallet.balance)))throw new Error("所持金の引き継ぎ結果を確認できませんでした。");
- localStorage.setItem("rikakids-guest-wallet","0");
+ const afterBalance=Math.max(0,Number(wallet.balance)||0);
+ if(afterBalance<beforeBalance+amount)throw new Error("引き継ぎ済みか、残高の増加を確認できませんでした。元データは保持しています。");
+ localStorage.removeItem("rikakids-guest-wallet");
+ localStorage.removeItem("rikakids-guest-wallet-v2");
  localStorage.removeItem(GUEST_WALLET_IMPORT_KEY);
+ try{
+  const cached=JSON.parse(sessionStorage.getItem("science-kids-topbar-cache-v1")||"{}");
+  cached.moneyText=afterBalance.toLocaleString("en-US");cached.updatedAt=Date.now();
+  sessionStorage.setItem("science-kids-topbar-cache-v1",JSON.stringify(cached));
+ }catch(e){}
  return amount;
 }
 let profileAuthMode="login";
