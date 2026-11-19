@@ -888,9 +888,7 @@ document.getElementById("deleteButton").addEventListener("click",async()=>{
   try{
    localStorage.removeItem(STORAGE_KEY);
    if(currentUser?.id)localStorage.removeItem(profilePendingKey(currentUser.id));
-   // アカウント削除後にゲスト所持金が復活しないよう、ブラウザ側の引き継ぎ元も消去
-   ["rikakids-guest-wallet","rikakids-guest-wallet-v2","rikakids-guest-wallet-import-pending","rikakids-guest-playtime-seconds","rikakids-guest-playtime-import-pending"].forEach(key=>localStorage.removeItem(key));
-  }catch(e){console.warn("ローカルデータの削除:",e);}
+  }catch(e){console.warn("ローカルセッションの削除:",e);}
   currentSession=null;
   accessToken=null;
   currentUser=null;
@@ -904,7 +902,6 @@ document.getElementById("deleteButton").addEventListener("click",async()=>{
    try{
     localStorage.removeItem(STORAGE_KEY);
     if(currentUser?.id)localStorage.removeItem(profilePendingKey(currentUser.id));
-    ["rikakids-guest-wallet","rikakids-guest-wallet-v2","rikakids-guest-wallet-import-pending","rikakids-guest-playtime-seconds","rikakids-guest-playtime-import-pending"].forEach(key=>localStorage.removeItem(key));
    }catch(e){console.warn("削除済みアカウントのローカルデータ整理:",e);}
    currentSession=null;accessToken=null;currentUser=null;profilePlaytimeUserId=null;
    if(profilePlaytimeTimer){clearInterval(profilePlaytimeTimer);profilePlaytimeTimer=null;}
