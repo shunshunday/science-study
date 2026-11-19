@@ -1571,19 +1571,22 @@ async function importPendingGuestWallet(){
 async function saveCorrectAnswer(unit){
  if(!supabaseClient){setGuestWallet(getGuestWallet()+1000);await refreshTopWallet();return true;}
  try{
-  const {data:{user},error:authError}=await supabaseClient.auth.getUser();if(authError||!user){setGuestWallet(getGuestWallet()+1000);await refreshTopWallet();return true;}
-  const {error:rewardError}=await supabaseClient.rpc('earn_quiz_reward',{p_unit:unit});
+  // getUser() は通信エラーだけでも user=null になることがあるため、
+  // ローカルに保持された有効なログインセッションを基準に保存先を判定する。
+  const {data:{session},error:sessionError}=await supabaseClient.auth.getSession();
+  if(sessionError)throw sessionError;
+  if(!session?.user){setGuestWallet(getGuestWallet()+1000);await refreshTopWallet();return true;}
+  const {data:rewardData,error:rewardError}=await supabaseClient.rpc('earn_quiz_reward',{p_unit:unit});
   if(rewardError)throw rewardError;
-  const {data:walletData,error:walletError}=await supabaseClient.rpc('get_city_wallet');
-  if(walletError)throw walletError;
-  const wallet=Array.isArray(walletData)?walletData[0]:walletData;
-  const assets=Math.max(0,Number(wallet?.balance)||0);
+  const wallet=Array.isArray(rewardData)?rewardData[0]:rewardData;
+  if(!wallet||!Number.isFinite(Number(wallet.balance)))throw new Error('会員データへの保存結果を確認できませんでした。');
+  const assets=Math.max(0,Number(wallet.balance)||0);
   document.getElementById('profileRank').textContent=scienceTitle(assets);
   profileView.classList.toggle('profile-view-nobel',assets>=5000000&&assets<10000000);
   profileView.classList.toggle('profile-view-haki',assets>=10000000);
   await refreshTopWallet();
   return true;
- }catch(e){console.error('資金の保存に失敗しました',e);return false;}
+ }catch(e){console.error('会員データへの所持金保存に失敗しました',e);return false;}
 }
 async function refreshTopAccountButton(sessionOverride){
  const link=document.getElementById('accountOpen');
@@ -1643,18 +1646,22 @@ async function refreshTopWallet(){
  let amount=getGuestWallet();
  try{
   if(supabaseClient){
-   const {data:{user},error:authError}=await supabaseClient.auth.getUser();
-   if(!authError&&user){
+   const {data:{session},error:sessionError}=await supabaseClient.auth.getSession();
+   if(sessionError)throw sessionError;
+   if(session?.user){
     const {data,error}=await supabaseClient.rpc('get_city_wallet');
-    if(!error){
-     const wallet=Array.isArray(data)?data[0]:data;
-     amount=Math.max(0,Number(wallet?.balance)||0);
-    }
+    if(error)throw error;
+    const wallet=Array.isArray(data)?data[0]:data;
+    amount=Math.max(0,Number(wallet?.balance)||0);
    }
   }
- }catch(error){console.warn('所持金の表示を更新できませんでした',error);}
+ }catch(error){
+  // 会員セッション中の取得失敗時に、ゲスト残高を会員残高のように表示しない。
+  console.warn('会員所持金の読み込みに失敗しました。前回の表示を維持します。',error);
+  return;
+ }
  balanceElement.textContent=Math.floor(amount).toLocaleString('en-US');
-  balanceElement.style.visibility='visible';
+ balanceElement.style.visibility='visible';
 }
 refreshTopWallet();
 </script>
