@@ -828,6 +828,7 @@ window.addEventListener("blur",()=>flushProfilePlaytime(true));
 // プロフィール表示の再読込は手動の再読み込みボタンで行う。未定義関数の呼び出しを置かない。
 window.addEventListener("pagehide",()=>flushProfilePlaytime(true));
 
+let migratedBrowserCleanupMessage='';
 async function refreshProfile(){
  try{
   showStatus("ログイン状態を確認しています…");
@@ -836,8 +837,13 @@ async function refreshProfile(){
   try{await importPendingGuestWallet();}catch(importError){console.error("ブラウザ所持金の会員データへの引き継ぎに失敗:",importError);}
   try{
    const cleaned=await cleanupMigratedGuestBrowserData(session.user.id);
-   if(!cleaned)console.warn("引き継ぎ済みブラウザ保存データが一部残っています。");
-  }catch(cleanupError){console.error("引き継ぎ済みブラウザデータの削除に失敗:",cleanupError);}
+   migratedBrowserCleanupMessage=cleaned
+    ?"ブラウザに残っていた引き継ぎ済みデータを削除しました。"
+    :"サーバーの引き継ぎ記録を確認できないため、ブラウザ元データを保護しています。";
+  }catch(cleanupError){
+   console.error("引き継ぎ済みブラウザデータの削除に失敗:",cleanupError);
+   migratedBrowserCleanupMessage="ブラウザ保存データの削除結果を確認できませんでした。";
+  }
   startProfilePlaytime(session.user.id);
   const rows=await api("/rest/v1/profiles?select=username,avatar_url,playtime_seconds&id=eq."+encodeURIComponent(session.user.id),{method:"GET",cache:"no-store",headers:{"Cache-Control":"no-cache"}});
   const data=Array.isArray(rows)?rows[0]:null;
@@ -866,7 +872,8 @@ async function refreshProfile(){
   card.classList.toggle("gold",isGold);
   card.classList.toggle("normal",!isGold);
   document.getElementById("memberStatus").textContent=isGold?"ゴールド":"ノーマル";
-  statusElement.hidden=true;
+   statusElement.hidden=!migratedBrowserCleanupMessage;
+   statusElement.textContent=migratedBrowserCleanupMessage;
   document.getElementById("profileAuth").hidden=true;
   document.getElementById("profile").hidden=false;
  }catch(error){
