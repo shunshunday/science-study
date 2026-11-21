@@ -1516,7 +1516,7 @@ async function refreshAccount(){
  }
  try{
    const cleaned=await cleanupMigratedGuestBrowserData(session.user.id);
-   importMessages.push(cleaned?'ブラウザ保存データを削除済み':'ブラウザ保存データの一部が残っています');
+   importMessages.push(cleaned?'ブラウザ保存データを削除しました':'引き継ぎ記録を確認できず、ブラウザ元データを保護しています');
   }catch(cleanupError){
    console.error('引き継ぎ済みブラウザデータの削除に失敗:',cleanupError);
    importMessages.push('ブラウザ保存データを削除できませんでした');
