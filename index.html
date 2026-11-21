@@ -1514,7 +1514,14 @@ async function refreshAccount(){
   console.error('ブラウザプレイ時間の引き継ぎに失敗しました:',importError);
   importMessages.push('プレイ時間の引き継ぎは未完了（元データは保持）');
  }
- if(importMessages.length)authMessage.textContent='ブラウザ保存データ：'+importMessages.join('・');
+ try{
+   const cleaned=await cleanupMigratedGuestBrowserData(session.user.id);
+   importMessages.push(cleaned?'ブラウザ保存データを削除済み':'ブラウザ保存データの一部が残っています');
+  }catch(cleanupError){
+   console.error('引き継ぎ済みブラウザデータの削除に失敗:',cleanupError);
+   importMessages.push('ブラウザ保存データを削除できませんでした');
+  }
+  if(importMessages.length)authMessage.textContent='ブラウザ保存データ：'+importMessages.join('・');
  await startPlaytimeTracking(session.user.id);
  authView.hidden=true;profileView.hidden=false;
  const {data:profile,error}=await supabaseClient.from('profiles').select('username').eq('id',session.user.id).single();
@@ -1587,6 +1594,49 @@ function getCachedWalletAmount(){
   const age=Date.now()-Number(cached.updatedAt||0);
   return Number.isFinite(amount)&&amount>0&&age>=0&&age<24*60*60*1000?amount:0;
  }catch(e){return 0;}
+}
+let migratedGuestCleanupPromise=null;
+async function cleanupMigratedGuestBrowserData(userId){
+ if(migratedGuestCleanupPromise)return migratedGuestCleanupPromise;
+ migratedGuestCleanupPromise=(async()=>{
+  const marker='rikakids-guest-data-cleaned-v1-'+userId;
+  if(localStorage.getItem(marker)==='1')return true;
+  const {data:recordedData,error:recordError}=await supabaseClient.rpc('get_guest_wallet_imported_amount');
+  if(recordError)throw recordError;
+  const recordedAmount=Math.max(0,Math.floor(Number(recordedData)||0));
+  const walletKey='rikakids-guest-wallet';
+  const pendingWalletKey=GUEST_WALLET_IMPORT_KEY;
+  const localWallet=Math.max(0,Math.floor(Number(localStorage.getItem(walletKey)||0)));
+  const pendingWallet=Math.max(0,Math.floor(Number(localStorage.getItem(pendingWalletKey)||0)));
+  if(recordedAmount>0&&localWallet<=recordedAmount&&pendingWallet<=recordedAmount){
+   localStorage.removeItem(walletKey);
+   localStorage.removeItem('rikakids-guest-wallet-v2');
+   localStorage.removeItem(pendingWalletKey);
+  }
+  const {data:profileData,error:profileError}=await supabaseClient
+   .from('profiles').select('playtime_legacy_imported').eq('id',userId).maybeSingle();
+  if(profileError)throw profileError;
+  if(profileData?.playtime_legacy_imported){
+   localStorage.removeItem(GUEST_PLAYTIME_KEY);
+   localStorage.removeItem(GUEST_PLAYTIME_IMPORT_KEY);
+  }
+  try{
+   const cache=JSON.parse(sessionStorage.getItem('science-kids-topbar-cache-v1')||'{}');
+   if(Object.prototype.hasOwnProperty.call(cache,'moneyText')){
+    delete cache.moneyText;
+    sessionStorage.setItem('science-kids-topbar-cache-v1',JSON.stringify(cache));
+   }
+  }catch(e){}
+  const remainingKeys=[walletKey,'rikakids-guest-wallet-v2',pendingWalletKey,GUEST_PLAYTIME_KEY,GUEST_PLAYTIME_IMPORT_KEY];
+  const remaining=remainingKeys.some(key=>localStorage.getItem(key)!==null);
+  if(!remaining){
+   localStorage.setItem(marker,'1');
+   return true;
+  }
+  return false;
+ })();
+ try{return await migratedGuestCleanupPromise;}
+ finally{migratedGuestCleanupPromise=null;}
 }
 let guestWalletImportPromise=null;
 async function importPendingGuestWallet(){
@@ -1694,8 +1744,12 @@ if(supabaseClient){supabaseClient.auth.onAuthStateChange((event,session)=>{
  if(session?.user?.id){
   startPlaytimeTracking(session.user.id);
   // ページ再読み込み後も、保留中・旧ヘッダーキャッシュの引き継ぎを自動再試行する。
-  importPendingGuestWallet().then(()=>refreshTopWallet()).catch(error=>console.error('所持金の自動引き継ぎに失敗:',error));
-  importGuestPlaytimeForMember().catch(error=>console.error('プレイ時間の自動引き継ぎに失敗:',error));
+  Promise.all([
+   importPendingGuestWallet().catch(error=>{console.error('所持金の自動引き継ぎに失敗:',error);return 0;}),
+   importGuestPlaytimeForMember().catch(error=>{console.error('プレイ時間の自動引き継ぎに失敗:',error);return 0;})
+  ]).then(()=>cleanupMigratedGuestBrowserData(session.user.id))
+    .then(()=>refreshTopWallet())
+    .catch(error=>console.error('引き継ぎ済みブラウザデータの削除に失敗:',error));
  }else{stopPlaytimeTracking();startGuestPlaytimeTracking();}
  refreshTopWallet();refreshTopAccountButton(session);
  if(accountModal.classList.contains('open'))refreshAccount();
