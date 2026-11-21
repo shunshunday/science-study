@@ -600,6 +600,37 @@ function getCachedWalletAmount(){
   return Number.isFinite(amount)&&amount>0&&age>=0&&age<24*60*60*1000?amount:0;
  }catch(e){return 0;}
 }
+async function cleanupMigratedGuestBrowserData(userId){
+ const marker="rikakids-guest-data-cleaned-v1-"+userId;
+ if(localStorage.getItem(marker)==="1")return true;
+ const recordedAmount=await api("/rest/v1/rpc/get_guest_wallet_imported_amount",{method:"POST",body:JSON.stringify({})});
+ const walletKey="rikakids-guest-wallet";
+ const pendingWalletKey=GUEST_WALLET_IMPORT_KEY;
+ const localWallet=Math.max(0,Math.floor(Number(localStorage.getItem(walletKey)||0)));
+ const pendingWallet=Math.max(0,Math.floor(Number(localStorage.getItem(pendingWalletKey)||0)));
+ if(Number(recordedAmount)>0&&localWallet<=Number(recordedAmount)&&pendingWallet<=Number(recordedAmount)){
+  localStorage.removeItem(walletKey);
+  localStorage.removeItem("rikakids-guest-wallet-v2");
+  localStorage.removeItem(pendingWalletKey);
+ }
+ const rows=await api("/rest/v1/profiles?select=playtime_legacy_imported&id=eq."+encodeURIComponent(userId),{method:"GET",cache:"no-store"});
+ const profileData=Array.isArray(rows)?rows[0]:null;
+ if(profileData?.playtime_legacy_imported){
+  localStorage.removeItem(GUEST_PLAYTIME_KEY);
+  localStorage.removeItem(GUEST_PLAYTIME_IMPORT_KEY);
+ }
+ try{
+  const cache=JSON.parse(sessionStorage.getItem("science-kids-topbar-cache-v1")||"{}");
+  if(Object.prototype.hasOwnProperty.call(cache,"moneyText")){
+   delete cache.moneyText;
+   sessionStorage.setItem("science-kids-topbar-cache-v1",JSON.stringify(cache));
+  }
+ }catch(e){}
+ const remaining=[walletKey,"rikakids-guest-wallet-v2",pendingWalletKey,GUEST_PLAYTIME_KEY,GUEST_PLAYTIME_IMPORT_KEY]
+  .some(key=>localStorage.getItem(key)!==null);
+ if(!remaining){localStorage.setItem(marker,"1");return true;}
+ return false;
+}
 async function importPendingGuestWallet(){
  let amount=0;
  try{amount=Math.floor(Number(localStorage.getItem(GUEST_WALLET_IMPORT_KEY)||0));}catch(e){throw e;}
@@ -803,6 +834,10 @@ async function refreshProfile(){
   const session=await ensureSession();
   try{await importGuestPlaytimeForMember();}catch(importError){console.error("ブラウザ保存のプレイ時間引き継ぎに失敗:",importError);}
   try{await importPendingGuestWallet();}catch(importError){console.error("ブラウザ所持金の会員データへの引き継ぎに失敗:",importError);}
+  try{
+   const cleaned=await cleanupMigratedGuestBrowserData(session.user.id);
+   if(!cleaned)console.warn("引き継ぎ済みブラウザ保存データが一部残っています。");
+  }catch(cleanupError){console.error("引き継ぎ済みブラウザデータの削除に失敗:",cleanupError);}
   startProfilePlaytime(session.user.id);
   const rows=await api("/rest/v1/profiles?select=username,avatar_url,playtime_seconds&id=eq."+encodeURIComponent(session.user.id),{method:"GET",cache:"no-store",headers:{"Cache-Control":"no-cache"}});
   const data=Array.isArray(rows)?rows[0]:null;
