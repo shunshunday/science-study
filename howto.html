@@ -713,6 +713,30 @@ aside.science-sidebar .science-side-name small{
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (async function(){
+ async function cleanupMigratedGuestBrowserData(client,userId){
+ const marker="rikakids-guest-data-cleaned-v1-"+userId;
+ if(localStorage.getItem(marker)==="1")return;
+ const {data:recordedData,error:recordError}=await client.rpc("get_guest_wallet_imported_amount");
+ if(recordError)throw recordError;
+ const recordedAmount=Math.max(0,Math.floor(Number(recordedData)||0));
+ const walletKey="rikakids-guest-wallet", pendingKey="rikakids-guest-wallet-import-pending";
+ const localWallet=Math.max(0,Math.floor(Number(localStorage.getItem(walletKey)||0)));
+ const pendingWallet=Math.max(0,Math.floor(Number(localStorage.getItem(pendingKey)||0)));
+ if(recordedAmount>0&&localWallet<=recordedAmount&&pendingWallet<=recordedAmount){
+  localStorage.removeItem(walletKey);
+  localStorage.removeItem("rikakids-guest-wallet-v2");
+  localStorage.removeItem(pendingKey);
+ }
+ const {data:profile,error:profileError}=await client.from("profiles").select("playtime_legacy_imported").eq("id",userId).maybeSingle();
+ if(profileError)throw profileError;
+ if(profile?.playtime_legacy_imported){
+  localStorage.removeItem("rikakids-guest-playtime-seconds");
+  localStorage.removeItem("rikakids-guest-playtime-import-pending");
+ }
+ const keys=[walletKey,"rikakids-guest-wallet-v2",pendingKey,"rikakids-guest-playtime-seconds","rikakids-guest-playtime-import-pending"];
+ if(!keys.some(key=>localStorage.getItem(key)!==null))localStorage.setItem(marker,"1");
+}
+
  const el=document.getElementById('moneyValue'); if(!el)return;
  const url="https://tmgfcmzufamxuzsuedza.supabase.co";
  const key="sb_publishable_2hmdBWipev_2go57lH7wdA_fpHAP-Ng";
@@ -723,7 +747,7 @@ aside.science-sidebar .science-side-name small{
   if(window.supabase?.createClient){
    const client=window.supabase.createClient(url,key);
    const {data:{user},error:authError}=await client.auth.getUser();
-   if(!authError&&user){const {data,error}=await client.rpc('get_city_wallet');if(!error){const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0);}}
+   if(!authError&&user){await cleanupMigratedGuestBrowserData(client,user.id).catch(e=>console.warn('引き継ぎ済みブラウザデータの削除に失敗:',e));const {data,error}=await client.rpc('get_city_wallet');if(!error){const w=Array.isArray(data)?data[0]:data;amount=Math.max(0,Number(w?.balance)||0);}}
   }
  }catch(e){console.warn('所持金を読み込めませんでした',e);}
  el.textContent=Math.floor(amount).toLocaleString('en-US');el.style.visibility='visible';
