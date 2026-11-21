@@ -1264,6 +1264,13 @@ aside.science-sidebar .science-side-name small{
   localStorage.removeItem("rikakids-guest-playtime-seconds");
   localStorage.removeItem("rikakids-guest-playtime-import-pending");
  }
+ try{
+  const cache=JSON.parse(sessionStorage.getItem("science-kids-topbar-cache-v1")||"{}");
+  if(Object.prototype.hasOwnProperty.call(cache,"moneyText")){
+   delete cache.moneyText;
+   sessionStorage.setItem("science-kids-topbar-cache-v1",JSON.stringify(cache));
+  }
+ }catch(e){}
  const keys=[walletKey,"rikakids-guest-wallet-v2",pendingKey,"rikakids-guest-playtime-seconds","rikakids-guest-playtime-import-pending"];
  if(!keys.some(key=>localStorage.getItem(key)!==null))localStorage.setItem(marker,"1");
 }
