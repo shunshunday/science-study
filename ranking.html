@@ -372,6 +372,29 @@ async function restoreSession(){
  const retry=await client.auth.getSession();
  return retry.data?.session||null;
 }
+async function cleanupMigratedGuestBrowserData(client,userId){
+ const marker="rikakids-guest-data-cleaned-v1-"+userId;
+ if(localStorage.getItem(marker)==="1")return;
+ const {data:recordedData,error:recordError}=await client.rpc("get_guest_wallet_imported_amount");
+ if(recordError)throw recordError;
+ const recordedAmount=Math.max(0,Math.floor(Number(recordedData)||0));
+ const walletKey="rikakids-guest-wallet", pendingKey="rikakids-guest-wallet-import-pending";
+ const localWallet=Math.max(0,Math.floor(Number(localStorage.getItem(walletKey)||0)));
+ const pendingWallet=Math.max(0,Math.floor(Number(localStorage.getItem(pendingKey)||0)));
+ if(recordedAmount>0&&localWallet<=recordedAmount&&pendingWallet<=recordedAmount){
+  localStorage.removeItem(walletKey);
+  localStorage.removeItem("rikakids-guest-wallet-v2");
+  localStorage.removeItem(pendingKey);
+ }
+ const {data:profile,error:profileError}=await client.from("profiles").select("playtime_legacy_imported").eq("id",userId).maybeSingle();
+ if(profileError)throw profileError;
+ if(profile?.playtime_legacy_imported){
+  localStorage.removeItem("rikakids-guest-playtime-seconds");
+  localStorage.removeItem("rikakids-guest-playtime-import-pending");
+ }
+ const keys=[walletKey,"rikakids-guest-wallet-v2",pendingKey,"rikakids-guest-playtime-seconds","rikakids-guest-playtime-import-pending"];
+ if(!keys.some(key=>localStorage.getItem(key)!==null))localStorage.setItem(marker,"1");
+}
 let headerRequest=0;
 async function updateHeader(){
  const request=++headerRequest;
@@ -384,6 +407,7 @@ async function updateHeader(){
   if(session?.user){
    const {data:userData}=await client.auth.getUser();
    const user=userData?.user||session.user;
+   await cleanupMigratedGuestBrowserData(client,user.id).catch(error=>console.warn('引き継ぎ済みブラウザデータの削除に失敗:',error));
    let username=user.user_metadata?.username||user.user_metadata?.display_name||"";
    const {data:profile,error:profileError}=await client.from("profiles").select("username").eq("id",user.id).maybeSingle();
    if(!profileError&&profile?.username)username=profile.username;
