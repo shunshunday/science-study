@@ -69,11 +69,11 @@ function physicsStep(dt){
  const pitch=(keys.w?1:0)-(keys.s?1:0),yaw=(keys.d?1:0)-(keys.a?1:0),roll=(keys.e?1:0)-(keys.q?1:0);
  angular.x+=pitch*dt*.8;angular.y+=yaw*dt*.8;angular.z+=roll*dt*.8;angular.multiplyScalar(Math.exp(-dt*(sasEnabled?4.5:.8)));
  const dq=new THREE.Quaternion().setFromEuler(new THREE.Euler(angular.x*dt,angular.y*dt,angular.z*dt,'YXZ'));attitude.multiply(dq).normalize();
- const fuelSources=parts.filter(p=>['tank','booster'].includes(p.data.type)&&p.stage<=stage&&p.fuel>0);const activeEngines=parts.filter(p=>['engine','booster'].includes(p.data.type)&&p.stage<=stage&&(p.data.type==='engine'?fuelSources.length>0:p.fuel>0));
+ const liquidTanks=parts.filter(p=>p.data.type==='tank'&&p.stage<=stage&&p.fuel>0);const activeEngines=parts.filter(p=>['engine','booster'].includes(p.data.type)&&p.stage<=stage&&(p.data.type==='engine'?liquidTanks.length>0:p.fuel>0));
  const totalThrustN=activeEngines.reduce((s,p)=>s+(p.data.thrust||0)*1000,0)*throttle;
  const massKg=Math.max(1,rocketMassKg(parts));
  const thrustDirection=new THREE.Vector3(0,1,0).applyQuaternion(attitude).normalize();
- const mdot=activeEngines.reduce((s,p)=>s+(p.data.thrust||0)*1000/(Math.max(1,p.data.isp||220)*G0),0)*throttle;
+ const liquidMdot=activeEngines.filter(p=>p.data.type==='engine').reduce((s,p)=>s+(p.data.thrust||0)*1000/(Math.max(1,p.data.isp||320)*G0),0)*throttle,solidMdot=activeEngines.filter(p=>p.data.type==='booster').reduce((s,p)=>s+(p.data.thrust||0)*1000/(Math.max(1,p.data.isp||220)*G0),0)*throttle,mdot=liquidMdot+solidMdot;
  const acceleration=(pos,vel)=>{
    const grav=gravityAcceleration(pos,BODY.mu,bodyCenter);
    const r=new THREE.Vector3(pos.x-bodyCenter.x,pos.y-bodyCenter.y,pos.z-bodyCenter.z);
@@ -84,7 +84,7 @@ function physicsStep(dt){
  properG=(totalThrustN/massKg)/G0;
  const state=rk4Step({x:position.x,y:position.y,z:position.z},{x:velocity.x,y:velocity.y,z:velocity.z},dt,acceleration);
  position.set(state.position.x,state.position.y,state.position.z);velocity.set(state.velocity.x,state.velocity.y,state.velocity.z);
- if(mdot>0){let burn=mdot*dt;for(const tank of fuelSources){const take=Math.min(tank.fuel,burn);tank.fuel-=take;burn-=take;if(burn<=1e-8)break;}fuel=parts.reduce((s,p)=>s+(p.fuel||0),0);}
+ if(mdot>0){let liquidBurn=liquidMdot*dt;for(const tank of liquidTanks){const take=Math.min(tank.fuel,liquidBurn);tank.fuel-=take;liquidBurn-=take;if(liquidBurn<=1e-8)break;}let solidBurn=solidMdot*dt;for(const booster of activeEngines.filter(p=>p.data.type==='booster')){const take=Math.min(booster.fuel,solidBurn);booster.fuel-=take;solidBurn-=take;if(solidBurn<=1e-8)break;}fuel=parts.reduce((s,p)=>s+(p.fuel||0),0);}
  const radial=position.clone().sub(bodyCenter),radius=radial.length(),altitude=radius-BODY.radius;
  if(altitude<=0){position.copy(bodyCenter).add(radial.normalize().multiplyScalar(BODY.radius));const normal=position.clone().sub(bodyCenter).normalize(),impact=velocity.dot(normal);if(impact< -8){flight=false;toast('地表衝突 — 機体が破損しました');}else{velocity.addScaledVector(normal,-Math.min(0,impact));velocity.multiplyScalar(.985);}}
  rocket.position.copy(position);rocket.quaternion.copy(attitude);for(const part of parts){if(part.mesh){const plume=part.mesh.getObjectByName('engine-flame');if(plume){plume.visible=flight&&throttle>0&&activeEngines.includes(part);plume.scale.setScalar(.5+throttle*1.4);}}}
