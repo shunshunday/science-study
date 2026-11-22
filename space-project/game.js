@@ -228,7 +228,7 @@ const partPreviewRenderers=new Map();let partPreviewObserver=null,selectedPartId
 function disposePartPreview(canvas){const entry=partPreviewRenderers.get(canvas);if(entry){entry.renderer.dispose();try{entry.renderer.forceContextLoss();}catch{}partPreviewRenderers.delete(canvas);}}
 function renderOnePartPreview(canvas,p){
  if(partPreviewRenderers.has(canvas))return;
- if(partPreviewRenderers.size>=3)return;
+
  try{
   const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'low-power'});
   renderer.setPixelRatio(1);renderer.setSize(116,58,false);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;
