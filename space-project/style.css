@@ -223,3 +223,9 @@
  .parts{left:0!important;width:300px!important}
  .part::after{left:308px!important;width:min(220px,calc(100vw - 316px))!important}
 }
+
+
+/* Extra-compact left parts catalog */
+.parts{left:0!important;width:320px!important}
+.part::after{left:330px!important}
+@media(max-width:700px){.parts{left:0!important;width:260px!important}.part::after{left:268px!important;width:min(210px,calc(100vw - 276px))!important}}
