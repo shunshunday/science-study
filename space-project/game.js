@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {createPartModel} from './parts-models.js';
+import {createPartModel} from './parts-models.js?v=20261122-2-cluster-nozzles;
 import {additionalParts} from './parts-inventory.js?v=20261122-2-legacy-stock;
 import {BODY,G0,gravityAcceleration,atmosphericDensity,orbitalElements,rk4Step,deltaV,rocketMassKg} from './physics/orbital.js';
 import {aerodynamicAcceleration} from './physics/aerodynamics.js';
