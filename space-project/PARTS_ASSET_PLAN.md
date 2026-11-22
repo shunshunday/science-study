@@ -52,3 +52,14 @@ A model can be added only after recording:
 - Community discussion on reuse of stock assets: https://forum.kerbalspaceprogram.com/topic/173105-reusing-squads-resources-for-new-mods-are-allowed/
 
 No stock-game or third-party mod art assets have been copied into this project by this audit. Current identity-match progress: 56/128 existing entries; approved 3D models: 0. The new per-part register is at `space-project/KSP1_PARTS_MODEL_AUDIT.json`.
+
+
+## Expanded stock + DLC inventory pass (2026-11-22)
+- Added `KSP1_STOCK_PARTS_EXPANSION.json` with 169 additional stock-family candidates transcribed from the Japanese KSP parts index. It covers coupling/docking, payload/fairings, aero/intakes/wings, landing gear/wheels, thermal, power, communications, science, cargo, utility and related families.
+- Added `KSP1_DLC_PARTS_CANDIDATES.json` with 97 named DLC candidates from Making History and Breaking Ground pages, including historical pods/tanks/engines/plates and Breaking Ground robotics, rotors, blades, deployables and science hardware.
+- The original 128-entry project audit is now triaged as 124 candidate stock matches plus 4 generic placeholders that should be replaced by real individual entries. None of the 124 is yet exact-1.12.5 `.cfg` verified; none of the stock/DLC models is approved for redistribution.
+- This expands the documented target inventory, but is not a finished complete catalog: exact internal IDs, all stats/nodes/modules, omitted parts, and per-model rights remain to be verified. Do not remove the current in-app catalog until a complete replacement dataset and model set is integrated.
+- Authoritative part-config structure reference: https://forum.kerbalspaceprogram.com/developerarticles.html/ (part.cfg defines the identifier, mesh, nodes, attach rules, mass and modules).
+- Stock parts index: https://wikiwiki.jp/ksp/パーツ
+- Making History: https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion
+- Breaking Ground: https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion
