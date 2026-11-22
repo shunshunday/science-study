@@ -355,7 +355,7 @@ function drawPartsCatalogV2(){
  let items=catalog.filter(p=>(activePartCategory==='すべて'||categoryFor(p)===activePartCategory)&&(!query||(p.name+' '+p.id+' '+categoryFor(p)).toLowerCase().includes(query)));
  items.sort((a,b)=>sort==='mass'?a.mass-b.mass:sort==='cost'?a.cost-b.cost:sort==='size'?a.height-b.height:a.name.localeCompare(b.name,'ja'));
  $('#parts-count').textContent=catalog.length+' PARTS';$('#part-result-count').textContent=items.length+' 件';
- $('#part-list').innerHTML=items.map(p=>{const unlocked=gameMode==='sandbox'||unlockedTech.has(p.tech||'basic');return '<button class="part" data-part="'+p.id+'" '+(unlocked?'':'disabled')+'><span class="part-icon"></span></button>';}).join('');renderPartPreviews(items);
+ const simplePartNames={pod:'人が乗る場所',probe:'無人で動かす装置',tank:'燃料を入れるタンク',engine:'ロケットエンジン',decoupler:'切り離し装置',booster:'補助ロケット',fin:'向きを安定させる翼',chute:'パラシュート',battery:'電池',solar:'太陽電池',science:'実験道具'};$('#part-list').innerHTML=items.map(p=>{const unlocked=gameMode==='sandbox'||unlockedTech.has(p.tech||'basic');return '<button class="part" data-part="'+p.id+'" '+(unlocked?'':'disabled')+' title="'+(simplePartNames[p.type]||'ロケットの部品')+'"><span class="part-icon"></span></button>';}).join('');renderPartPreviews(items);
 }
 
 const techTree=[
