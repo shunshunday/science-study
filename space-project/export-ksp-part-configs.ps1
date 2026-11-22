@@ -86,7 +86,7 @@ foreach ($root in $roots) {
     rescaleFactor = Get-CfgValue $block "rescaleFactor"
     model = Get-CfgValue $block "model"
     dlc = $root.Dlc
-    configFile = $_.FullName.Substring($KspPath.Length).TrimStart('\','/')
+    configFile = $_.FullName.Substring($KspPath.Length).TrimStart([char[]]@('\','/'))
     nodes = $nodes
     resources = $resources
     modules = $modules
