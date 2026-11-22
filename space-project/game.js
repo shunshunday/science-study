@@ -26,18 +26,37 @@ function makeCrewFigure(member,index){
  const pack=new THREE.Mesh(new THREE.BoxGeometry(.62,.95,.35),trim);pack.position.set(0,1.62,-.48);root.add(pack);
  const chest=new THREE.Mesh(new THREE.BoxGeometry(.45,.34,.07),material(engineer?0xb8c9d9:0x3b6476,.45));chest.position.set(0,1.63,.53);root.add(chest);
  if(engineer){const patch=new THREE.Mesh(new THREE.CircleGeometry(.16,20),material(0xb83232,.1));patch.position.set(.28,1.95,.51);root.add(patch);}
- // 少し四角みのある丸角フェイス。頭の輪郭と大きさは全員共通。
- sphere(.76,skin,0,3.05,.02,[1.08,.88,.91]);
+ // 全員同じ大きさの縦長・丸角四角フェイス
+ const faceShape=new THREE.Shape();
+ faceShape.moveTo(-.43,-.69);faceShape.lineTo(.43,-.69);faceShape.quadraticCurveTo(.59,-.69,.59,-.52);
+ faceShape.lineTo(.59,.52);faceShape.quadraticCurveTo(.59,.69,.43,.69);faceShape.lineTo(-.43,.69);
+ faceShape.quadraticCurveTo(-.59,.69,-.59,.52);faceShape.lineTo(-.59,-.52);faceShape.quadraticCurveTo(-.59,-.69,-.43,-.69);
+ const faceGeo=new THREE.ExtrudeGeometry(faceShape,{depth:.48,bevelEnabled:true,bevelSegments:4,steps:1,bevelSize:.075,bevelThickness:.075,curveSegments:8});
+ faceGeo.computeVertexNormals();
+ const head=new THREE.Mesh(faceGeo,skin);head.position.set(0,3.05,-.27);root.add(head);head.castShadow=true;
+ // 髪型・髪色は乗組員ごとに変える（頭部サイズは変えない）
+ const hairStyles=[
+  {color:0x3b281b,kind:0},{color:0x17191d,kind:1},{color:0x8a5526,kind:2},
+  {color:0x4b3025,kind:3},{color:0xb9a15d,kind:4},{color:0x6d777b,kind:5},
+  {color:0x202c45,kind:6},{color:0x9b4c32,kind:7}
+ ];
+ const hs=hairStyles[Math.abs(index)%hairStyles.length],hairMat=material(hs.color,.08);
+ const hairCap=sphere(.62,hairMat,0,3.66,-.015,[1,.43,.82]);
+ hairCap.position.y=3.66;
+ if(hs.kind===0||hs.kind===2||hs.kind===4){sphere(.27,hairMat,-.43,3.48,.22,[.55,.65,.65]);sphere(.27,hairMat,.43,3.48,.22,[.55,.65,.65]);}
+ if(hs.kind===1||hs.kind===3||hs.kind===6){for(let j=-1;j<=1;j++)sphere(.2,hairMat,j*.27,3.48,.39,[.8,.72,.5]);}
+ if(hs.kind===5){for(let j=-1;j<=1;j++)sphere(.17,hairMat,j*.3,3.76,.08,[.8,1.2,.8]);}
+ if(hs.kind===7){sphere(.24,hairMat,-.47,3.58,.16,[.55,.75,.7]);sphere(.2,hairMat,.4,3.48,.35,[.65,.6,.6]);}
  for(const x of [-face.eyeGap,face.eyeGap]){
-  sphere(.235,eyeWhite,x,3.08,.64,[.82,1.12,.55]);
-  sphere(.105,pupil,x+.025,3.06,.79,[.9,1.1,.55]);
-  sphere(.035,material(0xffffff,.02),x+.045,3.12,.83);
-  const brow=new THREE.Mesh(new THREE.BoxGeometry(.29,.055,.07),browMat);brow.position.set(x,3.39,.66);brow.rotation.z=x<0?.12:-.12;root.add(brow);
+  sphere(.205,eyeWhite,x,3.12,.32,[.82,1.12,.55]);
+  sphere(.095,pupil,x+.025,3.1,.44,[.9,1.1,.55]);
+  sphere(.032,material(0xffffff,.02),x+.045,3.16,.48);
+  const brow=new THREE.Mesh(new THREE.BoxGeometry(.29,.055,.07),browMat);brow.position.set(x,3.43,.39);brow.rotation.z=x<0?.12:-.12;root.add(brow);
  }
- const smile=new THREE.Mesh(new THREE.TorusGeometry(.16,.025,6,16,Math.PI),mouthMat);smile.position.set(0,2.78,.68);smile.rotation.z=Math.PI;root.add(smile);
- if(face.freckles){for(const x of [-.43,.43])for(const y of [2.91,2.99])sphere(.025,mouthMat,x,y,.66);}
+ const smile=new THREE.Mesh(new THREE.TorusGeometry(.15,.023,6,16,Math.PI),mouthMat);smile.position.set(0,2.82,.42);smile.rotation.z=Math.PI;root.add(smile);
+ if(face.freckles){for(const x of [-.43,.43])for(const y of [2.98,3.04])sphere(.022,mouthMat,x,y,.37);}
  root.scale.setScalar(.88);
- root.position.set(0,1.05,0);
+ root.position.set(0,1.3,0);
  return root;
 }
 function rebuildCrewStage(){while(crewStage.children.length)crewStage.remove(crewStage.children[0]);}
@@ -435,7 +454,7 @@ function addPart(id,place=null){const d=catalog.find(x=>x.id===id);if(!d)return;
 function setMode(m){mode=m;campus.visible=m==='center';hangar.visible=m==='vab';$('#build-staging').classList.toggle('show',m==='vab');$('.tabs').classList.toggle('hidden',m==='flight');$('#home').classList.toggle('hidden',m==='flight');$$('[data-screen]').forEach(b=>b.classList.toggle('active',b.dataset.screen===m));$('#parts').classList.toggle('open',m==='vab');$('#flight-hud').classList.toggle('show',m==='flight');$('#career-panel').classList.toggle('hidden',m!=='crew');$('.vab-tools').classList.toggle('hidden',m!=='vab');$('#hint').classList.toggle('hidden',m==='flight');if(m==='center'){camera.position.set(.14,.10,.20);camera.lookAt(0,.005,0);rocket.visible=false;$('#hint').textContent='宇宙センター：ロケット組立棟で機体を設計し、発射場から宇宙へ。';}if(m==='vab'){rocket.visible=true;rocket.position.set(0,0,0);camera.position.set(.012,.009,.016);camera.lookAt(0,.005,0);$('#hint').textContent='下段から上段へ順にパーツを追加。ステージ0が先に作動し、分離後に上段ステージへ進みます。';}if(m==='crew'){rocket.visible=false;crewStage.visible=true;camera.position.set(0,5.5,16.2);camera.lookAt(0,1.8,0);$('#hint').textContent='';}else{crewStage.visible=false;}if(m==='flight'){rocket.visible=true;camera.position.set(.022,.014,.027);}}
 $$('[data-screen]').forEach(b=>b.onclick=()=>{setMode(b.dataset.screen);if(b.dataset.screen==='crew')renderCrew();});
 
-$('#career-content').addEventListener('click',e=>{const hire=e.target.closest('[data-hire-crew]');if(hire){const role=hire.dataset.hireCrew,cost=2500;if(gameMode!=='sandbox'&&!fundsUnlimited&&funds<cost){toast('雇用資金が不足しています');return;}if(gameMode!=='sandbox'&&!fundsUnlimited)funds-=cost;const names={pilot:['Bill Kerman','Val Kerman','Gene Kerman'],engineer:['Wernher Kerman','Linus Kerman','Mortimer Kerman'],scientist:['Dora Kerman','Bobak Kerman','Mikki Kerman']};const roleNames={pilot:'パイロット',engineer:'エンジニア',scientist:'科学者'};const pool=names[role],name=pool.find(n=>!crewMembers.some(k=>k.name===n))||pool[0]+' '+(crewMembers.length+1);crewMembers.push({id:Date.now(),name,role:roleNames[role],level:1,bravery:role==='pilot'?70:role==='engineer'?48:55,stupidity:role==='pilot'?62:role==='engineer'?38:72});saveCareer();renderCrew();recalc();toast(name+' を雇用しました');}const tech=e.target.closest('[data-unlock-tech]');if(tech){const item=techTree.find(t=>t.id===tech.dataset.unlockTech);if(item&&!unlockedTech.has(item.id)&&item.requires.every(x=>unlockedTech.has(x))&&science>=item.cost){science-=item.cost;unlockedTech.add(item.id);saveCareer();drawPartsCatalogV2();renderResearch();recalc();toast(item.name+' を研究しました');}}const contract=e.target.closest('[data-accept-contract]');if(contract&&!activeContract){activeContract=contracts.find(k=>k.id===contract.dataset.acceptContract)||null;if(activeContract){saveCareer();renderContracts();toast('契約を受注しました');}}});
+$('#career-content').addEventListener('click',e=>{const hire=e.target.closest('[data-hire-crew]');if(hire){const role=hire.dataset.hireCrew,cost=2500;if(gameMode!=='sandbox'&&!fundsUnlimited&&funds<cost){toast('雇用資金が不足しています');return;}if(gameMode!=='sandbox'&&!fundsUnlimited)funds-=cost;const names=['Avery','Boris','Caden','Daisy','Elwin','Fiona','Gordon','Hana','Ivo','Juno','Kellan','Lena','Marek','Nora','Otto','Piper','Quinn','Rhea','Soren','Talia','Uma','Viktor','Willa','Xander','Yuri','Zelda','Arlo','Bria','Cyrus','Della','Ezra','Freya','Hugo','Iris','Jonas','Kaia','Luka','Mira','Niko','Orla','Pavel','Rina','Silas','Tess','Uri','Vera','Wes','Yara','Zane'];const roleNames={pilot:'パイロット',engineer:'エンジニア',scientist:'科学者'};const name=names.find(n=>!crewMembers.some(k=>k.name===n+' Kerman'))+' Kerman';crewMembers.push({id:Date.now(),name,role:roleNames[role],level:1,bravery:role==='pilot'?70:role==='engineer'?48:55,stupidity:role==='pilot'?62:role==='engineer'?38:72});saveCareer();renderCrew();recalc();toast(name+' を雇用しました');}const tech=e.target.closest('[data-unlock-tech]');if(tech){const item=techTree.find(t=>t.id===tech.dataset.unlockTech);if(item&&!unlockedTech.has(item.id)&&item.requires.every(x=>unlockedTech.has(x))&&science>=item.cost){science-=item.cost;unlockedTech.add(item.id);saveCareer();drawPartsCatalogV2();renderResearch();recalc();toast(item.name+' を研究しました');}}const contract=e.target.closest('[data-accept-contract]');if(contract&&!activeContract){activeContract=contracts.find(k=>k.id===contract.dataset.acceptContract)||null;if(activeContract){saveCareer();renderContracts();toast('契約を受注しました');}}});
 function panelMessage(title,msg){toast(title+' — '+msg.replaceAll('\n',' / '));}
 $('#home').onclick=()=>{flight=false;setMode('center');};
 renderCategories();drawPartsCatalogV2();
