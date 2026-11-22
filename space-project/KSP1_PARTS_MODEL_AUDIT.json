@@ -329,8 +329,8 @@
         "radius": 0.8
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "parachuteSingle",
+      "verifiedKspPartName": "Mk16 パラシュート",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -338,7 +338,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "battery",
@@ -1190,8 +1195,8 @@
         "fuel": 50
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "mk0Fuselage",
+      "verifiedKspPartName": "Mk0 液体燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1199,7 +1204,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "tank-mk1-lf",
@@ -1213,8 +1223,8 @@
         "fuel": 400
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "MK1Fuselage",
+      "verifiedKspPartName": "Mk1 液体燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1222,7 +1232,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "tank-mk2-lf",
@@ -1236,8 +1251,8 @@
         "fuel": 800
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "mk2Fuselage",
+      "verifiedKspPartName": "Mk2 液体燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1245,7 +1260,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "tank-mk3-lf",
@@ -1259,8 +1279,8 @@
         "fuel": 5000
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "mk3Fuselage",
+      "verifiedKspPartName": "Mk3 液体燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1268,7 +1288,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "rcs-flr10",
@@ -1366,8 +1391,8 @@
         "fuel": 720
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "xenonTank",
+      "verifiedKspPartName": "PB-X150 キセノンコンテナ",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1375,7 +1400,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "xenon-pbx50r",
@@ -1389,8 +1419,8 @@
         "fuel": 405
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "xenonTankRadial",
+      "verifiedKspPartName": "PB-X50R キセノンコンテナ",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1398,7 +1428,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "xenon-pbx750",
@@ -1412,8 +1447,8 @@
         "fuel": 5700
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "xenonTankLarge",
+      "verifiedKspPartName": "PB-X750 キセノンコンテナ",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1421,7 +1456,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "engine-ant",
@@ -1938,8 +1978,8 @@
         "radius": 0.4
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "FuelCell",
+      "verifiedKspPartName": "燃料電池",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1947,7 +1987,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "solar-ox10c",
@@ -2149,8 +2194,8 @@
         "radius": 1.5
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "deltaWing",
+      "verifiedKspPartName": "デルタ翼",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2158,7 +2203,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "wing-small-delta",
@@ -2171,8 +2221,8 @@
         "radius": 0.7
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "delta_small",
+      "verifiedKspPartName": "小型デルタ翼",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2180,7 +2230,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "wing-strake",
@@ -2193,8 +2248,8 @@
         "radius": 0.8
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "wingStrake",
+      "verifiedKspPartName": "ストレーキ",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2202,7 +2257,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "wing-struct-a",
@@ -2215,8 +2275,8 @@
         "radius": 1.2
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "structuralWing",
+      "verifiedKspPartName": "ストラクチャーウィング タイプA",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2224,7 +2284,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "wing-struct-b",
@@ -2237,8 +2302,8 @@
         "radius": 1.2
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "structuralWing2",
+      "verifiedKspPartName": "ストラクチャーウィング タイプB",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2246,7 +2311,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "wing-struct-c",
@@ -2259,8 +2329,8 @@
         "radius": 0.8
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "structuralWing3",
+      "verifiedKspPartName": "ストラクチャーウィング タイプC",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2268,7 +2338,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "wing-struct-d",
@@ -2281,8 +2356,8 @@
         "radius": 0.6
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "structuralWing4",
+      "verifiedKspPartName": "ストラクチャーウィング タイプD",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2290,7 +2365,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "srb-mite",
@@ -2575,8 +2655,8 @@
         "isp": 6400
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "miniJetEngine",
+      "verifiedKspPartName": "J-20 Juno",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2584,7 +2664,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "jet-whiplash",
@@ -2599,8 +2684,8 @@
         "isp": 4000
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "turboJet",
+      "verifiedKspPartName": "J-X4 Whiplash",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2608,7 +2693,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "jet-panther",
@@ -2647,8 +2737,8 @@
         "isp": 12600
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "turboFanEngine",
+      "verifiedKspPartName": "J-90 Goliath",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2656,7 +2746,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "ion-dawn",
@@ -2671,8 +2766,8 @@
         "isp": 4200
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "ionEngine",
+      "verifiedKspPartName": "IX-6315 Dawn",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2680,7 +2775,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "wheel-small",
@@ -2761,8 +2861,8 @@
         "isp": 240
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "RCSBlock",
+      "verifiedKspPartName": "RV-105 RCSスラスターブロック",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2770,7 +2870,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "rcs-rv1x",
@@ -2809,8 +2914,8 @@
         "isp": 240
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "linearRcs",
+      "verifiedKspPartName": "Place-Anywhere 7 リニアRCSポート",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2818,7 +2923,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "rcs-place1",
@@ -2857,8 +2967,8 @@
         "isp": 260
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "vernierEngine",
+      "verifiedKspPartName": "Vernor エンジン",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2866,7 +2976,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "sas-chj3",
@@ -2879,8 +2994,8 @@
         "radius": 0.3
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "sasModule",
+      "verifiedKspPartName": "CH-J3 フライバイワイヤ アビオニクス",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2888,7 +3003,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "adapter-fla5",
@@ -3136,8 +3256,8 @@
         "radius": 0.1
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "strutConnector",
+      "verifiedKspPartName": "EAS-4 ストラットコネクター",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -3145,7 +3265,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "structural-body",
@@ -3180,8 +3305,8 @@
         "radius": 0.2
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "radialAttachmentPoint",
+      "verifiedKspPartName": "BZ-52 ラジアル型アタッチメントポイント",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -3189,7 +3314,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "hubmax",
@@ -3202,8 +3332,8 @@
         "radius": 1.25
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "stationHub",
+      "verifiedKspPartName": "Rockomax HubMax マルチポイントコネクター",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -3211,7 +3341,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "hardpoint-small",
@@ -3246,8 +3381,8 @@
         "radius": 0.25
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "structuralPylon",
+      "verifiedKspPartName": "パイロン",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -3255,7 +3390,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "strut-cubic",
@@ -3268,8 +3408,8 @@
         "radius": 0.1
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "strutCube",
+      "verifiedKspPartName": "立方体型オクタゴン ストラット",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -3277,7 +3417,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "strut-octagonal",
@@ -3290,8 +3435,8 @@
         "radius": 0.1
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "strutOcto",
+      "verifiedKspPartName": "オクタゴン ストラット",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -3299,7 +3444,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     },
     {
       "projectPartId": "modular-girder",
@@ -3312,8 +3462,8 @@
         "radius": 0.2
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "structuralIBeam1",
+      "verifiedKspPartName": "モジュラー構造アダプター",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -3321,14 +3471,19 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP stock part index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part IDs and config-derived references: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part directory and config conventions: https://forum.kerbalspaceprogram.com/developerarticles.html/"
+      ]
     }
   ],
   "auditProgress": {
-    "matchedPartIdentities": 78,
+    "matchedPartIdentities": 109,
     "totalExistingProjectEntries": 128,
     "approved3DModels": 0,
-    "nextBatch": "aero surfaces, control systems, landing gear, science and structural parts",
-    "note": "A provisional match is a candidate internal ID/name mapping, not a claim of verified 1.12.5 configuration or permission to publish the stock model. Several variant names must be confirmed against the exact 1.12.5 part.cfg before use."
+    "nextBatch": "remaining jet/ion variants, RCS and SAS, multi-couplers, DLC-specific parts, and omitted stock families",
+    "note": "All mappings are still candidates pending exact 1.12.5 .cfg verification. A part-name match does not establish the mesh's redistribution rights. Current project catalog itself is incomplete relative to full KSP stock + DLC; expand inventory beyond the existing 128 after this audit pass."
   }
 }
