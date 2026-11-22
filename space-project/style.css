@@ -150,3 +150,7 @@
 .part-category .cat-icon{width:100%;flex:0 0 100%;font-size:19px;line-height:1}
 .part-category .cat-label{display:none!important}
 @media(max-width:700px){.catalog-body{grid-template-columns:42px minmax(0,1fr)!important}.part-categories{width:42px;padding:4px 3px;gap:3px}.part-category{width:34px;height:34px;min-height:34px;flex-basis:34px}.part-category .cat-icon{font-size:18px}}
+
+/* Reduce the PARTS CATALOG heading and count */
+.parts-head b{font-size:10px;line-height:1.1;letter-spacing:.6px}
+.parts-head small{font-size:8px}
