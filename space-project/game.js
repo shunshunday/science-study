@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {BODY,G0,gravityAcceleration,atmosphericDensity,orbitalElements,rk4Step,deltaV,rocketMassKg} from './physics/orbital.js';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],toast=m=>{let t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2300)};
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x8298a6);scene.fog=new THREE.Fog(0x8298a6,180,600);
-const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.1,20000);camera.position.set(24,18,34);
+const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.0001,20000);camera.position.set(24,18,34);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;$('#viewport').appendChild(renderer.domElement);
 scene.add(new THREE.HemisphereLight(0xd8e8ff,0x665344,1.8));const sun=new THREE.DirectionalLight(0xffedcf,3.1);sun.position.set(-35,70,25);sun.castShadow=true;scene.add(sun);
 const ground=new THREE.Mesh(new THREE.PlaneGeometry(.9,.9),new THREE.MeshStandardMaterial({color:0x7e8d73,roughness:1}));ground.rotation.x=-Math.PI/2;ground.position.y=-.001;ground.receiveShadow=true;scene.add(ground);
@@ -47,7 +47,7 @@ function partMesh(p){const g=new THREE.Group(),r=p.radius,h=p.height;let body;if
 function recalc(){craftMass=rocketMassKg(parts)/1000;fuel=parts.reduce((s,p)=>s+(p.fuel||0),0);maxFuel=parts.reduce((s,p)=>s+(p.data.fuel||0),0);thrust=parts.reduce((s,p)=>s+(p.data.thrust||0),0);const dv=deltaV(parts);$('#craft-name').textContent='機体重量 '+craftMass.toFixed(2)+' t　Δv '+Math.round(dv)+' m/s　推力 '+thrust+' kN';$('#funds').textContent='₡'+funds.toLocaleString();$('#science').textContent=science;}
 function layout(){rocket.clear();let y=0;for(const p of parts){const m=partMesh(p.data);p.mesh=m;p.y=y;const h=p.data.height;m.position.y=y;rocket.add(m);y+=h*.82;}rocket.position.y=0;recalc();}
 function addPart(id){const d=catalog.find(x=>x.id===id);if(!d)return;if(funds<d.cost){toast('資金が不足しています');return;}funds-=d.cost;parts.push({data:d,fuel:d.fuel||0,stage:Math.max(0,parts.length?Math.floor(parts.length/3):0)});layout();toast(d.name+' を追加');}
-function setMode(m){mode=m;campus.visible=m==='center';$$('[data-screen]').forEach(b=>b.classList.toggle('active',b.dataset.screen===m));$('#parts').classList.toggle('open',m==='vab');$('#flight-hud').classList.toggle('show',m==='flight');$('.vab-tools').classList.toggle('hidden',m!=='vab');$('#hint').classList.toggle('hidden',m==='flight');if(m==='center'){camera.position.set(.14,.10,.20);camera.lookAt(0,.005,0);rocket.visible=false;$('#hint').textContent='宇宙センター：ロケット組立棟で機体を設計し、発射場から宇宙へ。';}if(m==='vab'){rocket.visible=true;rocket.position.set(0,0,0);camera.position.set(.025,.018,.035);camera.lookAt(0,.006,0);$('#hint').textContent='パーツを追加してロケットを組み立てます。ステージは下段から順に作動。';}if(m==='research'){rocket.visible=false;$('#hint').textContent='研究開発：飛行・実験で得た科学ポイントを使って技術を解放します。';}if(m==='contracts'){rocket.visible=false;$('#hint').textContent='ミッション管理：軌道投入・高度到達・回収などの契約を選択します。';}if(m==='flight'){rocket.visible=true;camera.position.set(.025,.018,.035);}}
+function setMode(m){mode=m;campus.visible=m==='center';$$('[data-screen]').forEach(b=>b.classList.toggle('active',b.dataset.screen===m));$('#parts').classList.toggle('open',m==='vab');$('#flight-hud').classList.toggle('show',m==='flight');$('.vab-tools').classList.toggle('hidden',m!=='vab');$('#hint').classList.toggle('hidden',m==='flight');if(m==='center'){camera.position.set(.14,.10,.20);camera.lookAt(0,.005,0);rocket.visible=false;$('#hint').textContent='宇宙センター：ロケット組立棟で機体を設計し、発射場から宇宙へ。';}if(m==='vab'){rocket.visible=true;rocket.position.set(0,0,0);camera.position.set(.012,.009,.016);camera.lookAt(0,.005,0);$('#hint').textContent='パーツを追加してロケットを組み立てます。ステージは下段から順に作動。';}if(m==='research'){rocket.visible=false;$('#hint').textContent='研究開発：飛行・実験で得た科学ポイントを使って技術を解放します。';}if(m==='contracts'){rocket.visible=false;$('#hint').textContent='ミッション管理：軌道投入・高度到達・回収などの契約を選択します。';}if(m==='flight'){rocket.visible=true;camera.position.set(.022,.014,.027);}}
 $$('[data-screen]').forEach(b=>b.onclick=()=>{if(b.dataset.screen==='research'){panelMessage('研究開発','科学ポイント '+science+'\n初期技術：基礎ロケット\n次の技術：高度推進（科学 20）');}else if(b.dataset.screen==='contracts'){panelMessage('ミッション管理','契約：高度 10 km 到達\n報酬 ₡3,000 / 評判 +5\n契約：安定軌道へ投入\n報酬 ₡8,000 / 科学 +10');}setMode(b.dataset.screen);});
 function panelMessage(title,msg){toast(title+' — '+msg.replaceAll('\n',' / '));}
 $('#home').onclick=()=>{flight=false;setMode('center');};
@@ -68,7 +68,7 @@ function physicsStep(dt){
  const pitch=(keys.w?1:0)-(keys.s?1:0),yaw=(keys.d?1:0)-(keys.a?1:0),roll=(keys.e?1:0)-(keys.q?1:0);
  angular.x+=pitch*dt*.8;angular.y+=yaw*dt*.8;angular.z+=roll*dt*.8;angular.multiplyScalar(Math.exp(-dt*.8));
  const dq=new THREE.Quaternion().setFromEuler(new THREE.Euler(angular.x*dt,angular.y*dt,angular.z*dt,'YXZ'));attitude.multiply(dq).normalize();
- const activeEngines=parts.filter(p=>['engine','booster'].includes(p.data.type)&&p.stage<=stage&&p.fuel>0);
+ const fuelSources=parts.filter(p=>['tank','booster'].includes(p.data.type)&&p.stage<=stage&&p.fuel>0);const activeEngines=parts.filter(p=>['engine','booster'].includes(p.data.type)&&p.stage<=stage&&(p.data.type==='engine'?fuelSources.length>0:p.fuel>0));
  const totalThrustN=activeEngines.reduce((s,p)=>s+(p.data.thrust||0)*1000,0)*throttle;
  const massKg=Math.max(1,rocketMassKg(parts));
  const thrustDirection=new THREE.Vector3(0,1,0).applyQuaternion(attitude).normalize();
@@ -83,7 +83,7 @@ function physicsStep(dt){
  properG=(totalThrustN/massKg)/G0;
  const state=rk4Step({x:position.x,y:position.y,z:position.z},{x:velocity.x,y:velocity.y,z:velocity.z},dt,acceleration);
  position.set(state.position.x,state.position.y,state.position.z);velocity.set(state.velocity.x,state.velocity.y,state.velocity.z);
- if(mdot>0){let burn=mdot*dt;const tanks=parts.filter(p=>p.data.fuel&&p.fuel>0&&p.stage<=stage);for(const tank of tanks){const take=Math.min(tank.fuel,burn);tank.fuel-=take;burn-=take;if(burn<=1e-8)break;}fuel=parts.reduce((s,p)=>s+(p.fuel||0),0);}
+ if(mdot>0){let burn=mdot*dt;for(const tank of fuelSources){const take=Math.min(tank.fuel,burn);tank.fuel-=take;burn-=take;if(burn<=1e-8)break;}fuel=parts.reduce((s,p)=>s+(p.fuel||0),0);}
  const radial=position.clone().sub(bodyCenter),radius=radial.length(),altitude=radius-BODY.radius;
  if(altitude<=0){position.copy(bodyCenter).add(radial.normalize().multiplyScalar(BODY.radius));const normal=position.clone().sub(bodyCenter).normalize(),impact=velocity.dot(normal);if(impact< -8){flight=false;toast('地表衝突 — 機体が破損しました');}else{velocity.addScaledVector(normal,-Math.min(0,impact));velocity.multiplyScalar(.985);}}
  rocket.position.copy(position);rocket.quaternion.copy(attitude);
@@ -91,8 +91,8 @@ function physicsStep(dt){
  $('#altitude').textContent='高度 '+Math.round(alt*1000).toLocaleString()+' m';$('#speed').textContent='速度 '+(spd*1000).toFixed(1)+' m/s';$('#vertical').textContent='垂直速度 '+(verticalSpeed*1000).toFixed(1)+' m/s';$('#throttle').textContent='スロットル '+Math.round(throttle*100)+'%';$('#fuel').textContent='燃料 '+(maxFuel?Math.round(fuel/maxFuel*100):0)+'%';$('#stage-label').textContent='ステージ '+stage;$('#gforce').textContent='G '+properG.toFixed(1);
  $('#apo').textContent='遠点 '+(Number.isFinite(elements.apoapsisAltitude)?Math.round(elements.apoapsisAltitude*1000).toLocaleString()+' m':'脱出軌道');$('#peri').textContent='近点 '+(Number.isFinite(elements.periapsisAltitude)?Math.round(elements.periapsisAltitude*1000).toLocaleString()+' m':'--');
  const atmospheric=THREE.MathUtils.clamp(1-alt/BODY.atmosphereHeight,0,1);scene.background.set(new THREE.Color(0x030914).lerp(new THREE.Color(0x8298a6),atmospheric));
- camera.position.lerp(position.clone().add(new THREE.Vector3(22,14,27)),.035);camera.lookAt(position.clone().add(new THREE.Vector3(0,5,0)));
- if(alt>100000&&!window._orb){window._orb=true;toast('大気圏外へ到達');science+=5;$('#science').textContent=science;}
+ camera.position.lerp(position.clone().add(new THREE.Vector3(.022,.014,.027)),.035);camera.lookAt(position.clone().add(new THREE.Vector3(0,5,0)));
+ if(alt>100&&!window._orb){window._orb=true;toast('大気圏外へ到達');science+=5;$('#science').textContent=science;}
 }
 function physics(dt){if(!flight||paused)return;flightAccumulator+=Math.min(dt,.1);const fixed=1/120;let steps=0;while(flightAccumulator>=fixed&&steps<12){physicsStep(fixed);flightAccumulator-=fixed;steps++;}if(steps===12)flightAccumulator=0;}
 function tick(now){requestAnimationFrame(tick);const dt=Math.min(.04,(now-last)/1000);last=now;physics(dt);if(!flight&&mode==='center'){rocket.rotation.y=now*.00015;}if(mode==='vab'){rocket.rotation.y=0;}renderer.render(scene,camera);}requestAnimationFrame(tick);
