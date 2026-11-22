@@ -96,21 +96,24 @@ export function createPartModel(p,THREE){
   if(id.includes('dts')||id.includes('dish')){mesh(new THREE.SphereGeometry(r*.78,24,12,0,Math.PI*2,0,Math.PI/2),white,[0,h*1.15,0]);torus(r*.78,.04,gold,h*1.15);}
   else{sphere(r*.2,gold,[0,h*1.25,0]);for(let i=0;i<4;i++){const a=i*Math.PI/2;box(.025,h*.35,.025,alloy,[Math.cos(a)*r*.4,h*1.02,Math.sin(a)*r*.4]);}}
  }else if(p.type==='science'){
-  cyl(r*.75,r*.75,h*.65,white,h*.34,24);bodyBand(r*.78,h*.1,gold);bodyBand(r*.78,h*.62,dark);
-  if(id.includes('goo')){sphere(r*.5,mat(0x9da78d,.1,.25),[0,h*.82,0]);}
-  else if(id.includes('material')){box(r*1.65,h*.55,r*1.65,dark,[0,h*.5,0]);for(let i=0;i<3;i++)box(.08,.6,.08,gold,[(i-1)*r*.4,h*.7,0]);}
-  else if(id.includes('thermo')||id.includes('barometer')){cyl(r*.22,r*.22,h*.7,dark,h*.9,12);sphere(r*.25,orange,[0,h*1.3,0]);}
+  const nm=p.name||'';cyl(r*.75,r*.75,h*.65,white,h*.34,24);bodyBand(r*.78,h*.1,gold);bodyBand(r*.78,h*.62,dark);
+  if(/scan arm|スキャンアーム/i.test(nm)){for(let i=0;i<3;i++){const y=h*(.65+i*.22);cyl(.055,.055,h*.28,alloy,y,8);sphere(.12,gold,[0,y+h*.13,0]);}box(.14,.12,h*.55,dark,[0,h*.85,0]);}
+  else if(/telescope|望遠鏡/i.test(nm)){cyl(r*.3,r*.42,h*1.25,dark,h*.8,24);torus(r*.32,.06,gold,h*1.42);sphere(r*.24,glass,[0,h*1.44,0],[1,.25,1]);}
+  else if(/goo|グー/.test(nm)){sphere(r*.5,mat(0x9da78d,.1,.25),[0,h*.82,0]);}
+  else if(/material|サイエンスJr|実験装置/.test(nm)){box(r*1.65,h*.55,r*1.65,dark,[0,h*.5,0]);for(let i=0;i<3;i++)box(.08,.6,.08,gold,[(i-1)*r*.4,h*.7,0]);}
+  else if(/thermo|barometer|温度計|気圧計/.test(nm)){cyl(r*.22,r*.22,h*.7,dark,h*.9,12);sphere(r*.25,orange,[0,h*1.3,0]);}
   else{cyl(r*.12,r*.12,h*.65,alloy,h*1.05,10);mesh(new THREE.SphereGeometry(r*.55,18,10,0,Math.PI*2,0,Math.PI/2),alloy,[0,h*1.38,0]);}
  }else if(p.type==='decoupler'||p.type==='structural'){
   const tri=id.includes('tri'),quad=id.includes('quad'),bi=id.includes('bi'),strut=id.includes('strut')||id.includes('hardpoint'),adapter=id.includes('adapter');
-  if(strut){box(r*1.6,.16,r*.42,alloy);box(.16,.16,r*1.6,alloy);for(let x of [-1,1])for(let z of [-1,1])sphere(.09,gold,[x*r*.7,0,z*r*.7]);}
+  if(/grip|グリップ/.test(p.name||'')){box(r*1.8,.12,h*.75,dark);for(let z=-h*.32;z<=h*.32;z+=.09)box(r*1.72,.045,.025,alloy,[0,.085,z]);}
+  else if(strut){box(r*1.6,.16,r*.42,alloy);box(.16,.16,r*1.6,alloy);for(let x of [-1,1])for(let z of [-1,1])sphere(.09,gold,[x*r*.7,0,z*r*.7]);}
   else{cyl(r,r*.82,h*.55,dark,h*.45,32);torus(r*.98,.07,alloy,h*.72);torus(r*.8,.055,gold,h*.15);boltRing(r*.88,h*.45,16);
    if(adapter){mesh(new THREE.CylinderGeometry(r*.48,r*.9,h*.65,32),white,[0,h*.55,0]);}
    if(tri||quad||bi){const count=tri?3:quad?4:2;for(let i=0;i<count;i++){const a=i*Math.PI*2/count;const x=Math.cos(a)*r*.9,z=Math.sin(a)*r*.9;cyl(r*.26,r*.26,h*.35,alloy,h*.48,16).position.set(x,h*.48,z);}}
   }
  }else if(p.type==='docking'){
-  cyl(r*.86,r*.72,h*.52,alloy,h*.38,40);torus(r*.82,.12,gold,h*.68);torus(r*.58,.07,dark,h*.72);cyl(r*.46,r*.46,.12,black,h*.73,32);boltRing(r*.72,h*.4,16);
-  for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.08,.22,.08,dark,[Math.cos(a)*r*.92,h*.35,Math.sin(a)*r*.92]);}
+  if(/膨張式|inflatable|airlock/i.test(p.name||'')){cyl(r*.72,r*.72,h*.78,white,h*.42,32);for(let y=.12;y<h*.9;y+=h*.16)bodyBand(r*.74,y,gold);box(r*.8,h*.42,.08,dark,[0,h*.42,r*.7]);torus(r*.7,.07,alloy,h*.82);}
+  else{cyl(r*.86,r*.72,h*.52,alloy,h*.38,40);torus(r*.82,.12,gold,h*.68);torus(r*.58,.07,dark,h*.72);cyl(r*.46,r*.46,.12,black,h*.73,32);boltRing(r*.72,h*.4,16);for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.08,.22,.08,dark,[Math.cos(a)*r*.92,h*.35,Math.sin(a)*r*.92]);}}
  }else if(p.type==='robotics'){
   const nm=(p.name||'').toLowerCase(),isPiston=/cylinder|油圧/.test(nm),isRotor=/rotor|ローター/.test(nm),isController=/kal|controller|コントローラー/.test(nm);
   if(isPiston){cyl(r*.22,r*.22,h*.82,alloy,h*.42,20);cyl(r*.13,r*.13,h*.62,gold,h*.95,16);cyl(r*.38,r*.38,.12,dark,h*.08,20);cyl(r*.38,r*.38,.12,dark,h*.83,20);torus(r*.3,.04,orange,h*.82);}
@@ -124,7 +127,12 @@ export function createPartModel(p,THREE){
   const bladeCount=/type s|タイプs/i.test(p.name||'')?3:2;
   for(let i=0;i<bladeCount;i++){const a=i*Math.PI*2/bladeCount;const blade=box(r*2.4,.07,Math.max(.16,h*.28),white,[Math.cos(a)*r*1.15,h*.78,Math.sin(a)*r*1.15],[0,-a,0]);blade.rotation.z=.025;box(r*1.9,.018,.025,gold,[Math.cos(a)*r*1.15,h*.83,Math.sin(a)*r*1.15],[0,-a,0]);}
  }else if(p.type==='payload'){
-  cyl(r,r,h*.8,dark,h*.42,32);for(let y of [h*.08,h*.82])bodyBand(r,y,alloy);box(r*1.72,h*.58,.08,white,[0,h*.44,r*.93]);for(let i=0;i<6;i++)box(.025,h*.45,.04,gold,[(i-2.5)*r*.22,h*.44,r*.98]);
+  const fam=(p.partFamily||p.name||'').toLowerCase();
+  if(/fairing|防護シェル|フェアリング/.test(fam)){cyl(r*.94,r*.94,.16,dark,h*.08,32);mesh(new THREE.ConeGeometry(r*.94,h*.82,32,1,true),white,[0,h*.5,0]);torus(r*.94,.06,gold,h*.12);for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.035,h*.62,.035,alloy,[Math.cos(a)*r*.9,h*.48,Math.sin(a)*r*.9]);}}
+  else if(/service bay|サービスベイ/.test(fam)){box(r*1.55,h*.8,r*1.25,dark,[0,h*.42,0]);for(let x of [-1,1]){box(.06,h*.68,.06,gold,[x*r*.7,h*.42,0]);box(.12,h*.7,.05,white,[x*r*.78,h*.42,r*.62]);}for(let y=.18;y<h*.8;y+=.2)box(r*1.1,.035,.08,alloy,[0,y,0]);}
+  else if(/cargo bay|カーゴベイ|cargo ramp|ランプ/.test(fam)){cyl(r,r,h*.82,dark,h*.42,32);for(let y of [h*.08,h*.82])bodyBand(r,y,alloy);box(r*1.72,h*.58,.08,white,[0,h*.44,r*.93]);for(let i=0;i<6;i++)box(.025,h*.45,.04,gold,[(i-2.5)*r*.22,h*.44,r*.98]);if(/ramp|ランプ/.test(fam))box(r*1.6,.1,r*1.4,alloy,[0,.02,r*.65],[.25,0,0]);}
+  else if(/container|storage|コンテナ|保管/.test(fam)){box(r*1.5,h*.8,r*1.3,white,[0,h*.42,0]);for(let y=.12;y<h*.85;y+=.18)box(r*1.56,.035,r*1.36,gold,[0,y,0]);box(r*1.25,h*.55,.04,dark,[0,h*.45,r*.66]);}
+  else{cyl(r,r,h*.8,dark,h*.42,32);for(let y of [h*.08,h*.82])bodyBand(r,y,alloy);box(r*1.72,h*.58,.08,white,[0,h*.44,r*.93]);for(let i=0;i<6;i++)box(.025,h*.45,.04,gold,[(i-2.5)*r*.22,h*.44,r*.98]);}
  }else if(p.type==='thermal'){
   if(/radiator|ラジエータ|熱制御/.test(p.name||'')){box(r*1.45,.12,h*.65,dark,[0,h*.25,0]);for(let i=0;i<9;i++){const z=-h*.3+i*h*.075;box(r*1.35,.045,.035,alloy,[0,h*.38,z]);}for(let x of [-r*.55,r*.55])box(.12,h*.45,.12,gold,[x,h*.18,0]);torus(r*.22,.055,gold,h*.62);}
   else{cyl(r,r*.78,h*.34,mat(0x5c4638,.2,.9),h*.2,40);torus(r*.9,.08,gold,h*.42);for(let i=0;i<12;i++){const a=i*Math.PI/6;box(.05,.08,.18,dark,[Math.cos(a)*r*.8,h*.3,Math.sin(a)*r*.8]);}}
