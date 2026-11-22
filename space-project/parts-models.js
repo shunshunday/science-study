@@ -126,18 +126,24 @@ export function createPartModel(p,THREE){
  }else if(p.type==='payload'){
   cyl(r,r,h*.8,dark,h*.42,32);for(let y of [h*.08,h*.82])bodyBand(r,y,alloy);box(r*1.72,h*.58,.08,white,[0,h*.44,r*.93]);for(let i=0;i<6;i++)box(.025,h*.45,.04,gold,[(i-2.5)*r*.22,h*.44,r*.98]);
  }else if(p.type==='thermal'){
-  cyl(r,r*.78,h*.34,mat(0x5c4638,.2,.9),h*.2,40);torus(r*.9,.08,gold,h*.42);for(let i=0;i<12;i++){const a=i*Math.PI/6;box(.05,.08,.18,dark,[Math.cos(a)*r*.8,h*.3,Math.sin(a)*r*.8]);}
+  if(/radiator|ラジエータ|熱制御/.test(p.name||'')){box(r*1.45,.12,h*.65,dark,[0,h*.25,0]);for(let i=0;i<9;i++){const z=-h*.3+i*h*.075;box(r*1.35,.045,.035,alloy,[0,h*.38,z]);}for(let x of [-r*.55,r*.55])box(.12,h*.45,.12,gold,[x,h*.18,0]);torus(r*.22,.055,gold,h*.62);}
+  else{cyl(r,r*.78,h*.34,mat(0x5c4638,.2,.9),h*.2,40);torus(r*.9,.08,gold,h*.42);for(let i=0;i<12;i++){const a=i*Math.PI/6;box(.05,.08,.18,dark,[Math.cos(a)*r*.8,h*.3,Math.sin(a)*r*.8]);}}
  }else if(p.type==='intake'){
   cyl(r*.8,r,h*.68,alloy,h*.42,32);torus(r*.8,.1,gold,h*.77);cyl(r*.57,r*.57,.07,black,h*.79,32);for(let i=0;i<12;i++){const a=i*Math.PI/6;box(.04,.04,r*.55,alloy,[Math.cos(a)*r*.4,h*.79,Math.sin(a)*r*.4]);}
  }else if(p.type==='gear'||p.type==='ground'){
-  const wheelR=r*.56;box(.14,h*.72,.14,alloy,[0,h*.43,0],[0,0,-.22]);box(.12,.1,.42,dark,[0,h*.08,0]);mesh(new THREE.CylinderGeometry(wheelR,wheelR,.2,28),rubber,[r*.55,.02,0],[0,0,Math.PI/2]);mesh(new THREE.CylinderGeometry(wheelR*.5,wheelR*.5,.22,20),alloy,[r*.55,.02,0],[0,0,Math.PI/2]);torus(wheelR*.7,.035,gold,.02).rotation.z=Math.PI/2;
+  if(/landing leg|着陸脚/.test(p.name||'')){for(let x of [-r*.48,r*.48]){box(.12,h*.7,.12,alloy,[x,h*.42,0],[0,0,x<0?-.18:.18]);cyl(.07,.07,h*.22,gold,h*.22,10).position.x=x;}box(r*1.35,.12,r*.9,dark,[0,.04,0]);for(let x of [-r*.48,r*.48])box(.18,.06,.25,alloy,[x,.08,0]);}
+  else{const wheelR=r*.56;box(.14,h*.72,.14,alloy,[0,h*.43,0],[0,0,-.22]);box(.12,.1,.42,dark,[0,h*.08,0]);mesh(new THREE.CylinderGeometry(wheelR,wheelR,.2,28),rubber,[r*.55,.02,0],[0,0,Math.PI/2]);mesh(new THREE.CylinderGeometry(wheelR*.5,wheelR*.5,.22,20),alloy,[r*.55,.02,0],[0,0,Math.PI/2]);torus(wheelR*.7,.035,gold,.02).rotation.z=Math.PI/2;}
  }else if(p.type==='airbrake'){
   box(r*1.65,.12,r*.55,dark);box(r*1.5,h*.8,.08,white,[0,h*.45,0]);for(let i=0;i<4;i++)box(.035,h*.68,.025,gold,[(i-1.5)*r*.3,h*.45,.06]);
  }else if(p.type==='utility'){
-  if(/illuminator|light|照明/i.test(p.name||'')){cyl(r*.3,r*.38,h*.42,dark,h*.25,16);cyl(r*.62,r*.62,.12,alloy,h*.52,24);sphere(r*.48,mat(0xf2e3ad,.1,.2),[0,h*.65,0],[1,.28,1]);for(let i=0;i<4;i++){const a=i*Math.PI/2;box(.045,h*.28,.045,alloy,[Math.cos(a)*r*.72,h*.2,Math.sin(a)*r*.72]);}}
-  else{
-  for(let x of [-r*.35,r*.35])cyl(.035,.035,h,alloy,h*.5,8).position.x=x;
-  for(let y=.1;y<h;y+=.16)box(r*.9,.045,.07,dark,[0,y,0]);}
+  const nm=p.name||'';
+  if(/illuminator|light|照明|ライト/i.test(nm)){cyl(r*.3,r*.38,h*.42,dark,h*.25,16);cyl(r*.62,r*.62,.12,alloy,h*.52,24);sphere(r*.48,mat(0xf2e3ad,.1,.2),[0,h*.65,0],[1,.28,1]);for(let i=0;i<4;i++){const a=i*Math.PI/2;box(.045,h*.28,.045,alloy,[Math.cos(a)*r*.72,h*.2,Math.sin(a)*r*.72]);}}
+  else if(/flag|フラッグ/.test(nm)){cyl(.035,.035,h,alloy,h*.5,8);const flagShape=new THREE.Shape();flagShape.moveTo(0,0);flagShape.lineTo(r*1.25,h*.25);flagShape.lineTo(0,h*.48);flagShape.closePath();mesh(new THREE.ShapeGeometry(flagShape),mat(0x9b4c3f,.1,.8),[.02,h*.42,0]);}
+  else if(/launch escape|脱出システム/.test(nm)){for(let i=0;i<4;i++){const a=i*Math.PI/2;box(.1,h*.82,.1,alloy,[Math.cos(a)*r*.55,h*.5,Math.sin(a)*r*.55]);}mesh(new THREE.ConeGeometry(r*.38,h*.34,16),orange,[0,h*.98,0]);cyl(r*.24,r*.24,h*.22,dark,-h*.02,16);}
+  else if(/drill|採掘/.test(nm)){cyl(r*.6,r*.75,h*.5,white,h*.45,20);cyl(r*.18,r*.18,h*.45,dark,h*.12,12);mesh(new THREE.ConeGeometry(r*.3,h*.4,8),alloy,[0,-h*.22,0],[Math.PI,0,0]);for(let x of [-r*.55,r*.55])box(.1,h*.6,.1,gold,[x,h*.4,0]);}
+  else if(/isru|コンバート/.test(nm)){box(r*1.4,h*.72,r*1.2,white,[0,h*.42,0]);for(let x of [-r*.45,r*.45]){cyl(r*.22,r*.22,h*.55,alloy,h*.5,16).position.x=x;torus(r*.2,.035,gold,h*.78).position.x=x;}box(r*1.65,.1,.12,dark,[0,h*.8,0]);}
+  else if(/firework|スターショット/.test(nm)){for(let i=0;i<5;i++){const a=i*Math.PI*2/5;const x=Math.cos(a)*r*.5,z=Math.sin(a)*r*.5;cyl(.12,.12,h*.7,orange,h*.45,12).position.set(x,h*.45,z);}}
+  else{for(let x of [-r*.35,r*.35])cyl(.035,.035,h,alloy,h*.5,8).position.x=x;for(let y=.1;y<h;y+=.16)box(r*.9,.045,.07,dark,[0,y,0]);}
  }else{
   cyl(r*.85,r*.85,h*.65,alloy,h*.35,20);bodyBand(r*.86,h*.12,gold);
  }
