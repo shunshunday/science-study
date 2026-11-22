@@ -52,6 +52,8 @@ export function createPartModel(p,THREE){
    for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.035,h*.48,.035,dark,[Math.cos(a)*r*.95,h*.5,Math.sin(a)*r*.95]);}
    if(xenon){for(let i=0;i<6;i++){const a=i*Math.PI/3;sphere(.06,gold,[Math.cos(a)*r*.6,h*.5,Math.sin(a)*r*.6]);}}
   }
+ }else if(p.type==='nosecone'){
+  mesh(new THREE.ConeGeometry(r,h,32),white,[0,h*.5,0]);torus(r*.92,.055,gold,h*.08);torus(r*.42,.025,dark,h*.82);
  }else if(p.type==='engine'||p.type==='jet'||p.type==='booster'){
   const jet=p.type==='jet'||id.startsWith('jet-'),solid=p.type==='booster',ion=id.includes('ion')||id.includes('dawn'),nerv=id.includes('nerv'),mammoth=id.includes('mammoth'),vector=id.includes('vector'),spider=id.includes('spider'),poodle=id.includes('poodle'),twin=id.includes('twinboar');
   const count=mammoth?4:twin?2:spider?4:1;
@@ -130,8 +132,10 @@ export function createPartModel(p,THREE){
  }else if(p.type==='airbrake'){
   box(r*1.65,.12,r*.55,dark);box(r*1.5,h*.8,.08,white,[0,h*.45,0]);for(let i=0;i<4;i++)box(.035,h*.68,.025,gold,[(i-1.5)*r*.3,h*.45,.06]);
  }else if(p.type==='utility'){
+  if(/illuminator|light|照明/i.test(p.name||'')){cyl(r*.3,r*.38,h*.42,dark,h*.25,16);cyl(r*.62,r*.62,.12,alloy,h*.52,24);sphere(r*.48,mat(0xf2e3ad,.1,.2),[0,h*.65,0],[1,.28,1]);for(let i=0;i<4;i++){const a=i*Math.PI/2;box(.045,h*.28,.045,alloy,[Math.cos(a)*r*.72,h*.2,Math.sin(a)*r*.72]);}}
+  else{
   for(let x of [-r*.35,r*.35])cyl(.035,.035,h,alloy,h*.5,8).position.x=x;
-  for(let y=.1;y<h;y+=.16)box(r*.9,.045,.07,dark,[0,y,0]);
+  for(let y=.1;y<h;y+=.16)box(r*.9,.045,.07,dark,[0,y,0]);}
  }else{
   cyl(r*.85,r*.85,h*.65,alloy,h*.35,20);bodyBand(r*.86,h*.12,gold);
  }
