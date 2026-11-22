@@ -355,7 +355,7 @@ function drawPartsCatalogV2(){
  let items=catalog.filter(p=>(activePartCategory==='すべて'||categoryFor(p)===activePartCategory)&&(!query||(p.name+' '+p.id+' '+categoryFor(p)).toLowerCase().includes(query)));
  items.sort((a,b)=>sort==='mass'?a.mass-b.mass:sort==='cost'?a.cost-b.cost:sort==='size'?a.height-b.height:a.name.localeCompare(b.name,'ja'));
  $('#parts-count').textContent=catalog.length+' PARTS';$('#part-result-count').textContent=items.length+' 件';
- $('#part-list').innerHTML=items.map(p=>{const unlocked=gameMode==='sandbox'||unlockedTech.has(p.tech||'basic');return '<button class="part" data-part="'+p.id+'" '+(unlocked?'':'disabled')+' title="'+p.name+'"><span class="part-icon"></span><span>'+p.name+'<small>'+p.mass.toFixed(2)+' t · ₡'+p.cost+'</small></span></button>';}).join('');renderPartPreviews(items);
+ $('#part-list').innerHTML=items.map(p=>{const unlocked=gameMode==='sandbox'||unlockedTech.has(p.tech||'basic');return '<button class="part" data-part="'+p.id+'" '+(unlocked?'':'disabled')+'><span class="part-icon"></span><span><small>'+p.mass.toFixed(2)+' t · ₡'+p.cost+'</small></span></button>';}).join('');renderPartPreviews(items);
 }
 
 const techTree=[
