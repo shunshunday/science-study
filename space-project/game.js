@@ -23,10 +23,10 @@ function makeCrewFigure(member,index){
  for(const x of [-.31,.31]){sphere(.235,eyeWhite,x,3.08,.64,[.82,1.12,.55]);sphere(.105,pupil,x+.025,3.06,.79,[.9,1.1,.55]);sphere(.035,material(0xffffff,.02),x+.045,3.12,.83);}
  const smile=new THREE.Mesh(new THREE.TorusGeometry(.16,.025,6,16,Math.PI),material(0x637d2d,.05));smile.position.set(0,2.78,.68);smile.rotation.z=Math.PI;root.add(smile);
  if(pilot){const helmet=new THREE.Mesh(new THREE.SphereGeometry(.91,24,18),glass);helmet.position.set(0,3.08,.02);helmet.scale.set(1.04,1.08,1);root.add(helmet);const rim=new THREE.Mesh(new THREE.TorusGeometry(.82,.045,8,28),trim);rim.position.set(0,3.05,.02);root.add(rim);}
- root.position.set((index%4-1.5)*5.2,0,(Math.floor(index/4)-1.5)*5.5);
- crewStage.add(root);
+ root.position.set(0,0,0);
+ return root;
 }
-function rebuildCrewStage(){while(crewStage.children.length)crewStage.remove(crewStage.children[0]);crewMembers.forEach(makeCrewFigure);}
+function rebuildCrewStage(){while(crewStage.children.length)crewStage.remove(crewStage.children[0]);}
 scene.background=new THREE.Color(0x8298a6);scene.fog=new THREE.Fog(0x8298a6,180,600);
 const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.0001,20000);camera.position.set(24,18,34);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;$('#viewport').appendChild(renderer.domElement);
@@ -312,12 +312,13 @@ function saveCareer(){const key=gameMode==='career'?'space-career-v1':'space-'+g
 function renderResearch(){$('#career-title').textContent='研究開発';$('#career-content').innerHTML='<div class="career-content"><p>利用可能な科学ポイント：<b>'+science+'</b></p>'+techTree.map(t=>{const done=unlockedTech.has(t.id),ready=t.requires.every(x=>unlockedTech.has(x))&&science>=t.cost;return '<div class="career-item"><h3>'+t.name+'</h3><p>'+t.description+'</p><span class="career-tag">必要科学：'+t.cost+'　前提：'+(t.requires.join(', ')||'なし')+'</span><br><button data-unlock-tech="'+t.id+'" '+(done||!ready?'disabled':'')+'>'+(done?'解放済み':ready?'研究を完了':'条件未達')+'</button></div>';}).join('')+'</div>';}
 function renderCrew(){
  $('#career-title').textContent='乗組員管理';
- rebuildCrewStage();crewStage.visible=true;
+ crewStage.visible=false;
  $('#career-content').innerHTML='<div class="crew-intro"><span>CREW ROSTER</span><p>3D乗組員一覧。飛行から帰還すると経験が上がります。</p></div><div class="crew-grid">'+crewMembers.map((k)=>{
   const stars=Math.min(5,Math.max(1,k.stars??1)),bravery=Math.min(99,Math.max(1,k.bravery??(k.role==='パイロット'?70:k.role==='エンジニア'?48:55))),stupidity=Math.min(99,Math.max(1,k.stupidity??(k.role==='パイロット'?62:k.role==='エンジニア'?38:72)));
   k.bravery=bravery;k.stupidity=stupidity;
-  return '<article class="crew-card"><div class="crew-info"><h3>'+k.name+'</h3><span class="crew-role">'+k.role+' ・ 経験 '+('★'.repeat(stars))+('☆'.repeat(5-stars))+'</span><div class="crew-stat"><div><span>バカ度</span><b>'+stupidity+'%</b></div><div class="crew-meter"><i style="width:'+stupidity+'%"></i></div></div><div class="crew-stat"><div><span>勇敢度</span><b>'+bravery+'%</b></div><div class="crew-meter brave"><i style="width:'+bravery+'%"></i></div></div></div></article>';
+  return '<article class="crew-card"><canvas class="crew-avatar" data-crew-index="'+crewMembers.indexOf(k)+'" width="96" height="128" aria-label="'+k.name+' の全身3Dモデル"></canvas><div class="crew-info"><h3>'+k.name+'</h3><span class="crew-role">'+k.role+' ・ 経験 '+('★'.repeat(stars))+('☆'.repeat(5-stars))+'</span><div class="crew-stat"><div><span>バカ度</span><b>'+stupidity+'%</b></div><div class="crew-meter"><i style="width:'+stupidity+'%"></i></div></div><div class="crew-stat"><div><span>勇敢度</span><b>'+bravery+'%</b></div><div class="crew-meter brave"><i style="width:'+bravery+'%"></i></div></div></div></article>';
  }).join('')+'</div><section class="crew-recruit"><b>乗組員を雇用</b><div><button data-hire-crew="pilot">パイロットを雇用</button><button data-hire-crew="engineer">エンジニアを雇用</button><button data-hire-crew="scientist">科学者を雇用</button></div></section>';
+ renderCrewPortraits();
  saveCareer();
 }function renderContracts(){$('#career-title').textContent='ミッション管理';$('#career-content').innerHTML='<div class="career-content">'+(activeContract?'<div class="career-item"><h3>受注中：'+activeContract.name+'</h3><p>'+activeContract.description+'</p><span class="career-tag">報酬 ₡'+activeContract.reward.toLocaleString()+' / 科学 '+activeContract.science+'</span></div>':'<p>受注中の契約はありません。</p>')+contracts.map(k=>'<div class="career-item"><h3>'+k.name+'</h3><p>'+k.description+'</p><span class="career-tag">報酬 ₡'+k.reward.toLocaleString()+' / 科学 '+k.science+'</span><br><button data-accept-contract="'+k.id+'" '+(activeContract?'disabled':'')+'>契約を受注</button></div>').join('')+'</div>';}
 try{const saveKey=gameMode==='career'?'space-career-v1':'space-'+gameMode+'-v1';const savedCareer=JSON.parse(localStorage.getItem(saveKey)||'null');if(savedCareer){funds=savedCareer.funds??funds;fundsUnlimited=savedCareer.fundsUnlimited??true;science=savedCareer.science??science;unlockedTech=new Set(savedCareer.unlocked||['basic']);activeContract=contracts.find(k=>k.id===savedCareer.activeContract)||null;crewMembers=savedCareer.crew||crewMembers;}}catch{}if(gameMode==='sandbox'){funds=999999999;unlockedTech=new Set(techTree.map(t=>t.id));activeContract=null;}if(gameMode==='science')activeContract=null;
