@@ -84,7 +84,7 @@ These inventories are discovery/verification work, not an implemented replacemen
 
 ## Current implementation status (2026-11-22)
 - `parts-models.js`: integrated original geometry factory used for both the part-card previews and placed craft parts.
-- `parts-inventory.js`: 266 additional candidates (169 stock-family + 97 DLC) merged into the in-game catalog, with source labels and provisional-data warnings.
+- `parts-inventory.js`: 277 additional candidates (169 stock-family + 97 DLC + 11 hidden legacy stock) merged into the in-game catalog, with source labels and provisional-data warnings.
 - VAB cards now show the part name and source (base / stock / Making History / Breaking Ground).
 - The new models are original approximations, not official KSP meshes. They are not exact KSP visual reproductions.
 - The extra inventory entries are currently candidate records with provisional estimated stats. Exact 1.12.5 IDs, attachment nodes, module behaviors, and per-part official stats are not verified.
