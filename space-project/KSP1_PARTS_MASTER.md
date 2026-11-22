@@ -89,3 +89,6 @@ These inventories are discovery/verification work, not an implemented replacemen
 - The new models are original approximations, not official KSP meshes. They are not exact KSP visual reproductions.
 - The extra inventory entries are currently candidate records with provisional estimated stats. Exact 1.12.5 IDs, attachment nodes, module behaviors, and per-part official stats are not verified.
 - 0 official KSP 3D assets are approved for redistribution; no proprietary meshes or textures have been copied.
+
+- `KSP1_LEGACY_STOCK_PARTS.json`: 11 hidden legacy stock-part candidates for KSP 1.12.5.
+- `export-ksp-part-configs.ps1`: Windows PowerShell exporter for exact local stock/DLC part config data; it does not copy model assets.
