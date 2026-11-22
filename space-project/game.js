@@ -28,14 +28,14 @@ const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);co
 const catalog=[
 {id:'pod',name:'Mk1 コマンドポッド',type:'pod',mass:0.84,cost:600,crew:1,icon:'◉',height:2,radius:.9},
 {id:'probe',name:'プローブコア',type:'probe',mass:.1,cost:450,icon:'⌖',height:.7,radius:.65},
-{id:'tank-s',name:'FL-T100 燃料タンク',type:'tank',mass:.062,fuel:45,cost:275,icon:'▤',height:1.4,radius:.62},
-{id:'tank-m',name:'FL-T400 燃料タンク',type:'tank',mass:.25,fuel:180,cost:700,icon:'▤',height:2.8,radius:.72},
-{id:'tank-l',name:'X200-16 燃料タンク',type:'tank',mass:.45,fuel:360,cost:1100,icon:'▤',height:3.5,radius:.9},
+{id:'tank-s',name:'FL-T100 燃料タンク',type:'tank',mass:.062,fuel:360,cost:275,icon:'▤',height:1.4,radius:.62},
+{id:'tank-m',name:'FL-T400 燃料タンク',type:'tank',mass:.25,fuel:1440,cost:700,icon:'▤',height:2.8,radius:.72},
+{id:'tank-l',name:'X200-16 燃料タンク',type:'tank',mass:.45,fuel:2880,cost:1100,icon:'▤',height:3.5,radius:.9},
 {id:'engine-s',name:'LV-909 液体エンジン',type:'engine',mass:.5,cost:390,thrust:60,isp:320,icon:'◈',height:1.3,radius:.65},
 {id:'engine-m',name:'LV-T45 エンジン',type:'engine',mass:1.5,cost:1200,thrust:200,isp:320,icon:'◈',height:2,radius:.9},
 {id:'engine-l',name:'Mainsail 大型エンジン',type:'engine',mass:6,cost:8500,thrust:1500,isp:310,icon:'◈',height:3,radius:1.5},
 {id:'decoupler',name:'TD-12 デカプラー',type:'decoupler',mass:.05,cost:400,icon:'⊖',height:.35,radius:.78},
-{id:'booster',name:'固体燃料ブースター',type:'booster',mass:1.5,cost:900,fuel:100,thrust:180,isp:220,icon:'▥',height:3.5,radius:.55},
+{id:'booster',name:'固体燃料ブースター',type:'booster',mass:1.5,cost:900,fuel:800,thrust:180,isp:220,icon:'▥',height:3.5,radius:.55},
 {id:'fin',name:'空力フィン',type:'fin',mass:.08,cost:120,icon:'△',height:.6,radius:.9},
 {id:'chute',name:'Mk16 パラシュート',type:'chute',mass:.1,cost:400,icon:'⌃',height:.6,radius:.8},
 {id:'battery',name:'Z-100 バッテリー',type:'battery',mass:.05,cost:80,icon:'▣',height:.35,radius:.5},
@@ -56,7 +56,7 @@ $('#part-list').addEventListener('click',e=>{const b=e.target.closest('[data-par
 $('#clear-craft').onclick=()=>{if(flight)return;parts.length=0;assemblyStage=0;layout();toast('機体を空にしました');};
 $('#new-stage').onclick=()=>{if(flight)return;assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;toast('新しい組立ステージ '+assemblyStage);};
 $('#save-craft').onclick=()=>{localStorage.setItem('space-craft-v1',JSON.stringify(parts.map(p=>({id:p.data.id,stage:p.stage,fuel:p.fuel}))));toast('機体を保存しました');};
-$('#load-craft').onclick=()=>{try{const a=JSON.parse(localStorage.getItem('space-craft-v1')||'[]');parts.length=0;a.forEach(v=>{const d=catalog.find(p=>p.id===v.id);if(d)parts.push({data:d,stage:v.stage,fuel:v.fuel});});assemblyStage=Math.max(0,...parts.map(p=>p.stage||0));layout();toast('機体を読み込みました');}catch{toast('保存データがありません');}};
+$('#load-craft').onclick=()=>{try{const a=JSON.parse(localStorage.getItem('space-craft-v1')||'[]');parts.length=0;a.forEach(v=>{const d=catalog.find(p=>p.id===v.id);if(d)parts.push({data:d,stage:v.stage,fuel:v.fuel??d.fuel??0});});assemblyStage=Math.max(0,...parts.map(p=>p.stage||0));layout();toast('機体を読み込みました');}catch{toast('保存データがありません');}};
 function startFlight(){if(!parts.length){toast('先にロケットを組み立ててください');return;}if(!parts.some(p=>p.data.type==='engine'||p.data.type==='booster')){toast('エンジンまたはブースターが必要です');return;}if(!parts.some(p=>['tank','booster'].includes(p.data.type)&&(p.fuel||0)>0)){toast('燃料タンクまたは燃料入りブースターが必要です');return;}flight=true;paused=false;elapsed=0;stage=0;throttle=0;flightAccumulator=0;window._orb=false;sasEnabled=false;rcsEnabled=false;position.set(0,.002,0);velocity.set(0,0,0);angular.set(0,0,0);attitude.identity();rocket.position.copy(position);rocket.quaternion.copy(attitude);rocket.visible=true;setMode('flight');toast('発射準備完了 — Zでスロットル最大、Spaceで点火');}
 $('#launch').onclick=startFlight;$('#map-toggle').onclick=()=>{map=!map;toast(map?'軌道マップ表示（M）':'飛行ビュー');};
 let keys={};addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.code==='Space'&&flight){e.preventDefault();activateStage();}if(e.key.toLowerCase()==='z')throttle=1;if(e.key.toLowerCase()==='x')throttle=0;if(e.key.toLowerCase()==='t'){sasEnabled=!sasEnabled;toast('SAS '+(sasEnabled?'ON':'OFF'));}if(e.key.toLowerCase()==='r'){rcsEnabled=!rcsEnabled;toast('RCS '+(rcsEnabled?'ON':'OFF'));}if(e.key.toLowerCase()==='m'&&flight){map=!map;}if(e.key==='Shift')throttle=Math.min(1,throttle+.02);if(e.key==='Control')throttle=Math.max(0,throttle-.02);});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
