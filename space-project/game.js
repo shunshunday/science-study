@@ -18,11 +18,11 @@ function makeCrewFigure(member,index){
  const pack=new THREE.Mesh(new THREE.BoxGeometry(.62,.95,.35),trim);pack.position.set(0,1.62,-.48);root.add(pack);
  const chest=new THREE.Mesh(new THREE.BoxGeometry(.45,.34,.07),material(engineer?0xb8c9d9:0x3b6476,.45));chest.position.set(0,1.63,.53);root.add(chest);
  if(engineer){const patch=new THREE.Mesh(new THREE.CircleGeometry(.16,20),material(0xb83232,.1));patch.position.set(.28,1.95,.51);root.add(patch);}
- // iconic yellow-green Kerbal head, huge eyes and transparent helmet for pilots
+ // iconic yellow-green Kerbal head with large eyes; no transparent face dome
  sphere(.76,skin,0,3.05,.02,[1,.98,.9]);
  for(const x of [-.31,.31]){sphere(.235,eyeWhite,x,3.08,.64,[.82,1.12,.55]);sphere(.105,pupil,x+.025,3.06,.79,[.9,1.1,.55]);sphere(.035,material(0xffffff,.02),x+.045,3.12,.83);}
  const smile=new THREE.Mesh(new THREE.TorusGeometry(.16,.025,6,16,Math.PI),material(0x637d2d,.05));smile.position.set(0,2.78,.68);smile.rotation.z=Math.PI;root.add(smile);
- if(pilot){const helmet=new THREE.Mesh(new THREE.SphereGeometry(.91,24,18),glass);helmet.position.set(0,3.08,.02);helmet.scale.set(1.04,1.08,1);root.add(helmet);const rim=new THREE.Mesh(new THREE.TorusGeometry(.82,.045,8,28),trim);rim.position.set(0,3.05,.02);root.add(rim);}
+
  root.position.set(0,0,0);
  return root;
 }
@@ -38,7 +38,7 @@ function renderCrewPortraits(){
  const key=new THREE.DirectionalLight(0xffffff,2.5);key.position.set(-3,6,7);portraitScene.add(key);
  const fill=new THREE.DirectionalLight(0xb9d8ff,1.0);fill.position.set(4,2,3);portraitScene.add(fill);
  const portraitCamera=new THREE.OrthographicCamera(-1.62,1.62,4.15,-.15,.1,30);
- portraitCamera.position.set(0,2,9);portraitCamera.lookAt(0,1.98,0);
+ portraitCamera.position.set(0,2,9);portraitCamera.lookAt(0,1.82,0);
  for(const canvas of canvases){
   const member=crewMembers[Number(canvas.dataset.crewIndex)];if(!member)continue;
   const figure=makeCrewFigure(member,0);portraitScene.add(figure);
