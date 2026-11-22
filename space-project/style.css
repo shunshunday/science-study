@@ -29,13 +29,14 @@
 #stage-build-label{font-size:10px}
 #viewport canvas{background:#242c32}
 @media(max-width:700px){.parts{width:240px}.part-list{grid-template-columns:repeat(2,minmax(0,1fr))}.vab-tools{left:250px;right:5px;transform:none;overflow:auto}.vab-tools span{display:none}}
-/* Larger part tiles and instant plain-language hover labels */
-.parts{width:390px}
-.part-list{grid-auto-rows:124px;gap:6px;padding:8px}
-.part{position:relative}
-.part::after{content:attr(data-tip);position:absolute;left:50%;bottom:5px;transform:translateX(-50%);z-index:3;max-width:calc(100% - 8px);padding:3px 6px;border-radius:3px;background:#101a20ed;border:1px solid #e4d19a;color:#fff;font-size:11px;line-height:1.25;white-space:normal;overflow-wrap:anywhere;text-align:center;pointer-events:none;opacity:0;transition:none}
+/* Compact part catalog with KSP-style specification hover panel */
+.parts{width:320px}
+.part-list{grid-auto-rows:98px;gap:4px;padding:6px}
+.part{position:relative;padding:5px;gap:5px}
+.part-icon{height:76px}
+.part::after{content:attr(data-tip);position:fixed;left:330px;top:50%;transform:translateY(-50%);z-index:30;width:270px;max-height:72vh;overflow:hidden;white-space:pre-line;overflow-wrap:anywhere;text-align:left;padding:12px 14px;border-radius:4px;background:#202d39f2;border:1px solid #d9c58b;color:#eef4f6;font-size:12px;line-height:1.55;box-shadow:0 6px 22px #0009;pointer-events:none;opacity:0;transition:none}
 .part:hover::after{opacity:1}
-@media(max-width:700px){.parts{width:280px}.part-list{grid-auto-rows:116px;grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.parts{width:250px}.part-list{grid-auto-rows:88px;grid-template-columns:repeat(2,minmax(0,1fr))}.part::after{left:258px;width:min(245px,calc(100vw - 270px));font-size:10px;padding:9px;max-height:65vh}}
 
 .build-staging{display:none;position:fixed;z-index:5;right:0;top:0;bottom:0;width:210px;padding:8px;background:linear-gradient(90deg,#25323bdc,#303d47ed);border-left:2px solid #a9b3b955;overflow:auto;box-shadow:-6px 0 20px #0007}
 .build-staging.show{display:block}.build-staging-head{height:32px;padding:7px 8px;font-weight:700;letter-spacing:2px;color:#f1d28c;border-bottom:1px solid #ffffff38}
