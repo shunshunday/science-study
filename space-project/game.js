@@ -25,6 +25,36 @@ for(let i=0;i<18;i++){const x=-82+(i%9)*20,z=-65+Math.floor(i/9)*145;const trunk
 // 独自デザインの低ポリ宇宙飛行士。組立棟と発射場に配置。
 function makeCrew(){const g=new THREE.Group(),suit=new THREE.MeshStandardMaterial({color:0xd8d6c8,roughness:.75}),visor=new THREE.MeshStandardMaterial({color:0x263e4c,metalness:.55,roughness:.2}),skin=new THREE.MeshStandardMaterial({color:0x83a66b,roughness:.85});const body=new THREE.Mesh(new THREE.CapsuleGeometry(.32,.55,4,8),suit);body.position.y=.85;g.add(body);const head=new THREE.Mesh(new THREE.SphereGeometry(.29,12,10),skin);head.position.y=1.48;g.add(head);const helmet=new THREE.Mesh(new THREE.TorusGeometry(.3,.055,6,16),suit);helmet.position.y=1.48;g.add(helmet);const glass=new THREE.Mesh(new THREE.SphereGeometry(.19,12,8,0,Math.PI*2,0,Math.PI/2),visor);glass.position.set(0,1.49,.17);g.add(glass);for(const side of [-1,1]){const arm=new THREE.Mesh(new THREE.CylinderGeometry(.09,.12,.55,7),suit);arm.position.set(side*.38,.9,0);arm.rotation.z=side*.2;g.add(arm);const leg=new THREE.Mesh(new THREE.CylinderGeometry(.12,.14,.55,7),suit);leg.position.set(side*.16,.28,0);g.add(leg);}g.traverse(o=>{if(o.isMesh)o.castShadow=true;});return g;}
 const crew=makeCrew();crew.position.set(4,0,7);campus.add(crew);
+
+// 大型格納庫：鉄骨トラス、格子床、黄色い格納扉、照明、作業足場を独自モデルで構成
+const hangar=new THREE.Group();hangar.scale.setScalar(.001);scene.add(hangar);
+const hangarMat=(color,metalness=.45,roughness=.72)=>new THREE.MeshStandardMaterial({color,metalness,roughness});
+const steel=hangarMat(0x46525a,.78),steelLight=hangarMat(0x899398,.72),darkSteel=hangarMat(0x202a30,.55),yellow=hangarMat(0xb18a35,.55),floorMat=hangarMat(0x62696b,.2,.92);
+function hBox(w,h,d,x,y,z,mat,parent=hangar){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
+function hBeam(a,b,r=.42,mat=steel){const va=new THREE.Vector3(...a),vb=new THREE.Vector3(...b),d=vb.clone().sub(va),m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,d.length(),6),mat);m.position.copy(va.add(vb).multiplyScalar(.5));m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());m.castShadow=true;hangar.add(m);}
+hBox(230,.8,270,0,-.65,0,floorMat);
+for(let x=-110;x<=110;x+=22)hBox(.45,.025,265,x,-.21,0,hangarMat(0x9b9b8d,.1,.95));
+for(let z=-125;z<=125;z+=22)hBox(225,.025,.45,0,-.2,z,hangarMat(0x9b9b8d,.1,.95));
+for(let x of [-105,-75,-45,45,75,105]){
+ hBox(3,100,3,x,49,-95,steel);hBox(3,100,3,x,49,95,steel);
+ hBeam([x,2,-95],[x,98,-95],.65,steelLight);hBeam([x,2,95],[x,98,95],.65,steelLight);
+}
+for(let y of [12,34,56,78,98]){
+ hBeam([-112,y,-95],[112,y,-95],.85,steelLight);
+ hBeam([-112,y,95],[112,y,95],.85,steelLight);
+}
+for(let x=-105;x<105;x+=21){
+ hBeam([x,12,-95],[x+21,34,-95],.55,steel);hBeam([x+21,12,-95],[x,34,-95],.55,steel);
+ hBeam([x,56,-95],[x+21,78,-95],.55,steel);hBeam([x+21,56,-95],[x,78,-95],.55,steel);
+ hBeam([x,12,95],[x+21,34,95],.55,steel);hBeam([x+21,12,95],[x,34,95],.55,steel);
+}
+for(let x of [-95,-65,65,95]){hBox(5,88,5,x,44,0,darkSteel);for(let y=12;y<88;y+=18)hBox(12,1,10,x+(x<0?7:-7),y,0,steelLight);}
+for(let x=-42;x<=42;x+=14){hBox(13,78,1.8,x,39,-94,yellow);for(let y=7;y<78;y+=14)hBox(12,.7,2,x,y,-92,darkSteel);}
+hBox(190,4,5,0,88,-94,darkSteel);hBox(190,4,5,0,3,-94,yellow);
+for(let z=-75;z<=75;z+=25){hBox(1.4,1.4,150,-112,1,z,steel);hBox(1.4,1.4,150,112,1,z,steel);}
+for(let x of [-72,72]){for(let z of [-45,45]){hBox(2,18,2,x,9,z,darkSteel);hBox(10,1,4,x,18,z,steelLight);}}
+for(let x of [-55,55])for(let z of [-30,30]){const lamp=new THREE.Mesh(new THREE.BoxGeometry(8,.8,3),new THREE.MeshBasicMaterial({color:0xffe4b5}));lamp.position.set(x,76,z);hangar.add(lamp);}
+
 const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);const parts=[];let mode='center',gameMode=localStorage.getItem('space-game-mode')||'career',funds=25000,science=0,stage=0,assemblyStage=0,stageUiFuelPercent=-1,throttle=0,flight=false,paused=false,sasEnabled=false,rcsEnabled=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
 const catalog=[
 {id:'pod',name:'Mk1 コマンドポッド',type:'pod',tech:'basic',mass:0.84,cost:600,crew:1,icon:'◉',height:2,radius:.9},
@@ -43,6 +73,41 @@ const catalog=[
 {id:'solar',name:'OX-STAT ソーラーパネル',type:'solar',tech:'flight',mass:.017,cost:75,icon:'▦',height:.3,radius:1},
 {id:'science',name:'科学実験装置',type:'science',tech:'science',mass:.1,cost:450,icon:'⚗',height:.55,radius:.55}
 ];
+
+// 368点の独自カタログ。基本パーツ群を用途別の寸法・性能バリエーションへ展開。
+const baseCatalog=[...catalog];
+const variantFamilies=[
+{name:'制御・乗員',types:['pod','probe'],prefix:'C'},
+{name:'燃料タンク',types:['tank'],prefix:'T'},
+{name:'推進装置',types:['engine','booster'],prefix:'E'},
+{name:'構造・分離',types:['decoupler'],prefix:'S'},
+{name:'空力',types:['fin','chute'],prefix:'A'},
+{name:'電力・科学',types:['battery','solar','science'],prefix:'P'}
+];
+let variantNo=1;
+while(catalog.length<368){
+ const family=variantFamilies[(variantNo-1)%variantFamilies.length];
+ const choices=baseCatalog.filter(p=>family.types.includes(p.type));
+ const base=choices[Math.floor((variantNo*7)%choices.length)];
+ const factor=[.72,.82,.9,1.08,1.18,1.32][variantNo%6];
+ catalog.push({...base,id:base.id+'-v'+variantNo,name:base.name+' Mk.'+String(variantNo).padStart(3,'0'),mass:+(base.mass*factor).toFixed(3),cost:Math.round(base.cost*factor),height:+(base.height*factor).toFixed(2),radius:+(base.radius*factor).toFixed(2),fuel:base.fuel?Math.round(base.fuel*factor):undefined,thrust:base.thrust?Math.round(base.thrust*factor):undefined,icon:base.icon,variant:true,family:family.name});
+ variantNo++;
+}
+let activePartCategory='すべて';
+function categoryFor(p){return p.type==='pod'||p.type==='probe'?'制御・乗員':p.type==='tank'?'燃料タンク':p.type==='engine'||p.type==='booster'?'推進装置':p.type==='decoupler'?'構造・分離':p.type==='fin'||p.type==='chute'?'空力':'電力・科学';}
+function renderCategories(){
+ const cats=['すべて','制御・乗員','燃料タンク','推進装置','構造・分離','空力','電力・科学'];
+ const icons=['▦','◉','▤','◈','⊖','△','⚡'];
+ $('#part-categories').innerHTML=cats.map((c,i)=>'<button class="part-category '+(activePartCategory===c?'active':'')+'" data-part-category="'+c+'" title="'+c+'">'+icons[i]+'</button>').join('');
+}
+function renderPartList(){
+ const query=($('#part-search')?.value||'').trim().toLowerCase(),sort=$('#part-sort')?.value||'name';
+ let items=catalog.filter(p=>(activePartCategory==='すべて'||categoryFor(p)===activePartCategory)&&(!query||(p.name+' '+p.id+' '+categoryFor(p)).toLowerCase().includes(query)));
+ items.sort((a,b)=>sort==='mass'?a.mass-b.mass:sort==='cost'?a.cost-b.cost:sort==='size'?a.height-b.height:a.name.localeCompare(b.name,'ja'));
+ $('#parts-count').textContent=catalog.length+' PARTS';$('#part-result-count').textContent=items.length+' 件';
+ $('#part-list').innerHTML=items.map(p=>{const unlocked=gameMode==='sandbox'||unlockedTech.has(p.tech||'basic');return '<button class="part" data-part="'+p.id+'" '+(unlocked?'':'disabled')+' title="'+p.name+'"><span class="part-icon">'+p.icon+'</span><span>'+p.name+'<small>'+p.mass.toFixed(2)+' t · ₡'+p.cost+'</small></span></button>';}).join('');
+}
+
 const techTree=[
 {id:'basic',name:'基礎ロケット',cost:0,requires:[],description:'基本的な機体・液体エンジン・固体ブースター。'},
 {id:'flight',name:'飛行制御',cost:15,requires:['basic'],description:'電力・太陽電池・制御システム。'},
@@ -118,7 +183,9 @@ $('#career-close').onclick=()=>$('#career-panel').classList.add('hidden');
 $('#career-content').addEventListener('click',e=>{const hire=e.target.closest('[data-hire-crew]');if(hire){const role=hire.dataset.hireCrew,cost=2500;if(gameMode!=='sandbox'&&funds<cost){toast('雇用資金が不足しています');return;}if(gameMode!=='sandbox')funds-=cost;const names={pilot:['Bill Kerman','Val Kerman','Gene Kerman'],engineer:['Wernher Kerman','Linus Kerman','Mortimer Kerman'],scientist:['Dora Kerman','Bobak Kerman','Mikki Kerman']};const roleNames={pilot:'パイロット',engineer:'エンジニア',scientist:'科学者'};const pool=names[role],name=pool.find(n=>!crewMembers.some(k=>k.name===n))||pool[0]+' '+(crewMembers.length+1);crewMembers.push({id:Date.now(),name,role:roleNames[role],level:1});saveCareer();renderCrew();recalc();toast(name+' を雇用しました');}const train=e.target.closest('[data-train-crew]');if(train){const member=crewMembers.find(k=>String(k.id)===train.dataset.trainCrew),cost=1000;if(member&&(gameMode==='sandbox'||funds>=cost)){if(gameMode!=='sandbox')funds-=cost;member.level++;saveCareer();renderCrew();recalc();toast(member.name+' の訓練完了');}else toast('訓練資金が不足しています');}const tech=e.target.closest('[data-unlock-tech]');if(tech){const item=techTree.find(t=>t.id===tech.dataset.unlockTech);if(item&&!unlockedTech.has(item.id)&&item.requires.every(x=>unlockedTech.has(x))&&science>=item.cost){science-=item.cost;unlockedTech.add(item.id);saveCareer();renderPartList();renderResearch();recalc();toast(item.name+' を研究しました');}}const contract=e.target.closest('[data-accept-contract]');if(contract&&!activeContract){activeContract=contracts.find(k=>k.id===contract.dataset.acceptContract)||null;if(activeContract){saveCareer();renderContracts();toast('契約を受注しました');}}});
 function panelMessage(title,msg){toast(title+' — '+msg.replaceAll('\n',' / '));}
 $('#home').onclick=()=>{flight=false;setMode('center');};$('#change-mode').onclick=()=>$('#mode-select').classList.remove('hidden');$('[data-game-mode]').forEach(b=>b.onclick=()=>{localStorage.setItem('space-game-mode',b.dataset.gameMode);location.reload();});$('#mode-select').classList.toggle('hidden',!!localStorage.getItem('space-game-mode'));if(gameMode!=='career'){$('[data-screen="contracts"]').classList.add('hidden');}if(gameMode==='sandbox'){$('[data-screen="research"]').classList.add('hidden');}
-renderPartList();
+renderCategories();renderPartList();
+$('#part-categories').addEventListener('click',e=>{const b=e.target.closest('[data-part-category]');if(b){activePartCategory=b.dataset.partCategory;renderCategories();renderPartList();}});
+$('#part-search').addEventListener('input',renderPartList);$('#part-sort').addEventListener('change',renderPartList);
 $('#part-list').addEventListener('click',e=>{const b=e.target.closest('[data-part]');if(b)addPart(b.dataset.part);});$('#close-parts').onclick=()=>$('#parts').classList.remove('open');
 $('#clear-craft').onclick=()=>{if(flight)return;parts.length=0;assemblyStage=0;layout();toast('機体を空にしました');};
 $('#new-stage').onclick=()=>{if(flight)return;assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;toast('新しい組立ステージ '+assemblyStage);};
