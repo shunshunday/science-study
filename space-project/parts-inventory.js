@@ -4474,7 +4474,7 @@ export const additionalParts=[
     "name": "LFB KR-1x2 Twin-Boar（旧版）",
     "type": "engine",
     "tech": "basic",
-    "mass": 10.5,
+    "mass": 42.5,
     "cost": 17000,
     "height": 5,
     "radius": 1.875,
@@ -4486,9 +4486,8 @@ export const additionalParts=[
     "sourceLine": null,
     "legacyInternalId": "Size2LFB",
     "legacy": true,
-    "thrust": 2700,
-    "isp": 300,
-    "referenceSource": "Community stock-part mass/thrust reference compiled from stockmasses.json and KSP .cfg data (reported range 1.4.x–1.12.x); confirm exact local 1.12.5 config."
+    "thrust": 2000,
+    "isp": 300
   },
   {
     "id": "legacy-twitch",
