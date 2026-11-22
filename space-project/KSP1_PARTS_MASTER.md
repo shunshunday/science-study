@@ -92,3 +92,6 @@ These inventories are discovery/verification work, not an implemented replacemen
 
 - `KSP1_LEGACY_STOCK_PARTS.json`: 11 hidden legacy stock-part candidates for KSP 1.12.5.
 - `export-ksp-part-configs.ps1`: Windows PowerShell exporter for exact local stock/DLC part config data; it does not copy model assets.
+
+- Four generic demo entries have been retired. Old saved craft IDs are migrated to named replacements when loaded.
+- Current merged catalog size is approximately 435 entries after de-duplication; this does not prove that every official 1.12.5 part has been included.
