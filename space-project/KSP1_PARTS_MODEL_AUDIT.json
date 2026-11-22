@@ -3,9 +3,11 @@
   "updated": "2026-11-22",
   "scope": "KSP 1.12.x base game + Making History + Breaking Ground",
   "sourceCatalog": {
-    "path": "space-project/game.js",
+    "path": "space-project/game.js + space-project/parts-inventory.js",
     "entryCount": 128,
-    "sha": "dd60cdd4b9f9ae4ba8c47397cd2dd9360aa62341"
+    "additionalInventoryCandidates": 266,
+    "stockCandidates": 169,
+    "dlcCandidates": 97
   },
   "interpretation": "This is an audit register of the project's existing catalog, not a claim that these are already verified KSP parts. Placeholder dimensions and stats are retained only as current project values until checked against the KSP part definition.",
   "licensingRule": "Do not publish extracted KSP stock/DLC meshes or textures without explicit permission. A converter, mod's source-code license, or part list is not an asset license.",
@@ -27,7 +29,7 @@
         "height": 2,
         "radius": 0.9
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "mk1pod",
       "verifiedKspPartName": "Mk1 コマンドポッド",
       "dlc": null,
@@ -54,7 +56,7 @@
         "height": 0.7,
         "radius": 0.65
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": null,
       "verifiedKspPartName": null,
       "dlc": null,
@@ -79,7 +81,7 @@
         "radius": 0.62,
         "fuel": 360
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "fuelTankSmallFlat",
       "verifiedKspPartName": "FL-T100 燃料タンク",
       "dlc": null,
@@ -108,7 +110,7 @@
         "radius": 0.72,
         "fuel": 1440
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "fuelTank",
       "verifiedKspPartName": "FL-T400 燃料タンク",
       "dlc": null,
@@ -137,7 +139,7 @@
         "radius": 0.9,
         "fuel": 2880
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "Rockomax16_BW",
       "verifiedKspPartName": "ロコマックス X200-16 燃料タンク",
       "dlc": null,
@@ -167,7 +169,7 @@
         "thrust": 60,
         "isp": 320
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "liquidEngine3_v2",
       "verifiedKspPartName": "LV-909 液体燃料エンジン",
       "dlc": null,
@@ -196,7 +198,7 @@
         "thrust": 200,
         "isp": 320
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "liquidEngine2_v2",
       "verifiedKspPartName": "LV-T45 Swivel",
       "dlc": null,
@@ -225,7 +227,7 @@
         "thrust": 1500,
         "isp": 310
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "liquidEngineMainsail_v2",
       "verifiedKspPartName": "RE-M3 Mainsail",
       "dlc": null,
@@ -252,7 +254,7 @@
         "height": 0.35,
         "radius": 0.78
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "stackDecoupler",
       "verifiedKspPartName": "TR-18D デカプラー",
       "dlc": null,
@@ -283,7 +285,7 @@
         "thrust": 180,
         "isp": 220
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": null,
       "verifiedKspPartName": null,
       "dlc": null,
@@ -307,7 +309,7 @@
         "height": 0.6,
         "radius": 0.9
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": null,
       "verifiedKspPartName": null,
       "dlc": null,
@@ -331,7 +333,7 @@
         "height": 0.6,
         "radius": 0.8
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "parachuteSingle",
       "verifiedKspPartName": "Mk16 パラシュート",
       "dlc": null,
@@ -359,7 +361,7 @@
         "height": 0.35,
         "radius": 0.5
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "batteryPack",
       "verifiedKspPartName": "Z-100 Rechargeable Battery",
       "dlc": null,
@@ -387,7 +389,7 @@
         "height": 0.3,
         "radius": 1
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "solarPanelOX10C",
       "verifiedKspPartName": "OX-STAT 太陽電池パネル",
       "dlc": null,
@@ -415,7 +417,7 @@
         "height": 0.55,
         "radius": 0.55
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": null,
       "verifiedKspPartName": null,
       "dlc": null,
@@ -439,7 +441,7 @@
         "height": 2.2,
         "radius": 0.625
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "Mark2Cockpit",
       "verifiedKspPartName": "Mk1 インラインコックピット",
       "dlc": null,
@@ -466,7 +468,7 @@
         "height": 3.2,
         "radius": 1.25
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "mk2Cockpit_Standard",
       "verifiedKspPartName": "Mk2 コックピット",
       "dlc": null,
@@ -493,7 +495,7 @@
         "height": 4.5,
         "radius": 1.875
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "mk3Cockpit_Shuttle",
       "verifiedKspPartName": "Mk3 コックピット",
       "dlc": null,
@@ -520,7 +522,7 @@
         "height": 2.4,
         "radius": 1.25
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "mk1-3pod",
       "verifiedKspPartName": "Mk1-3 コマンドポッド",
       "dlc": null,
@@ -547,7 +549,7 @@
         "height": 1.3,
         "radius": 0.625
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "landerCabinSmall",
       "verifiedKspPartName": "Mk1 ランダー缶",
       "dlc": null,
@@ -574,7 +576,7 @@
         "height": 2.2,
         "radius": 1.25
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "cupola",
       "verifiedKspPartName": "PPD-12 キューポラ",
       "dlc": null,
@@ -601,7 +603,7 @@
         "height": 0.5,
         "radius": 0.3
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "seatExternalCmd",
       "verifiedKspPartName": "EAS-1 コマンドシート",
       "dlc": null,
@@ -627,7 +629,7 @@
         "height": 0.5,
         "radius": 0.5
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "probeCoreCube",
       "verifiedKspPartName": "Probodobodyne QBE",
       "dlc": null,
@@ -653,7 +655,7 @@
         "height": 0.55,
         "radius": 0.5
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "probeCoreOcto",
       "verifiedKspPartName": "Probodobodyne OKTO",
       "dlc": null,
@@ -679,7 +681,7 @@
         "height": 0.4,
         "radius": 0.45
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "probeCoreOcto2",
       "verifiedKspPartName": "Probodobodyne OKTO2",
       "dlc": null,
@@ -705,7 +707,7 @@
         "height": 0.65,
         "radius": 0.55
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "probeCoreHex",
       "verifiedKspPartName": "Probodobodyne HECS",
       "dlc": null,
@@ -731,7 +733,7 @@
         "height": 0.8,
         "radius": 0.625
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "HECS2_ProbeCore",
       "verifiedKspPartName": "Probodobodyne HECS2",
       "dlc": null,
@@ -757,7 +759,7 @@
         "height": 0.6,
         "radius": 0.7
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "roverBody",
       "verifiedKspPartName": "Probodobodyne RoveMate",
       "dlc": null,
@@ -783,7 +785,7 @@
         "height": 0.5,
         "radius": 0.5
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "probeCoreSphere_v2",
       "verifiedKspPartName": "Probodobodyne Stayputnik",
       "dlc": null,
@@ -809,7 +811,7 @@
         "height": 1.1,
         "radius": 0.625
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "probeStackLarge",
       "verifiedKspPartName": "RC-L01 Remote Guidance Unit",
       "dlc": null,
@@ -835,7 +837,7 @@
         "height": 0.65,
         "radius": 0.5
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "probeStackSmall",
       "verifiedKspPartName": "RC-001S Remote Guidance Unit",
       "dlc": null,
@@ -862,7 +864,7 @@
         "radius": 0.32,
         "fuel": 40
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "fuelTankOscarB",
       "verifiedKspPartName": "オスカーB 燃料タンク",
       "dlc": null,
@@ -890,7 +892,7 @@
         "radius": 0.22,
         "fuel": 54
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "externalTankCapsule",
       "verifiedKspPartName": "R-11 'バゲット' 外部燃料タンク",
       "dlc": null,
@@ -918,7 +920,7 @@
         "radius": 0.4,
         "fuel": 60
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "externalTankRound",
       "verifiedKspPartName": "R-12 'ドーナツ' 外部燃料タンク",
       "dlc": null,
@@ -946,7 +948,7 @@
         "radius": 0.22,
         "fuel": 22
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "externalTankToroid",
       "verifiedKspPartName": "R-4 'ダンプリング' 外部燃料タンク",
       "dlc": null,
@@ -974,7 +976,7 @@
         "radius": 0.625,
         "fuel": 200
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "fuelTankSmall",
       "verifiedKspPartName": "FL-T200 燃料タンク",
       "dlc": null,
@@ -1002,7 +1004,7 @@
         "radius": 0.625,
         "fuel": 800
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "fuelTank_long",
       "verifiedKspPartName": "FL-T800 燃料タンク",
       "dlc": null,
@@ -1030,7 +1032,7 @@
         "radius": 1.25,
         "fuel": 800
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "Rockomax8BW",
       "verifiedKspPartName": "ロコマックス X200-8 燃料タンク",
       "dlc": null,
@@ -1058,7 +1060,7 @@
         "radius": 1.25,
         "fuel": 3200
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "Rockomax32_BW",
       "verifiedKspPartName": "ロコマックス X200-32 燃料タンク",
       "dlc": null,
@@ -1086,7 +1088,7 @@
         "radius": 1.25,
         "fuel": 6400
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "Rockomax64_BW",
       "verifiedKspPartName": "ロコマックス ジャンボ64 燃料タンク",
       "dlc": null,
@@ -1114,7 +1116,7 @@
         "radius": 1.875,
         "fuel": 3600
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "Size3SmallTank",
       "verifiedKspPartName": "カーボダイン S3-3600 タンク",
       "dlc": null,
@@ -1142,7 +1144,7 @@
         "radius": 1.875,
         "fuel": 7200
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "Size3MediumTank",
       "verifiedKspPartName": "カーボダイン S3-7200 タンク",
       "dlc": null,
@@ -1170,7 +1172,7 @@
         "radius": 1.875,
         "fuel": 14400
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "Size3LargeTank",
       "verifiedKspPartName": "カーボダイン S3-14400 タンク",
       "dlc": null,
@@ -1198,7 +1200,7 @@
         "radius": 0.3125,
         "fuel": 50
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "mk0Fuselage",
       "verifiedKspPartName": "Mk0 液体燃料タンク",
       "dlc": null,
@@ -1226,7 +1228,7 @@
         "radius": 0.625,
         "fuel": 400
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "MK1Fuselage",
       "verifiedKspPartName": "Mk1 液体燃料タンク",
       "dlc": null,
@@ -1254,7 +1256,7 @@
         "radius": 1.25,
         "fuel": 800
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "mk2Fuselage",
       "verifiedKspPartName": "Mk2 液体燃料タンク",
       "dlc": null,
@@ -1282,7 +1284,7 @@
         "radius": 1.875,
         "fuel": 5000
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "mk3Fuselage",
       "verifiedKspPartName": "Mk3 液体燃料タンク",
       "dlc": null,
@@ -1310,7 +1312,7 @@
         "radius": 0.35,
         "fuel": 20
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "rcsTankMini",
       "verifiedKspPartName": "FL-R10 RCS燃料タンク",
       "dlc": null,
@@ -1338,7 +1340,7 @@
         "radius": 0.625,
         "fuel": 120
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "RCSFuelTank",
       "verifiedKspPartName": "FL-R25 RCS燃料タンク",
       "dlc": null,
@@ -1366,7 +1368,7 @@
         "radius": 1.25,
         "fuel": 750
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "RCSTank1-2",
       "verifiedKspPartName": "FL-R1 RCS燃料タンク",
       "dlc": null,
@@ -1394,7 +1396,7 @@
         "radius": 0.4,
         "fuel": 720
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "xenonTank",
       "verifiedKspPartName": "PB-X150 キセノンコンテナ",
       "dlc": null,
@@ -1422,7 +1424,7 @@
         "radius": 0.3,
         "fuel": 405
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "xenonTankRadial",
       "verifiedKspPartName": "PB-X50R キセノンコンテナ",
       "dlc": null,
@@ -1450,7 +1452,7 @@
         "radius": 0.625,
         "fuel": 5700
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "xenonTankLarge",
       "verifiedKspPartName": "PB-X750 キセノンコンテナ",
       "dlc": null,
@@ -1479,7 +1481,7 @@
         "thrust": 2,
         "isp": 315
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "microEngine_v2",
       "verifiedKspPartName": "LV-1 Ant",
       "dlc": null,
@@ -1507,7 +1509,7 @@
         "thrust": 20,
         "isp": 320
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "liquidEngineMini_v2",
       "verifiedKspPartName": "48-7S Spark",
       "dlc": null,
@@ -1535,7 +1537,7 @@
         "thrust": 240,
         "isp": 310
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "liquidEngine_v2",
       "verifiedKspPartName": "LV-T30 Reliant",
       "dlc": null,
@@ -1563,7 +1565,7 @@
         "thrust": 215,
         "isp": 320
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "liquidEngine2_v2",
       "verifiedKspPartName": "LV-T45 Swivel",
       "dlc": null,
@@ -1591,7 +1593,7 @@
         "thrust": 180,
         "isp": 340
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "toroidalAerospike",
       "verifiedKspPartName": "T-1 Toroidal Aerospike Dart",
       "dlc": null,
@@ -1619,7 +1621,7 @@
         "thrust": 60,
         "isp": 800
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "nuclearEngine",
       "verifiedKspPartName": "LV-N Nerv",
       "dlc": null,
@@ -1647,7 +1649,7 @@
         "thrust": 180,
         "isp": 305
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "RAPIER",
       "verifiedKspPartName": "CR-7 RAPIER",
       "dlc": null,
@@ -1675,7 +1677,7 @@
         "thrust": 1000,
         "isp": 315
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "SSME",
       "verifiedKspPartName": "S3 KS-25 Vector",
       "dlc": null,
@@ -1703,7 +1705,7 @@
         "thrust": 250,
         "isp": 350
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "liquidEngine2-2_v2",
       "verifiedKspPartName": "RE-L10 Poodle",
       "dlc": null,
@@ -1731,7 +1733,7 @@
         "thrust": 650,
         "isp": 320
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "engineLargeSkipper_v2",
       "verifiedKspPartName": "RE-I5 Skipper",
       "dlc": null,
@@ -1759,7 +1761,7 @@
         "thrust": 1500,
         "isp": 310
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "liquidEngineMainsail_v2",
       "verifiedKspPartName": "RE-M3 Mainsail",
       "dlc": null,
@@ -1787,7 +1789,7 @@
         "thrust": 2000,
         "isp": 300
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "Size2LFB",
       "verifiedKspPartName": "LFB KR-1x2 Twin-Boar",
       "dlc": null,
@@ -1815,7 +1817,7 @@
         "thrust": 2000,
         "isp": 340
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "Size3AdvancedEngine",
       "verifiedKspPartName": "KR-2L+ Rhino",
       "dlc": null,
@@ -1843,7 +1845,7 @@
         "thrust": 4000,
         "isp": 315
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "Size3EngineCluster",
       "verifiedKspPartName": "S3 KS-25x4 Mammoth",
       "dlc": null,
@@ -1871,7 +1873,7 @@
         "thrust": 2,
         "isp": 290
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "radialEngineMini_v2",
       "verifiedKspPartName": "LV-1R Spider",
       "dlc": null,
@@ -1899,7 +1901,7 @@
         "thrust": 16,
         "isp": 290
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "smallRadialEngine_v2",
       "verifiedKspPartName": "24-77 Twitch",
       "dlc": null,
@@ -1927,7 +1929,7 @@
         "thrust": 120,
         "isp": 305
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "radialLiquidEngine1-2",
       "verifiedKspPartName": "Mk-55 Thud",
       "dlc": null,
@@ -1955,7 +1957,7 @@
         "thrust": 20,
         "isp": 250
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "omsEngine",
       "verifiedKspPartName": "O-10 Puff",
       "dlc": null,
@@ -1981,7 +1983,7 @@
         "height": 0.4,
         "radius": 0.4
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "FuelCell",
       "verifiedKspPartName": "燃料電池",
       "dlc": null,
@@ -2008,7 +2010,7 @@
         "height": 0.5,
         "radius": 0.7
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "solarPanelOX10C",
       "verifiedKspPartName": "OX-10C 太陽電池パネル",
       "dlc": null,
@@ -2035,7 +2037,7 @@
         "height": 0.3,
         "radius": 0.8
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "solarPanels1",
       "verifiedKspPartName": "OX-4L 1x6 太陽電池パネル",
       "dlc": null,
@@ -2062,7 +2064,7 @@
         "height": 0.3,
         "radius": 0.8
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "solarPanels2",
       "verifiedKspPartName": "OX-4W 3x2 太陽電池パネル",
       "dlc": null,
@@ -2089,7 +2091,7 @@
         "height": 0.4,
         "radius": 0.6
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "solarPanelOX10L",
       "verifiedKspPartName": "OX-STAT-XL 太陽電池パネル",
       "dlc": null,
@@ -2116,7 +2118,7 @@
         "height": 0.5,
         "radius": 0.9
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "solarPanelSP10C",
       "verifiedKspPartName": "SP-10C 太陽電池パネル",
       "dlc": null,
@@ -2143,7 +2145,7 @@
         "height": 0.6,
         "radius": 0.8
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "parachuteLarge",
       "verifiedKspPartName": "Mk16-XL パラシュート",
       "dlc": null,
@@ -2170,7 +2172,7 @@
         "height": 0.5,
         "radius": 0.7
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "parachuteDrogue",
       "verifiedKspPartName": "Mk25 ドローグパラシュート",
       "dlc": null,
@@ -2197,7 +2199,7 @@
         "height": 0.3,
         "radius": 1.5
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "deltaWing",
       "verifiedKspPartName": "デルタ翼",
       "dlc": null,
@@ -2224,7 +2226,7 @@
         "height": 0.2,
         "radius": 0.7
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "delta_small",
       "verifiedKspPartName": "小型デルタ翼",
       "dlc": null,
@@ -2251,7 +2253,7 @@
         "height": 0.2,
         "radius": 0.8
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "wingStrake",
       "verifiedKspPartName": "ストレーキ",
       "dlc": null,
@@ -2278,7 +2280,7 @@
         "height": 0.2,
         "radius": 1.2
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "structuralWing",
       "verifiedKspPartName": "ストラクチャーウィング タイプA",
       "dlc": null,
@@ -2305,7 +2307,7 @@
         "height": 0.2,
         "radius": 1.2
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "structuralWing2",
       "verifiedKspPartName": "ストラクチャーウィング タイプB",
       "dlc": null,
@@ -2332,7 +2334,7 @@
         "height": 0.2,
         "radius": 0.8
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "structuralWing3",
       "verifiedKspPartName": "ストラクチャーウィング タイプC",
       "dlc": null,
@@ -2359,7 +2361,7 @@
         "height": 0.2,
         "radius": 0.6
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "structuralWing4",
       "verifiedKspPartName": "ストラクチャーウィング タイプD",
       "dlc": null,
@@ -2389,7 +2391,7 @@
         "thrust": 13,
         "isp": 210
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "Mite",
       "verifiedKspPartName": "FM1 Mite 固体燃料ブースター",
       "dlc": null,
@@ -2419,7 +2421,7 @@
         "thrust": 30,
         "isp": 215
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "Shrimp",
       "verifiedKspPartName": "F3S0 Shrimp 固体燃料ブースター",
       "dlc": null,
@@ -2449,7 +2451,7 @@
         "thrust": 192,
         "isp": 165
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "solidBooster_sm",
       "verifiedKspPartName": "RT-5 Flea 固体燃料ブースター",
       "dlc": null,
@@ -2479,7 +2481,7 @@
         "thrust": 227,
         "isp": 195
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "solidBooster",
       "verifiedKspPartName": "RT-10 Hammer 固体燃料ブースター",
       "dlc": null,
@@ -2509,7 +2511,7 @@
         "thrust": 300,
         "isp": 210
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "solidBooster1-1",
       "verifiedKspPartName": "BACC Thumper 固体燃料ブースター",
       "dlc": null,
@@ -2539,7 +2541,7 @@
         "thrust": 670,
         "isp": 220
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "MassiveBooster",
       "verifiedKspPartName": "S1 SRB-KD25k Kickback",
       "dlc": null,
@@ -2569,7 +2571,7 @@
         "thrust": 1700,
         "isp": 230
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "Thoroughbred",
       "verifiedKspPartName": "S2-17 Thoroughbred",
       "dlc": null,
@@ -2599,7 +2601,7 @@
         "thrust": 3300,
         "isp": 235
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "Clydesdale",
       "verifiedKspPartName": "S2-33 Clydesdale",
       "dlc": null,
@@ -2629,7 +2631,7 @@
         "thrust": 18,
         "isp": 154
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "sepMotor1",
       "verifiedKspPartName": "Sepratron I",
       "dlc": null,
@@ -2658,7 +2660,7 @@
         "thrust": 20.6,
         "isp": 6400
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "miniJetEngine",
       "verifiedKspPartName": "J-20 Juno",
       "dlc": null,
@@ -2687,7 +2689,7 @@
         "thrust": 386.66,
         "isp": 4000
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "turboJet",
       "verifiedKspPartName": "J-X4 Whiplash",
       "dlc": null,
@@ -2716,7 +2718,7 @@
         "thrust": 219.48,
         "isp": 4000
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "jetEngineAfterburning",
       "verifiedKspPartName": "J-404 Panther",
       "dlc": null,
@@ -2743,7 +2745,7 @@
         "thrust": 360,
         "isp": 12600
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "turboFanEngine",
       "verifiedKspPartName": "J-90 Goliath",
       "dlc": null,
@@ -2772,7 +2774,7 @@
         "thrust": 2,
         "isp": 4200
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "ionEngine",
       "verifiedKspPartName": "IX-6315 Dawn",
       "dlc": null,
@@ -2799,7 +2801,7 @@
         "height": 0.3,
         "radius": 0.3
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "inlineReactionWheel",
       "verifiedKspPartName": "小型リアクションホイール",
       "dlc": null,
@@ -2824,7 +2826,7 @@
         "height": 0.5,
         "radius": 0.5
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "inlineAdvancedStabilizer",
       "verifiedKspPartName": "先進的インラインスタビライザー",
       "dlc": null,
@@ -2849,7 +2851,7 @@
         "height": 0.7,
         "radius": 0.7
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "advancedSasModuleLarge",
       "verifiedKspPartName": "大型リアクションホイール",
       "dlc": null,
@@ -2876,7 +2878,7 @@
         "thrust": 1,
         "isp": 240
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "RCSBlock",
       "verifiedKspPartName": "RV-105 RCSスラスターブロック",
       "dlc": null,
@@ -2905,7 +2907,7 @@
         "thrust": 0.1,
         "isp": 240
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "RCSblocksmall",
       "verifiedKspPartName": "RV-1X RCSスラスターブロック",
       "dlc": null,
@@ -2932,7 +2934,7 @@
         "thrust": 2,
         "isp": 240
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "linearRcs",
       "verifiedKspPartName": "Place-Anywhere 7 リニアRCSポート",
       "dlc": null,
@@ -2961,7 +2963,7 @@
         "thrust": 0.2,
         "isp": 240
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "linearRCSsmall",
       "verifiedKspPartName": "Place-Anywhere 1 リニアRCSポート",
       "dlc": null,
@@ -2988,7 +2990,7 @@
         "thrust": 12,
         "isp": 260
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "vernierEngine",
       "verifiedKspPartName": "Vernor エンジン",
       "dlc": null,
@@ -3015,7 +3017,7 @@
         "height": 0.4,
         "radius": 0.3
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "sasModule",
       "verifiedKspPartName": "CH-J3 フライバイワイヤ アビオニクス",
       "dlc": null,
@@ -3042,7 +3044,7 @@
         "height": 0.3,
         "radius": 0.5
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "largeAdapter",
       "verifiedKspPartName": "FL-A5 アダプター",
       "dlc": null,
@@ -3069,7 +3071,7 @@
         "height": 0.5,
         "radius": 0.5
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "largeAdapter2",
       "verifiedKspPartName": "FL-A10 アダプター",
       "dlc": null,
@@ -3096,7 +3098,7 @@
         "height": 0.6,
         "radius": 1.25
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "rockomax adapter",
       "verifiedKspPartName": "Rockomax アダプター",
       "dlc": null,
@@ -3123,7 +3125,7 @@
         "height": 0.3,
         "radius": 1.25
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "largeAdapterShort",
       "verifiedKspPartName": "Rockomax アダプター 02",
       "dlc": null,
@@ -3148,7 +3150,7 @@
         "height": 0.4,
         "radius": 0.625
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "stackTriCoupler",
       "verifiedKspPartName": "TVR-1180C Mk1 スタック式トライカプラー",
       "dlc": null,
@@ -3173,7 +3175,7 @@
         "height": 0.5,
         "radius": 0.625
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "stackQuadCoupler",
       "verifiedKspPartName": "TVR-2160C Mk2 スタック式クアッドカプラー",
       "dlc": null,
@@ -3198,7 +3200,7 @@
         "height": 0.4,
         "radius": 0.625
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "stackBiCoupler",
       "verifiedKspPartName": "TVR-200 スタック式バイカプラー",
       "dlc": null,
@@ -3223,7 +3225,7 @@
         "height": 0.4,
         "radius": 1.25
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "adapterLargeSmallBi",
       "verifiedKspPartName": "TVR-200L スタック式バイアダプター",
       "dlc": null,
@@ -3248,7 +3250,7 @@
         "height": 0.5,
         "radius": 1.25
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "adapterLargeSmallTri",
       "verifiedKspPartName": "TVR-300L スタック式トライアダプター",
       "dlc": null,
@@ -3273,7 +3275,7 @@
         "height": 0.5,
         "radius": 1.25
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "adapterLargeSmallQuad",
       "verifiedKspPartName": "TVR-400L スタック式クアッドアダプター",
       "dlc": null,
@@ -3298,7 +3300,7 @@
         "height": 0.2,
         "radius": 0.1
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "strutConnector",
       "verifiedKspPartName": "EAS-4 ストラットコネクター",
       "dlc": null,
@@ -3325,7 +3327,7 @@
         "height": 1,
         "radius": 0.5
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "mk1-Structural",
       "verifiedKspPartName": "構造用ボディ",
       "dlc": null,
@@ -3350,7 +3352,7 @@
         "height": 0.2,
         "radius": 0.2
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "radialAttachmentPoint",
       "verifiedKspPartName": "BZ-52 ラジアル型アタッチメントポイント",
       "dlc": null,
@@ -3377,7 +3379,7 @@
         "height": 1,
         "radius": 1.25
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "stationHub",
       "verifiedKspPartName": "Rockomax HubMax マルチポイントコネクター",
       "dlc": null,
@@ -3404,7 +3406,7 @@
         "height": 0.3,
         "radius": 0.25
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "smallHardpoint",
       "verifiedKspPartName": "小型ハードポイント",
       "dlc": null,
@@ -3429,7 +3431,7 @@
         "height": 0.5,
         "radius": 0.25
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "structuralPylon",
       "verifiedKspPartName": "パイロン",
       "dlc": null,
@@ -3456,7 +3458,7 @@
         "height": 0.2,
         "radius": 0.1
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "strutCube",
       "verifiedKspPartName": "立方体型オクタゴン ストラット",
       "dlc": null,
@@ -3483,7 +3485,7 @@
         "height": 0.2,
         "radius": 0.1
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "strutOcto",
       "verifiedKspPartName": "オクタゴン ストラット",
       "dlc": null,
@@ -3510,7 +3512,7 @@
         "height": 1,
         "radius": 0.2
       },
-      "currentModel": "procedural Three.js geometry from partMesh()",
+      "currentModel": "original Three.js geometry from parts-models.js (shared by VAB previews and craft meshes)",
       "ksp12InternalPartId": "structuralIBeam1",
       "verifiedKspPartName": "モジュラー構造アダプター",
       "dlc": null,
@@ -3532,11 +3534,19 @@
     "matchedPartIdentities": 124,
     "totalExistingProjectEntries": 128,
     "approved3DModels": 0,
-    "nextBatch": "expand the catalog to every stock and DLC part from the full KSP parts index; verify each internal ID and model rights; then implement licensed/original geometry",
-    "note": "All 128 existing entries have been triaged: 124 candidate stock matches and 4 generic placeholders that do not correspond to unique KSP parts. Candidate IDs still require exact KSP 1.12.5 part.cfg verification. This is not the complete KSP stock + DLC catalog.",
-    "candidatePartIdentities": 124,
+    "originalGeometryModelLibrary": "implemented and integrated; original approximations, not official KSP meshes",
+    "additionalStockInventoryCandidates": 169,
+    "additionalDlcInventoryCandidates": 97,
+    "totalAdditionalInventoryCandidates": 266,
     "exactCfgVerified": 0,
-    "remainingUnmatched": 0,
-    "genericPlaceholdersToReplace": 4
+    "genericPlaceholdersToReplace": 4,
+    "note": "The app now imports 266 additional stock/DLC inventory candidates and renders them with independently authored geometry. The 124/128 matches in the original audit remain candidate identities, not exact 1.12.5 .cfg verification. The 266 added entries use explicitly provisional mass, dimensions, costs and engine/fuel estimates; they are not verified KSP performance data. Official KSP model assets remain unlicensed and are not included."
+  },
+  "modelImplementation": {
+    "library": "space-project/parts-models.js",
+    "status": "integrated original Three.js geometry library; VAB thumbnails and craft meshes use the same model factory",
+    "sourcePolicy": "All models are independently authored primitive/mesh assemblies. No extracted KSP stock/DLC meshes, textures, logos, or game files are redistributed.",
+    "coverage": "Distinct geometry branches for command pods, probe cores, tanks/fuselages/resources, engines/jet engines/solid boosters, wings/tail/control surfaces, solar arrays, parachutes, batteries, communications, science instruments, decouplers/structural parts, docking ports, payloads, thermal parts, intakes, landing gear, utility parts, robotics and rotor blades. Several families also have per-ID/name variants.",
+    "limitations": "These are original KSP-inspired approximations, not exact reproductions of official KSP models. Per-part mesh dimensions, attachment nodes, collision shapes and articulation still require refinement."
   }
 }
