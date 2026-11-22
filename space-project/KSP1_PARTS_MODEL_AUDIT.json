@@ -79,8 +79,8 @@
         "fuel": 360
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "fuelTankSmallFlat",
+      "verifiedKspPartName": "FL-T100 燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -88,7 +88,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-m",
@@ -103,8 +108,8 @@
         "fuel": 1440
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "fuelTank",
+      "verifiedKspPartName": "FL-T400 燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -112,7 +117,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-l",
@@ -127,8 +137,8 @@
         "fuel": 2880
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "Rockomax16_BW",
+      "verifiedKspPartName": "ロコマックス X200-16 燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -136,7 +146,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-s",
@@ -812,8 +827,8 @@
         "fuel": 40
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "fuelTankOscarB",
+      "verifiedKspPartName": "オスカーB 燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -821,7 +836,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-r11",
@@ -835,8 +855,8 @@
         "fuel": 54
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "externalTankCapsule",
+      "verifiedKspPartName": "R-11 'バゲット' 外部燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -844,7 +864,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-r12",
@@ -858,8 +883,8 @@
         "fuel": 60
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "externalTankRound",
+      "verifiedKspPartName": "R-12 'ドーナツ' 外部燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -867,7 +892,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-r4",
@@ -881,8 +911,8 @@
         "fuel": 22
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "externalTankToroid",
+      "verifiedKspPartName": "R-4 'ダンプリング' 外部燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -890,7 +920,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-t200",
@@ -904,8 +939,8 @@
         "fuel": 200
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "fuelTankSmall",
+      "verifiedKspPartName": "FL-T200 燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -913,7 +948,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-t800",
@@ -927,8 +967,8 @@
         "fuel": 800
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "fuelTank_long",
+      "verifiedKspPartName": "FL-T800 燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -936,7 +976,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-x2008",
@@ -950,8 +995,8 @@
         "fuel": 800
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "Rockomax8BW",
+      "verifiedKspPartName": "ロコマックス X200-8 燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -959,7 +1004,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-x20032",
@@ -973,8 +1023,8 @@
         "fuel": 3200
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "Rockomax32_BW",
+      "verifiedKspPartName": "ロコマックス X200-32 燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -982,7 +1032,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-jumbo64",
@@ -996,8 +1051,8 @@
         "fuel": 6400
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "Rockomax64_BW",
+      "verifiedKspPartName": "ロコマックス ジャンボ64 燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1005,7 +1060,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-s3-3600",
@@ -1019,8 +1079,8 @@
         "fuel": 3600
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "Size3SmallTank",
+      "verifiedKspPartName": "カーボダイン S3-3600 タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1028,7 +1088,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-s3-7200",
@@ -1042,8 +1107,8 @@
         "fuel": 7200
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "Size3MediumTank",
+      "verifiedKspPartName": "カーボダイン S3-7200 タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1051,7 +1116,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-s3-14400",
@@ -1065,8 +1135,8 @@
         "fuel": 14400
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "Size3LargeTank",
+      "verifiedKspPartName": "カーボダイン S3-14400 タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1074,7 +1144,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-mk0-lf",
@@ -1180,8 +1255,8 @@
         "fuel": 20
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "rcsTankMini",
+      "verifiedKspPartName": "FL-R10 RCS燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1189,7 +1264,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "rcs-flr25",
@@ -1203,8 +1283,8 @@
         "fuel": 120
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "RCSFuelTank",
+      "verifiedKspPartName": "FL-R25 RCS燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1212,7 +1292,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "rcs-flr1",
@@ -1226,8 +1311,8 @@
         "fuel": 750
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "RCSTank1-2",
+      "verifiedKspPartName": "FL-R1 RCS燃料タンク",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1235,7 +1320,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "KSP 1.12.x part-loading log references: https://gist.github.com/lamont-granquist/127b52771164d8d77f507ed3c7d64a16",
+        "KSP stock part reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "xenon-pbx150",
@@ -3041,10 +3131,10 @@
     }
   ],
   "auditProgress": {
-    "matchedPartIdentities": 17,
+    "matchedPartIdentities": 35,
     "totalExistingProjectEntries": 128,
     "approved3DModels": 0,
-    "nextBatch": "fuel tanks and resource containers",
-    "note": "Identity matching is separate from model acquisition. A matched internal ID does not authorize publishing the original KSP mesh or texture."
+    "nextBatch": "xenon/monopropellant tanks and liquid-fuel engine IDs",
+    "note": "Identity matching is separate from model acquisition. A matched internal ID does not authorize publishing the original KSP mesh or texture. Existing placeholder parameters must be compared and corrected against the official part config before simulation use."
   }
 }
