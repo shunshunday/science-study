@@ -51,7 +51,7 @@
 .crew-intro>span{font-size:11px;letter-spacing:3px;color:#e4c27e;font-weight:800}
 .crew-intro p{margin:0;color:#b7c7cf}
 .crew-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
-.crew-card{display:grid;grid-template-columns:112px minmax(0,1fr);gap:15px;align-items:center;min-height:174px;padding:14px;background:linear-gradient(135deg,#2a3e49,#1e303a);border:1px solid #ffffff25;border-radius:5px;box-shadow:0 5px 18px #0003}
+.crew-card{display:block;min-height:0;padding:10px 12px;background:linear-gradient(135deg,#2a3e49,#1e303a);border:1px solid #ffffff25;border-radius:5px;box-shadow:0 3px 10px #0003}
 .crew-portrait{width:112px;height:132px;overflow:hidden;border:2px solid #a9b9bd;border-radius:4px;background:linear-gradient(160deg,var(--portrait-bg),#253944)}
 .crew-portrait svg{width:100%;height:100%;display:block}
 .crew-info{min-width:0}.crew-info h3{font-size:16px;margin:0 0 3px;color:#f1dfb8;overflow-wrap:anywhere}
@@ -60,9 +60,9 @@
 .crew-meter{height:9px;margin-top:4px;background:#0c171e;border:1px solid #ffffff20;border-radius:8px;overflow:hidden}
 .crew-meter i{display:block;height:100%;background:linear-gradient(90deg,#9a7543,#e5c17b);border-radius:8px}
 .crew-meter.brave i{background:linear-gradient(90deg,#477d91,#83c5d4)}
-.crew-info button{margin-top:6px;padding:5px 12px;background:#786039;border-color:#c7a96a}
+.crew-info button{display:none}
 .crew-recruit{margin-top:18px;padding:14px 16px;background:#1b2d37;border:1px solid #ffffff20;border-radius:5px}
 .crew-recruit>b{display:block;color:#e5c988;margin-bottom:10px}
 .crew-recruit>div{display:flex;gap:8px;flex-wrap:wrap}
 .crew-recruit button{background:#344b58}
-@media(max-width:700px){.career-panel{top:39px;bottom:10px;width:calc(100vw - 16px)}.career-content{padding:12px}.crew-grid{grid-template-columns:1fr}.crew-card{grid-template-columns:92px minmax(0,1fr);padding:10px;gap:11px}.crew-portrait{width:92px;height:112px}}
+@media(max-width:700px){.career-panel{top:39px;bottom:10px;width:min(360px,calc(100vw - 16px))}.career-content{padding:10px}.crew-grid{grid-template-columns:1fr}.crew-card{padding:9px}}
