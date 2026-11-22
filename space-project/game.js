@@ -29,7 +29,28 @@ function makeCrewFigure(member,index){
 function rebuildCrewStage(){while(crewStage.children.length)crewStage.remove(crewStage.children[0]);}
 scene.background=new THREE.Color(0x8298a6);scene.fog=new THREE.Fog(0x8298a6,180,600);
 const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.0001,20000);camera.position.set(24,18,34);
-const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;$('#viewport').appendChild(renderer.domElement);
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);
+function renderCrewPortraits(){
+ const canvases=$$('.crew-avatar');if(!canvases.length)return;
+ const target=new THREE.WebGLRenderTarget(96,128,{depthBuffer:true,stencilBuffer:false});
+ const portraitScene=new THREE.Scene();portraitScene.background=new THREE.Color(0x52616a);
+ portraitScene.add(new THREE.HemisphereLight(0xeaf4ff,0x45505a,2.0));
+ const key=new THREE.DirectionalLight(0xffffff,2.5);key.position.set(-3,6,7);portraitScene.add(key);
+ const fill=new THREE.DirectionalLight(0xb9d8ff,1.0);fill.position.set(4,2,3);portraitScene.add(fill);
+ const portraitCamera=new THREE.OrthographicCamera(-1.62,1.62,4.15,-.15,.1,30);
+ portraitCamera.position.set(0,2,9);portraitCamera.lookAt(0,1.98,0);
+ for(const canvas of canvases){
+  const member=crewMembers[Number(canvas.dataset.crewIndex)];if(!member)continue;
+  const figure=makeCrewFigure(member,0);portraitScene.add(figure);
+  renderer.setRenderTarget(target);renderer.clear();renderer.render(portraitScene,portraitCamera);
+  const pixels=new Uint8Array(96*128*4);renderer.readRenderTargetPixels(target,0,0,96,128,pixels);
+  const ctx=canvas.getContext('2d'),img=ctx.createImageData(96,128);
+  for(let y=0;y<128;y++)for(let x=0;x<96;x++){const src=((127-y)*96+x)*4,dst=(y*96+x)*4;img.data[dst]=pixels[src];img.data[dst+1]=pixels[src+1];img.data[dst+2]=pixels[src+2];img.data[dst+3]=pixels[src+3];}
+  ctx.putImageData(img,0,0);portraitScene.remove(figure);
+ }
+ renderer.setRenderTarget(null);target.dispose();
+}
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;$('#viewport').appendChild(renderer.domElement);
 renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();paused=true;toast('3D表示を一時停止しました。復旧を待っています…');});renderer.domElement.addEventListener('webglcontextrestored',()=>{paused=false;last=performance.now();toast('3D表示が復旧しました');});
 document.addEventListener('visibilitychange',()=>{last=performance.now();});
 scene.add(new THREE.HemisphereLight(0xd8e8ff,0x665344,1.8));const sun=new THREE.DirectionalLight(0xffedcf,3.1);sun.position.set(-35,70,25);sun.castShadow=true;scene.add(sun);
