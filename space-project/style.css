@@ -141,3 +141,12 @@
 .part-icon{min-width:0;max-width:100%;box-sizing:border-box;overflow:hidden;flex:0 0 82px}
 .part-preview-canvas{display:block!important;width:100%!important;max-width:100%!important;height:100%!important;max-height:100%!important;transform:none!important;object-fit:contain;box-sizing:border-box;overflow:hidden}
 @media(max-width:700px){.part-icon{flex-basis:68px}}
+
+
+/* Icon-only compact category rail */
+.catalog-body{grid-template-columns:46px minmax(0,1fr)!important}
+.part-categories{width:46px;box-sizing:border-box;gap:4px;padding:5px 4px;align-items:center}
+.part-category{width:36px;height:36px;min-height:36px;flex:0 0 36px;justify-content:center;padding:0;border-radius:4px}
+.part-category .cat-icon{width:100%;flex:0 0 100%;font-size:19px;line-height:1}
+.part-category .cat-label{display:none!important}
+@media(max-width:700px){.catalog-body{grid-template-columns:42px minmax(0,1fr)!important}.part-categories{width:42px;padding:4px 3px;gap:3px}.part-category{width:34px;height:34px;min-height:34px;flex-basis:34px}.part-category .cat-icon{font-size:18px}}
