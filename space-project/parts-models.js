@@ -43,6 +43,8 @@ export function createPartModel(p,THREE){
    for(let i=0;i<4;i++){const x=(i-1.5)*width*.35;box(.035,.025,h*.82,dark,[x,width*.95,0]);}
   }else if(donut){cyl(r,r,h*.38,white);torus(r*.93,.12,alloy);torus(r*.93,.055,dark,.14);}
   else if(baguette){mesh(new THREE.CapsuleGeometry(r*.6,h*.28,6,16),white,[0,0,0],[Math.PI/2,0,0]);}
+  else if(/adapter|アダプター/.test(n)){mesh(new THREE.CylinderGeometry(r*.58,r,h*.82,32),white,[0,h*.48,0]);torus(r*.98,.06,gold,h*.1);torus(r*.58,.06,dark,h*.88);}
+  else if(mk2||mk3){const body=mesh(new THREE.CylinderGeometry(r*.88,r*.88,h*.78,24),white,[0,h*.5,0]);body.scale.set(mk3?1.35:1.2,1,mk3?.72:.78);for(let y of [h*.15,h*.82]){const band=mesh(new THREE.TorusGeometry(r*.88,.055,8,32),gold,[0,y,0]);band.scale.set(mk3?1.35:1.2,1,mk3?.72:.78);}for(let x of [-1,1])box(.08,h*.55,.08,dark,[x*r*.8,h*.5,0]);}
   else if(ore){cyl(r*.88,r*.88,h*.8,mat(0x788d77,.58,.55),h*.4,12);for(let y of [.15,h*.65])bodyBand(r*.9,y,gold);}
   else{
    cyl(r*.94,r*.94,h*.76,xenon?mat(0x718c9b,.72,.24):white,h*.5,40);
@@ -56,15 +58,18 @@ export function createPartModel(p,THREE){
   mesh(new THREE.ConeGeometry(r,h,32),white,[0,h*.5,0]);torus(r*.92,.055,gold,h*.08);torus(r*.42,.025,dark,h*.82);
  }else if(p.type==='engine'||p.type==='jet'||p.type==='booster'){
   const jet=p.type==='jet'||id.startsWith('jet-'),solid=p.type==='booster',ion=id.includes('ion')||id.includes('dawn'),nerv=id.includes('nerv'),mammoth=id.includes('mammoth'),vector=id.includes('vector'),spider=id.includes('spider'),poodle=id.includes('poodle'),twin=id.includes('twinboar');
-  const count=mammoth?4:twin?2:spider?4:1;
+  const count=mammoth?4:twin||id.includes('rapier')?2:spider?4:1;
   if(jet){
    cyl(r*.72,r,h*.72,alloy,h*.53,40);const lip=mesh(new THREE.TorusGeometry(r*.72,.1,12,40),gold,[0,0,h*.18],[Math.PI/2,0,0]);mesh(new THREE.CylinderGeometry(r*.52,r*.52,.07,32),black,[0,0,h*.22],[Math.PI/2,0,0]);for(let i=0;i<12;i++){const a=i*Math.PI/6;box(.035,.035,r*.95,alloy,[Math.cos(a)*r*.45,Math.sin(a)*r*.45,h*.22]);}
    if(id.includes('whiplash'))for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.06,.08,h*.58,dark,[Math.cos(a)*r*.9,Math.sin(a)*r*.9,0]);}
+   if(id.includes('goliath'))for(let i=0;i<16;i++){const a=i*Math.PI/8;box(.025,.035,r*.48,gold,[Math.cos(a)*r*.38,Math.sin(a)*r*.38,h*.22]);}
   }else if(ion){cyl(r*.34,r*.65,h*.32,alloy,h*.35);for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.035,h*.55,.035,gold,[Math.cos(a)*r*.52,h*.48,Math.sin(a)*r*.52]);}mesh(new THREE.CylinderGeometry(r*.5,r*.28,.08,24),blue,[0,h*.72,0]);}
   else{
    if(solid){cyl(r,r,h*.72,white,h*.52,32);mesh(new THREE.ConeGeometry(r*.98,h*.28,32),orange,[0,h*.99,0]);}
    else{cyl(r*.9,r,h*.48,white,h*.7,36);for(let i=0;i<count;i++){const a=i*Math.PI*2/count,x=count===1?0:Math.cos(a)*r*.42,z=count===1?0:Math.sin(a)*r*.42;const nr=count===4?r*.38:count===2?r*.43:r*.78;nozzle(nr,h*.62,dark,-h*.03,x,z);}}
-   if(nerv){cyl(r*.38,r*.5,h*.6,gold,h*.23);for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.07,h*.5,.07,dark,[Math.cos(a)*r*.65,h*.38,Math.sin(a)*r*.65]);}}
+   if(nerv){cyl(r*.38,r*.5,h*.6,gold,h*.23);for(let i=0;i<12;i++){const a=i*Math.PI/6;box(.07,h*.5,.07,dark,[Math.cos(a)*r*.65,h*.38,Math.sin(a)*r*.65]);}}
+   else if(id.includes('dart')){cyl(r*.16,r*.05,h*.62,gold,-h*.22,24);torus(r*.7,.08,alloy,-h*.02);}
+   else if(vector){torus(r*.68,.09,gold,h*.14);for(let i=0;i<4;i++){const a=i*Math.PI/2;box(.08,h*.52,.08,alloy,[Math.cos(a)*r*.72,h*.2,Math.sin(a)*r*.72]);}}
    else if(poodle){for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.07,.24,.07,gold,[Math.cos(a)*r*.8,h*.42,Math.sin(a)*r*.8]);}}
    else{for(let i=0;i<6;i++){const a=i*Math.PI/3;box(.035,h*.22,.035,dark,[Math.cos(a)*r*.91,h*.65,Math.sin(a)*r*.91]);}}
   }
