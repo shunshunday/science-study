@@ -100,3 +100,37 @@
 /* Keep locked parts visually the same color as available parts */
 .part:disabled{opacity:1!important;filter:none!important;background:#53636d!important;border-color:#91a0a8!important}
 .part:disabled .part-icon{opacity:1!important;filter:none!important;background:#778894!important}
+
+
+/* Readable aircraft/rocket part browser: labeled categories and part specifications */
+.parts{width:450px}
+.catalog-body{grid-template-columns:126px minmax(0,1fr)}
+.part-categories{gap:3px;padding:5px 4px}
+.part-category{height:39px;min-height:39px;width:100%;display:flex;align-items:center;justify-content:flex-start;gap:8px;padding:0 8px;text-align:left;font-size:12px;background:linear-gradient(90deg,#53636e,#394954);border:1px solid #b9c6ce22}
+.part-category .cat-icon{width:24px;flex:0 0 24px;text-align:center;font-size:17px}
+.part-category .cat-label{font-size:11px;white-space:nowrap}
+.part-category.active{background:#d0a64e;color:#18232a;box-shadow:inset 3px 0 #ffe0a0}
+.part-list{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:142px;gap:5px;padding:6px}
+.part{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:3px;min-width:0;padding:4px;background:linear-gradient(145deg,#77838b,#46545e);border:1px solid #c3cbd044;border-radius:3px;text-align:left;overflow:hidden}
+.part:hover{background:linear-gradient(145deg,#a1adb2,#64737c);border-color:#e8d18e}
+.part-icon{width:100%;height:82px;flex:0 0 82px;margin:0}
+.part-preview-canvas{width:100%;height:82px;object-fit:contain}
+.part-meta{display:block;width:100%;min-width:0;color:#f1f4f5;line-height:1.2}
+.part-meta b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;font-weight:700}
+.part-meta small{display:block;margin-top:2px;color:#dce5e9;font-size:8px;line-height:1.25;white-space:normal}
+.part:disabled{opacity:1!important}
+.part::after{left:460px;width:285px;max-height:72vh}
+@media(max-width:700px){
+ .parts{width:340px}
+ .catalog-body{grid-template-columns:104px minmax(0,1fr)}
+ .part-category{height:36px;min-height:36px;gap:5px;padding:0 5px}
+ .part-category .cat-icon{width:20px;flex-basis:20px;font-size:15px}
+ .part-category .cat-label{font-size:9px}
+ .part-list{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:126px;padding:4px}
+ .part-icon,.part-preview-canvas{height:68px;flex-basis:68px}
+ .part-meta b{font-size:9px}
+ .part-meta small{font-size:7px}
+ .part::after{left:348px;width:min(230px,calc(100vw - 355px));font-size:10px;padding:8px;max-height:60vh}
+}
+#aircraft-mode{background:linear-gradient(#536b79,#293d49);border-color:#b9d0d955;color:#f2f7f8;font-weight:700}
+#aircraft-mode.active{background:linear-gradient(#b58b3e,#765725);border-color:#f2d18a;color:#fff}
