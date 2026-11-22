@@ -1,0 +1,3053 @@
+{
+  "title": "KSP1 stock and expansion parts inventory expansion",
+  "scope": "KSP 1.12.x stock part families, with DLC labels where source identifies them",
+  "source": "Japanese KSP Wiki parts index; this is an inventory transcription, not an asset license",
+  "sourceUrl": "https://wikiwiki.jp/ksp/パーツ",
+  "count": 169,
+  "caveat": "The source page contains a base-game inventory and links to separate Making History and Breaking Ground sections. This file captures the additional stock families visible in its parts index; it is not yet the complete DLC list. Internal IDs and exact part.cfg data remain unverified until checked against KSP 1.12.5.",
+  "licensing": "The source wiki's thumbnails and game images are not copied. Extracted KSP stock/DLC models and textures are not redistributed. The browser models must be independently authored or sourced from explicitly redistributable assets.",
+  "entries": [
+    {
+      "catalogId": "decoupler-small",
+      "displayName": "TD-06 デカプラー",
+      "category": "coupling",
+      "partFamily": "stack decoupler",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 328
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "decoupler-large",
+      "displayName": "TD-25 デカプラー",
+      "category": "coupling",
+      "partFamily": "stack decoupler",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 330
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "decoupler-xl",
+      "displayName": "TD-37 デカプラー",
+      "category": "coupling",
+      "partFamily": "stack decoupler",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 331
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "separator-small",
+      "displayName": "TS-06 スタックセパレーター",
+      "category": "coupling",
+      "partFamily": "separator",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 332
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "separator-medium",
+      "displayName": "TS-12 スタックセパレーター",
+      "category": "coupling",
+      "partFamily": "separator",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 333
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "separator-large",
+      "displayName": "TS-25 スタックセパレーター",
+      "category": "coupling",
+      "partFamily": "separator",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 334
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "separator-xl",
+      "displayName": "TS-37 スタックセパレーター",
+      "category": "coupling",
+      "partFamily": "separator",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 335
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "radial-decoupler-tt38k",
+      "displayName": "TT-38K ラジアル型デカプラー",
+      "category": "coupling",
+      "partFamily": "radial decoupler",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 336
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "radial-decoupler-hdm",
+      "displayName": "油圧式分離マニフォールド",
+      "category": "coupling",
+      "partFamily": "radial decoupler",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 337
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "radial-decoupler-tt70",
+      "displayName": "TT-70 ラジアル型デカプラー",
+      "category": "coupling",
+      "partFamily": "radial decoupler",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 338
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "docking-port",
+      "displayName": "クランプオートロン ドッキングポート",
+      "category": "docking",
+      "partFamily": "docking port",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 343
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "docking-port-jr",
+      "displayName": "クランプオートロン ドッキングポート Jr.",
+      "category": "docking",
+      "partFamily": "docking port",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 344
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "docking-port-sr",
+      "displayName": "クランプオートロン ドッキングポート Sr.",
+      "category": "docking",
+      "partFamily": "docking port",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 345
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "docking-port-shielded",
+      "displayName": "クランプオートロン シールド付ドッキングポート",
+      "category": "docking",
+      "partFamily": "docking port",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 346
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "docking-port-inline",
+      "displayName": "インライン クランプオートロン",
+      "category": "docking",
+      "partFamily": "docking port",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 347
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "docking-port-mk2",
+      "displayName": "Mk2 クランプオートロン",
+      "category": "docking",
+      "partFamily": "docking port",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 348
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "grabbing-unit-jr",
+      "displayName": "先進型グラビングユニット ジュニア",
+      "category": "docking",
+      "partFamily": "grabbing unit",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 349
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "grabbing-unit",
+      "displayName": "先進的グラビングユニット",
+      "category": "docking",
+      "partFamily": "grabbing unit",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 350
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "fairing-125",
+      "displayName": "AE-FF1 耐空力防護シェル",
+      "category": "payload",
+      "partFamily": "fairing",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 356
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "fairing-250",
+      "displayName": "AE-FF2 耐空力保護シェル",
+      "category": "payload",
+      "partFamily": "fairing",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 357
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "fairing-375",
+      "displayName": "AE-FF3 耐空力保護シェル",
+      "category": "payload",
+      "partFamily": "fairing",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 358
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-bay-mk2-04",
+      "displayName": "Mk2 カーゴベイ CRG-04",
+      "category": "payload",
+      "partFamily": "cargo bay",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 363
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-bay-mk2-08",
+      "displayName": "Mk2 カーゴベイ CRG-08",
+      "category": "payload",
+      "partFamily": "cargo bay",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 364
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-bay-mk3-25",
+      "displayName": "Mk3 カーゴベイ CRG-25",
+      "category": "payload",
+      "partFamily": "cargo bay",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 365
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-bay-mk3-50",
+      "displayName": "Mk3 カーゴベイ CRG-50",
+      "category": "payload",
+      "partFamily": "cargo bay",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 366
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-bay-mk3-100",
+      "displayName": "Mk3 カーゴベイ CRG-100",
+      "category": "payload",
+      "partFamily": "cargo bay",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 367
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-ramp-mk3",
+      "displayName": "Mk3 カーゴドア",
+      "category": "payload",
+      "partFamily": "cargo ramp",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 368
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "service-bay-125",
+      "displayName": "1.25m サービスベイ",
+      "category": "payload",
+      "partFamily": "service bay",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 373
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "service-bay-250",
+      "displayName": "2.5m サービスベイ",
+      "category": "payload",
+      "partFamily": "service bay",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 374
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "intake-small-circular",
+      "displayName": "小型サーキュラー インテーク",
+      "category": "aero",
+      "partFamily": "air intake",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 381
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "intake-circular",
+      "displayName": "サーキュラー インテーク",
+      "category": "aero",
+      "partFamily": "air intake",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 382
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "intake-ram",
+      "displayName": "可変インテーク",
+      "category": "aero",
+      "partFamily": "air intake",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 383
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "intake-shockcone",
+      "displayName": "ショックコーン インテーク",
+      "category": "aero",
+      "partFamily": "air intake",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 384
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "engine-nacelle",
+      "displayName": "エンジンナセル",
+      "category": "aero",
+      "partFamily": "nacelle",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 385
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "engine-precooler",
+      "displayName": "エンジン プリクーラー",
+      "category": "aero",
+      "partFamily": "precooler",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 386
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "mk1-supersonic-intake",
+      "displayName": "Mk1 ダイバータレス超音速インテーク",
+      "category": "aero",
+      "partFamily": "air intake",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 387
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "intake-radial-xmg50",
+      "displayName": "XM-G50 ラジアル型インテーク",
+      "category": "aero",
+      "partFamily": "radial intake",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 388
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "intake-radial-variable",
+      "displayName": "ラジアル型可変インテーク",
+      "category": "aero",
+      "partFamily": "radial intake",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 389
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "nosecone-small",
+      "displayName": "小型ノーズコーン",
+      "category": "aero",
+      "partFamily": "nose cone",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 394
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "nosecone-aero",
+      "displayName": "エアロダイナミック ノーズコーン",
+      "category": "aero",
+      "partFamily": "nose cone",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 395
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "nosecone-a",
+      "displayName": "先進的ノーズコーン タイプA",
+      "category": "aero",
+      "partFamily": "nose cone",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 396
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "nosecone-b",
+      "displayName": "先進的ノーズコーン タイプB",
+      "category": "aero",
+      "partFamily": "nose cone",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 397
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "nosecone-mk7",
+      "displayName": "ロケット保護用ノーズコーン Mk7",
+      "category": "aero",
+      "partFamily": "nose cone",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 398
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "nosecone-mk12a",
+      "displayName": "ロケット保護用ノーズコーン Mk12A",
+      "category": "aero",
+      "partFamily": "nose cone",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 399
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "wing-connector-a",
+      "displayName": "ウィングコネクター タイプA",
+      "category": "aero",
+      "partFamily": "wing",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 411
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "wing-connector-b",
+      "displayName": "ウィングコネクター タイプB",
+      "category": "aero",
+      "partFamily": "wing",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 412
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "wing-connector-c",
+      "displayName": "ウィングコネクター タイプC",
+      "category": "aero",
+      "partFamily": "wing",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 413
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "wing-connector-d",
+      "displayName": "ウィングコネクター タイプD",
+      "category": "aero",
+      "partFamily": "wing",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 414
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "wing-connector-e",
+      "displayName": "ウィングコネクター タイプE",
+      "category": "aero",
+      "partFamily": "wing",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 415
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "wing-swept-a",
+      "displayName": "後退翼 タイプA",
+      "category": "aero",
+      "partFamily": "wing",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 416
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "wing-swept-b",
+      "displayName": "後退翼 タイプB",
+      "category": "aero",
+      "partFamily": "wing",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 417
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "wing-big-s-delta",
+      "displayName": "Big-S デルタ翼",
+      "category": "aero",
+      "partFamily": "wing",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 418
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "wing-big-s-strake",
+      "displayName": "Big-S ストレーキ",
+      "category": "aero",
+      "partFamily": "wing",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 419
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "winglet-avt1",
+      "displayName": "AV-T1 ウィングレット",
+      "category": "aero",
+      "partFamily": "winglet",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 420
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "fin-basic",
+      "displayName": "ベーシックフィン",
+      "category": "aero",
+      "partFamily": "fin",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 421
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "wing-fat455",
+      "displayName": "FAT-455 メインウィング",
+      "category": "aero",
+      "partFamily": "wing",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 422
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "elevon-1",
+      "displayName": "エレボン 1",
+      "category": "aero",
+      "partFamily": "control surface",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 427
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "elevon-2",
+      "displayName": "エレボン 2",
+      "category": "aero",
+      "partFamily": "control surface",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 428
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "elevon-3",
+      "displayName": "エレボン 3",
+      "category": "aero",
+      "partFamily": "control surface",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 429
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "elevon-4",
+      "displayName": "エレボン 4",
+      "category": "aero",
+      "partFamily": "control surface",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 430
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "elevon-5",
+      "displayName": "エレボン 5",
+      "category": "aero",
+      "partFamily": "control surface",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 431
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "elevon-big-s-1",
+      "displayName": "Big-S エレボン 1",
+      "category": "aero",
+      "partFamily": "control surface",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 432
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "elevon-big-s-2",
+      "displayName": "Big-S エレボン 2",
+      "category": "aero",
+      "partFamily": "control surface",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 433
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "rudder-big-s",
+      "displayName": "Big-S スペースプレーン用尾翼",
+      "category": "aero",
+      "partFamily": "rudder",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 434
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "winglet-avr8",
+      "displayName": "AV-R8 ウィングレット",
+      "category": "aero",
+      "partFamily": "winglet",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 435
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "tailfin",
+      "displayName": "テールフィン",
+      "category": "aero",
+      "partFamily": "tail fin",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 436
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "canard-standard",
+      "displayName": "標準的カナード",
+      "category": "aero",
+      "partFamily": "canard",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 437
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "canard-advanced",
+      "displayName": "先進的カナード",
+      "category": "aero",
+      "partFamily": "canard",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 438
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "winglet-delta-deluxe",
+      "displayName": "デルタデラックス ウィングレット",
+      "category": "aero",
+      "partFamily": "winglet",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 439
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "control-surface-fat445",
+      "displayName": "FAT-445 コントロールサーフェース",
+      "category": "aero",
+      "partFamily": "control surface",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 440
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "tailfin-fat455",
+      "displayName": "FAT-455 テールフィン",
+      "category": "aero",
+      "partFamily": "tail fin",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 441
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "airbrake",
+      "displayName": "エアブレーキ A.I.R.B.R.A.K.E.S",
+      "category": "aero",
+      "partFamily": "airbrake",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 442
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "tail-connector-a",
+      "displayName": "テールコネクター A",
+      "category": "aero",
+      "partFamily": "tail connector",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 447
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "tail-connector-b",
+      "displayName": "テールコネクター B",
+      "category": "aero",
+      "partFamily": "tail connector",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 448
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "landing-leg-lt5",
+      "displayName": "LT-5 小型着陸脚",
+      "category": "utility",
+      "partFamily": "landing leg",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 454
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "landing-leg-lt1",
+      "displayName": "LT-1 着陸脚",
+      "category": "utility",
+      "partFamily": "landing leg",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 455
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "landing-leg-lt2",
+      "displayName": "LT-2 着陸脚",
+      "category": "utility",
+      "partFamily": "landing leg",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 456
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "landing-gear-ly01",
+      "displayName": "LY-01 固定式ランディングギア",
+      "category": "utility",
+      "partFamily": "landing gear",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 461
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "landing-gear-ly05",
+      "displayName": "LY-05 ステアリング機能付ランディングギア",
+      "category": "utility",
+      "partFamily": "landing gear",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 462
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "landing-gear-ly10",
+      "displayName": "LY-10 小型ランディングギア",
+      "category": "utility",
+      "partFamily": "landing gear",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 463
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "landing-gear-ly35",
+      "displayName": "LY-35 中型ランディングギア",
+      "category": "utility",
+      "partFamily": "landing gear",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 464
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "landing-gear-ly60",
+      "displayName": "LY-60 大型ランディングギア",
+      "category": "utility",
+      "partFamily": "landing gear",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 465
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "landing-gear-ly99",
+      "displayName": "LY-99 超大型ランディングギア",
+      "category": "utility",
+      "partFamily": "landing gear",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 466
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "rover-wheel-m1f",
+      "displayName": "ローブマックス モデル M1-F",
+      "category": "utility",
+      "partFamily": "rover wheel",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 471
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "rover-wheel-m1",
+      "displayName": "ローブマックス モデル M1",
+      "category": "utility",
+      "partFamily": "rover wheel",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 472
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "rover-wheel-s2",
+      "displayName": "ローブマックス モデル S2",
+      "category": "utility",
+      "partFamily": "rover wheel",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 473
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "rover-wheel-xl3",
+      "displayName": "ローブマックス モデル XL3",
+      "category": "utility",
+      "partFamily": "rover wheel",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 474
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "rover-wheel-tr2l",
+      "displayName": "TR-2L 高耐久ホイール",
+      "category": "utility",
+      "partFamily": "rover wheel",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 475
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "radiator-edge",
+      "displayName": "エッジ型ラジエーターパネル",
+      "category": "utility",
+      "partFamily": "radiator",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 481
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "radiator-small",
+      "displayName": "小型ラジエーターパネル",
+      "category": "utility",
+      "partFamily": "radiator",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 482
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "radiator-large",
+      "displayName": "大型ラジエーターパネル",
+      "category": "utility",
+      "partFamily": "radiator",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 483
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "thermal-control-small",
+      "displayName": "小型熱制御システム",
+      "category": "utility",
+      "partFamily": "deployable radiator",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 484
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "thermal-control-medium",
+      "displayName": "中型熱制御システム",
+      "category": "utility",
+      "partFamily": "deployable radiator",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 485
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "thermal-control-large",
+      "displayName": "大型熱制御システム",
+      "category": "utility",
+      "partFamily": "deployable radiator",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 486
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "heat-shield-0625",
+      "displayName": "耐熱シールド 0.625m",
+      "category": "utility",
+      "partFamily": "heat shield",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 491
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "heat-shield-125",
+      "displayName": "耐熱シールド 1.25m",
+      "category": "utility",
+      "partFamily": "heat shield",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 492
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "heat-shield-250",
+      "displayName": "耐熱シールド 2.5m",
+      "category": "utility",
+      "partFamily": "heat shield",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 493
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "heat-shield-375",
+      "displayName": "耐熱シールド 3.75m",
+      "category": "utility",
+      "partFamily": "heat shield",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 494
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "heat-shield-10m",
+      "displayName": "耐熱シールド 10m",
+      "category": "utility",
+      "partFamily": "heat shield",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 495
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "solar-gigantor",
+      "displayName": "ジャイガンター XL ソーラーアレイ",
+      "category": "utility",
+      "partFamily": "solar array",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 501
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "solar-ox10l",
+      "displayName": "OX-10L 1x5 太陽電池パネル",
+      "category": "utility",
+      "partFamily": "solar panel",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 505
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "solar-sp-l",
+      "displayName": "SP-L 1x6 太陽電池パネル",
+      "category": "utility",
+      "partFamily": "solar panel",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 509
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "solar-sp-w",
+      "displayName": "SP-W 3x2 太陽電池パネル",
+      "category": "utility",
+      "partFamily": "solar panel",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 510
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "solar-sp-10l",
+      "displayName": "SP-10L 1x5 太陽電池パネル",
+      "category": "utility",
+      "partFamily": "solar panel",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 511
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "rtg",
+      "displayName": "PB-NUK 原子力電池",
+      "category": "utility",
+      "partFamily": "RTG",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 517
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "fuel-cell-array",
+      "displayName": "燃料電池アレイ",
+      "category": "utility",
+      "partFamily": "fuel cell",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 519
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "battery-z1k",
+      "displayName": "Z-1K リチャージブル バッテリーバンク",
+      "category": "utility",
+      "partFamily": "battery",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 527
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "antenna-communotron16",
+      "displayName": "コミュノトロン 16",
+      "category": "science",
+      "partFamily": "direct antenna",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 534
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "antenna-communotron16s",
+      "displayName": "コミュノトロン 16-S",
+      "category": "science",
+      "partFamily": "direct antenna",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 535
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "antenna-dtsm1",
+      "displayName": "コミュノトロン DTS-M1",
+      "category": "science",
+      "partFamily": "direct antenna",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 536
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "antenna-hg55",
+      "displayName": "コミュノトロン HG-55",
+      "category": "science",
+      "partFamily": "direct antenna",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 537
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "antenna-8888",
+      "displayName": "コミュノトロン 88-88",
+      "category": "science",
+      "partFamily": "direct antenna",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 538
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "antenna-hg5",
+      "displayName": "HG-5 ハイゲインアンテナ",
+      "category": "science",
+      "partFamily": "relay antenna",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 543
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "antenna-ra2",
+      "displayName": "RA-2 中継アンテナ",
+      "category": "science",
+      "partFamily": "relay antenna",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 544
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "antenna-ra15",
+      "displayName": "RA-15 中継アンテナ",
+      "category": "science",
+      "partFamily": "relay antenna",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 545
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "antenna-ra100",
+      "displayName": "RA-100 中継アンテナ",
+      "category": "science",
+      "partFamily": "relay antenna",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 546
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "science-goo",
+      "displayName": "Goo 格納ユニット",
+      "category": "science",
+      "partFamily": "experiment",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 553
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "science-thermometer",
+      "displayName": "2ホット 温度計",
+      "category": "science",
+      "partFamily": "experiment",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 554
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "science-barometer",
+      "displayName": "プレスマット 気圧計",
+      "category": "science",
+      "partFamily": "experiment",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 555
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "science-materialbay",
+      "displayName": "SC-9001 サイエンスJr.",
+      "category": "science",
+      "partFamily": "experiment",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 556
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "science-magnetometer",
+      "displayName": "磁力計ブーム",
+      "category": "science",
+      "partFamily": "experiment",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 557
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "science-accelerometer",
+      "displayName": "ダブルC 地震加速度計",
+      "category": "science",
+      "partFamily": "experiment",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 558
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "science-atmosphere",
+      "displayName": "大気分光器",
+      "category": "science",
+      "partFamily": "experiment",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 559
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "science-gravimeter",
+      "displayName": "グラブマックス ネガティブ グラヴィオリ重力子検知器",
+      "category": "science",
+      "partFamily": "experiment",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 560
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "science-sentinel",
+      "displayName": "センチネル 赤外線望遠鏡",
+      "category": "science",
+      "partFamily": "telescope",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 565
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "science-lab",
+      "displayName": "移動研究室 MPL-LG-2",
+      "category": "science",
+      "partFamily": "mobile laboratory",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 570
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "science-storage",
+      "displayName": "実験用記憶装置ユニット",
+      "category": "science",
+      "partFamily": "experiment storage",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 575
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "science-m4435",
+      "displayName": "M4435 ナローバンドスキャナー",
+      "category": "science",
+      "partFamily": "resource scanner",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 580
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "science-m700",
+      "displayName": "M700 探査スキャナー",
+      "category": "science",
+      "partFamily": "resource scanner",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 581
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "science-surface-scan",
+      "displayName": "地表スキャンモジュール",
+      "category": "science",
+      "partFamily": "resource scanner",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 582
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-seq3c",
+      "displayName": "SEQ-3C コンフォーマル保管ユニット",
+      "category": "cargo",
+      "partFamily": "cargo container",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 591
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-seq3",
+      "displayName": "SEQ-3 カーゴ保管ユニット",
+      "category": "cargo",
+      "partFamily": "cargo container",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 592
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-seq9",
+      "displayName": "SEQ-9 コンテナ・モジュール",
+      "category": "cargo",
+      "partFamily": "cargo container",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 593
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-seq24",
+      "displayName": "SEQ-24 カーゴ保管ユニット",
+      "category": "cargo",
+      "partFamily": "cargo container",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 594
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-jetpack",
+      "displayName": "EVA ジェットパック",
+      "category": "cargo",
+      "partFamily": "EVA item",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 599
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-repairkit",
+      "displayName": "EVA 修理キット",
+      "category": "cargo",
+      "partFamily": "EVA item",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 600
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-sciencekit",
+      "displayName": "EVA 実験キット",
+      "category": "cargo",
+      "partFamily": "EVA item",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 601
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-cylinder",
+      "displayName": "EVA 燃料シリンダー",
+      "category": "cargo",
+      "partFamily": "EVA item",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 602
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-parachute",
+      "displayName": "個人用パラシュート",
+      "category": "cargo",
+      "partFamily": "EVA item",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 603
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-ground-light",
+      "displayName": "作業用照明 スタンド",
+      "category": "cargo",
+      "partFamily": "deployable",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 608
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-ground-light-small",
+      "displayName": "作業用照明 小",
+      "category": "cargo",
+      "partFamily": "deployable",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 609
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "cargo-ground-anchor",
+      "displayName": "スタンプ・オー・トロン グラウンドアンカー",
+      "category": "cargo",
+      "partFamily": "deployable",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 610
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "parachute-mk2r",
+      "displayName": "Mk2-R ラジアル型パラシュート",
+      "category": "utility",
+      "partFamily": "parachute",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 621
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "parachute-mk12r",
+      "displayName": "Mk12-R ラジアル型ドラッグシュート",
+      "category": "utility",
+      "partFamily": "drogue parachute",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 622
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "ladder-radial",
+      "displayName": "ペガサスI 機動性向上装置",
+      "category": "utility",
+      "partFamily": "ladder",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 628
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "ladder-telescopic",
+      "displayName": "ケラス 機動性向上装置",
+      "category": "utility",
+      "partFamily": "ladder",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 629
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "ladder-telescopic-bay",
+      "displayName": "ケラスLV 機動性向上装置",
+      "category": "utility",
+      "partFamily": "ladder",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 630
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "light-illuminator-mk1",
+      "displayName": "イルミネーター Mk1",
+      "category": "utility",
+      "partFamily": "light",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 634
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "light-illuminator-mk2",
+      "displayName": "イルミネーター Mk2",
+      "category": "utility",
+      "partFamily": "light",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 635
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "light-spot-mk1",
+      "displayName": "スポットライト Mk1",
+      "category": "utility",
+      "partFamily": "light",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 636
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "light-dome-mk1",
+      "displayName": "ドームライト Mk1",
+      "category": "utility",
+      "partFamily": "light",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 637
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "light-nav-mk1",
+      "displayName": "ナビゲーションライト Mk1",
+      "category": "utility",
+      "partFamily": "light",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 638
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "light-strip-mk1",
+      "displayName": "ライトストリップ Mk1",
+      "category": "utility",
+      "partFamily": "light",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 639
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "crew-mk1",
+      "displayName": "Mk1 クルーキャビン",
+      "category": "utility",
+      "partFamily": "crew cabin",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 644
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "crew-mk2",
+      "displayName": "Mk2 クルーキャビン",
+      "category": "utility",
+      "partFamily": "crew cabin",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 645
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "crew-ppd10",
+      "displayName": "PPD-10 乗員収容コンテナ",
+      "category": "utility",
+      "partFamily": "crew cabin",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 646
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "crew-mk3",
+      "displayName": "Mk3 客室モジュール",
+      "category": "utility",
+      "partFamily": "crew cabin",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 647
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "launch-escape-system",
+      "displayName": "打ち上げ脱出システム",
+      "category": "utility",
+      "partFamily": "launch escape system",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 653
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "drill-mini",
+      "displayName": "ドリルオーマチック ジュニア 採掘機",
+      "category": "utility",
+      "partFamily": "drill",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 658
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "drill-radial",
+      "displayName": "ドリルオーマチック 採掘機",
+      "category": "utility",
+      "partFamily": "drill",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 659
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "isru-mini",
+      "displayName": "コンバートオートロン 125",
+      "category": "utility",
+      "partFamily": "ISRU",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 660
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "isru-large",
+      "displayName": "コンバートオートロン 250",
+      "category": "utility",
+      "partFamily": "ISRU",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 661
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "flag-rfp0",
+      "displayName": "RFP-0 フラッグ 0.625m",
+      "category": "utility",
+      "partFamily": "flag",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 666
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "flag-rfp1",
+      "displayName": "RFP-1 フラッグ 1.25m",
+      "category": "utility",
+      "partFamily": "flag",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 667
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "flag-rfp2",
+      "displayName": "RFP-2 フラッグ 2.5m",
+      "category": "utility",
+      "partFamily": "flag",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 668
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "flag-rfp3",
+      "displayName": "RFP-3 フラッグ 3.75m",
+      "category": "utility",
+      "partFamily": "flag",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 669
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "flag-rfpf",
+      "displayName": "RFP-F フラッグ フラット",
+      "category": "utility",
+      "partFamily": "flag",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 670
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "fireworks-32",
+      "displayName": "スターショット32",
+      "category": "utility",
+      "partFamily": "fireworks",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 675
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    },
+    {
+      "catalogId": "fireworks-8",
+      "displayName": "スターショット8",
+      "category": "utility",
+      "partFamily": "fireworks",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/パーツ",
+        "line": 676
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "dlc": "base game unless separately identified by the source",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "original Three.js model required unless a separately licensed asset is cleared",
+      "status": "inventory candidate; confirm exact KSP 1.12.5 part.cfg and attachment/module data"
+    }
+  ]
+}
