@@ -64,7 +64,8 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "generic project placeholder; not a unique KSP1 part; replace with individual stock/DLC entries",
+      "replacementAction": "Do not retain as a standalone KSP catalog entry. Add the actual named stock parts for this family."
     },
     {
       "projectPartId": "tank-s",
@@ -292,7 +293,8 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "generic project placeholder; not a unique KSP1 part; replace with individual stock/DLC entries",
+      "replacementAction": "Do not retain as a standalone KSP catalog entry. Add the actual named stock parts for this family."
     },
     {
       "projectPartId": "fin",
@@ -315,7 +317,8 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "generic project placeholder; not a unique KSP1 part; replace with individual stock/DLC entries",
+      "replacementAction": "Do not retain as a standalone KSP catalog entry. Add the actual named stock parts for this family."
     },
     {
       "projectPartId": "chute",
@@ -422,7 +425,8 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "generic project placeholder; not a unique KSP1 part; replace with individual stock/DLC entries",
+      "replacementAction": "Do not retain as a standalone KSP catalog entry. Add the actual named stock parts for this family."
     },
     {
       "projectPartId": "pod-mk1-inline",
@@ -3322,8 +3326,8 @@
         "radius": 0.5
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "mk1-Structural",
+      "verifiedKspPartName": "構造用ボディ",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -3331,7 +3335,10 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP part index structural section: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "attachment-bz52",
@@ -3398,8 +3405,8 @@
         "radius": 0.25
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "smallHardpoint",
+      "verifiedKspPartName": "小型ハードポイント",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -3407,7 +3414,10 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "candidate KSP part identity; exact 1.12.5 .cfg confirmation and model/license unresolved",
+      "matchEvidence": [
+        "KSP part index structural section: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "pylon",
@@ -3519,13 +3529,14 @@
     }
   ],
   "auditProgress": {
-    "matchedPartIdentities": 109,
+    "matchedPartIdentities": 124,
     "totalExistingProjectEntries": 128,
     "approved3DModels": 0,
-    "nextBatch": "verify all 122 candidate IDs against exact 1.12.5 part.cfg, then finish remaining generic entries and expand full DLC catalog",
-    "note": "Candidate matches are not final verification. The official KSP developer guide defines part.cfg as the authoritative source for part identifiers, mesh path, attachment rules, mass and module settings; the exact 1.12.5 .cfg must be checked before a candidate is marked verified. No extracted KSP model has been imported or approved.",
-    "candidatePartIdentities": 122,
+    "nextBatch": "expand the catalog to every stock and DLC part from the full KSP parts index; verify each internal ID and model rights; then implement licensed/original geometry",
+    "note": "All 128 existing entries have been triaged: 124 candidate stock matches and 4 generic placeholders that do not correspond to unique KSP parts. Candidate IDs still require exact KSP 1.12.5 part.cfg verification. This is not the complete KSP stock + DLC catalog.",
+    "candidatePartIdentities": 124,
     "exactCfgVerified": 0,
-    "remainingUnmatched": 6
+    "remainingUnmatched": 0,
+    "genericPlaceholdersToReplace": 4
   }
 }
