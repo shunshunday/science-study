@@ -188,22 +188,67 @@ const catalog=[
 {id:'strut-cubic',name:'立方体型オクタゴン ストラット',type:'decoupler',mass:.001,cost:16,icon:'⊖',height:.2,radius:.1},
 {id:'strut-octagonal',name:'オクタゴン ストラット',type:'decoupler',mass:.001,cost:20,icon:'⊖',height:.2,radius:.1},
 {id:'modular-girder',name:'モジュラー構造アダプター',type:'decoupler',mass:.25,cost:50,icon:'▤',height:1,radius:.2}
-
+,
+{"id":"mk0-fuselage","name":"Mk0 機体胴体","type":"fuselage","tech":"basic","mass":0.35,"cost":450,"fuel":80,"height":2.2,"radius":0.38},
+{"id":"mk1-fuselage","name":"Mk1 機体胴体","type":"fuselage","tech":"basic","mass":1.2,"cost":950,"fuel":300,"height":3.8,"radius":0.62},
+{"id":"mk2-fuselage","name":"Mk2 機体胴体","type":"fuselage","tech":"flight","mass":3.8,"cost":2600,"fuel":850,"height":5.2,"radius":1.05},
+{"id":"mk3-fuselage","name":"Mk3 大型機体胴体","type":"fuselage","tech":"heavy","mass":12,"cost":7800,"fuel":2600,"height":7.5,"radius":1.55},
+{"id":"mk1-cockpit-aircraft","name":"Mk1 航空機コックピット","type":"cockpit","tech":"basic","mass":1.1,"cost":1800,"crew":1,"height":1.8,"radius":0.62},
+{"id":"wing-basic","name":"標準主翼","type":"wing","tech":"basic","mass":0.8,"cost":650,"height":0.25,"radius":2.5},
+{"id":"wing-swept","name":"後退翼","type":"wing","tech":"flight","mass":1.15,"cost":950,"height":0.25,"radius":3.2},
+{"id":"wing-delta-large","name":"大型デルタ翼","type":"wing","tech":"flight","mass":1.6,"cost":1450,"height":0.3,"radius":3.5},
+{"id":"wing-small","name":"小型主翼","type":"wing","tech":"basic","mass":0.25,"cost":260,"height":0.18,"radius":1.4},
+{"id":"tail-fin","name":"垂直尾翼","type":"tail","tech":"basic","mass":0.22,"cost":320,"height":1.3,"radius":1.1},
+{"id":"tail-horizontal","name":"水平尾翼","type":"wing","tech":"basic","mass":0.3,"cost":380,"height":0.18,"radius":1.3},
+{"id":"elevon","name":"エレボン","type":"control","tech":"flight","mass":0.12,"cost":260,"height":0.12,"radius":1.2},
+{"id":"rudder","name":"方向舵","type":"control","tech":"flight","mass":0.1,"cost":220,"height":0.5,"radius":0.45},
+{"id":"jet-engine-juno","name":"J-20 ジェットエンジン","type":"jet","tech":"flight","mass":0.5,"cost":900,"thrust":20,"isp":900,"height":1.2,"radius":0.42},
+{"id":"jet-engine-panther","name":"J-404 パンサー","type":"jet","tech":"flight","mass":1.2,"cost":2400,"thrust":65,"isp":950,"height":1.8,"radius":0.62},
+{"id":"jet-engine-whiplash","name":"J-X4 ウィップラッシュ","type":"jet","tech":"heavy","mass":2.5,"cost":6200,"thrust":180,"isp":1100,"height":2.2,"radius":0.72},
+{"id":"air-intake","name":"RAM 空気吸入口","type":"intake","tech":"flight","mass":0.08,"cost":150,"height":0.55,"radius":0.38},
+{"id":"landing-gear-small","name":"小型着陸脚","type":"gear","tech":"basic","mass":0.08,"cost":180,"height":0.55,"radius":0.3},
+{"id":"landing-gear-large","name":"大型着陸脚","type":"gear","tech":"flight","mass":0.2,"cost":420,"height":0.85,"radius":0.45},
+{"id":"airbrake","name":"エアブレーキ","type":"airbrake","tech":"flight","mass":0.12,"cost":280,"height":0.55,"radius":0.65}
 ];
 
 
 let activePartCategory='すべて';
-function categoryFor(p){return p.type==='pod'||p.type==='probe'?'制御・乗員':p.type==='tank'?'燃料タンク':p.type==='engine'||p.type==='booster'?'推進装置':p.type==='decoupler'?'構造・分離':p.type==='fin'||p.type==='chute'?'空力':'電力・科学';}
+function categoryFor(p){return p.type==='pod'||p.type==='probe'||p.type==='cockpit'?'制御・乗員':p.type==='tank'||p.type==='fuselage'?'燃料タンク・胴体':p.type==='engine'||p.type==='booster'||p.type==='jet'?'推進装置':p.type==='decoupler'||p.type==='gear'?'構造・着陸装置':p.type==='fin'||p.type==='chute'||p.type==='wing'||p.type==='tail'||p.type==='control'||p.type==='airbrake'||p.type==='intake'?'空力・翼':'電力・科学';}
 function renderCategories(){
- const cats=['すべて','制御・乗員','燃料タンク','推進装置','構造・分離','空力','電力・科学'];
- const icons=['▦','◉','▤','◈','⊖','△','⚡'];
+ const cats=['すべて','制御・乗員','燃料タンク・胴体','推進装置','構造・着陸装置','空力・翼','電力・科学'];
+ const icons=['▦','◉','▤','◈','⊞','✈','⚡'];
  $('#part-categories').innerHTML=cats.map((c,i)=>'<button class="part-category '+(activePartCategory===c?'active':'')+'" data-part-category="'+c+'" title="'+c+'">'+icons[i]+'</button>').join('');
 }
 function partPreviewSvg(p){const d='<defs><linearGradient id="ps" x2="1" y2="1"><stop stop-color="#f1f3ef"/><stop offset=".5" stop-color="#9ca8aa"/><stop offset="1" stop-color="#46545c"/></linearGradient></defs>';let s=p.type==='pod'?'<path d="M29 57V31Q29 13 40 8Q51 13 51 31V57Z" fill="url(#ps)" stroke="#26333a" stroke-width="2"/><path d="M33 27Q40 17 47 27L45 34H35Z" fill="#263e4b"/>':p.type==='tank'?'<path d="M31 8H49L53 15V55L49 62H31L27 55V15Z" fill="url(#ps)" stroke="#26333a" stroke-width="2"/><path d="M28 18H52M28 51H52" stroke="#596970" stroke-width="2"/>':(p.type==='engine'||p.type==='booster')?'<path d="M31 8H49V39L55 57H25L31 39Z" fill="url(#ps)" stroke="#26333a" stroke-width="2"/><path d="M34 41H46L51 55H29Z" fill="#303b42"/><path d="M34 56L40 68L46 56Z" fill="#e58b37"/>':p.type==='solar'?'<path d="M35 27H45V43H35Z" fill="url(#ps)"/><path d="M4 20H32V50H4ZM48 20H76V50H48Z" fill="#234e75" stroke="#9eabb0" stroke-width="2"/><path d="M4 30H32M4 40H32M48 30H76M48 40H76M18 20V50M62 20V50" stroke="#9bb5c4"/>':p.type==='chute'?'<path d="M13 35Q40 2 67 35L61 43H19Z" fill="#d6c6a2" stroke="#394850" stroke-width="2"/><path d="M13 35L40 61L67 35" fill="none" stroke="#7d4d3d" stroke-width="2"/>':'<path d="M30 14H50V54H30Z" fill="url(#ps)" stroke="#26333a" stroke-width="2"/><path d="M25 22H55M25 46H55" stroke="#e0bd6b" stroke-width="2"/>';return '<svg class="part-preview" viewBox="0 0 80 72" aria-hidden="true">'+d+s+'</svg>';}
-let partPreviewRenderer=null,partPreviewScene=null,partPreviewCamera=null,selectedPartId=null;
+const partPreviewRenderers=new Map();let partPreviewObserver=null,selectedPartId=null;
+function disposePartPreview(canvas){const entry=partPreviewRenderers.get(canvas);if(entry){entry.renderer.dispose();partPreviewRenderers.delete(canvas);}}
+function renderOnePartPreview(canvas,p){
+ if(partPreviewRenderers.has(canvas))return;
+ if(partPreviewRenderers.size>=12)return;
+ try{
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'low-power'});
+  renderer.setPixelRatio(1);renderer.setSize(116,58,false);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;
+  const scene=new THREE.Scene();scene.background=new THREE.Color(0x778894);scene.add(new THREE.HemisphereLight(0xeaf4ff,0x30383d,2.1));
+  const key=new THREE.DirectionalLight(0xffedcf,3.2);key.position.set(3,5,4);scene.add(key);
+  const fill=new THREE.DirectionalLight(0x9fc8e8,1.1);fill.position.set(-4,1,-3);scene.add(fill);
+  const model=partMesh(p);scene.add(model);const box=new THREE.Box3().setFromObject(model),center=box.getCenter(new THREE.Vector3()),sphere=box.getBoundingSphere(new THREE.Sphere());model.position.sub(center);
+  const camera=new THREE.PerspectiveCamera(34,2,.01,1000),dist=Math.max(2.1,sphere.radius*3.4);camera.position.set(dist*.9,dist*.62,dist*1.3);camera.lookAt(0,0,0);camera.far=dist*12;camera.updateProjectionMatrix();
+  const entry={renderer,scene,camera,model,drag:false,lastX:0,lastY:0};partPreviewRenderers.set(canvas,entry);renderer.render(scene,camera);
+  canvas.addEventListener('pointerdown',e=>{entry.drag=true;entry.lastX=e.clientX;entry.lastY=e.clientY;canvas.setPointerCapture(e.pointerId);});
+  canvas.addEventListener('pointermove',e=>{if(!entry.drag)return;model.rotation.y+=(e.clientX-entry.lastX)*.012;model.rotation.x+=(e.clientY-entry.lastY)*.01;entry.lastX=e.clientX;entry.lastY=e.clientY;renderer.render(scene,camera);});
+  const stop=()=>{entry.drag=false;};canvas.addEventListener('pointerup',stop);canvas.addEventListener('pointercancel',stop);
+ }catch(err){canvas.replaceWith(Object.assign(document.createElement('span'),{className:'part-preview-error',textContent:'3D'}));}
+}
 function renderPartPreviews(items){
- if(!partPreviewRenderer){partPreviewRenderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});partPreviewRenderer.setSize(128,84);partPreviewRenderer.setPixelRatio(1);partPreviewRenderer.outputColorSpace=THREE.SRGBColorSpace;partPreviewRenderer.toneMapping=THREE.ACESFilmicToneMapping;partPreviewRenderer.toneMappingExposure=1.25;partPreviewScene=new THREE.Scene();partPreviewScene.background=new THREE.Color(0x687984);partPreviewScene.add(new THREE.HemisphereLight(0xeaf4ff,0x343a3d,2));const key=new THREE.DirectionalLight(0xffedcf,3);key.position.set(3,5,4);partPreviewScene.add(key);partPreviewCamera=new THREE.PerspectiveCamera(34,128/84,.01,1000);}
- for(const p of items){const img=$('#part-list').querySelector('[data-part="'+p.id.replace(/"/g,'\\"')+'"] .part-icon');if(!img)continue;while(partPreviewScene.children.length>2)partPreviewScene.remove(partPreviewScene.children[2]);const model=partMesh(p);partPreviewScene.add(model);const box=new THREE.Box3().setFromObject(model),center=box.getCenter(new THREE.Vector3()),sphere=box.getBoundingSphere(new THREE.Sphere());model.position.sub(center);const dist=Math.max(2.6,sphere.radius*3.1);partPreviewCamera.position.set(dist*.9,dist*.65,dist*1.25);partPreviewCamera.lookAt(0,0,0);partPreviewCamera.near=.01;partPreviewCamera.far=dist*12;partPreviewCamera.updateProjectionMatrix();partPreviewRenderer.render(partPreviewScene,partPreviewCamera);img.innerHTML='<img alt="'+p.name+' 3Dモデル" src="'+partPreviewRenderer.domElement.toDataURL('image/png')+'">';}
+ if(partPreviewObserver){partPreviewObserver.disconnect();partPreviewObserver=null;}
+ for(const [canvas] of partPreviewRenderers)disposePartPreview(canvas);
+ const list=$('#part-list');list.innerHTML=list.innerHTML;
+ const canvases=[...list.querySelectorAll('button[data-part]')];
+ for(const button of canvases){const p=items.find(x=>x.id===button.dataset.part);const holder=button.querySelector('.part-icon');if(!p||!holder)continue;holder.innerHTML='<canvas class="part-preview-canvas" width="116" height="58" aria-label="'+p.name+' の回転可能な3Dモデル"></canvas>';const canvas=holder.firstElementChild;canvas.dataset.partId=p.id;}
+ if('IntersectionObserver' in window){
+  partPreviewObserver=new IntersectionObserver(entries=>{for(const e of entries){const canvas=e.target;if(e.isIntersecting){const p=catalog.find(x=>x.id===canvas.dataset.partId);if(p)renderOnePartPreview(canvas,p);}else disposePartPreview(canvas);}},{root:list,rootMargin:'100px'});
+  list.querySelectorAll('.part-preview-canvas').forEach(c=>partPreviewObserver.observe(c));
+ }else list.querySelectorAll('.part-preview-canvas').forEach(c=>{const p=catalog.find(x=>x.id===c.dataset.partId);if(p)renderOnePartPreview(c,p);});
 }
 function drawPartsCatalogV2(){
  const query=($('#part-search')?.value||'').trim().toLowerCase(),sort=$('#part-sort')?.value||'name';
@@ -232,7 +277,21 @@ try{const saveKey=gameMode==='career'?'space-career-v1':'space-'+gameMode+'-v1';
 function material(c,metal=0.3){return new THREE.MeshStandardMaterial({color:c,metalness:metal,roughness:.38});}
 function partMesh(p){
  const g=new THREE.Group(),r=p.radius,h=p.height,metal=material(0x899398,.72),dark=material(0x3c474d,.82),white=material(0xd8d7c9,.55),glass=material(0x315e77,.35);
- if(p.type==='pod'){
+ if(p.type==='fuselage'||p.type==='cockpit'){
+  const len=p.height,rad=p.radius;const shell=new THREE.Mesh(new THREE.CylinderGeometry(rad*.92,rad,len,32),material(0xb8c0c1,.72));shell.rotation.x=Math.PI/2;g.add(shell);
+  const nose=new THREE.Mesh(new THREE.ConeGeometry(rad*.92,Math.max(.45,len*.28),32),material(0xd2d7d4,.58));nose.rotation.x=-Math.PI/2;nose.position.z=len*.62;g.add(nose);
+  for(const z of [-len*.28,len*.22]){const band=new THREE.Mesh(new THREE.TorusGeometry(rad*.94,.035,8,32),dark);band.rotation.y=Math.PI/2;band.position.z=z;g.add(band);}
+  if(p.type==='cockpit'){const canopy=new THREE.Mesh(new THREE.SphereGeometry(rad*.72,24,14,0,Math.PI*2,0,Math.PI/2),glass);canopy.scale.set(1,.55,1.35);canopy.position.z=len*.22;g.add(canopy);}
+ }else if(p.type==='wing'||p.type==='tail'||p.type==='control'||p.type==='fin'){
+  const span=p.radius, swept=p.id==='wing-swept'||p.id==='wing-delta-large';const shape=new THREE.Shape();shape.moveTo(-span*.16,-.25);shape.lineTo(span*.5,swept?-.1:.45);shape.lineTo(span*.43,.25);shape.lineTo(-span*.16,.25);shape.closePath();const wing=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:Math.max(.07,p.height),bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.035,bevelThickness:.025}),material(0xaeb8b8,.62));wing.rotation.x=-Math.PI/2;g.add(wing);
+  if(p.type==='tail'){const fin=new THREE.Mesh(new THREE.BoxGeometry(.12,p.height,p.radius*.75),material(0x9ca8aa,.65));fin.position.y=p.height*.5;g.add(fin);}
+ }else if(p.type==='jet'||p.type==='intake'){
+  const body=new THREE.Mesh(new THREE.CylinderGeometry(p.radius*.72,p.radius,p.height,32),metal);body.rotation.x=Math.PI/2;g.add(body);const lip=new THREE.Mesh(new THREE.TorusGeometry(p.radius*.72,.065,10,32),dark);lip.rotation.y=Math.PI/2;lip.position.z=p.height*.48;g.add(lip);const inner=new THREE.Mesh(new THREE.CylinderGeometry(p.radius*.48,p.radius*.48,.08,24),material(0x18242c,.8));inner.rotation.x=Math.PI/2;inner.position.z=p.height*.5;g.add(inner);
+ }else if(p.type==='gear'){
+  const strut=new THREE.Mesh(new THREE.CylinderGeometry(.045,.065,p.height,10),metal);strut.rotation.z=-.25;strut.position.y=p.height*.42;g.add(strut);const wheel=new THREE.Mesh(new THREE.CylinderGeometry(p.radius*.5,p.radius*.5,.16,20),dark);wheel.rotation.z=Math.PI/2;wheel.position.set(.16,.08,0);g.add(wheel);
+ }else if(p.type==='airbrake'){
+  const base=new THREE.Mesh(new THREE.BoxGeometry(p.radius*1.5,.12,.35),dark);g.add(base);const panel=new THREE.Mesh(new THREE.BoxGeometry(p.radius*1.4,p.height,.08),material(0xaeb8b8,.72));panel.position.y=p.height*.5;g.add(panel);
+ }else if(p.type==='pod'){
   const body=new THREE.Mesh(new THREE.CylinderGeometry(.62,.82,1.35,24),white);body.position.y=.7;g.add(body);
   const nose=new THREE.Mesh(new THREE.SphereGeometry(.63,24,16,0,Math.PI*2,0,Math.PI/2),material(0xb9c8c9,.4));nose.position.y=1.35;g.add(nose);
   const window=new THREE.Mesh(new THREE.CircleGeometry(.2,24),glass);window.position.set(0,.85,.625);g.add(window);
