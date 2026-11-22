@@ -29,3 +29,7 @@
 #stage-build-label{font-size:10px}
 #viewport canvas{background:#242c32}
 @media(max-width:700px){.parts{width:240px}.part-list{grid-template-columns:repeat(2,minmax(0,1fr))}.vab-tools{left:250px;right:5px;transform:none;overflow:auto}.vab-tools span{display:none}}
+
+.build-staging{display:none;position:fixed;z-index:5;right:0;top:0;bottom:0;width:210px;padding:8px;background:linear-gradient(90deg,#25323bdc,#303d47ed);border-left:2px solid #a9b3b955;overflow:auto;box-shadow:-6px 0 20px #0007}
+.build-staging.show{display:block}.build-staging-head{height:32px;padding:7px 8px;font-weight:700;letter-spacing:2px;color:#f1d28c;border-bottom:1px solid #ffffff38}
+#build-stage-list{display:flex;flex-direction:column;gap:5px;padding:7px 0}.build-stage{display:grid;grid-template-columns:22px 1fr;gap:4px}.build-stage span{max-height:36px;overflow:hidden}#stage-add-side{width:100%;background:#7c633c;border-color:#d5b77d}
