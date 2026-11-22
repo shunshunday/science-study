@@ -34,29 +34,32 @@ function makeCrewFigure(member,index){
  const faceGeo=new THREE.ExtrudeGeometry(faceShape,{depth:.48,bevelEnabled:true,bevelSegments:4,steps:1,bevelSize:.075,bevelThickness:.075,curveSegments:8});
  faceGeo.computeVertexNormals();
  const head=new THREE.Mesh(faceGeo,skin);head.position.set(0,3.05,-.27);root.add(head);head.castShadow=true;
- // 髪型・髪色は乗組員ごとに変える（頭部サイズは変えない）
+ // 髪は頭頂部に薄く乗せ、前髪や分け目だけを乗組員ごとに変える
  const hairStyles=[
   {color:0x3b281b,kind:0},{color:0x17191d,kind:1},{color:0x8a5526,kind:2},
   {color:0x4b3025,kind:3},{color:0xb9a15d,kind:4},{color:0x6d777b,kind:5},
   {color:0x202c45,kind:6},{color:0x9b4c32,kind:7}
  ];
  const hs=hairStyles[Math.abs(index)%hairStyles.length],hairMat=material(hs.color,.08);
- const hairCap=sphere(.62,hairMat,0,3.66,-.015,[1,.43,.82]);
- hairCap.position.y=3.66;
- if(hs.kind===0||hs.kind===2||hs.kind===4){sphere(.27,hairMat,-.43,3.48,.22,[.55,.65,.65]);sphere(.27,hairMat,.43,3.48,.22,[.55,.65,.65]);}
- if(hs.kind===1||hs.kind===3||hs.kind===6){for(let j=-1;j<=1;j++)sphere(.2,hairMat,j*.27,3.48,.39,[.8,.72,.5]);}
- if(hs.kind===5){for(let j=-1;j<=1;j++)sphere(.17,hairMat,j*.3,3.76,.08,[.8,1.2,.8]);}
- if(hs.kind===7){sphere(.24,hairMat,-.47,3.58,.16,[.55,.75,.7]);sphere(.2,hairMat,.4,3.48,.35,[.65,.6,.6]);}
+ sphere(.59,hairMat,0,3.72,-.005,[1,.16,.82]);
+ if(hs.kind===0||hs.kind===3){sphere(.34,hairMat,-.2,3.69,.34,[1.25,.12,.42]);}
+ if(hs.kind===1||hs.kind===6){sphere(.38,hairMat,.18,3.7,.34,[1.1,.11,.4]);}
+ if(hs.kind===2||hs.kind===4){for(let j=-1;j<=1;j++)sphere(.17,hairMat,j*.24,3.7,.34,[1,.12,.42]);}
+ if(hs.kind===5){sphere(.42,hairMat,0,3.74,-.12,[1.05,.14,.7]);}
+ if(hs.kind===7){sphere(.3,hairMat,.27,3.7,.3,[1.2,.12,.4]);}
  for(const x of [-face.eyeGap,face.eyeGap]){
-  sphere(.205,eyeWhite,x,3.12,.32,[.82,1.12,.55]);
-  sphere(.095,pupil,x+.025,3.1,.44,[.9,1.1,.55]);
-  sphere(.032,material(0xffffff,.02),x+.045,3.16,.48);
+  sphere(.24,eyeWhite,x,3.12,.32,[.82,1.12,.55]);
+  sphere(.112,pupil,x+.025,3.1,.44,[.9,1.1,.55]);
+  sphere(.034,material(0xffffff,.02),x+.045,3.16,.48);
   const brow=new THREE.Mesh(new THREE.BoxGeometry(.29,.055,.07),browMat);brow.position.set(x,3.43,.39);brow.rotation.z=x<0?.12:-.12;root.add(brow);
  }
+ // 顔の中央に縦向きの小さな円柱パーツ（鼻）
+ const nose=new THREE.Mesh(new THREE.CylinderGeometry(.065,.075,.25,12),skin);
+ nose.position.set(0,3.0,.49);root.add(nose);nose.castShadow=true;
  const smile=new THREE.Mesh(new THREE.TorusGeometry(.15,.023,6,16,Math.PI),mouthMat);smile.position.set(0,2.82,.42);smile.rotation.z=Math.PI;root.add(smile);
  if(face.freckles){for(const x of [-.43,.43])for(const y of [2.98,3.04])sphere(.022,mouthMat,x,y,.37);}
  root.scale.setScalar(.88);
- root.position.set(0,1.3,0);
+ root.position.set(0,1.5,0);
  return root;
 }
 function rebuildCrewStage(){while(crewStage.children.length)crewStage.remove(crewStage.children[0]);}
