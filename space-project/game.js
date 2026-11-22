@@ -23,7 +23,8 @@ function makeCrewFigure(member,index){
  for(const x of [-.31,.31]){sphere(.235,eyeWhite,x,3.08,.64,[.82,1.12,.55]);sphere(.105,pupil,x+.025,3.06,.79,[.9,1.1,.55]);sphere(.035,material(0xffffff,.02),x+.045,3.12,.83);}
  const smile=new THREE.Mesh(new THREE.TorusGeometry(.16,.025,6,16,Math.PI),material(0x637d2d,.05));smile.position.set(0,2.78,.68);smile.rotation.z=Math.PI;root.add(smile);
 
- root.position.set(0,0,0);
+ root.scale.setScalar(.88);
+ root.position.set(0,.24,0);
  return root;
 }
 function rebuildCrewStage(){while(crewStage.children.length)crewStage.remove(crewStage.children[0]);}
@@ -38,7 +39,7 @@ function renderCrewPortraits(){
  const key=new THREE.DirectionalLight(0xffffff,2.5);key.position.set(-3,6,7);portraitScene.add(key);
  const fill=new THREE.DirectionalLight(0xb9d8ff,1.0);fill.position.set(4,2,3);portraitScene.add(fill);
  const portraitCamera=new THREE.OrthographicCamera(-1.62,1.62,4.15,-.15,.1,30);
- portraitCamera.position.set(0,2,9);portraitCamera.lookAt(0,1.82,0);
+ portraitCamera.position.set(0,2,9);portraitCamera.lookAt(0,1.58,0);
  for(const canvas of canvases){
   const member=crewMembers[Number(canvas.dataset.crewIndex)];if(!member)continue;
   const figure=makeCrewFigure(member,0);portraitScene.add(figure);
