@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {createPartModel} from './parts-models.js';
-import {additionalParts} from './parts-inventory.js';
+import {additionalParts} from './parts-inventory.js?v=20261122-2-legacy-stock;
 import {BODY,G0,gravityAcceleration,atmosphericDensity,orbitalElements,rk4Step,deltaV,rocketMassKg} from './physics/orbital.js';
 import {aerodynamicAcceleration} from './physics/aerodynamics.js';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],toast=m=>{let t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2300)};
