@@ -333,10 +333,14 @@ function renderOnePartPreview(canvas,p){
   const fill=new THREE.DirectionalLight(0x9fc8e8,1.1);fill.position.set(-4,1,-3);scene.add(fill);
   const model=partMesh(p);scene.add(model);const box=new THREE.Box3().setFromObject(model),center=box.getCenter(new THREE.Vector3()),sphere=box.getBoundingSphere(new THREE.Sphere());model.position.sub(center);
   const camera=new THREE.PerspectiveCamera(34,2,.01,1000),dist=Math.max(.7,sphere.radius*3.4/3);camera.position.set(dist*.9,dist*.62,dist*1.3);camera.lookAt(0,0,0);camera.far=dist*12;camera.updateProjectionMatrix();
-  const entry={scene,camera,model,drag:false,lastX:0,lastY:0};partPreviewRenderers.set(canvas,entry);paintPartPreview(entry,canvas);
-  canvas.addEventListener('click',e=>e.stopPropagation());canvas.addEventListener('pointerdown',e=>{e.stopPropagation();entry.drag=true;entry.lastX=e.clientX;entry.lastY=e.clientY;canvas.setPointerCapture(e.pointerId);});
-  canvas.addEventListener('pointermove',e=>{if(!entry.drag)return;model.rotation.y+=(e.clientX-entry.lastX)*.012;model.rotation.x+=(e.clientY-entry.lastY)*.01;entry.lastX=e.clientX;entry.lastY=e.clientY;paintPartPreview(entry,canvas);});
-  const stop=()=>{entry.drag=false;};canvas.addEventListener('pointerup',stop);canvas.addEventListener('pointercancel',stop);
+  const entry={scene,camera,model,hovered:false,raf:0,lastFrame:0};partPreviewRenderers.set(canvas,entry);paintPartPreview(entry,canvas);
+  canvas.draggable=false;
+  canvas.addEventListener('dragstart',e=>e.preventDefault());
+  canvas.addEventListener('click',e=>e.stopPropagation());
+  const animate=now=>{if(!entry.hovered||!canvas.isConnected){entry.raf=0;return;}if(!entry.lastFrame)entry.lastFrame=now;const dt=Math.min(.05,(now-entry.lastFrame)/1000);entry.lastFrame=now;model.rotation.y+=dt*.55;paintPartPreview(entry,canvas);entry.raf=requestAnimationFrame(animate);};
+  canvas.addEventListener('pointerenter',()=>{entry.hovered=true;entry.lastFrame=0;if(!entry.raf)entry.raf=requestAnimationFrame(animate);});
+  canvas.addEventListener('pointerleave',()=>{entry.hovered=false;entry.lastFrame=0;if(entry.raf){cancelAnimationFrame(entry.raf);entry.raf=0;}paintPartPreview(entry,canvas);});
+  canvas.addEventListener('pointerdown',e=>e.stopPropagation());
  }catch(err){canvas.replaceWith(Object.assign(document.createElement('span'),{className:'part-preview-error',textContent:'3D'}));}
 }
 function renderPartPreviews(items){
