@@ -32,8 +32,12 @@ function makeCrewFigure(member,index){
  faceShape.moveTo(-.49,-.69);faceShape.lineTo(.49,-.69);faceShape.quadraticCurveTo(.62,-.69,.62,-.56);
  faceShape.lineTo(.62,.56);faceShape.quadraticCurveTo(.62,.69,.49,.69);faceShape.lineTo(-.49,.69);
  faceShape.quadraticCurveTo(-.62,.69,-.62,.56);faceShape.lineTo(-.62,-.56);faceShape.quadraticCurveTo(-.62,-.69,-.49,-.69);
- const faceGeo=new THREE.ExtrudeGeometry(faceShape,{depth:.48,bevelEnabled:true,bevelSegments:4,steps:1,bevelSize:.075,bevelThickness:.075,curveSegments:8});
+ // 円柱と縦長四角柱の中間になるよう、丸みのある角丸四角柱を顔の輪郭にする
+ const faceGeo=new THREE.ExtrudeGeometry(faceShape,{depth:.48,bevelEnabled:true,bevelSegments:5,steps:1,bevelSize:.11,bevelThickness:.09,curveSegments:12});
  faceGeo.computeVertexNormals();
+ // 顔の奥に縦向き円柱を重ね、側面に円柱らしい丸みを加える
+ const faceCore=new THREE.Mesh(new THREE.CylinderGeometry(.615,.615,.48,32,1,false),skin);
+ faceCore.rotation.x=Math.PI/2;faceCore.position.set(0,3.05,-.025);root.add(faceCore);faceCore.castShadow=true;
  const head=new THREE.Mesh(faceGeo,skin);head.position.set(0,3.05,-.27);root.add(head);head.castShadow=true;
  // 髪は頭頂部に薄く乗せ、前髪や分け目だけを乗組員ごとに変える
  const hairStyles=[
@@ -49,9 +53,9 @@ function makeCrewFigure(member,index){
  if(hs.kind===5){sphere(.42,hairMat,0,3.74,-.12,[1.05,.14,.7]);}
  if(hs.kind===7){sphere(.3,hairMat,.27,3.7,.3,[1.2,.12,.4]);}
  for(const x of [-face.eyeGap,face.eyeGap]){
-  sphere(.265,eyeWhite,x,3.12,.32,[.82,1.12,.55]);
-  sphere(.124,pupil,x+.025,3.1,.45,[.9,1.1,.55]);
-  sphere(.034,material(0xffffff,.02),x+.045,3.16,.48);
+  sphere(.295,eyeWhite,x,3.12,.32,[.84,1.14,.58]);
+  sphere(.14,pupil,x+.025,3.1,.455,[.92,1.1,.58]);
+  sphere(.039,material(0xffffff,.02),x+.045,3.16,.49);
   const brow=new THREE.Mesh(new THREE.BoxGeometry(.29,.055,.07),browMat);brow.position.set(x,3.43,.39);brow.rotation.z=x<0?.12:-.12;root.add(brow);
  }
  // 顔の中央に縦向きの小さな円柱パーツ（鼻）
