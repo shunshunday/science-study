@@ -6,6 +6,20 @@ const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-per
 scene.add(new THREE.HemisphereLight(0xd8e8ff,0x665344,1.8));const sun=new THREE.DirectionalLight(0xffedcf,3.1);sun.position.set(-35,70,25);sun.castShadow=true;scene.add(sun);
 const ground=new THREE.Mesh(new THREE.PlaneGeometry(900,900),new THREE.MeshStandardMaterial({color:0x7e8d73,roughness:1}));ground.rotation.x=-Math.PI/2;ground.position.y=-1;ground.receiveShadow=true;scene.add(ground);
 const planet=new THREE.Mesh(new THREE.SphereGeometry(600,64,48),new THREE.MeshStandardMaterial({color:0x477f9a,roughness:.9}));planet.position.set(0,-600,0);planet.visible=true;scene.add(planet);
+
+// 宇宙センターの3D施設群（独自モデル）
+const campus=new THREE.Group();scene.add(campus);
+function campusBuilding(x,z,w,h,d,color,roof=0x68747a){const g=new THREE.Group();const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshStandardMaterial({color,roughness:.82}));b.position.y=h/2;b.castShadow=true;b.receiveShadow=true;g.add(b);const r=new THREE.Mesh(new THREE.BoxGeometry(w*1.04,.45,d*1.04),new THREE.MeshStandardMaterial({color:roof,roughness:.72}));r.position.y=h+.2;g.add(r);for(let i=0;i<Math.max(2,Math.floor(w/3));i++){const win=new THREE.Mesh(new THREE.BoxGeometry(1.1,1.3,.06),new THREE.MeshStandardMaterial({color:0x9dc4ca,metalness:.25,roughness:.2,emissive:0x182c35}));win.position.set(-w/2+1.5+i*(w-3)/Math.max(1,Math.floor(w/3)-1),h*.55,d/2+.04);g.add(win);}g.position.set(x,0,z);campus.add(g);return g;}
+campusBuilding(-28,8,22,8,16,0xb8b8aa,0x555e64);
+campusBuilding(26,14,28,11,20,0x9faeb1,0x4c5962);
+campusBuilding(0,-35,16,6,10,0xc3c4b8,0x59656a);
+campusBuilding(-54,-16,10,24,10,0xb8c0bc,0x4c5962);
+const towerA=new THREE.Mesh(new THREE.CylinderGeometry(2.5,3.5,24,12),new THREE.MeshStandardMaterial({color:0xb9bcb7,roughness:.8}));towerA.position.set(-54,12,-16);campus.add(towerA);
+const towerTop=new THREE.Mesh(new THREE.CylinderGeometry(4,3,4,12),new THREE.MeshStandardMaterial({color:0x657b84,metalness:.2}));towerTop.position.set(-54,26,-16);campus.add(towerTop);
+const pad=new THREE.Mesh(new THREE.CylinderGeometry(15,17,.65,48),new THREE.MeshStandardMaterial({color:0x777d7d,roughness:.95}));pad.position.set(0,.1,48);pad.receiveShadow=true;campus.add(pad);
+const runway=new THREE.Mesh(new THREE.BoxGeometry(16,.16,180),new THREE.MeshStandardMaterial({color:0x414b50,roughness:.95}));runway.position.set(72,.03,5);campus.add(runway);
+for(let i=0;i<18;i++){const x=-82+(i%9)*20,z=-65+Math.floor(i/9)*145;const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.25,.35,2.5,7),new THREE.MeshStandardMaterial({color:0x69503b}));trunk.position.set(x,1.25,z);campus.add(trunk);const crown=new THREE.Mesh(new THREE.ConeGeometry(1.7,4.5,8),new THREE.MeshStandardMaterial({color:0x355b48}));crown.position.set(x,4.3,z);campus.add(crown);}
+
 const rocket=new THREE.Group();scene.add(rocket);const parts=[];let mode='center',funds=25000,science=0,stage=0,throttle=0,flight=false,paused=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
 const catalog=[
 {id:'pod',name:'Mk1 コマンドポッド',type:'pod',mass:0.84,cost:600,crew:1,icon:'◉',height:2,radius:.9},
