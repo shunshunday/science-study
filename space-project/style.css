@@ -66,3 +66,10 @@
 .crew-recruit>div{display:flex;gap:6px;flex-wrap:wrap}
 .crew-recruit button{background:#344b58;padding:4px 8px;font-size:10px}
 @media(max-width:700px){.career-panel{top:48px;bottom:10px;width:calc(100vw - 16px)}.career-content{padding:7px}.crew-grid{grid-template-columns:1fr}.crew-card{padding:5px 7px}.career-head{height:32px}}
+
+/* 2D crew roster with individually rendered full-body 3D portraits */
+.crew-card{display:grid;grid-template-columns:72px minmax(0,1fr);align-items:center;gap:9px;min-height:112px;padding:7px 9px}
+.crew-avatar{display:block;width:72px;height:96px;object-fit:contain;border:1px solid #d5e0e544;border-radius:3px;background:#52616a;box-shadow:0 2px 6px #0005}
+.crew-info{min-width:0}
+.crew-info h3{font-size:12px}
+@media(max-width:700px){.crew-card{grid-template-columns:64px minmax(0,1fr);min-height:100px;gap:8px}.crew-avatar{width:64px;height:86px}}
