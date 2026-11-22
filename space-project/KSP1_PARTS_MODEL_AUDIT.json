@@ -5,9 +5,10 @@
   "sourceCatalog": {
     "path": "space-project/game.js + space-project/parts-inventory.js",
     "entryCount": 128,
-    "additionalInventoryCandidates": 266,
+    "additionalInventoryCandidates": 277,
     "stockCandidates": 169,
-    "dlcCandidates": 97
+    "dlcCandidates": 97,
+    "legacyStockCandidates": 11
   },
   "interpretation": "This is an audit register of the project's existing catalog, not a claim that these are already verified KSP parts. Placeholder dimensions and stats are retained only as current project values until checked against the KSP part definition.",
   "licensingRule": "Do not publish extracted KSP stock/DLC meshes or textures without explicit permission. A converter, mod's source-code license, or part list is not an asset license.",
@@ -3537,16 +3538,17 @@
     "originalGeometryModelLibrary": "implemented and integrated; original approximations, not official KSP meshes",
     "additionalStockInventoryCandidates": 169,
     "additionalDlcInventoryCandidates": 97,
-    "totalAdditionalInventoryCandidates": 266,
+    "totalAdditionalInventoryCandidates": 277,
     "exactCfgVerified": 0,
     "genericPlaceholdersToReplace": 4,
-    "note": "The app now imports 266 additional stock/DLC inventory candidates and renders them with independently authored geometry. The 124/128 matches in the original audit remain candidate identities, not exact 1.12.5 .cfg verification. The 266 added entries use explicitly provisional mass, dimensions, costs and engine/fuel estimates; they are not verified KSP performance data. Official KSP model assets remain unlicensed and are not included."
+    "note": "The app imports 277 additional stock/DLC/hidden-legacy inventory candidates and renders them with independently authored geometry. The 124/128 matches in the original audit remain candidate identities, not exact 1.12.5 .cfg verification. Added candidate entries use explicitly provisional values where no verified .cfg data was available. Exact config export workflow is provided in export-ksp-part-configs.ps1. Official KSP model assets remain unlicensed and are not included.",
+    "additionalLegacyStockCandidates": 11
   },
   "modelImplementation": {
     "library": "space-project/parts-models.js",
     "status": "integrated original Three.js geometry library; VAB thumbnails and craft meshes use the same model factory",
     "sourcePolicy": "All models are independently authored primitive/mesh assemblies. No extracted KSP stock/DLC meshes, textures, logos, or game files are redistributed.",
-    "coverage": "Distinct geometry branches for command pods, probe cores, tanks/fuselages/resources, engines/jet engines/solid boosters, wings/tail/control surfaces, solar arrays, parachutes, batteries, communications, science instruments, decouplers/structural parts, docking ports, payloads, thermal parts, intakes, landing gear, utility parts, robotics and rotor blades. Several families also have per-ID/name variants.",
+    "coverage": "Distinct geometry branches for command pods, probe cores, tanks/fuselages/resources, engines/jet engines/solid boosters, wings/tail/control surfaces, solar arrays, parachutes, batteries, communications, science instruments, decouplers/structural parts, docking ports, payloads, thermal parts, intakes, landing gear, utility parts, robotics and rotor blades. Several families also have per-ID/name variants. Legacy stock entries include the hidden 1.12.5 parts identified in the community reference list.",
     "limitations": "These are original KSP-inspired approximations, not exact reproductions of official KSP models. Per-part mesh dimensions, attachment nodes, collision shapes and articulation still require refinement."
   }
 }
