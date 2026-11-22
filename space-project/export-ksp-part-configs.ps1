@@ -5,6 +5,7 @@ $ErrorActionPreference = "Stop"
 if ([string]::IsNullOrWhiteSpace($KspPath)) {
  $KspPath = Read-Host "KSP1のインストールフォルダを入力してください"
 }
+$KspPath = (Resolve-Path -LiteralPath $KspPath).Path.TrimEnd([char[]]@('\','/'))
 $gameData = Join-Path $KspPath "GameData"
 if (-not (Test-Path $gameData)) { throw "GameData フォルダが見つかりません: $gameData" }
 
