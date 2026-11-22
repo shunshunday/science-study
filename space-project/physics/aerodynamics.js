@@ -23,7 +23,7 @@ export function aerodynamicAcceleration(position, velocity, forward, parts, mass
   const frontalArea=Math.PI*maxRadius*maxRadius;
   const bodyLength=parts.reduce((sum,p)=>sum+(p.data.height||0),0);
   const sideArea=bodyLength*2*maxRadius;
-  const finArea=parts.filter(p=>p.data.type==='fin').length*.42;
+  const finArea=parts.reduce((area,p)=>{const type=p.data.type;if(type==='fin')return area+.42;if(type==='wing')return area+Math.max(.25,(p.data.radius||1)*.85);if(type==='tail'||type==='control')return area+Math.max(.12,(p.data.radius||.5)*.32);return area;},0);
   const deployedChute=parts.some(p=>p.data.type==='chute'&&p.deployed);
   const cd=0.22+0.65*sinAoA*sinAoA;
   const projectedArea=frontalArea*axial+sideArea*sinAoA*.7+finArea*sinAoA*1.4;
@@ -33,7 +33,7 @@ export function aerodynamicAcceleration(position, velocity, forward, parts, mass
   const dragMagnitude=q*(cd*projectedArea+chuteArea)/massKg/1000;
   let result=scale(flow,-dragMagnitude);
 
-  // フィンがある場合だけ迎角に応じた揚力を発生。機首方向の横成分を揚力方向に使う。
+  // 翼・尾翼・フィンがある場合、迎角に応じた簡易揚力を発生。
   if(finArea>0&&sinAoA>.002){
     const along=dot(axis,flow);
     const liftAxis=sub(axis,scale(flow,along));
