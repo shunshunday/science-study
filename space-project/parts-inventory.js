@@ -1,5 +1,5 @@
-// Inventory additions sourced from public KSP part indexes. Exact cfg values are not verified.
-// Gameplay mass, dimensions, price and propulsion values are explicitly provisional estimates.
+ // Inventory additions sourced from public KSP part indexes. Exact cfg values are not verified.
+// Gameplay mass, dimensions, price and propulsion values are explicitly provisional.
 export const additionalParts=[
   {
     "id": "decoupler-small",
@@ -4333,9 +4333,7 @@ export const additionalParts=[
     "partFamily": "cargo",
     "sourceUrl": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
     "sourceLine": 230
-  }
-,
-
+  },
   {
     "id": "legacy-hg5",
     "name": "HG-5 アンテナ",
@@ -4370,7 +4368,9 @@ export const additionalParts=[
     "sourceUrl": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
     "sourceLine": null,
     "legacyInternalId": "liquidEngine",
-    "legacy": true
+    "legacy": true,
+    "thrust": 240,
+    "isp": 310
   },
   {
     "id": "legacy-swivel",
@@ -4388,7 +4388,9 @@ export const additionalParts=[
     "sourceUrl": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
     "sourceLine": null,
     "legacyInternalId": "liquidEngine2",
-    "legacy": true
+    "legacy": true,
+    "thrust": 215,
+    "isp": 320
   },
   {
     "id": "legacy-mk2-lander",
@@ -4406,7 +4408,8 @@ export const additionalParts=[
     "sourceUrl": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
     "sourceLine": null,
     "legacyInternalId": "mk2LanderCabin",
-    "legacy": true
+    "legacy": true,
+    "crew": 2
   },
   {
     "id": "legacy-hecs",
@@ -4478,7 +4481,9 @@ export const additionalParts=[
     "sourceUrl": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
     "sourceLine": null,
     "legacyInternalId": "Size2LFB",
-    "legacy": true
+    "legacy": true,
+    "thrust": 2000,
+    "isp": 300
   },
   {
     "id": "legacy-twitch",
@@ -4496,7 +4501,9 @@ export const additionalParts=[
     "sourceUrl": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
     "sourceLine": null,
     "legacyInternalId": "smallRadialEngine",
-    "legacy": true
+    "legacy": true,
+    "thrust": 16,
+    "isp": 290
   },
   {
     "id": "legacy-light1",
@@ -4534,5 +4541,4 @@ export const additionalParts=[
     "legacyInternalId": "spotlight2",
     "legacy": true
   }
-
 ];
