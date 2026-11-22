@@ -28,8 +28,8 @@
         "radius": 0.9
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "mk1pod",
+      "verifiedKspPartName": "Mk1 コマンドポッド",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -37,7 +37,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "probe",
@@ -385,8 +389,8 @@
         "radius": 0.625
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "Mark2Cockpit",
+      "verifiedKspPartName": "Mk1 インラインコックピット",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -394,7 +398,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "pod-mk2",
@@ -408,8 +416,8 @@
         "radius": 1.25
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "mk2Cockpit_Standard",
+      "verifiedKspPartName": "Mk2 コックピット",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -417,7 +425,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "pod-mk3",
@@ -431,8 +443,8 @@
         "radius": 1.875
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "mk3Cockpit_Shuttle",
+      "verifiedKspPartName": "Mk3 コックピット",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -440,7 +452,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "pod-mk13",
@@ -454,8 +470,8 @@
         "radius": 1.25
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "mk1-3pod",
+      "verifiedKspPartName": "Mk1-3 コマンドポッド",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -463,7 +479,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "pod-lander",
@@ -477,8 +497,8 @@
         "radius": 0.625
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "landerCabinSmall",
+      "verifiedKspPartName": "Mk1 ランダー缶",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -486,7 +506,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "pod-cupola",
@@ -500,8 +524,8 @@
         "radius": 1.25
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "cupola",
+      "verifiedKspPartName": "PPD-12 キューポラ",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -509,7 +533,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "seat",
@@ -523,8 +551,8 @@
         "radius": 0.3
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "seatExternalCmd",
+      "verifiedKspPartName": "EAS-1 コマンドシート",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -532,7 +560,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "probe-qbe",
@@ -545,8 +577,8 @@
         "radius": 0.5
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "probeCoreCube",
+      "verifiedKspPartName": "Probodobodyne QBE",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -554,7 +586,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "probe-okto",
@@ -567,8 +603,8 @@
         "radius": 0.5
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "probeCoreOcto",
+      "verifiedKspPartName": "Probodobodyne OKTO",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -576,7 +612,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "probe-okto2",
@@ -589,8 +629,8 @@
         "radius": 0.45
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "probeCoreOcto2",
+      "verifiedKspPartName": "Probodobodyne OKTO2",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -598,7 +638,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "probe-hecs",
@@ -611,8 +655,8 @@
         "radius": 0.55
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "probeCoreHex",
+      "verifiedKspPartName": "Probodobodyne HECS",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -620,7 +664,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "probe-hecs2",
@@ -633,8 +681,8 @@
         "radius": 0.625
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "HECS2_ProbeCore",
+      "verifiedKspPartName": "Probodobodyne HECS2",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -642,7 +690,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "probe-rovemate",
@@ -655,8 +707,8 @@
         "radius": 0.7
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "roverBody",
+      "verifiedKspPartName": "Probodobodyne RoveMate",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -664,7 +716,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "probe-stayputnik",
@@ -677,8 +733,8 @@
         "radius": 0.5
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "probeCoreSphere_v2",
+      "verifiedKspPartName": "Probodobodyne Stayputnik",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -686,7 +742,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "probe-rcl01",
@@ -699,8 +759,8 @@
         "radius": 0.625
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "probeStackLarge",
+      "verifiedKspPartName": "RC-L01 Remote Guidance Unit",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -708,7 +768,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "probe-rc001s",
@@ -721,8 +785,8 @@
         "radius": 0.5
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "probeStackSmall",
+      "verifiedKspPartName": "RC-001S Remote Guidance Unit",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -730,7 +794,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "Japanese KSP parts index: https://wikiwiki.jp/ksp/パーツ",
+        "Community stock part reference (compiled from KSP .cfg parsing and stockmasses.json): https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-oscarb",
@@ -2971,5 +3039,12 @@
       "glbConversionPermission": "not verified",
       "status": "needs individual KSP match and asset/license review"
     }
-  ]
+  ],
+  "auditProgress": {
+    "matchedPartIdentities": 17,
+    "totalExistingProjectEntries": 128,
+    "approved3DModels": 0,
+    "nextBatch": "fuel tanks and resource containers",
+    "note": "Identity matching is separate from model acquisition. A matched internal ID does not authorize publishing the original KSP mesh or texture."
+  }
 }
