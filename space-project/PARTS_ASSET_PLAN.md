@@ -2,6 +2,13 @@
 
 Updated: 2026-11-22
 
+## Per-part audit started
+- Created `KSP1_PARTS_MODEL_AUDIT.json` with one record for each of the 128 current project catalog entries. It preserves the existing project ID/name/type and current placeholder parameters, and gives each record explicit fields for the verified KSP 1.12 internal ID, DLC provenance, model URL, creator, model license, redistribution rights and GLB conversion rights.
+- At this stage all 128 entries are deliberately marked `needs individual KSP match and asset/license review`; no unverified asset has been imported.
+- The audit register is a tracking baseline, not a finished KSP stock inventory. The Japanese KSP parts index gives names/specifications and separates DLC lists, but does not by itself prove exact internal IDs or grant model rights: https://wikiwiki.jp/ksp/パーツ
+- `kspcommunity/3D-Model-Maker` is a converter whose repository code is MIT-licensed. That MIT license applies to the converter code, not automatically to the extracted KSP meshes/textures or generated model files: https://github.com/kspcommunity/3D-Model-Maker
+- A concrete mod-asset example: Station Parts Expansion Redux explicitly reserves rights to its `.dds`, `.png` and `.mu` art assets, despite licensing other files separately: https://github.com/post-kerbin-mining-corporation/StationPartsExpansionRedux
+
 ## Goal
 Replace the current placeholder/custom part catalog in `game.js` with a complete Kerbal Space Program 1 parts catalog (base game plus Making History and Breaking Ground), while using only 3D assets whose redistribution and web-hosting permissions are explicit.
 
@@ -44,4 +51,4 @@ A model can be added only after recording:
 - Station Parts Expansion Redux asset-license notice: https://github.com/post-kerbin-mining-corporation/StationPartsExpansionRedux
 - Community discussion on reuse of stock assets: https://forum.kerbalspaceprogram.com/topic/173105-reusing-squads-resources-for-new-mods-are-allowed/
 
-No stock-game or third-party mod art assets have been copied into this project by this audit.
+No stock-game or third-party mod art assets have been copied into this project by this audit. The new per-part register is at `space-project/KSP1_PARTS_MODEL_AUDIT.json`.
