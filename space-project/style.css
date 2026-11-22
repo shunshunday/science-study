@@ -62,8 +62,8 @@
 .crew-meter.brave i{background:linear-gradient(90deg,#a9aeb0,#e4e8e8)}
 .crew-info button{display:none}
 .crew-card{position:relative}
-.crew-info{padding-right:22px}
-.crew-info .crew-retire{display:grid;place-items:center;position:absolute;top:5px;right:5px;width:21px;height:21px;margin:0;padding:0;border:1px solid #ff7777;background:#b92f38;color:#fff;border-radius:4px;font-size:19px;font-weight:700;line-height:1;cursor:pointer}
+.crew-info{position:relative;padding-right:28px}
+.crew-info .crew-retire{display:grid!important;place-items:center;position:absolute;top:0;right:0;width:21px;height:21px;margin:0;padding:0;border:1px solid #ff7777;background:#b92f38;color:#fff;border-radius:4px;font-size:19px;font-weight:700;line-height:1;cursor:pointer}
 .crew-info .crew-retire:hover{background:#e0444d;border-color:#ffaaaa}
 .crew-recruit{margin-top:8px;padding:7px 9px;background:#1b2d37cc;border:1px solid #ffffff20;border-radius:4px}
 .crew-recruit>b{display:block;color:#e5c988;margin-bottom:5px;font-size:10px}
