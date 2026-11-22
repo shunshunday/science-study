@@ -28,9 +28,10 @@ function makeCrewFigure(member,index){
  if(engineer){const patch=new THREE.Mesh(new THREE.CircleGeometry(.16,20),material(0xb83232,.1));patch.position.set(.28,1.95,.51);root.add(patch);}
  // 全員同じ大きさの縦長・丸角四角フェイス
  const faceShape=new THREE.Shape();
- faceShape.moveTo(-.43,-.69);faceShape.lineTo(.43,-.69);faceShape.quadraticCurveTo(.59,-.69,.59,-.52);
- faceShape.lineTo(.59,.52);faceShape.quadraticCurveTo(.59,.69,.43,.69);faceShape.lineTo(-.43,.69);
- faceShape.quadraticCurveTo(-.59,.69,-.59,.52);faceShape.lineTo(-.59,-.52);faceShape.quadraticCurveTo(-.59,-.69,-.43,-.69);
+ // 縦長の四角形をベースに、角だけを少し丸めた顔
+ faceShape.moveTo(-.49,-.69);faceShape.lineTo(.49,-.69);faceShape.quadraticCurveTo(.62,-.69,.62,-.56);
+ faceShape.lineTo(.62,.56);faceShape.quadraticCurveTo(.62,.69,.49,.69);faceShape.lineTo(-.49,.69);
+ faceShape.quadraticCurveTo(-.62,.69,-.62,.56);faceShape.lineTo(-.62,-.56);faceShape.quadraticCurveTo(-.62,-.69,-.49,-.69);
  const faceGeo=new THREE.ExtrudeGeometry(faceShape,{depth:.48,bevelEnabled:true,bevelSegments:4,steps:1,bevelSize:.075,bevelThickness:.075,curveSegments:8});
  faceGeo.computeVertexNormals();
  const head=new THREE.Mesh(faceGeo,skin);head.position.set(0,3.05,-.27);root.add(head);head.castShadow=true;
@@ -48,14 +49,14 @@ function makeCrewFigure(member,index){
  if(hs.kind===5){sphere(.42,hairMat,0,3.74,-.12,[1.05,.14,.7]);}
  if(hs.kind===7){sphere(.3,hairMat,.27,3.7,.3,[1.2,.12,.4]);}
  for(const x of [-face.eyeGap,face.eyeGap]){
-  sphere(.24,eyeWhite,x,3.12,.32,[.82,1.12,.55]);
-  sphere(.112,pupil,x+.025,3.1,.44,[.9,1.1,.55]);
+  sphere(.265,eyeWhite,x,3.12,.32,[.82,1.12,.55]);
+  sphere(.124,pupil,x+.025,3.1,.45,[.9,1.1,.55]);
   sphere(.034,material(0xffffff,.02),x+.045,3.16,.48);
   const brow=new THREE.Mesh(new THREE.BoxGeometry(.29,.055,.07),browMat);brow.position.set(x,3.43,.39);brow.rotation.z=x<0?.12:-.12;root.add(brow);
  }
  // 顔の中央に縦向きの小さな円柱パーツ（鼻）
- const nose=new THREE.Mesh(new THREE.CylinderGeometry(.065,.075,.25,12),skin);
- nose.position.set(0,3.0,.49);root.add(nose);nose.castShadow=true;
+ const nose=new THREE.Mesh(new THREE.CylinderGeometry(.082,.092,.32,12),skin);
+ nose.position.set(0,3.0,.52);root.add(nose);nose.castShadow=true;
  const smile=new THREE.Mesh(new THREE.TorusGeometry(.15,.023,6,16,Math.PI),mouthMat);smile.position.set(0,2.82,.42);smile.rotation.z=Math.PI;root.add(smile);
  if(face.freckles){for(const x of [-.43,.43])for(const y of [2.98,3.04])sphere(.022,mouthMat,x,y,.37);}
  root.scale.setScalar(.88);
