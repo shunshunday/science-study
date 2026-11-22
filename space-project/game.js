@@ -163,8 +163,8 @@ const catalog=[
 {id:'tank-s',name:'FL-T100 燃料タンク',type:'tank',tech:'basic',mass:.062,fuel:360,cost:275,icon:'▤',height:1.4,radius:.62},
 {id:'tank-m',name:'FL-T400 燃料タンク',type:'tank',tech:'basic',mass:.25,fuel:1440,cost:700,icon:'▤',height:2.8,radius:.72},
 {id:'tank-l',name:'X200-16 燃料タンク',type:'tank',tech:'heavy',mass:.45,fuel:2880,cost:1100,icon:'▤',height:3.5,radius:.9},
-{id:'engine-s',name:'LV-909 液体エンジン',type:'engine',tech:'basic',mass:.5,cost:390,thrust:60,isp:320,icon:'◈',height:1.3,radius:.65},
-{id:'engine-m',name:'LV-T45 エンジン',type:'engine',tech:'basic',mass:1.5,cost:1200,thrust:200,isp:320,icon:'◈',height:2,radius:.9},
+{id:'engine-s',name:'LV-909 液体エンジン',type:'engine',tech:'basic',mass:.5,cost:390,thrust:70,isp:320,icon:'◈',height:1.3,radius:.65},
+{id:'engine-m',name:'LV-T45 エンジン',type:'engine',tech:'basic',mass:1.5,cost:1200,thrust:167,isp:320,icon:'◈',height:2,radius:.9},
 {id:'engine-l',name:'Mainsail 大型エンジン',type:'engine',tech:'heavy',mass:6,cost:8500,thrust:1500,isp:310,icon:'◈',height:3,radius:1.5},
 {id:'decoupler',name:'TD-12 デカプラー',type:'decoupler',tech:'basic',mass:.05,cost:400,icon:'⊖',height:.35,radius:.78},
 {id:'booster',name:'固体燃料ブースター',type:'booster',tech:'basic',mass:1.5,cost:900,fuel:800,thrust:180,isp:220,icon:'▥',height:3.5,radius:.55},
@@ -374,6 +374,7 @@ function partHoverInfo(p){
  const maker=brands.find(b=>p.name.startsWith(b))||'汎用パーツ';
  const lines=[p.name,'メーカー／シリーズ：'+maker,'重量：'+(p.mass??'—')+' t'];
  if(p.catalogSource)lines.push('収録：'+p.catalogSource+'（追加候補）');
+ if(p.referenceSource)lines.push('参考値：'+p.referenceSource);
  if(p.dataQuality==='candidate-estimate')lines.push('注意：重量・寸法・価格・性能は暫定推定値。正確な1.12.5設定値は未照合');
  if(p.thrust!=null)lines.push('最大推力（暫定値）：'+p.thrust+' kN');
  if(p.isp!=null)lines.push('比推力（Isp）：'+p.isp+' s');
