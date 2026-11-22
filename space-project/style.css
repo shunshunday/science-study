@@ -214,3 +214,12 @@
 /* Remove dark bands above and below 3D thumbnails: match all preview layers */
 .part,.part-icon,.part-preview-canvas{background:#778894!important}
 .part:hover,.part:focus,.part:active,.part:disabled{background:#778894!important}
+
+
+/* Slimmer left parts sidebar, flush to the left edge */
+.parts{left:0!important;width:390px!important;border-radius:0 4px 4px 0!important}
+.part::after{left:400px!important}
+@media(max-width:700px){
+ .parts{left:0!important;width:300px!important}
+ .part::after{left:308px!important;width:min(220px,calc(100vw - 316px))!important}
+}
