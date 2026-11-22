@@ -503,9 +503,9 @@ $('#career-content').addEventListener('click',e=>{const retire=e.target.closest(
 function panelMessage(title,msg){toast(title+' — '+msg.replaceAll('\n',' / '));}
 $('#home').onclick=()=>{flight=false;setMode('center');};
 renderCategories();drawPartsCatalogV2();
-$('#part-categories').addEventListener('click',e=>{const b=e.target.closest('[data-part-category]');if(b){activePartCategory=b.dataset.partCategory;renderCategories();drawPartsCatalogV2();}});
+$('#part-categories').addEventListener('click',e=>{const b=e.target.closest('[data-part-category]');if(b){const chosen=b.dataset.partCategory;activePartCategory=activePartCategory===chosen?'すべて':chosen;renderCategories();drawPartsCatalogV2();}});
 $('#part-search').addEventListener('input',drawPartsCatalogV2);$('#part-sort').addEventListener('change',drawPartsCatalogV2);
-$('#part-list').addEventListener('click',e=>{const b=e.target.closest('[data-part]');if(b){selectedPartId=b.dataset.part;$('#hint').textContent='設置モード：3D機体上の取り付けたい場所をクリック。Escでキャンセル。';toast('設置する場所を3D機体上でクリック');}});$('#close-parts').onclick=()=>$('#parts').classList.remove('open');
+$('#part-list').addEventListener('click',e=>{const b=e.target.closest('[data-part]');if(b){selectedPartId=b.dataset.part;$('#hint').textContent='設置モード：3D機体上の取り付けたい場所をクリック。Escでキャンセル。';toast('設置する場所を3D機体上でクリック');}});
 $('#clear-craft').onclick=()=>{if(flight)return;parts.length=0;assemblyStage=0;layout();toast('機体を空にしました');};
 $('#new-stage').onclick=()=>{if(flight)return;assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;toast('新しい組立ステージ '+assemblyStage);};
 $('#stage-add-side').onclick=()=>{if(flight)return;assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;renderStages();toast('新しい組立ステージ '+assemblyStage);};
