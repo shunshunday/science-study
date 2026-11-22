@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {createPartModel} from './parts-models.js';
 import {BODY,G0,gravityAcceleration,atmosphericDensity,orbitalElements,rk4Step,deltaV,rocketMassKg} from './physics/orbital.js';
 import {aerodynamicAcceleration} from './physics/aerodynamics.js';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],toast=m=>{let t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2300)};
@@ -421,77 +422,7 @@ function renderCrew(){
  saveCareer();
 }function renderContracts(){$('#career-title').textContent='ミッション管理';$('#career-content').innerHTML='<div class="career-content">'+(activeContract?'<div class="career-item"><h3>受注中：'+activeContract.name+'</h3><p>'+activeContract.description+'</p><span class="career-tag">報酬 ₡'+activeContract.reward.toLocaleString()+' / 科学 '+activeContract.science+'</span></div>':'<p>受注中の契約はありません。</p>')+contracts.map(k=>'<div class="career-item"><h3>'+k.name+'</h3><p>'+k.description+'</p><span class="career-tag">報酬 ₡'+k.reward.toLocaleString()+' / 科学 '+k.science+'</span><br><button data-accept-contract="'+k.id+'" '+(activeContract?'disabled':'')+'>契約を受注</button></div>').join('')+'</div>';}
 try{const saveKey=gameMode==='career'?'space-career-v1':'space-'+gameMode+'-v1';const savedCareer=JSON.parse(localStorage.getItem(saveKey)||'null');if(savedCareer){funds=savedCareer.funds??funds;fundsUnlimited=savedCareer.fundsUnlimited??true;science=savedCareer.science??science;unlockedTech=new Set(savedCareer.unlocked||['basic']);activeContract=contracts.find(k=>k.id===savedCareer.activeContract)||null;crewMembers=savedCareer.crew||crewMembers;}}catch{}if(gameMode==='sandbox'){funds=999999999;unlockedTech=new Set(techTree.map(t=>t.id));activeContract=null;}if(gameMode==='science')activeContract=null;
-function material(c,metal=0.3){return new THREE.MeshStandardMaterial({color:c,metalness:metal,roughness:.38});}
-function partMesh(p){
- const g=new THREE.Group(),r=p.radius,h=p.height,metal=material(0x899398,.72),dark=material(0x3c474d,.82),white=material(0xd8d7c9,.55),glass=material(0x315e77,.35);
- if(p.type==='fuselage'||p.type==='cockpit'){
-  const len=p.height,rad=p.radius;const shell=new THREE.Mesh(new THREE.CylinderGeometry(rad*.92,rad,len,32),material(0xb8c0c1,.72));shell.rotation.x=Math.PI/2;g.add(shell);
-  const nose=new THREE.Mesh(new THREE.ConeGeometry(rad*.92,Math.max(.45,len*.28),32),material(0xd2d7d4,.58));nose.rotation.x=Math.PI/2;nose.position.z=len*.62;g.add(nose);
-  for(const z of [-len*.28,len*.22]){const band=new THREE.Mesh(new THREE.TorusGeometry(rad*.94,.035,8,32),dark);band.rotation.y=Math.PI/2;band.position.z=z;g.add(band);}
-  if(p.type==='cockpit'){const canopy=new THREE.Mesh(new THREE.SphereGeometry(rad*.72,24,14,0,Math.PI*2,0,Math.PI/2),glass);canopy.scale.set(1,.55,1.35);canopy.position.z=len*.22;g.add(canopy);}
- }else if(p.type==='wing'||p.type==='tail'||p.type==='control'||p.type==='fin'){
-  const span=p.radius, swept=p.id==='wing-swept'||p.id==='wing-delta-large';const shape=new THREE.Shape();shape.moveTo(-span*.16,-.25);shape.lineTo(span*.5,swept?-.1:.45);shape.lineTo(span*.43,.25);shape.lineTo(-span*.16,.25);shape.closePath();const wing=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:Math.max(.07,p.height),bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.035,bevelThickness:.025}),material(0xaeb8b8,.62));wing.rotation.x=-Math.PI/2;g.add(wing);
-  if(p.type==='tail'){const fin=new THREE.Mesh(new THREE.BoxGeometry(.12,p.height,p.radius*.75),material(0x9ca8aa,.65));fin.position.y=p.height*.5;g.add(fin);}
- }else if(p.type==='jet'||p.type==='intake'){
-  const body=new THREE.Mesh(new THREE.CylinderGeometry(p.radius*.72,p.radius,p.height,32),metal);body.rotation.x=Math.PI/2;g.add(body);const lip=new THREE.Mesh(new THREE.TorusGeometry(p.radius*.72,.065,10,32),dark);lip.rotation.y=Math.PI/2;lip.position.z=p.height*.48;g.add(lip);const inner=new THREE.Mesh(new THREE.CylinderGeometry(p.radius*.48,p.radius*.48,.08,24),material(0x18242c,.8));inner.rotation.x=Math.PI/2;inner.position.z=p.height*.5;g.add(inner);
- }else if(p.type==='gear'){
-  const strut=new THREE.Mesh(new THREE.CylinderGeometry(.045,.065,p.height,10),metal);strut.rotation.z=-.25;strut.position.y=p.height*.42;g.add(strut);const wheel=new THREE.Mesh(new THREE.CylinderGeometry(p.radius*.5,p.radius*.5,.16,20),dark);wheel.rotation.z=Math.PI/2;wheel.position.set(.16,.08,0);g.add(wheel);
- }else if(p.type==='airbrake'){
-  const base=new THREE.Mesh(new THREE.BoxGeometry(p.radius*1.5,.12,.35),dark);g.add(base);const panel=new THREE.Mesh(new THREE.BoxGeometry(p.radius*1.4,p.height,.08),material(0xaeb8b8,.72));panel.position.y=p.height*.5;g.add(panel);
- }else if(p.type==='pod'){
-  const body=new THREE.Mesh(new THREE.CylinderGeometry(.62,.82,1.35,24),white);body.position.y=.7;g.add(body);
-  const nose=new THREE.Mesh(new THREE.SphereGeometry(.63,24,16,0,Math.PI*2,0,Math.PI/2),material(0xb9c8c9,.4));nose.position.y=1.35;g.add(nose);
-  const window=new THREE.Mesh(new THREE.CircleGeometry(.2,24),glass);window.position.set(0,.85,.625);g.add(window);
-  const rim=new THREE.Mesh(new THREE.TorusGeometry(.23,.045,8,24),dark);rim.position.set(0,.85,.63);g.add(rim);
- }else if(p.type==='probe'){
-  const core=new THREE.Mesh(new THREE.OctahedronGeometry(.48,1),material(0xb4b9b7,.7));core.position.y=.4;g.add(core);
-  const mast=new THREE.Mesh(new THREE.CylinderGeometry(.025,.035,.75,8),dark);mast.position.y=1.05;g.add(mast);
-  const antenna=new THREE.Mesh(new THREE.SphereGeometry(.14,12,8),material(0xd8c17c,.4));antenna.position.y=1.45;g.add(antenna);
- }else if(p.type==='engine'){
-  const body=new THREE.Mesh(new THREE.CylinderGeometry(r*.7,r,h,24),metal);body.position.y=h/2;g.add(body);
-  const nozzle=new THREE.Mesh(new THREE.CylinderGeometry(r*.35,r*.7,.65,24),dark);nozzle.position.y=-.32;g.add(nozzle);
-  const flame=new THREE.Mesh(new THREE.ConeGeometry(r*.42,.9,16),new THREE.MeshBasicMaterial({color:0xff9b37,transparent:true,opacity:.82}));flame.name='engine-flame';flame.rotation.x=Math.PI;flame.position.y=-.82;flame.visible=false;g.add(flame);
- }else if(p.type==='tank'){
-  const shell=new THREE.Mesh(new THREE.CylinderGeometry(r*.98,r*.98,h*.82,24),material(0xb9c0bf,.58));shell.position.y=h*.5;g.add(shell);
-  for(const yy of [h*.09,h*.9]){const cap=new THREE.Mesh(new THREE.SphereGeometry(r*.98,20,12),material(0xaeb8b8,.62));cap.scale.y=.22;cap.position.y=yy;g.add(cap);}
-  for(const yy of [h*.2,h*.78]){const band=new THREE.Mesh(new THREE.TorusGeometry(r*.99,.045,8,32),dark);band.rotation.x=Math.PI/2;band.position.y=yy;g.add(band);}
- }else if(p.type==='booster'){
-  const shell=new THREE.Mesh(new THREE.CylinderGeometry(r,r*.94,h*.78,20),white);shell.position.y=h*.48;g.add(shell);
-  const nose=new THREE.Mesh(new THREE.ConeGeometry(r,h*.22,20),material(0xc8c5b8,.72));nose.position.y=h*.98;g.add(nose);
-  const nozzle=new THREE.Mesh(new THREE.CylinderGeometry(r*.28,r*.5,.45,16),dark);nozzle.position.y=-.12;g.add(nozzle);
-  const flame=new THREE.Mesh(new THREE.ConeGeometry(r*.42,.9,12),new THREE.MeshBasicMaterial({color:0xff8b2d,transparent:true,opacity:.82}));flame.name='engine-flame';flame.rotation.x=Math.PI;flame.position.y=-.72;flame.visible=false;g.add(flame);
- }else if(p.type==='decoupler'){
-  const ring=new THREE.Mesh(new THREE.CylinderGeometry(r,r*.88,h,24),dark);ring.position.y=h/2;g.add(ring);
-  for(const yy of [.08,h-.08]){const lip=new THREE.Mesh(new THREE.TorusGeometry(r,.055,8,32),metal);lip.rotation.x=Math.PI/2;lip.position.y=yy;g.add(lip);}
- }else if(p.type==='fin'){
-  const shape=new THREE.Shape();shape.moveTo(0,0);shape.lineTo(.2,0);shape.lineTo(.85,.8);shape.lineTo(.12,.65);shape.closePath();const fin=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:.08,bevelEnabled:true,bevelSize:.025,bevelThickness:.025,bevelSegments:2}),material(0x9b9d99));g.add(fin);
- }else if(p.type==='comm'||p.type==='thermal'||p.type==='payload'||p.type==='docking'||p.type==='resource'||p.type==='structural'||p.type==='utility'||p.type==='ground'){
-  if(p.type==='comm'){const mast=new THREE.Mesh(new THREE.CylinderGeometry(.025,.04,h*.72,8),metal);mast.position.y=h*.42;g.add(mast);const dish=new THREE.Mesh(new THREE.SphereGeometry(r*.7,24,12,0,Math.PI*2,0,Math.PI/2),material(0xb9c3c5,.7));dish.position.y=h*.75;g.add(dish);}
-  else if(p.type==='thermal'){const shield=new THREE.Mesh(new THREE.CylinderGeometry(r,r*.88,h,32),material(0x5d4033,.15));shield.position.y=h*.25;g.add(shield);const rim=new THREE.Mesh(new THREE.TorusGeometry(r*.92,.07,8,32),material(0xc5a77b,.65));rim.rotation.x=Math.PI/2;rim.position.y=h*.5;g.add(rim);}
-  else if(p.type==='payload'){const shell=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,32,1,true),material(0x9da8a8,.65));shell.position.y=h/2;g.add(shell);for(const y of [.08,h-.08]){const ring=new THREE.Mesh(new THREE.TorusGeometry(r,.06,8,32),metal);ring.rotation.x=Math.PI/2;ring.position.y=y;g.add(ring);}const door=new THREE.Mesh(new THREE.BoxGeometry(r*1.7,h*.72,.06),material(0x586a72,.72));door.position.set(r*.78,h*.5,0);g.add(door);}
-  else if(p.type==='docking'){const ring=new THREE.Mesh(new THREE.CylinderGeometry(r,r*.82,h*.55,32),metal);ring.position.y=h*.45;g.add(ring);const collar=new THREE.Mesh(new THREE.TorusGeometry(r*.78,.09,12,32),material(0xd4c18d,.7));collar.rotation.x=Math.PI/2;collar.position.y=h*.78;g.add(collar);}
-  else if(p.type==='resource'){const can=new THREE.Mesh(new THREE.CylinderGeometry(r*.95,r*.95,h*.8,24),material(0x8b9a87,.65));can.position.y=h*.5;g.add(can);}
-  else if(p.type==='structural'){const core=new THREE.Mesh(new THREE.CylinderGeometry(r*.7,r*.7,h,8),metal);core.position.y=h/2;g.add(core);for(let n=0;n<4;n++){const arm=new THREE.Mesh(new THREE.BoxGeometry(r*1.7,.12,.12),dark);arm.rotation.y=n*Math.PI/2;arm.position.y=h*.5;g.add(arm);}}
-  else if(p.type==='utility'){for(let n=0;n<2;n++){const rail=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,h,8),metal);rail.position.set((n-.5)*.28,h/2,0);g.add(rail);}for(let y=.12;y<h;y+=.18){const rung=new THREE.Mesh(new THREE.CylinderGeometry(.02,.02,.32,8),dark);rung.rotation.z=Math.PI/2;rung.position.y=y;g.add(rung);}}
-  else {const wheel=new THREE.Mesh(new THREE.CylinderGeometry(r*.7,r*.7,h*.5,24),dark);wheel.rotation.z=Math.PI/2;wheel.position.y=h*.45;g.add(wheel);const hub=new THREE.Mesh(new THREE.CylinderGeometry(r*.25,r*.25,h*.55,16),metal);hub.rotation.z=Math.PI/2;hub.position.y=h*.45;g.add(hub);}
- }else if(p.type==='solar'){
-  const hub=new THREE.Mesh(new THREE.BoxGeometry(.45,.32,.45),metal);hub.position.y=h/2;g.add(hub);
-  for(const side of [-1,1]){const panel=new THREE.Mesh(new THREE.BoxGeometry(1.25,.055,1.05),material(0x244b72,.55));panel.position.set(side*.9,h/2,0);g.add(panel);for(let k=0;k<4;k++){const stripe=new THREE.Mesh(new THREE.BoxGeometry(.018,.012,1),material(0x8eb5cf,.4));stripe.position.set(side*.9+(k-1.5)*.24,h/2+.035,0);g.add(stripe);}}
- }else if(p.type==='battery'){
-  const box=new THREE.Mesh(new THREE.BoxGeometry(r*1.7,h,r*1.5),material(0x9ca7a7,.7));box.position.y=h/2;g.add(box);
-  const cap=new THREE.Mesh(new THREE.BoxGeometry(r*1.3,.08,r*1.2),dark);cap.position.y=h+.04;g.add(cap);
- }else if(p.type==='science'){
-  const can=new THREE.Mesh(new THREE.CylinderGeometry(r*.65,r*.65,h*.8,16),white);can.position.y=h*.5;g.add(can);
-  const dish=new THREE.Mesh(new THREE.SphereGeometry(r*.8,20,12,0,Math.PI*2,0,Math.PI/2),material(0x9ca9a9,.5));dish.position.y=h*.85;g.add(dish);
-  const sensor=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,.55,8),dark);sensor.position.set(0,h+.2,0);g.add(sensor);
- }else if(p.type==='chute'){
-  const can=new THREE.Mesh(new THREE.CylinderGeometry(r*.75,r*.75,h,16),white);can.position.y=h/2;g.add(can);
-  const lid=new THREE.Mesh(new THREE.TorusGeometry(r*.75,.06,8,24),material(0xc5a66d,.6));lid.rotation.x=Math.PI/2;lid.position.y=h;g.add(lid);
- }else{
-  body=new THREE.Mesh(new THREE.CylinderGeometry(r,r*.98,h,16),metal);body.position.y=h/2;g.add(body);
- }
- g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});return g;
-}
+function partMesh(p){return createPartModel(p,THREE);}
 function renderStages(){stageUiFuelPercent=maxFuel?Math.round(fuel/maxFuel*100):0;const groups=[...new Set([...parts.map(p=>p.stage),assemblyStage])].sort((a,b)=>b-a);const cards=groups.map(n=>{const group=parts.filter(p=>p.stage===n),fuelMax=group.reduce((s,p)=>s+(p.data.fuel||0),0),fuelNow=group.reduce((s,p)=>s+(p.fuel||0),0),names=group.map(p=>p.data.name).join(' / ');return '<div class="stage-card '+(n===assemblyStage?'active':'')+'"><b>'+n+'</b><span>'+(names||'空のステージ')+'</span><small>'+(fuelMax?Math.round(fuelNow/fuelMax*100)+'% 推進剤':'パーツ '+group.length)+'</small><div class="fuel-track"><i style="width:'+(fuelMax?fuelNow/fuelMax*100:0)+'%"></i></div></div>';});$('#stage-list').innerHTML=cards.join('')||'<small>ステージなし</small>';const build=$('#build-stage-list');if(build)build.innerHTML=cards.map((c,i)=>c.replace('stage-card ','stage-card build-stage ')).join('');}
 function recalc(){craftMass=rocketMassKg(parts)/1000;fuel=parts.reduce((s,p)=>s+(p.fuel||0),0);maxFuel=parts.reduce((s,p)=>s+(p.data.fuel||0),0);thrust=parts.reduce((s,p)=>s+(p.data.thrust||0),0);const dv=deltaV(parts);$('#craft-name').textContent='機体重量 '+craftMass.toFixed(2)+' t　Δv '+Math.round(dv)+' m/s　推力 '+thrust+' kN';$('#funds').textContent=gameMode==='sandbox'||fundsUnlimited?'∞':'₡'+funds.toLocaleString();$('#funds-toggle').textContent='資金: '+(fundsUnlimited?'無制限':'通常');$('#funds-toggle').classList.toggle('active',fundsUnlimited);$('#science').textContent=science;renderStages();}
 function layout(){rocket.clear();let y=0,z=0;for(const p of parts){const m=partMesh(p.data),h=p.data.height;p.mesh=m;m.userData.partItem=p;if(p.manualPosition&&p.position)m.position.copy(p.position);else if(aircraftCraft){p.y=0;m.position.set(0,0,z);z+=h*.82;}else{p.y=y;m.position.y=y;y+=h*.82;}rocket.add(m);}rocket.position.y=0;recalc();$('#stage-build-label').textContent='組立ステージ '+assemblyStage;}
