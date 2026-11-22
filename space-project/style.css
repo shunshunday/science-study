@@ -186,3 +186,7 @@
  .part-meta b{font-size:8px!important}
  .part-meta small{font-size:7px!important}
 }
+
+
+/* Match the thumbnail surround to the part card color */
+.part-icon,.part-preview-canvas{background:#53636d!important}
