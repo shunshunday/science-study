@@ -279,7 +279,7 @@ function partMesh(p){
  const g=new THREE.Group(),r=p.radius,h=p.height,metal=material(0x899398,.72),dark=material(0x3c474d,.82),white=material(0xd8d7c9,.55),glass=material(0x315e77,.35);
  if(p.type==='fuselage'||p.type==='cockpit'){
   const len=p.height,rad=p.radius;const shell=new THREE.Mesh(new THREE.CylinderGeometry(rad*.92,rad,len,32),material(0xb8c0c1,.72));shell.rotation.x=Math.PI/2;g.add(shell);
-  const nose=new THREE.Mesh(new THREE.ConeGeometry(rad*.92,Math.max(.45,len*.28),32),material(0xd2d7d4,.58));nose.rotation.x=-Math.PI/2;nose.position.z=len*.62;g.add(nose);
+  const nose=new THREE.Mesh(new THREE.ConeGeometry(rad*.92,Math.max(.45,len*.28),32),material(0xd2d7d4,.58));nose.rotation.x=Math.PI/2;nose.position.z=len*.62;g.add(nose);
   for(const z of [-len*.28,len*.22]){const band=new THREE.Mesh(new THREE.TorusGeometry(rad*.94,.035,8,32),dark);band.rotation.y=Math.PI/2;band.position.z=z;g.add(band);}
   if(p.type==='cockpit'){const canopy=new THREE.Mesh(new THREE.SphereGeometry(rad*.72,24,14,0,Math.PI*2,0,Math.PI/2),glass);canopy.scale.set(1,.55,1.35);canopy.position.z=len*.22;g.add(canopy);}
  }else if(p.type==='wing'||p.type==='tail'||p.type==='control'||p.type==='fin'){
