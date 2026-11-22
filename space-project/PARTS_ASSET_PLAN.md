@@ -63,3 +63,12 @@ No stock-game or third-party mod art assets have been copied into this project b
 - Stock parts index: https://wikiwiki.jp/ksp/パーツ
 - Making History: https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion
 - Breaking Ground: https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion
+
+
+## Implemented original part models and expanded in-game catalog (2026-11-22)
+- Added `parts-models.js`: an independently authored Three.js geometry library. The same factory is used by the VAB 3D thumbnails and the assembled craft, so the preview and placed part share a model.
+- Implemented differentiated model families for command pods, probe cores, tanks, fuselages, liquid/jet/solid engines, wings and control surfaces, solar panels, parachutes, batteries, antennas, science instruments, couplers, docking ports, payload bays, thermal hardware, intakes, landing gear, utility hardware, Breaking Ground-style robotics and rotor blades.
+- Added `parts-inventory.js` with all 169 stock-family candidates and 97 Making History / Breaking Ground candidates from the two inventory files. The game imports and merges these entries into the VAB catalog, deduplicating by catalog ID and display name.
+- The parts browser now displays each part's name and source label (BASE / STOCK / MAKING HISTORY / BREAKING GROUND), plus a visible provisional-data marker. Card styling was refined for readable names, hover and keyboard focus.
+- Important accuracy boundary: the new meshes are original KSP-inspired approximations, not official KSP models. The added candidate entries use provisional estimated mass, dimensions, price, fuel and thrust values where the source inventory did not provide verified .cfg values. They are usable for visual assembly, but must not be represented as exact KSP 1.12.5 performance data.
+- Exact internal IDs / attachment nodes / module behavior verified: 0. Official redistributable KSP model assets approved: 0. Original geometry is implemented; official mesh extraction remains excluded.
