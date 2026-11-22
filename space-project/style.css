@@ -169,3 +169,20 @@
 .part-meta{display:block!important;min-width:0;width:100%;text-align:left}
 .part-meta b{display:block;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .part-meta small{display:block;font-size:9px;line-height:1.25;white-space:normal}
+
+
+/* Larger 3D part previews and one consistent tile color */
+.part-list{grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-rows:164px!important}
+.part{background:#53636d!important;border:1px solid #91a0a8!important;box-shadow:none!important}
+.part:hover,.part:focus,.part:active{background:#53636d!important;border-color:#91a0a8!important;box-shadow:none!important}
+.part:disabled{background:#53636d!important;border-color:#91a0a8!important;opacity:1!important;filter:none!important}
+.part-icon{height:108px!important;min-height:108px!important;flex:0 0 108px!important;background:#778894!important}
+.part-preview-canvas{height:108px!important;max-height:108px!important;background:#778894!important;transform:none!important}
+.part-meta{background:transparent!important}
+@media(max-width:700px){
+ .part-list{grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-rows:150px!important}
+ .part-icon{height:94px!important;min-height:94px!important;flex-basis:94px!important}
+ .part-preview-canvas{height:94px!important;max-height:94px!important}
+ .part-meta b{font-size:8px!important}
+ .part-meta small{font-size:7px!important}
+}
