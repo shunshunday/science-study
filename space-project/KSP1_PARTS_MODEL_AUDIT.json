@@ -252,8 +252,8 @@
         "radius": 0.78
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "stackDecoupler",
+      "verifiedKspPartName": "TR-18D デカプラー",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -261,7 +261,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "booster",
@@ -347,8 +352,8 @@
         "radius": 0.5
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "batteryPack",
+      "verifiedKspPartName": "Z-100 Rechargeable Battery",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -356,7 +361,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "solar",
@@ -370,8 +380,8 @@
         "radius": 1
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "solarPanelOX10C",
+      "verifiedKspPartName": "OX-STAT 太陽電池パネル",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -379,7 +389,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "science",
@@ -1945,8 +1960,8 @@
         "radius": 0.7
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "solarPanelOX10C",
+      "verifiedKspPartName": "OX-10C 太陽電池パネル",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1954,7 +1969,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "solar-ox4l",
@@ -1967,8 +1987,8 @@
         "radius": 0.8
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "solarPanels1",
+      "verifiedKspPartName": "OX-4L 1x6 太陽電池パネル",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1976,7 +1996,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "solar-ox4w",
@@ -1989,8 +2014,8 @@
         "radius": 0.8
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "solarPanels2",
+      "verifiedKspPartName": "OX-4W 3x2 太陽電池パネル",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1998,7 +2023,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "solar-oxstatxl",
@@ -2011,8 +2041,8 @@
         "radius": 0.6
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "solarPanelOX10L",
+      "verifiedKspPartName": "OX-STAT-XL 太陽電池パネル",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2020,7 +2050,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "solar-sp10c",
@@ -2033,8 +2068,8 @@
         "radius": 0.9
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "solarPanelSP10C",
+      "verifiedKspPartName": "SP-10C 太陽電池パネル",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2042,7 +2077,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "parachute-mk16xl",
@@ -2055,8 +2095,8 @@
         "radius": 0.8
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "parachuteLarge",
+      "verifiedKspPartName": "Mk16-XL パラシュート",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2064,7 +2104,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "parachute-mk25",
@@ -2077,8 +2122,8 @@
         "radius": 0.7
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "parachuteDrogue",
+      "verifiedKspPartName": "Mk25 ドローグパラシュート",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2086,7 +2131,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "wing-delta",
@@ -2256,8 +2306,8 @@
         "isp": 210
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "Mite",
+      "verifiedKspPartName": "FM1 Mite 固体燃料ブースター",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2265,7 +2315,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "srb-shrimp",
@@ -2281,8 +2336,8 @@
         "isp": 215
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "Shrimp",
+      "verifiedKspPartName": "F3S0 Shrimp 固体燃料ブースター",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2290,7 +2345,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "srb-rt5",
@@ -2306,8 +2366,8 @@
         "isp": 165
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "solidBooster_sm",
+      "verifiedKspPartName": "RT-5 Flea 固体燃料ブースター",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2315,7 +2375,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "srb-rt10",
@@ -2331,8 +2396,8 @@
         "isp": 195
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "solidBooster",
+      "verifiedKspPartName": "RT-10 Hammer 固体燃料ブースター",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2340,7 +2405,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "srb-bacc",
@@ -2356,8 +2426,8 @@
         "isp": 210
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "solidBooster1-1",
+      "verifiedKspPartName": "BACC Thumper 固体燃料ブースター",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2365,7 +2435,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "srb-kickback",
@@ -2381,8 +2456,8 @@
         "isp": 220
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "MassiveBooster",
+      "verifiedKspPartName": "S1 SRB-KD25k Kickback",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2390,7 +2465,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "srb-thoroughbred",
@@ -2406,8 +2486,8 @@
         "isp": 230
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "Thoroughbred",
+      "verifiedKspPartName": "S2-17 Thoroughbred",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2415,7 +2495,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "srb-clydesdale",
@@ -2431,8 +2516,8 @@
         "isp": 235
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "Clydesdale",
+      "verifiedKspPartName": "S2-33 Clydesdale",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2440,7 +2525,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "srb-sepatron",
@@ -2456,8 +2546,8 @@
         "isp": 154
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "sepMotor1",
+      "verifiedKspPartName": "Sepratron I",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2465,7 +2555,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "jet-juno",
@@ -2806,8 +2901,8 @@
         "radius": 0.5
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "largeAdapter",
+      "verifiedKspPartName": "FL-A5 アダプター",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2815,7 +2910,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "adapter-fla10",
@@ -2828,8 +2928,8 @@
         "radius": 0.5
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "largeAdapter2",
+      "verifiedKspPartName": "FL-A10 アダプター",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2837,7 +2937,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "adapter-rockomax",
@@ -2850,8 +2955,8 @@
         "radius": 1.25
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "rockomax adapter",
+      "verifiedKspPartName": "Rockomax アダプター",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -2859,7 +2964,12 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity provisionally matched; exact .cfg confirmation and 3D asset/license still unresolved",
+      "matchEvidence": [
+        "KSP stock part references: https://github.com/TehGimp/KerbalMultiPlayer/blob/master/KMPServer/Server.cs",
+        "KSP stock part reference data: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md",
+        "KSP part index: https://wikiwiki.jp/ksp/パーツ"
+      ]
     },
     {
       "projectPartId": "adapter-rockomax-short",
@@ -3215,10 +3325,10 @@
     }
   ],
   "auditProgress": {
-    "matchedPartIdentities": 56,
+    "matchedPartIdentities": 78,
     "totalExistingProjectEntries": 128,
     "approved3DModels": 0,
-    "nextBatch": "solid rocket boosters and aero parts",
-    "note": "Some old/current variant IDs coexist (for example _v2). Before using a match in game logic, verify the selected 1.12.x .cfg's active PART name and compare the existing placeholder mass/thrust/resource values. A matched internal ID does not authorize publishing the original KSP mesh or texture."
+    "nextBatch": "aero surfaces, control systems, landing gear, science and structural parts",
+    "note": "A provisional match is a candidate internal ID/name mapping, not a claim of verified 1.12.5 configuration or permission to publish the stock model. Several variant names must be confirmed against the exact 1.12.5 part.cfg before use."
   }
 }
