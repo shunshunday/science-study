@@ -43,26 +43,26 @@
 /* Nudge the 3D catalog thumbnails slightly to the left */
 .part-preview-canvas{transform:translateX(-6px);width:calc(100% + 6px)}
 
-/* Crew management: centered, expanded roster */
-.career-panel{left:50%;right:auto;top:39px;bottom:22px;transform:translateX(-50%);width:min(1080px,calc(100vw - 40px));max-width:none;border-radius:7px;background:linear-gradient(145deg,#172a36f7,#101c25f7);box-shadow:0 18px 60px #000b}
-.career-head{height:54px;padding:0 22px;background:linear-gradient(90deg,#304a59,#243744);font-size:16px}
-.career-content{padding:20px 24px 28px}
-.crew-intro{display:flex;align-items:baseline;gap:18px;margin:0 0 18px;padding-bottom:12px;border-bottom:1px solid #ffffff24}
-.crew-intro>span{font-size:11px;letter-spacing:3px;color:#e4c27e;font-weight:800}
-.crew-intro p{margin:0;color:#b7c7cf}
-.crew-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
-.crew-card{display:block;min-height:0;padding:10px 12px;background:linear-gradient(135deg,#2a3e49,#1e303a);border:1px solid #ffffff25;border-radius:5px;box-shadow:0 3px 10px #0003}
-.crew-portrait{width:112px;height:132px;overflow:hidden;border:2px solid #a9b9bd;border-radius:4px;background:linear-gradient(160deg,var(--portrait-bg),#253944)}
-.crew-portrait svg{width:100%;height:100%;display:block}
-.crew-info{min-width:0}.crew-info h3{font-size:16px;margin:0 0 3px;color:#f1dfb8;overflow-wrap:anywhere}
-.crew-role{display:block;color:#aebfc7;font-size:11px;margin-bottom:10px}
-.crew-stat{margin:8px 0}.crew-stat>div:first-child{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#c5d1d6}.crew-stat b{color:#f1d08b;font-variant-numeric:tabular-nums}
-.crew-meter{height:9px;margin-top:4px;background:#0c171e;border:1px solid #ffffff20;border-radius:8px;overflow:hidden}
-.crew-meter i{display:block;height:100%;background:linear-gradient(90deg,#9a7543,#e5c17b);border-radius:8px}
-.crew-meter.brave i{background:linear-gradient(90deg,#477d91,#83c5d4)}
+/* Compact roster inspired by the supplied reference layout */
+.career-panel{left:50%;right:auto;top:54px;bottom:20px;transform:translateX(-50%);width:min(900px,calc(100vw - 32px));max-width:none;border-radius:5px;background:linear-gradient(145deg,#27343dc9,#17232dd1);box-shadow:0 10px 32px #0008;overflow:auto}
+.career-head{height:36px;padding:0 10px;background:linear-gradient(90deg,#53616cdd,#35434fdd);font-size:13px}
+.career-content{padding:8px 10px 12px}
+.crew-intro{display:flex;align-items:center;gap:10px;margin:0 0 7px;padding-bottom:6px;border-bottom:1px solid #ffffff24}
+.crew-intro>span{font-size:9px;letter-spacing:2px;color:#e4c27e;font-weight:800}
+.crew-intro p{margin:0;color:#c2cbd0;font-size:10px}
+.crew-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 8px}
+.crew-card{display:block;min-height:48px;padding:5px 7px;background:linear-gradient(135deg,#596570c9,#34414dc9);border:1px solid #d4dde044;border-radius:3px;box-shadow:0 2px 5px #0003}
+.crew-info{min-width:0}.crew-info h3{font-size:11px;line-height:1.15;margin:0 0 2px;color:#e4df9b;overflow-wrap:anywhere}
+.crew-role{display:block;color:#edf1f2;font-size:9px;margin-bottom:3px}
+.crew-stat{display:inline-block;vertical-align:top;width:48%;margin:1px 1% 0 0}
+.crew-stat>div:first-child{display:flex;justify-content:space-between;align-items:center;font-size:8px;color:#e0e6e9}
+.crew-stat b{color:#f1d08b;font-variant-numeric:tabular-nums;font-size:8px}
+.crew-meter{height:6px;margin-top:2px;background:#121a20;border:1px solid #ffffff20;border-radius:6px;overflow:hidden}
+.crew-meter i{display:block;height:100%;background:linear-gradient(90deg,#a9aeb0,#e4e8e8);border-radius:6px}
+.crew-meter.brave i{background:linear-gradient(90deg,#a9aeb0,#e4e8e8)}
 .crew-info button{display:none}
-.crew-recruit{margin-top:18px;padding:14px 16px;background:#1b2d37;border:1px solid #ffffff20;border-radius:5px}
-.crew-recruit>b{display:block;color:#e5c988;margin-bottom:10px}
-.crew-recruit>div{display:flex;gap:8px;flex-wrap:wrap}
-.crew-recruit button{background:#344b58}
-@media(max-width:700px){.career-panel{top:39px;bottom:10px;width:min(360px,calc(100vw - 16px))}.career-content{padding:10px}.crew-grid{grid-template-columns:1fr}.crew-card{padding:9px}}
+.crew-recruit{margin-top:8px;padding:7px 9px;background:#1b2d37cc;border:1px solid #ffffff20;border-radius:4px}
+.crew-recruit>b{display:block;color:#e5c988;margin-bottom:5px;font-size:10px}
+.crew-recruit>div{display:flex;gap:6px;flex-wrap:wrap}
+.crew-recruit button{background:#344b58;padding:4px 8px;font-size:10px}
+@media(max-width:700px){.career-panel{top:48px;bottom:10px;width:calc(100vw - 16px)}.career-content{padding:7px}.crew-grid{grid-template-columns:1fr}.crew-card{padding:5px 7px}.career-head{height:32px}}
