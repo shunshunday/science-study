@@ -24,7 +24,7 @@ function makeCrewFigure(member,index){
  const smile=new THREE.Mesh(new THREE.TorusGeometry(.16,.025,6,16,Math.PI),material(0x637d2d,.05));smile.position.set(0,2.78,.68);smile.rotation.z=Math.PI;root.add(smile);
 
  root.scale.setScalar(.88);
- root.position.set(0,.24,0);
+ root.position.set(0,.55,0);
  return root;
 }
 function rebuildCrewStage(){while(crewStage.children.length)crewStage.remove(crewStage.children[0]);}
