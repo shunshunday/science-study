@@ -332,7 +332,7 @@ function renderOnePartPreview(canvas,p){
   const key=new THREE.DirectionalLight(0xffedcf,3.2);key.position.set(3,5,4);scene.add(key);
   const fill=new THREE.DirectionalLight(0x9fc8e8,1.1);fill.position.set(-4,1,-3);scene.add(fill);
   const model=partMesh(p);scene.add(model);const box=new THREE.Box3().setFromObject(model),center=box.getCenter(new THREE.Vector3()),sphere=box.getBoundingSphere(new THREE.Sphere());model.position.sub(center);
-  const camera=new THREE.PerspectiveCamera(34,2,.01,1000),dist=Math.max(2.1,sphere.radius*3.4);camera.position.set(dist*.9,dist*.62,dist*1.3);camera.lookAt(0,0,0);camera.far=dist*12;camera.updateProjectionMatrix();
+  const camera=new THREE.PerspectiveCamera(34,2,.01,1000),dist=Math.max(.7,sphere.radius*3.4/3);camera.position.set(dist*.9,dist*.62,dist*1.3);camera.lookAt(0,0,0);camera.far=dist*12;camera.updateProjectionMatrix();
   const entry={scene,camera,model,drag:false,lastX:0,lastY:0};partPreviewRenderers.set(canvas,entry);paintPartPreview(entry,canvas);
   canvas.addEventListener('click',e=>e.stopPropagation());canvas.addEventListener('pointerdown',e=>{e.stopPropagation();entry.drag=true;entry.lastX=e.clientX;entry.lastY=e.clientY;canvas.setPointerCapture(e.pointerId);});
   canvas.addEventListener('pointermove',e=>{if(!entry.drag)return;model.rotation.y+=(e.clientX-entry.lastX)*.012;model.rotation.x+=(e.clientY-entry.lastY)*.01;entry.lastX=e.clientX;entry.lastY=e.clientY;paintPartPreview(entry,canvas);});
