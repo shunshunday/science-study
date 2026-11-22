@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import {BODY,G0,gravityAcceleration,atmosphericDensity,orbitalElements,rk4Step,deltaV,rocketMassKg} from './physics/orbital.js';
 import {aerodynamicAcceleration} from './physics/aerodynamics.js';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],toast=m=>{let t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2300)};
+const scene=new THREE.Scene();
+const crewStage=new THREE.Group();crewStage.visible=false;crewStage.scale.setScalar(.001);scene.add(crewStage);
 function makeCrewFigure(member,index){
  const root=new THREE.Group(),role=member.role||'科学者',pilot=role==='パイロット',engineer=role==='エンジニア';
  const skin=material(0xc9dc4b,.05),eyeWhite=material(0xf6f7e9,.02),pupil=material(0x17232c,.02),suit=material(pilot?0xd8ddd9:engineer?0x102e59:0x65747d,.25),trim=material(pilot?0x8b9698:engineer?0x4775a6:0xb8c2c5,.3),boot=material(0x202a32,.45),glass=new THREE.MeshStandardMaterial({color:0x8dc4dc,metalness:.25,roughness:.12,transparent:true,opacity:.2});
@@ -25,30 +27,6 @@ function makeCrewFigure(member,index){
  root.rotation.y=Math.PI;crewStage.add(root);
 }
 function rebuildCrewStage(){while(crewStage.children.length)crewStage.remove(crewStage.children[0]);crewMembers.forEach(makeCrewFigure);}
-const scene=new THREE.Scene();
-function makeCrewFigure(member,index){
- const root=new THREE.Group(),role=member.role||'科学者',pilot=role==='パイロット',engineer=role==='エンジニア';
- const skin=material(0xc9dc4b,.05),eyeWhite=material(0xf6f7e9,.02),pupil=material(0x17232c,.02),suit=material(pilot?0xd8ddd9:engineer?0x102e59:0x65747d,.25),trim=material(pilot?0x8b9698:engineer?0x4775a6:0xb8c2c5,.3),boot=material(0x202a32,.45),glass=new THREE.MeshStandardMaterial({color:0x8dc4dc,metalness:.25,roughness:.12,transparent:true,opacity:.2});
- const sphere=(r,mat,x,y,z,scale=null)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(r,18,14),mat);m.position.set(x,y,z);if(scale)m.scale.set(...scale);root.add(m);m.castShadow=true;return m;};
- const limb=(a,b,r1,r2,mat)=>{const v=new THREE.Vector3().subVectors(b,a),m=new THREE.Mesh(new THREE.CylinderGeometry(r2,r1,v.length(),12),mat);m.position.copy(a).add(b).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),v.normalize());root.add(m);m.castShadow=true;return m;};
- // legs, boots and compact flight suit body
- for(const x of [-.43,.43]){limb(new THREE.Vector3(x,.65,0),new THREE.Vector3(x,.18,0),.19,.15,suit);sphere(.2,boot,x,.13,.08,[1,.55,1.35]);}
- const torso=new THREE.Mesh(new THREE.CylinderGeometry(.62,.48,1.25,18),suit);torso.position.y=1.48;root.add(torso);torso.castShadow=true;
- sphere(.57,trim,0,2.02,0,[1,.34,.82]);
- for(const x of [-.72,.72]){sphere(.24,suit,x,1.88,0);limb(new THREE.Vector3(x,1.9,0),new THREE.Vector3(x*1.18,1.12,.12),.17,.13,suit);sphere(.16,trim,x*1.18,1.1,.13);}
- // backpack and front mission control panel
- const pack=new THREE.Mesh(new THREE.BoxGeometry(.62,.95,.35),trim);pack.position.set(0,1.62,-.48);root.add(pack);
- const chest=new THREE.Mesh(new THREE.BoxGeometry(.45,.34,.07),material(engineer?0xb8c9d9:0x3b6476,.45));chest.position.set(0,1.63,.53);root.add(chest);
- if(engineer){const patch=new THREE.Mesh(new THREE.CircleGeometry(.16,20),material(0xb83232,.1));patch.position.set(.28,1.95,.51);root.add(patch);}
- // iconic yellow-green Kerbal head, huge eyes and transparent helmet for pilots
- sphere(.76,skin,0,3.05,.02,[1,.98,.9]);
- for(const x of [-.31,.31]){sphere(.235,eyeWhite,x,3.08,.64,[.82,1.12,.55]);sphere(.105,pupil,x+.025,3.06,.79,[.9,1.1,.55]);sphere(.035,material(0xffffff,.02),x+.045,3.12,.83);}
- const smile=new THREE.Mesh(new THREE.TorusGeometry(.16,.025,6,16,Math.PI),material(0x637d2d,.05));smile.position.set(0,2.78,.68);smile.rotation.z=Math.PI;root.add(smile);
- if(pilot){const helmet=new THREE.Mesh(new THREE.SphereGeometry(.91,24,18),glass);helmet.position.set(0,3.08,.02);helmet.scale.set(1.04,1.08,1);root.add(helmet);const rim=new THREE.Mesh(new THREE.TorusGeometry(.82,.045,8,28),trim);rim.position.set(0,3.05,.02);root.add(rim);}
- root.position.set((index%4-1.5)*5.2,0,(Math.floor(index/4)-1.5)*5.5);
- root.rotation.y=Math.PI;crewStage.add(root);
-}
-function rebuildCrewStage(){while(crewStage.children.length){const child=crewStage.children.pop();crewStage.remove(child);}crewMembers.forEach(makeCrewFigure);}
 scene.background=new THREE.Color(0x8298a6);scene.fog=new THREE.Fog(0x8298a6,180,600);
 const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.0001,20000);camera.position.set(24,18,34);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;$('#viewport').appendChild(renderer.domElement);
