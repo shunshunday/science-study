@@ -204,3 +204,8 @@
 .part{background:#53636d!important;border-color:#91a0a8!important}
 .part-icon,.part-preview-canvas{background:#53636d!important}
 .part:hover,.part:focus,.part:active,.part:disabled{background:#53636d!important;border-color:#91a0a8!important}
+
+
+/* Match card surface to the actual 3D preview scene background */
+.part{background:#778894!important;border-color:#a8b5bc!important}
+.part:hover,.part:focus,.part:active,.part:disabled{background:#778894!important;border-color:#a8b5bc!important}
