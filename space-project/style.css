@@ -190,3 +190,11 @@
 
 /* Match the thumbnail surround to the part card color */
 .part-icon,.part-preview-canvas{background:#53636d!important}
+
+
+/* Unified light-blue part cards with dark-blue preview surrounds */
+.part{background:#78b9d2!important;border-color:#a8d8e8!important;color:#102b38!important}
+.part:hover,.part:focus,.part:active,.part:disabled{background:#78b9d2!important;border-color:#a8d8e8!important}
+.part-icon,.part-preview-canvas{background:#28546b!important}
+.part-meta,.part-meta b{color:#102b38!important}
+.part-meta small{color:#24495a!important}
