@@ -1,6 +1,6 @@
 // Two-body orbital mechanics and atmosphere model. SI units throughout.
 export const G0 = 9.80665;
-export const BODY = Object.freeze({ radius: 600_000, mu: 3.5316e12, rotationRate: 2.0e-4, atmosphereHeight: 70_000 });
+export const BODY = Object.freeze({ radius: 600, mu: 3.5316e6, rotationRate: 2.0e-4, atmosphereHeight: 70_000 });
 export function gravityAcceleration(position, mu=BODY.mu, center={x:0,y:-BODY.radius,z:0}) {
   const x=position.x-center.x, y=position.y-center.y, z=position.z-center.z;
   const r2=x*x+y*y+z*z, r=Math.sqrt(Math.max(r2,1));
