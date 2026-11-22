@@ -316,13 +316,13 @@ function getSharedPreviewRenderer(){
  if(!sharedPreviewRenderer){
   const surface=document.createElement('canvas');
   sharedPreviewRenderer=new THREE.WebGLRenderer({canvas:surface,antialias:false,alpha:false,powerPreference:'low-power'});
-  sharedPreviewRenderer.setPixelRatio(1);sharedPreviewRenderer.setSize(116,58,false);sharedPreviewRenderer.outputColorSpace=THREE.SRGBColorSpace;sharedPreviewRenderer.toneMapping=THREE.ACESFilmicToneMapping;sharedPreviewRenderer.toneMappingExposure=1.2;
+  sharedPreviewRenderer.setPixelRatio(1);sharedPreviewRenderer.setSize(232,116,false);sharedPreviewRenderer.outputColorSpace=THREE.SRGBColorSpace;sharedPreviewRenderer.toneMapping=THREE.ACESFilmicToneMapping;sharedPreviewRenderer.toneMappingExposure=1.2;
  }
  return sharedPreviewRenderer;
 }
 function paintPartPreview(entry,canvas){
  const renderer=getSharedPreviewRenderer();renderer.render(entry.scene,entry.camera);
- const ctx=canvas.getContext('2d');if(ctx)ctx.drawImage(renderer.domElement,0,0,116,58);
+ const ctx=canvas.getContext('2d');if(ctx)ctx.drawImage(renderer.domElement,0,0,canvas.width,canvas.height);
 }
 function disposePartPreview(canvas){partPreviewRenderers.delete(canvas);}
 function renderOnePartPreview(canvas,p){
@@ -344,7 +344,7 @@ function renderPartPreviews(items){
  for(const [canvas] of partPreviewRenderers)disposePartPreview(canvas);
  const list=$('#part-list');list.innerHTML=list.innerHTML;
  const canvases=[...list.querySelectorAll('button[data-part]')];
- for(const button of canvases){const p=items.find(x=>x.id===button.dataset.part);const holder=button.querySelector('.part-icon');if(!p||!holder)continue;holder.innerHTML='<canvas class="part-preview-canvas" width="116" height="58" aria-label="'+p.name+' の回転可能な3Dモデル"></canvas>';const canvas=holder.firstElementChild;canvas.dataset.partId=p.id;}
+ for(const button of canvases){const p=items.find(x=>x.id===button.dataset.part);const holder=button.querySelector('.part-icon');if(!p||!holder)continue;holder.innerHTML='<canvas class="part-preview-canvas" width="232" height="116" aria-label="'+p.name+' の回転可能な3Dモデル"></canvas>';const canvas=holder.firstElementChild;canvas.dataset.partId=p.id;}
  if('IntersectionObserver' in window){
   partPreviewObserver=new IntersectionObserver(entries=>{for(const e of entries){const canvas=e.target;if(e.isIntersecting){const p=catalog.find(x=>x.id===canvas.dataset.partId);if(p)renderOnePartPreview(canvas,p);}else disposePartPreview(canvas);}},{root:list,rootMargin:'100px'});
   list.querySelectorAll('.part-preview-canvas').forEach(c=>partPreviewObserver.observe(c));
