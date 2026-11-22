@@ -134,3 +134,10 @@
 }
 #aircraft-mode{background:linear-gradient(#536b79,#293d49);border-color:#b9d0d955;color:#f2f7f8;font-weight:700}
 #aircraft-mode.active{background:linear-gradient(#b58b3e,#765725);border-color:#f2d18a;color:#fff}
+
+
+/* Keep every 3D part preview fully inside its thumbnail frame */
+.part{min-width:0;max-width:100%;box-sizing:border-box;overflow:hidden}
+.part-icon{min-width:0;max-width:100%;box-sizing:border-box;overflow:hidden;flex:0 0 82px}
+.part-preview-canvas{display:block!important;width:100%!important;max-width:100%!important;height:100%!important;max-height:100%!important;transform:none!important;object-fit:contain;box-sizing:border-box;overflow:hidden}
+@media(max-width:700px){.part-icon{flex-basis:68px}}
