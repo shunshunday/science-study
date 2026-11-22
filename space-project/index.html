@@ -12,5 +12,22 @@
 <div class="bottom-hint" id="hint">宇宙センター：ロケット組立棟で機体を設計し、発射場から宇宙へ。</div>
 <div id="flight-hud" class="flight-hud"><div class="stage-stack"><b>STAGING</b><div id="stage-list"></div><button id="stage-next">STAGE ▶</button></div><div class="flight-left"><b id="altitude">高度 0 m</b><span id="speed">速度 0 m/s</span><span id="vertical">垂直速度 0 m/s</span><span id="apo">遠点 --</span><span id="peri">近点 --</span><span id="mission-time">T+00:00</span></div><div class="navball"><div class="navball-sky"></div><div class="navball-mark">＋</div><b id="heading">HDG 090°</b></div><div class="flight-right"><b id="throttle">スロットル 0%</b><span id="fuel">燃料 100%</span><span id="stage-label">ステージ 0</span><span id="gforce">G 1.0</span><button id="map-toggle">マップ M</button><button id="science-experiment">科学実験</button></div></div>
 <div id="toast"></div>
+<script>
+(function(){
+ const showBootError=function(message){
+  const detail=document.getElementById('boot-detail');
+  const error=document.getElementById('boot-error');
+  if(detail)detail.textContent='起動に失敗しました';
+  if(error){error.style.display='block';error.textContent=String(message||'不明なエラー');}
+ };
+ window.addEventListener('error',function(e){showBootError(e.message||'JavaScript読み込みエラー');});
+ window.addEventListener('unhandledrejection',function(e){showBootError(e.reason&&e.reason.message||e.reason||'モジュール読み込みエラー');});
+ window.setTimeout(function(){
+  const boot=document.getElementById('boot');
+  if(boot&&getComputedStyle(boot).display!=='none'&&!document.getElementById('boot-error').textContent)
+   showBootError('初期化が完了しません。ページを再読み込みしてください。');
+ },12000);
+})();
+</script>
 <script type="module" src="./game.js"></script>
 </body></html>
