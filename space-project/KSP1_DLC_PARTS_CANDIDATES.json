@@ -1,0 +1,1658 @@
+{
+  "title": "KSP1 DLC parts inventory candidates",
+  "scope": "Making History Expansion and Breaking Ground Expansion",
+  "source": "KSP Wiki DLC part pages; source tables identify part names and technical descriptions but do not license game meshes/textures",
+  "count": 97,
+  "caveat": "The inventory captures the named part entries visible in the source pages. Exact 1.12.5 internal IDs, complete .cfg values, module behaviour and model licenses still require per-part verification. This list does not authorize extraction or redistribution of KSP assets.",
+  "entries": [
+    {
+      "catalogId": "mh-kv1-onion",
+      "displayName": "KV-1 オニオン大気圏突入モジュール",
+      "category": "command",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 95
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-kv2-pee",
+      "displayName": "KV-2 ピー大気圏突入モジュール",
+      "category": "command",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 96
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-kv3-pomegranate",
+      "displayName": "KV-3 ポメグラナーテ大気圏突入モジュール",
+      "category": "command",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 97
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-mk2-command-pod",
+      "displayName": "Mk2 コマンドポッド",
+      "category": "command",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 109
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-munar-mem",
+      "displayName": "Munar 離脱モジュール MEM",
+      "category": "command",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 122
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-fla150",
+      "displayName": "FL-A150 燃料タンクアダプター",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 135
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-fla151s",
+      "displayName": "FL-A151S 燃料タンクアダプター",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 136
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-fla151l",
+      "displayName": "FL-A151L 燃料タンクアダプター",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 137
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-fla215",
+      "displayName": "FL-A215 燃料タンクアダプター",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 138
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-s3s4-adapter",
+      "displayName": "カーボダイン S3-S4 アダプタータンク",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 139
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-fltx220",
+      "displayName": "FL-TX220 燃料タンクアダプター",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 140
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-fltx440",
+      "displayName": "FL-TX440 燃料タンク",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 141
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-fltx900",
+      "displayName": "FL-TX900 燃料タンク",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 142
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-fltx1800",
+      "displayName": "FL-TX1800 燃料タンク",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 143
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-s4-64",
+      "displayName": "カーボダイン S4-64 燃料タンク",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 144
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-engine-cluster-adapter",
+      "displayName": "カーボダイン エンジンクラスターアダプター",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 145
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-s4-128",
+      "displayName": "カーボダイン S4-128 燃料タンク",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 146
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-s4-256",
+      "displayName": "カーボダイン S4-256 燃料タンク",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 147
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-s4-512",
+      "displayName": "カーボダイン S4-512 燃料タンク",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 148
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-flc1000",
+      "displayName": "FL-C1000 燃料タンク",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 154
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-sv-mini-mp",
+      "displayName": "ストラトスV ミニフィード一液式推進剤タンク",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 162
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-flr5",
+      "displayName": "FL-R5 RCS燃料タンク",
+      "category": "tank",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 163
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-lvt91",
+      "displayName": "LV-T91 チーター液体燃料エンジン",
+      "category": "engine",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 169
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-rei2",
+      "displayName": "RE-I2 スキッフ液体燃料エンジン",
+      "category": "engine",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 170
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-rk7",
+      "displayName": "RK-7 コディアック液体燃料エンジン",
+      "category": "engine",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 171
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-lvtx87",
+      "displayName": "LV-TX87 ボブキャット液体燃料エンジン",
+      "category": "engine",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 172
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-rej10",
+      "displayName": "RE-J10 ウルフハウンド液体燃料エンジン",
+      "category": "engine",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 173
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-ke1",
+      "displayName": "KE-1 マストドン液体燃料エンジン",
+      "category": "engine",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 174
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-rv1",
+      "displayName": "RV-1 カブバーニアエンジン",
+      "category": "engine",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 175
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-thk-pollux",
+      "displayName": "THK ポルックス固体燃料ブースター",
+      "category": "engine",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 199
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-ep18",
+      "displayName": "EP-18 エンジンプレート",
+      "category": "coupling",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 204
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-ep25",
+      "displayName": "EP-25 エンジンプレート",
+      "category": "coupling",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 205
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-ep37",
+      "displayName": "EP-37 エンジンプレート",
+      "category": "coupling",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 206
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-ep50",
+      "displayName": "EP-50 エンジンプレート",
+      "category": "coupling",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 207
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-td18",
+      "displayName": "TD-18 デカプラー",
+      "category": "coupling",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 226
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-size15-decoupler",
+      "displayName": "サイズ1.5 デカプラー",
+      "category": "coupling",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 227
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-td50",
+      "displayName": "TD-50 デカプラー",
+      "category": "coupling",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 228
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-ts18",
+      "displayName": "TS-18 スタックセパレーター",
+      "category": "coupling",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 229
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-ts50",
+      "displayName": "TS-50 スタックセパレーター",
+      "category": "coupling",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 230
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-inflatable-airlock",
+      "displayName": "膨張式エアロック",
+      "category": "docking",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 234
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-fairing-15",
+      "displayName": "AE-FF1.5 耐空力防護シェル",
+      "category": "payload",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 242
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-fairing-5",
+      "displayName": "AE-FF5 耐空力保護シェル",
+      "category": "payload",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 243
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-sm6a",
+      "displayName": "SM-6A サービスモジュール",
+      "category": "payload",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 248
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-sm18",
+      "displayName": "SM-18 サービスモジュール",
+      "category": "payload",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 249
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-sm25",
+      "displayName": "SM-25 サービスモジュール",
+      "category": "payload",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 250
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-nose-mk5a",
+      "displayName": "ロケット保護用ノーズコーン Mk5A",
+      "category": "aero",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 256
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-nose-mk16a",
+      "displayName": "ロケット保護用ノーズコーン Mk16A",
+      "category": "aero",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 257
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-rover-wheel-m1f",
+      "displayName": "RoveMax M1-F ローバー用ホイール",
+      "category": "utility",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 262
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "mh-heat-shield-1875",
+      "displayName": "耐熱シールド 1.875m",
+      "category": "utility",
+      "dlc": "Making History",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Making%20History%20Expansion",
+        "line": 267
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-gps025",
+      "displayName": "グリップストリップ GPS-025",
+      "category": "structure",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 89
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-gps156",
+      "displayName": "グリップストリップ GPS-156",
+      "category": "structure",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 90
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-gp004",
+      "displayName": "グリップパッド GP-004",
+      "category": "structure",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 91
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-gp036",
+      "displayName": "グリップパッド GP-036",
+      "category": "structure",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 92
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-gp156",
+      "displayName": "グリップパッド GP-156",
+      "category": "structure",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 93
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-1p2",
+      "displayName": "1P2 油圧シリンダー",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 102
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-1p4",
+      "displayName": "1P4 入れ子式油圧シリンダー",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 103
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-3p6",
+      "displayName": "3P6 油圧シリンダー",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 104
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-3pt",
+      "displayName": "3PT 入れ子式油圧シリンダー",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 105
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-g00",
+      "displayName": "G-00 ヒンジ",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 111
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-g01l",
+      "displayName": "G-01L アリゲーター・ヒンジ",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 112
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-g11",
+      "displayName": "G-11 ヒンジ",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 113
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-g12l",
+      "displayName": "G-12L アリゲーター・ヒンジ",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 114
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-g32w",
+      "displayName": "G-32W ヒンジ",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 115
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-f12",
+      "displayName": "F-12 回転サーボ",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 116
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-m06",
+      "displayName": "M-06 回転サーボ",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 117
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-m12",
+      "displayName": "M-12 回転サーボ",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 118
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-m25",
+      "displayName": "M-25 回転サーボ",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 119
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-em16s",
+      "displayName": "EM-16S 軽量ローター",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 136
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-em16",
+      "displayName": "EM-16 軽量ローター",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 137
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-em32s",
+      "displayName": "EM-32S 標準ローター",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 138
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-em32",
+      "displayName": "EM-32 標準ローター",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 139
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-em64s",
+      "displayName": "EM-64S 重量ローター",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 140
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-em64",
+      "displayName": "EM-64 重量ローター",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 141
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-r121",
+      "displayName": "R121 ターボシャフトエンジン",
+      "category": "engine",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 146
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-r7000",
+      "displayName": "R7000 ターボシャフトエンジン",
+      "category": "engine",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 147
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-kal1000",
+      "displayName": "KAL 1000 コントローラー",
+      "category": "robotics",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 157
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-vs-nose",
+      "displayName": "極小型ノーズコーン",
+      "category": "aero",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 164
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-tiny-nose",
+      "displayName": "小型ノーズコーン",
+      "category": "aero",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 165
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-hba",
+      "displayName": "ヘリコプターブレード タイプA",
+      "category": "aero",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 172
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-hbb",
+      "displayName": "ヘリコプターブレード タイプB",
+      "category": "aero",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 173
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-hbs",
+      "displayName": "ヘリコプターブレード タイプS",
+      "category": "aero",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 174
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-pba",
+      "displayName": "プロペラブレード タイプA",
+      "category": "aero",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 175
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-pbb",
+      "displayName": "プロペラブレード タイプB",
+      "category": "aero",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 176
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-pbs",
+      "displayName": "プロペラブレード タイプS",
+      "category": "aero",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 177
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-crsy",
+      "displayName": "CRSY ライトスキャンアーム",
+      "category": "science",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 187
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-sprt",
+      "displayName": "SPRT ミディアムスキャンアーム",
+      "category": "science",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 188
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-ope",
+      "displayName": "OP-E ラージスキャンアーム",
+      "category": "science",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 189
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-seq3",
+      "displayName": "SEQ-3 カーゴ保管ユニット",
+      "category": "cargo",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 201
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-seq9",
+      "displayName": "SEQ-9 コンテナモジュール",
+      "category": "cargo",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 202
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-pbd",
+      "displayName": "プロボドボダイン実験制御ステーション",
+      "category": "cargo",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 207
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-hg48",
+      "displayName": "コミュノトロン・グラウンド HG-48",
+      "category": "cargo",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 213
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-oxstatpd",
+      "displayName": "OX-Stat-PD 太陽電池パネル",
+      "category": "cargo",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 218
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-mininukpd",
+      "displayName": "Mini-NUK-PD 原子力電池",
+      "category": "cargo",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 219
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-goo-monitor",
+      "displayName": "Goo 観察滞在延長型モニター",
+      "category": "cargo",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 227
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-weather",
+      "displayName": "PD-3 ウェザー・アナライザー",
+      "category": "cargo",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 228
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-grand-slam",
+      "displayName": "グランドスラム受動地震計",
+      "category": "cargo",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 229
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    },
+    {
+      "catalogId": "bg-ionographer",
+      "displayName": "イオノグラファー PD-22",
+      "category": "cargo",
+      "dlc": "Breaking Ground",
+      "source": {
+        "url": "https://wikiwiki.jp/ksp/DLC%20Breaking%20Ground%20Expansion",
+        "line": 230
+      },
+      "ksp12InternalPartId": null,
+      "internalIdStatus": "not verified",
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not verified",
+      "geometryPlan": "independently authored Three.js geometry or explicitly licensed model",
+      "status": "DLC inventory candidate; verify exact 1.12.5 part.cfg, attachment nodes and modules"
+    }
+  ]
+}
