@@ -9,7 +9,7 @@ export function createPartModel(p,THREE){
  const torus=(rad,tube,ma,y=0)=>mesh(new THREE.TorusGeometry(rad,tube,8,40),ma,[0,y,0],[Math.PI/2,0,0]);
  const box=(w,hh,d,ma,pos=[0,0,0],rot=[0,0,0])=>mesh(new THREE.BoxGeometry(w,hh,d),ma,pos,rot);
  const sphere=(rad,ma,pos=[0,0,0],scale=[1,1,1])=>mesh(new THREE.SphereGeometry(rad,24,16),ma,pos,[0,0,0],scale);
- const nozzle=(rad,len,ma=dark,y=0)=>{cyl(rad*.48,rad,len,ma,y-len*.45,32);torus(rad*.94,.055,alloy,y-len*.9);};
+ const nozzle=(rad,len,ma=dark,y=0,x=0,z=0)=>{const b=cyl(rad*.48,rad,len,ma,y-len*.45,32);b.position.x=x;b.position.z=z;const ring=torus(rad*.94,.055,alloy,y-len*.9);ring.position.set(x,y-len*.9,z);};
  const boltRing=(rad,y,count=12)=>{for(let i=0;i<count;i++){const a=i*Math.PI*2/count;sphere(.035,gold,[Math.cos(a)*rad,y,Math.sin(a)*rad],[1,1,1]);}};
  const panel=(w,hh,x,z)=>{box(w,.045,hh,blue,[x,0,z]);for(let k=1;k<5;k++)box(.018,.018,hh*.94,mat(0x82a9c2,.5,.3),[x-w/2+w*k/5,.032,z]);box(w*.98,.018,.025,alloy,[x,.034,0]);};
  const bodyBand=(rad,y,ma=dark)=>torus(rad,.045,ma,y);
@@ -39,7 +39,7 @@ export function createPartModel(p,THREE){
   const aircraft=p.type==='fuselage',mk2=id.includes('mk2'),mk3=id.includes('mk3'),donut=id.includes('donut'),baguette=id.includes('baguette'),xenon=id.includes('xenon'),ore=id.includes('ore');
   if(aircraft){
    const width=mk3?r*1.35:mk2?r*1.2:r;const shell=mesh(new THREE.CylinderGeometry(width,width,h,32),white,[0,0,0],[Math.PI/2,0,0]);torus(width*.96,.06,dark).rotation.x=0;
-   for(const z of [-h*.34,0,h*.34]){const band=mesh(new THREE.TorusGeometry(width*.96,.045,8,32),gold,[0,0,z],[Math.PI/2,0,0]);}
+   for(const z of [-h*.34,0,h*.34])mesh(new THREE.TorusGeometry(width*.96,.045,8,32),gold,[0,0,z]);
    for(let i=0;i<4;i++){const x=(i-1.5)*width*.35;box(.035,.025,h*.82,dark,[x,width*.95,0]);}
   }else if(donut){cyl(r,r,h*.38,white);torus(r*.93,.12,alloy);torus(r*.93,.055,dark,.14);}
   else if(baguette){mesh(new THREE.CapsuleGeometry(r*.6,h*.28,6,16),white,[0,0,0],[Math.PI/2,0,0]);}
@@ -63,7 +63,7 @@ export function createPartModel(p,THREE){
   }else if(ion){cyl(r*.34,r*.65,h*.32,alloy,h*.35);for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.035,h*.55,.035,gold,[Math.cos(a)*r*.52,h*.48,Math.sin(a)*r*.52]);}mesh(new THREE.CylinderGeometry(r*.5,r*.28,.08,24),blue,[0,h*.72,0]);}
   else{
    if(solid){cyl(r,r,h*.72,white,h*.52,32);mesh(new THREE.ConeGeometry(r*.98,h*.28,32),orange,[0,h*.99,0]);}
-   else{cyl(r*.9,r,h*.48,white,h*.7,36);for(let i=0;i<count;i++){const a=i*Math.PI*2/count,x=count===1?0:Math.cos(a)*r*.42,z=count===1?0:Math.sin(a)*r*.42;const nr=count===4?r*.38:count===2?r*.43:r*.78;nozzle(nr,h*.62,dark,-h*.03);if(count>1){g.children.slice(-3).forEach(o=>o.position.x+=x);g.children.slice(-3).forEach(o=>o.position.z+=z);}}}
+   else{cyl(r*.9,r,h*.48,white,h*.7,36);for(let i=0;i<count;i++){const a=i*Math.PI*2/count,x=count===1?0:Math.cos(a)*r*.42,z=count===1?0:Math.sin(a)*r*.42;const nr=count===4?r*.38:count===2?r*.43:r*.78;nozzle(nr,h*.62,dark,-h*.03,x,z);}}
    if(nerv){cyl(r*.38,r*.5,h*.6,gold,h*.23);for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.07,h*.5,.07,dark,[Math.cos(a)*r*.65,h*.38,Math.sin(a)*r*.65]);}}
    else if(poodle){for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.07,.24,.07,gold,[Math.cos(a)*r*.8,h*.42,Math.sin(a)*r*.8]);}}
    else{for(let i=0;i<6;i++){const a=i*Math.PI/3;box(.035,h*.22,.035,dark,[Math.cos(a)*r*.91,h*.65,Math.sin(a)*r*.91]);}}
