@@ -88,3 +88,10 @@
 /* Raise the crew roster closer to the top edge */
 .career-panel{top:18px}
 @media(max-width:700px){.career-panel{top:12px}}
+
+/* Consistent part hit-area tiles and larger 3D preview canvas */
+.part{background:#53636d!important;border:1px solid #91a0a8!important}
+.part:hover{background:#53636d!important;border-color:#c7d5da!important}
+.part:disabled{background:#53636d!important}
+.part-icon{background:#778894!important}
+.part-preview-canvas{background:#778894}
