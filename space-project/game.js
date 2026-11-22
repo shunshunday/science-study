@@ -71,28 +71,83 @@ const catalog=[
 {id:'chute',name:'Mk16 パラシュート',type:'chute',tech:'basic',mass:.1,cost:400,icon:'⌃',height:.6,radius:.8},
 {id:'battery',name:'Z-100 バッテリー',type:'battery',tech:'flight',mass:.05,cost:80,icon:'▣',height:.35,radius:.5},
 {id:'solar',name:'OX-STAT ソーラーパネル',type:'solar',tech:'flight',mass:.017,cost:75,icon:'▦',height:.3,radius:1},
-{id:'science',name:'科学実験装置',type:'science',tech:'science',mass:.1,cost:450,icon:'⚗',height:.55,radius:.55}
+{id:'science',name:'科学実験装置',type:'science',tech:'science',mass:.1,cost:450,icon:'⚗',height:.55,radius:.55},
+
+{id:'pod-mk1-inline',name:'Mk1 インラインコックピット',type:'pod',mass:1.03,cost:1600,crew:1,icon:'◉',height:2.2,radius:.625},
+{id:'pod-mk2',name:'Mk2 コックピット',type:'pod',mass:2.06,cost:3500,crew:2,icon:'◉',height:3.2,radius:1.25},
+{id:'pod-mk3',name:'Mk3 コックピット',type:'pod',mass:3.9,cost:10000,crew:4,icon:'◉',height:4.5,radius:1.875},
+{id:'pod-mk13',name:'Mk1-3 コマンドポッド',type:'pod',mass:2.72,cost:3800,crew:3,icon:'◉',height:2.4,radius:1.25},
+{id:'pod-lander',name:'Mk1 ランダー缶',type:'pod',mass:.66,cost:1500,crew:1,icon:'◉',height:1.3,radius:.625},
+{id:'pod-cupola',name:'PPD-12 キューポラ',type:'pod',mass:1.8,cost:3200,crew:1,icon:'◉',height:2.2,radius:1.25},
+{id:'seat',name:'EAS-1 コマンドシート',type:'pod',mass:.05,cost:200,crew:1,icon:'◉',height:.5,radius:.3},
+{id:'probe-qbe',name:'Probodobodyne QBE',type:'probe',mass:.07,cost:360,icon:'⌖',height:.5,radius:.5},
+{id:'probe-okto',name:'Probodobodyne OKTO',type:'probe',mass:.1,cost:450,icon:'⌖',height:.55,radius:.5},
+{id:'probe-okto2',name:'Probodobodyne OKTO2',type:'probe',mass:.04,cost:1480,icon:'⌖',height:.4,radius:.45},
+{id:'probe-hecs',name:'Probodobodyne HECS',type:'probe',mass:.1,cost:650,icon:'⌖',height:.65,radius:.55},
+{id:'probe-hecs2',name:'Probodobodyne HECS2',type:'probe',mass:.2,cost:7500,icon:'⌖',height:.8,radius:.625},
+{id:'probe-rovemate',name:'Probodobodyne RoveMate',type:'probe',mass:.15,cost:800,icon:'⌖',height:.6,radius:.7},
+{id:'probe-stayputnik',name:'Stayputnik',type:'probe',mass:.05,cost:300,icon:'⌖',height:.5,radius:.5},
+{id:'probe-rcl01',name:'RC-L01 Remote Guidance Unit',type:'probe',mass:.5,cost:3400,icon:'⌖',height:1.1,radius:.625},
+{id:'probe-rc001s',name:'RC-001S Remote Guidance Unit',type:'probe',mass:.1,cost:2250,icon:'⌖',height:.65,radius:.5},
+{id:'tank-oscarb',name:'Oscar-B 燃料タンク',type:'tank',mass:.225,cost:70,fuel:40,icon:'▤',height:.65,radius:.32},
+{id:'tank-r11',name:'R-11 Baguette 外部燃料タンク',type:'tank',mass:.3038,cost:50,fuel:54,icon:'▤',height:1.5,radius:.22},
+{id:'tank-r12',name:'R-12 Donut 外部燃料タンク',type:'tank',mass:.3375,cost:147,fuel:60,icon:'▤',height:.8,radius:.4},
+{id:'tank-r4',name:'R-4 Dumpling 外部燃料タンク',type:'tank',mass:.1238,cost:50,fuel:22,icon:'▤',height:.55,radius:.22},
+{id:'tank-t200',name:'FL-T200 燃料タンク',type:'tank',mass:1.125,cost:275,fuel:200,icon:'▤',height:1.8,radius:.625},
+{id:'tank-t800',name:'FL-T800 燃料タンク',type:'tank',mass:4.5,cost:800,fuel:800,icon:'▤',height:4.4,radius:.625},
+{id:'tank-x2008',name:'Rockomax X200-8 燃料タンク',type:'tank',mass:4.5,cost:800,fuel:800,icon:'▤',height:1.8,radius:1.25},
+{id:'tank-x20032',name:'Rockomax X200-32 燃料タンク',type:'tank',mass:18,cost:3000,fuel:3200,icon:'▤',height:5.5,radius:1.25},
+{id:'tank-jumbo64',name:'Rockomax Jumbo-64 燃料タンク',type:'tank',mass:36,cost:5750,fuel:6400,icon:'▤',height:8,radius:1.25},
+{id:'tank-s3-3600',name:'Kerbodyne S3-3600 タンク',type:'tank',mass:20.25,cost:3250,fuel:3600,icon:'▤',height:3.2,radius:1.875},
+{id:'tank-s3-7200',name:'Kerbodyne S3-7200 タンク',type:'tank',mass:40.5,cost:6500,fuel:7200,icon:'▤',height:6.4,radius:1.875},
+{id:'tank-s3-14400',name:'Kerbodyne S3-14400 タンク',type:'tank',mass:81,cost:13000,fuel:14400,icon:'▤',height:12.8,radius:1.875},
+{id:'tank-mk0-lf',name:'Mk0 液体燃料タンク搭載ボディ',type:'tank',mass:.275,cost:200,fuel:50,icon:'▤',height:1.25,radius:.3125},
+{id:'tank-mk1-lf',name:'Mk1 液体燃料タンク搭載ボディ',type:'tank',mass:2.25,cost:550,fuel:400,icon:'▤',height:2.5,radius:.625},
+{id:'tank-mk2-lf',name:'Mk2 液体燃料タンク搭載ボディ',type:'tank',mass:4.57,cost:1450,fuel:800,icon:'▤',height:5,radius:1.25},
+{id:'tank-mk3-lf',name:'Mk3 液体燃料タンク搭載ボディ',type:'tank',mass:28.57,cost:8600,fuel:5000,icon:'▤',height:7.5,radius:1.875},
+{id:'rcs-flr10',name:'FL-R10 RCS燃料タンク',type:'tank',mass:.1,cost:200,fuel:20,icon:'▤',height:.5,radius:.35},
+{id:'rcs-flr25',name:'FL-R25 RCS燃料タンク',type:'tank',mass:.56,cost:330,fuel:120,icon:'▤',height:1,radius:.625},
+{id:'rcs-flr1',name:'FL-R1 RCS燃料タンク',type:'tank',mass:3.4,cost:1800,fuel:750,icon:'▤',height:2.2,radius:1.25},
+{id:'xenon-pbx150',name:'PB-X150 キセノンコンテナ',type:'tank',mass:.096,cost:3680,fuel:720,icon:'▤',height:.8,radius:.4},
+{id:'xenon-pbx50r',name:'PB-X50R キセノンコンテナ',type:'tank',mass:.054,cost:2220,fuel:405,icon:'▤',height:.65,radius:.3},
+{id:'xenon-pbx750',name:'PB-X750 キセノンコンテナ',type:'tank',mass:.76,cost:24300,fuel:5700,icon:'▤',height:1.5,radius:.625},
+{id:'engine-ant',name:'LV-1 Ant',type:'engine',mass:.02,cost:110,thrust:2,isp:315,icon:'◈',height:.45,radius:.25},
+{id:'engine-spark',name:'48-7S Spark',type:'engine',mass:.1,cost:240,thrust:20,isp:320,icon:'◈',height:.7,radius:.3},
+{id:'engine-reliant',name:'LV-T30 Reliant',type:'engine',mass:1.25,cost:1100,thrust:240,isp:310,icon:'◈',height:1.5,radius:.625},
+{id:'engine-swivel',name:'LV-T45 Swivel',type:'engine',mass:1.5,cost:1200,thrust:215,isp:320,icon:'◈',height:1.6,radius:.625},
+{id:'engine-dart',name:'T-1 Toroidal Aerospike Dart',type:'engine',mass:1,cost:3850,thrust:180,isp:340,icon:'◈',height:1.2,radius:.625},
+{id:'engine-nerv',name:'LV-N Nerv 原子力ロケットモーター',type:'engine',mass:3,cost:10000,thrust:60,isp:800,icon:'◈',height:2,radius:.625},
+{id:'engine-rapier',name:'CR-7 RAPIER',type:'engine',mass:2,cost:6000,thrust:180,isp:305,icon:'◈',height:2,radius:.625},
+{id:'engine-vector',name:'S3 KS-25 Vector',type:'engine',mass:4,cost:18000,thrust:1000,isp:315,icon:'◈',height:2.8,radius:1.25},
+{id:'engine-poodle',name:'RE-L10 Poodle',type:'engine',mass:1.75,cost:1300,thrust:250,isp:350,icon:'◈',height:1.8,radius:1.25},
+{id:'engine-skipper',name:'RE-I5 Skipper',type:'engine',mass:3,cost:5300,thrust:650,isp:320,icon:'◈',height:2.2,radius:1.25},
+{id:'engine-mainsail-stock',name:'RE-M3 Mainsail',type:'engine',mass:6,cost:13000,thrust:1500,isp:310,icon:'◈',height:2.8,radius:1.25},
+{id:'engine-twinboar',name:'LFB KR-1x2 Twin-Boar',type:'engine',mass:42.5,cost:17000,thrust:2000,isp:300,icon:'◈',height:5,radius:1.875},
+{id:'engine-rhino',name:'KR-2L+ Rhino',type:'engine',mass:9,cost:25000,thrust:2000,isp:340,icon:'◈',height:3.5,radius:1.875},
+{id:'engine-mammoth',name:'S3 KS-25x4 Mammoth',type:'engine',mass:15,cost:39000,thrust:4000,isp:315,icon:'◈',height:4,radius:1.875},
+{id:'engine-spider',name:'LV-1R Spider',type:'engine',mass:.02,cost:120,thrust:2,isp:290,icon:'◈',height:.4,radius:.25},
+{id:'engine-twitch',name:'24-77 Twitch',type:'engine',mass:.09,cost:400,thrust:16,isp:290,icon:'◈',height:.6,radius:.3},
+{id:'engine-thud',name:'Mk-55 Thud',type:'engine',mass:.9,cost:820,thrust:120,isp:305,icon:'◈',height:1,radius:.5},
+{id:'engine-puff',name:'O-10 Puff',type:'engine',mass:.09,cost:150,thrust:20,isp:250,icon:'◈',height:.6,radius:.3},
+{id:'tank-fuelcell',name:'燃料電池',type:'battery',mass:.05,cost:750,icon:'▣',height:.4,radius:.4},
+{id:'solar-ox10c',name:'OX-10C 太陽電池パネル',type:'solar',mass:.09,cost:1200,icon:'▦',height:.5,radius:.7},
+{id:'solar-ox4l',name:'OX-4L 1x6 太陽電池パネル',type:'solar',mass:.0175,cost:380,icon:'▦',height:.3,radius:.8},
+{id:'solar-ox4w',name:'OX-4W 3x2 太陽電池パネル',type:'solar',mass:.0175,cost:380,icon:'▦',height:.3,radius:.8},
+{id:'solar-oxstatxl',name:'OX-STAT-XL 太陽電池パネル',type:'solar',mass:.04,cost:600,icon:'▦',height:.4,radius:.6},
+{id:'solar-sp10c',name:'SP-10C 太陽電池パネル',type:'solar',mass:.13,cost:1400,icon:'▦',height:.5,radius:.9},
+{id:'parachute-mk16xl',name:'Mk16-XL パラシュート',type:'chute',mass:.3,cost:850,icon:'⌃',height:.6,radius:.8},
+{id:'parachute-mk25',name:'Mk25 パラシュート',type:'chute',mass:.2,cost:400,icon:'⌃',height:.5,radius:.7},
+{id:'wing-delta',name:'デルタ翼',type:'fin',mass:.2,cost:600,icon:'△',height:.3,radius:1.5},
+{id:'wing-small-delta',name:'小型デルタ翼',type:'fin',mass:.05,cost:200,icon:'△',height:.2,radius:.7},
+{id:'wing-strake',name:'ストレーキ',type:'fin',mass:.05,cost:400,icon:'△',height:.2,radius:.8},
+{id:'wing-struct-a',name:'ストラクチャーウィング タイプA',type:'fin',mass:.1,cost:500,icon:'△',height:.2,radius:1.2},
+{id:'wing-struct-b',name:'ストラクチャーウィング タイプB',type:'fin',mass:.1,cost:500,icon:'△',height:.2,radius:1.2},
+{id:'wing-struct-c',name:'ストラクチャーウィング タイプC',type:'fin',mass:.05,cost:300,icon:'△',height:.2,radius:.8},
+{id:'wing-struct-d',name:'ストラクチャーウィング タイプD',type:'fin',mass:.025,cost:150,icon:'△',height:.2,radius:.6}
+
 ];
 
-// 368点の独自カタログ。基本パーツ群を用途別の寸法・性能バリエーションへ展開。
-const baseCatalog=[...catalog];
-const variantFamilies=[
-{name:'制御・乗員',types:['pod','probe'],prefix:'C'},
-{name:'燃料タンク',types:['tank'],prefix:'T'},
-{name:'推進装置',types:['engine','booster'],prefix:'E'},
-{name:'構造・分離',types:['decoupler'],prefix:'S'},
-{name:'空力',types:['fin','chute'],prefix:'A'},
-{name:'電力・科学',types:['battery','solar','science'],prefix:'P'}
-];
-let variantNo=1;
-while(catalog.length<368){
- const family=variantFamilies[(variantNo-1)%variantFamilies.length];
- const choices=baseCatalog.filter(p=>family.types.includes(p.type));
- const base=choices[Math.floor((variantNo*7)%choices.length)];
- const factor=[.72,.82,.9,1.08,1.18,1.32][variantNo%6];
- catalog.push({...base,id:base.id+'-v'+variantNo,name:base.name+' Mk.'+String(variantNo).padStart(3,'0'),mass:+(base.mass*factor).toFixed(3),cost:Math.round(base.cost*factor),height:+(base.height*factor).toFixed(2),radius:+(base.radius*factor).toFixed(2),fuel:base.fuel?Math.round(base.fuel*factor):undefined,thrust:base.thrust?Math.round(base.thrust*factor):undefined,icon:base.icon,variant:true,family:family.name});
- variantNo++;
-}
+
 let activePartCategory='すべて';
 function categoryFor(p){return p.type==='pod'||p.type==='probe'?'制御・乗員':p.type==='tank'?'燃料タンク':p.type==='engine'||p.type==='booster'?'推進装置':p.type==='decoupler'?'構造・分離':p.type==='fin'||p.type==='chute'?'空力':'電力・科学';}
 function renderCategories(){
