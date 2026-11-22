@@ -73,3 +73,7 @@
 .crew-info{min-width:0}
 .crew-info h3{font-size:12px}
 @media(max-width:700px){.crew-card{grid-template-columns:64px minmax(0,1fr);min-height:100px;gap:8px}.crew-avatar{width:64px;height:86px}}
+
+/* Raise the crew roster closer to the top edge */
+.career-panel{top:18px}
+@media(max-width:700px){.career-panel{top:12px}}
