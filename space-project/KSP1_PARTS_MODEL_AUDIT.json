@@ -67,8 +67,8 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "generic project placeholder; not a unique KSP1 part; replace with individual stock/DLC entries",
-      "replacementAction": "Do not retain as a standalone KSP catalog entry. Add the actual named stock parts for this family."
+      "status": "retired generic project placeholder; replaced by named stock part entries in the live catalog",
+      "replacementAction": "Legacy saved craft IDs are migrated to probe-hecs, srb-rt10, wing-small-delta or science-goo when loaded."
     },
     {
       "projectPartId": "tank-s",
@@ -296,8 +296,8 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "generic project placeholder; not a unique KSP1 part; replace with individual stock/DLC entries",
-      "replacementAction": "Do not retain as a standalone KSP catalog entry. Add the actual named stock parts for this family."
+      "status": "retired generic project placeholder; replaced by named stock part entries in the live catalog",
+      "replacementAction": "Legacy saved craft IDs are migrated to probe-hecs, srb-rt10, wing-small-delta or science-goo when loaded."
     },
     {
       "projectPartId": "fin",
@@ -320,8 +320,8 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "generic project placeholder; not a unique KSP1 part; replace with individual stock/DLC entries",
-      "replacementAction": "Do not retain as a standalone KSP catalog entry. Add the actual named stock parts for this family."
+      "status": "retired generic project placeholder; replaced by named stock part entries in the live catalog",
+      "replacementAction": "Legacy saved craft IDs are migrated to probe-hecs, srb-rt10, wing-small-delta or science-goo when loaded."
     },
     {
       "projectPartId": "chute",
@@ -428,8 +428,8 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "generic project placeholder; not a unique KSP1 part; replace with individual stock/DLC entries",
-      "replacementAction": "Do not retain as a standalone KSP catalog entry. Add the actual named stock parts for this family."
+      "status": "retired generic project placeholder; replaced by named stock part entries in the live catalog",
+      "replacementAction": "Legacy saved craft IDs are migrated to probe-hecs, srb-rt10, wing-small-delta or science-goo when loaded."
     },
     {
       "projectPartId": "pod-mk1-inline",
@@ -3540,9 +3540,10 @@
     "additionalDlcInventoryCandidates": 97,
     "totalAdditionalInventoryCandidates": 277,
     "exactCfgVerified": 0,
-    "genericPlaceholdersToReplace": 4,
-    "note": "The app imports 277 additional stock/DLC/hidden-legacy inventory candidates and renders them with independently authored geometry. The 124/128 matches in the original audit remain candidate identities, not exact 1.12.5 .cfg verification. Added candidate entries use explicitly provisional values where no verified .cfg data was available. Exact config export workflow is provided in export-ksp-part-configs.ps1. Official KSP model assets remain unlicensed and are not included.",
-    "additionalLegacyStockCandidates": 11
+    "genericPlaceholdersToReplace": 0,
+    "note": "The four generic placeholders have been removed from the live catalog and old saved craft IDs are migrated to named parts. The app imports 277 additional stock/DLC/hidden-legacy inventory candidates and renders them with independently authored geometry. The 124/128 original identity matches remain candidate identities, not exact 1.12.5 .cfg verification. Added candidate entries use provisional values where no verified .cfg data was available. Exact config export workflow is provided in export-ksp-part-configs.ps1. Official KSP model assets remain unlicensed and are not included.",
+    "additionalLegacyStockCandidates": 11,
+    "genericPlaceholdersRetired": 4
   },
   "modelImplementation": {
     "library": "space-project/parts-models.js",
