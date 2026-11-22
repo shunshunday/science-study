@@ -75,3 +75,7 @@ No stock-game or third-party mod art assets have been copied into this project b
 
 - Added 11 hidden legacy stock-part candidates for KSP 1.12.5 (including deprecated antennas, engines, lander cabin, probe core, nose cone and spotlights). These are labeled STOCK and remain flagged as provisional until local .cfg confirmation.
 - Added `export-ksp-part-configs.ps1` and `KSP1_PART_CONFIG_IMPORT.md`. This Windows PowerShell utility reads the user's installed stock and DLC `.cfg` files and exports exact internal IDs, mass/cost, nodes, resources and modules without copying any game models or textures.
+
+- Retired the four generic demo catalog entries (generic probe, booster, fin and science). Old craft saves are migrated to named parts so existing saved builds do not silently lose those components.
+- The merged live catalog is approximately 435 entries after deduplication (128 original entries + 65 earlier expansion rows + 277 new stock/DLC/legacy candidates, minus duplicates and the four retired placeholders). This is an implementation count, not a claim of complete official inventory coverage.
+- Refined Breaking Ground part typing so rotor blades, nose cones, turboshaft engines, robotics, solar panels, batteries, antennas and ground science instruments receive their corresponding model families instead of all appearing as generic cargo/wing pieces.
