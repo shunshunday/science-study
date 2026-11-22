@@ -167,8 +167,8 @@
         "isp": 320
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "liquidEngine3_v2",
+      "verifiedKspPartName": "LV-909 液体燃料エンジン",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -176,7 +176,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-m",
@@ -192,8 +196,8 @@
         "isp": 320
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "liquidEngine2_v2",
+      "verifiedKspPartName": "LV-T45 Swivel",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -201,7 +205,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-l",
@@ -217,8 +225,8 @@
         "isp": 310
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "liquidEngineMainsail_v2",
+      "verifiedKspPartName": "RE-M3 Mainsail",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -226,7 +234,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "decoupler",
@@ -1409,8 +1421,8 @@
         "isp": 315
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "microEngine_v2",
+      "verifiedKspPartName": "LV-1 Ant",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1418,7 +1430,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-spark",
@@ -1433,8 +1449,8 @@
         "isp": 320
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "liquidEngineMini_v2",
+      "verifiedKspPartName": "48-7S Spark",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1442,7 +1458,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-reliant",
@@ -1457,8 +1477,8 @@
         "isp": 310
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "liquidEngine_v2",
+      "verifiedKspPartName": "LV-T30 Reliant",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1466,7 +1486,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-swivel",
@@ -1481,8 +1505,8 @@
         "isp": 320
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "liquidEngine2_v2",
+      "verifiedKspPartName": "LV-T45 Swivel",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1490,7 +1514,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-dart",
@@ -1505,8 +1533,8 @@
         "isp": 340
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "toroidalAerospike",
+      "verifiedKspPartName": "T-1 Toroidal Aerospike Dart",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1514,7 +1542,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-nerv",
@@ -1529,8 +1561,8 @@
         "isp": 800
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "nuclearEngine",
+      "verifiedKspPartName": "LV-N Nerv",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1538,7 +1570,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-rapier",
@@ -1553,8 +1589,8 @@
         "isp": 305
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "RAPIER",
+      "verifiedKspPartName": "CR-7 RAPIER",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1562,7 +1598,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-vector",
@@ -1577,8 +1617,8 @@
         "isp": 315
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "SSME",
+      "verifiedKspPartName": "S3 KS-25 Vector",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1586,7 +1626,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-poodle",
@@ -1601,8 +1645,8 @@
         "isp": 350
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "liquidEngine2-2_v2",
+      "verifiedKspPartName": "RE-L10 Poodle",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1610,7 +1654,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-skipper",
@@ -1625,8 +1673,8 @@
         "isp": 320
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "engineLargeSkipper_v2",
+      "verifiedKspPartName": "RE-I5 Skipper",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1634,7 +1682,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-mainsail-stock",
@@ -1649,8 +1701,8 @@
         "isp": 310
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "liquidEngineMainsail_v2",
+      "verifiedKspPartName": "RE-M3 Mainsail",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1658,7 +1710,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-twinboar",
@@ -1673,8 +1729,8 @@
         "isp": 300
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "Size2LFB",
+      "verifiedKspPartName": "LFB KR-1x2 Twin-Boar",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1682,7 +1738,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-rhino",
@@ -1697,8 +1757,8 @@
         "isp": 340
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "Size3AdvancedEngine",
+      "verifiedKspPartName": "KR-2L+ Rhino",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1706,7 +1766,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-mammoth",
@@ -1721,8 +1785,8 @@
         "isp": 315
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "Size3EngineCluster",
+      "verifiedKspPartName": "S3 KS-25x4 Mammoth",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1730,7 +1794,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-spider",
@@ -1745,8 +1813,8 @@
         "isp": 290
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "radialEngineMini_v2",
+      "verifiedKspPartName": "LV-1R Spider",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1754,7 +1822,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-twitch",
@@ -1769,8 +1841,8 @@
         "isp": 290
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "smallRadialEngine_v2",
+      "verifiedKspPartName": "24-77 Twitch",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1778,7 +1850,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-thud",
@@ -1793,8 +1869,8 @@
         "isp": 305
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "radialLiquidEngine1-2",
+      "verifiedKspPartName": "Mk-55 Thud",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1802,7 +1878,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "engine-puff",
@@ -1817,8 +1897,8 @@
         "isp": 250
       },
       "currentModel": "procedural Three.js geometry from partMesh()",
-      "ksp12InternalPartId": null,
-      "verifiedKspPartName": null,
+      "ksp12InternalPartId": "omsEngine",
+      "verifiedKspPartName": "O-10 Puff",
       "dlc": null,
       "approvedModelAsset": null,
       "modelSourceUrl": null,
@@ -1826,7 +1906,11 @@
       "modelLicense": null,
       "redistributionPermission": "not verified",
       "glbConversionPermission": "not verified",
-      "status": "needs individual KSP match and asset/license review"
+      "status": "KSP part identity matched; exact 3D asset and license still unresolved",
+      "matchEvidence": [
+        "KSP 1.12.x part-loading log references: https://gist.github.com/StormCircuit/7876ed57028889495d91fdf983805dad",
+        "KSP stock engine reference: https://github.com/Acea-K/DeepJeb/blob/main/GameData/DeepJeb/Skills/stock-game/ksp-craft-files/references/stock-part-reference.md"
+      ]
     },
     {
       "projectPartId": "tank-fuelcell",
@@ -3131,10 +3215,10 @@
     }
   ],
   "auditProgress": {
-    "matchedPartIdentities": 35,
+    "matchedPartIdentities": 56,
     "totalExistingProjectEntries": 128,
     "approved3DModels": 0,
-    "nextBatch": "xenon/monopropellant tanks and liquid-fuel engine IDs",
-    "note": "Identity matching is separate from model acquisition. A matched internal ID does not authorize publishing the original KSP mesh or texture. Existing placeholder parameters must be compared and corrected against the official part config before simulation use."
+    "nextBatch": "solid rocket boosters and aero parts",
+    "note": "Some old/current variant IDs coexist (for example _v2). Before using a match in game logic, verify the selected 1.12.x .cfg's active PART name and compare the existing placeholder mass/thrust/resource values. A matched internal ID does not authorize publishing the original KSP mesh or texture."
   }
 }
