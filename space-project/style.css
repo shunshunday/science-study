@@ -154,3 +154,6 @@
 /* Reduce the PARTS CATALOG heading and count */
 .parts-head b{font-size:10px;line-height:1.1;letter-spacing:.6px}
 .parts-head small{font-size:8px}
+
+/* Show three part cards across instead of two */
+.part-list{grid-template-columns:repeat(3,minmax(0,1fr))!important}
