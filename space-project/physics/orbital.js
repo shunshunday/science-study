@@ -1,6 +1,6 @@
 // Two-body orbital mechanics and atmosphere model. SI units throughout.
 export const G0 = 9.80665;
-export const BODY = Object.freeze({ radius: 600, mu: 3.5316e6, rotationRate: 2.0e-4, atmosphereHeight: 70_000 });
+export const BODY = Object.freeze({ radius: 600, mu: 3531.6, rotationRate: 2.0e-4, atmosphereHeight: 70 });
 export function gravityAcceleration(position, mu=BODY.mu, center={x:0,y:-BODY.radius,z:0}) {
   const x=position.x-center.x, y=position.y-center.y, z=position.z-center.z;
   const r2=x*x+y*y+z*z, r=Math.sqrt(Math.max(r2,1));
@@ -10,7 +10,7 @@ export function gravityAcceleration(position, mu=BODY.mu, center={x:0,y:-BODY.ra
 export function atmosphericDensity(altitude) {
   if (altitude<=0) return 1.225;
   if (altitude>=BODY.atmosphereHeight) return 0;
-  const layers=[[0,1.225,8500],[11000,.3639,6341],[20000,.0880,7200],[32000,.0132,7600],[47000,.00143,8000],[60000,.00031,7500]];
+  const layers=[[0,1.225,8.5],[11,.3639,6.341],[20,.0880,7.2],[32,.0132,7.6],[47,.00143,8],[60,.00031,7.5]];
   let i=0; while(i<layers.length-1 && altitude>layers[i+1][0]) i++;
   const [h,rho,scale]=layers[i];
   return rho*Math.exp(-(altitude-h)/scale);
