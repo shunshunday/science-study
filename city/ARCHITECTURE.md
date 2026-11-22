@@ -3,8 +3,8 @@
 初代 Cities: Skylines の都市シミュレーションを参考にした、独自実装のブラウザ3Dゲーム。Three.js を描画層として使用する。
 
 ## 現在のファイル
-- `index.html`: HUD、ツールタブ、パネル
-- `style.css`: UIレイアウト
+  `index.html`: HUD、ツールタブ、パネル
+  `style.css`: UIレイアウト
 - `game.js`: Three.jsのシーン構築、描画、入力、ゲームとUIの接続
 - `simulation/road-network.js`: 交差点分割を含む道路グラフ、A*経路探索、固定時間刻みクロック
 - `simulation/economy.js`: 税収、運営費、融資、利息、返済を扱う都市財政モデル
