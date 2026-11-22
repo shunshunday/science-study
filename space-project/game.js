@@ -24,7 +24,7 @@ function makeCrewFigure(member,index){
  root.position.set((index%4-1.5)*5.2,0,(Math.floor(index/4)-1.5)*5.5);
  root.rotation.y=Math.PI;crewStage.add(root);
 }
-function rebuildCrewStage(){while(crewStage.children.length){const child=crewStage.children.pop();crewStage.remove(child);}crewMembers.forEach(makeCrewFigure);}
+function rebuildCrewStage(){while(crewStage.children.length)crewStage.remove(crewStage.children[0]);crewMembers.forEach(makeCrewFigure);}
 const scene=new THREE.Scene();
 function makeCrewFigure(member,index){
  const root=new THREE.Group(),role=member.role||'科学者',pilot=role==='パイロット',engineer=role==='エンジニア';
@@ -336,7 +336,7 @@ function renderCrew(){
  $('#career-title').textContent='乗組員管理';
  rebuildCrewStage();crewStage.visible=true;
  $('#career-content').innerHTML='<div class="crew-intro"><span>CREW ROSTER</span><p>3D乗組員一覧。飛行から帰還すると経験が上がります。</p></div><div class="crew-grid">'+crewMembers.map((k)=>{
-  const stars=Math.min(5,Math.max(1,k.stars??k.level??1)),bravery=Math.min(99,Math.max(1,k.bravery??(k.role==='パイロット'?70:k.role==='エンジニア'?48:55))),stupidity=Math.min(99,Math.max(1,k.stupidity??(k.role==='パイロット'?62:k.role==='エンジニア'?38:72)));
+  const stars=Math.min(5,Math.max(1,k.stars??1)),bravery=Math.min(99,Math.max(1,k.bravery??(k.role==='パイロット'?70:k.role==='エンジニア'?48:55))),stupidity=Math.min(99,Math.max(1,k.stupidity??(k.role==='パイロット'?62:k.role==='エンジニア'?38:72)));
   k.bravery=bravery;k.stupidity=stupidity;
   return '<article class="crew-card"><div class="crew-info"><h3>'+k.name+'</h3><span class="crew-role">'+k.role+' ・ 経験 '+('★'.repeat(stars))+('☆'.repeat(5-stars))+'</span><div class="crew-stat"><div><span>バカ度</span><b>'+stupidity+'%</b></div><div class="crew-meter"><i style="width:'+stupidity+'%"></i></div></div><div class="crew-stat"><div><span>勇敢度</span><b>'+bravery+'%</b></div><div class="crew-meter brave"><i style="width:'+bravery+'%"></i></div></div></div></article>';
  }).join('')+'</div><section class="crew-recruit"><b>乗組員を雇用</b><div><button data-hire-crew="pilot">パイロットを雇用</button><button data-hire-crew="engineer">エンジニアを雇用</button><button data-hire-crew="scientist">科学者を雇用</button></div></section>';
@@ -462,7 +462,7 @@ function physicsStep(dt){
  position.set(state.position.x,state.position.y,state.position.z);velocity.set(state.velocity.x,state.velocity.y,state.velocity.z);
  if(mdot>0){let liquidBurn=liquidMdot*dt;for(const tank of liquidTanks){const take=Math.min(tank.fuel,liquidBurn);tank.fuel-=take;liquidBurn-=take;if(liquidBurn<=1e-8)break;}let solidBurn=solidMdot*dt;for(const booster of activeEngines.filter(p=>p.data.type==='booster')){const take=Math.min(booster.fuel,solidBurn);booster.fuel-=take;solidBurn-=take;if(solidBurn<=1e-8)break;}fuel=parts.reduce((s,p)=>s+(p.fuel||0),0);if((maxFuel?Math.round(fuel/maxFuel*100):0)!==stageUiFuelPercent)renderStages();}
  const radial=position.clone().sub(bodyCenter),radius=radial.length(),altitude=radius-BODY.radius;
- if(altitude>flightPeakAltitude)flightPeakAltitude=altitude;if(altitude<=0){position.copy(bodyCenter).add(radial.normalize().multiplyScalar(BODY.radius));const normal=position.clone().sub(bodyCenter).normalize(),impact=velocity.dot(normal);if(impact< -8){flight=false;toast('地表衝突 — 機体が破損しました');}else{velocity.addScaledVector(normal,-Math.min(0,impact));velocity.multiplyScalar(.985);if(flight&&flightPeakAltitude>=1){flight=false;throttle=0;const earnedStars=flightPeakAltitude>=70?5:flightPeakAltitude>=10?2:1;crewMembers.forEach(k=>{k.stars=Math.max(1,Math.min(5,Math.max(1,k.stars??k.level??1)+earnedStars));});saveCareer();toast(flightPeakAltitude>=70?'宇宙飛行から帰還！乗組員の経験が★5になりました':flightPeakAltitude>=10?'高高度飛行から帰還！乗組員の経験が上がりました':'飛行回収成功！乗組員の経験が上がりました');}}}
+ if(altitude>flightPeakAltitude)flightPeakAltitude=altitude;if(altitude<=0){position.copy(bodyCenter).add(radial.normalize().multiplyScalar(BODY.radius));const normal=position.clone().sub(bodyCenter).normalize(),impact=velocity.dot(normal);if(impact< -8){flight=false;toast('地表衝突 — 機体が破損しました');}else{velocity.addScaledVector(normal,-Math.min(0,impact));velocity.multiplyScalar(.985);if(flight&&flightPeakAltitude>=1){flight=false;throttle=0;const earnedStars=flightPeakAltitude>=70?5:flightPeakAltitude>=10?2:1;crewMembers.forEach(k=>{k.stars=Math.max(1,Math.min(5,Math.max(1,k.stars??1)+earnedStars));});saveCareer();toast(flightPeakAltitude>=70?'宇宙飛行から帰還！乗組員の経験が★5になりました':flightPeakAltitude>=10?'高高度飛行から帰還！乗組員の経験が上がりました':'飛行回収成功！乗組員の経験が上がりました');}}}
  rocket.position.copy(position);rocket.quaternion.copy(attitude);for(const part of parts){if(part.mesh){const plume=part.mesh.getObjectByName('engine-flame');if(plume){plume.visible=flight&&throttle>0&&activeEngines.includes(part);plume.scale.setScalar(.5+throttle*1.4);}}}
  const forward=new THREE.Vector3(0,0,1).applyQuaternion(attitude),heading=(Math.atan2(forward.x,forward.z)*180/Math.PI+360)%360;$('#heading').textContent='HDG '+Math.round(heading).toString().padStart(3,'0')+'°';const attitudeEuler=new THREE.Euler().setFromQuaternion(attitude,'YXZ');$('.navball-sky').style.transform='rotate('+(-attitudeEuler.z*180/Math.PI)+'deg)';
  const elements=orbitalElements(position,velocity,BODY.mu,bodyCenter),alt=Math.max(0,elements.altitude),spd=elements.speed,verticalSpeed=velocity.dot(position.clone().sub(bodyCenter).normalize());
