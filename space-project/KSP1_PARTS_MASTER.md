@@ -80,3 +80,12 @@ https://github.com/kspcommunity/Mod-Parts-Lister
 - `KSP1_PARTS_MODEL_AUDIT.json`: audit of the 128 current app entries; 124 candidate matches, 4 generic placeholders to replace, 0 exact `.cfg` verifications, 0 approved model assets.
 
 These inventories are discovery/verification work, not an implemented replacement. Each row still needs its exact KSP 1.12.5 part.cfg, node/module data, model design, and license clearance before it can be activated in the editor.
+
+
+## Current implementation status (2026-11-22)
+- `parts-models.js`: integrated original geometry factory used for both the part-card previews and placed craft parts.
+- `parts-inventory.js`: 266 additional candidates (169 stock-family + 97 DLC) merged into the in-game catalog, with source labels and provisional-data warnings.
+- VAB cards now show the part name and source (base / stock / Making History / Breaking Ground).
+- The new models are original approximations, not official KSP meshes. They are not exact KSP visual reproductions.
+- The extra inventory entries are currently candidate records with provisional estimated stats. Exact 1.12.5 IDs, attachment nodes, module behaviors, and per-part official stats are not verified.
+- 0 official KSP 3D assets are approved for redistribution; no proprietary meshes or textures have been copied.
