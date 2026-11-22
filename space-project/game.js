@@ -338,7 +338,7 @@ function renderOnePartPreview(canvas,p){
   canvas.draggable=false;
   canvas.addEventListener('dragstart',e=>e.preventDefault());
   canvas.addEventListener('click',e=>e.stopPropagation());
-  const animate=now=>{if(!entry.hovered||!canvas.isConnected){entry.raf=0;return;}if(!entry.lastFrame)entry.lastFrame=now;const dt=Math.min(.05,(now-entry.lastFrame)/1000);entry.lastFrame=now;model.rotation.y+=dt*1.8;paintPartPreview(entry,canvas);entry.raf=requestAnimationFrame(animate);};
+  const animate=now=>{if(!entry.hovered||!canvas.isConnected){entry.raf=0;return;}if(!entry.lastFrame)entry.lastFrame=now;const dt=Math.min(.05,(now-entry.lastFrame)/1000);entry.lastFrame=now;model.rotation.y+=dt*.9;paintPartPreview(entry,canvas);entry.raf=requestAnimationFrame(animate);};
   canvas.addEventListener('pointerenter',()=>{entry.hovered=true;entry.lastFrame=0;if(!entry.raf)entry.raf=requestAnimationFrame(animate);});
   canvas.addEventListener('pointerleave',()=>{entry.hovered=false;entry.lastFrame=0;if(entry.raf){cancelAnimationFrame(entry.raf);entry.raf=0;}model.rotation.copy(entry.originalRotation);paintPartPreview(entry,canvas);});
   canvas.addEventListener('pointerdown',e=>e.stopPropagation());
