@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {BODY,G0,gravityAcceleration,atmosphericDensity,orbitalElements,rk4Step,deltaV,rocketMassKg} from './physics/orbital.js';
+import {aerodynamicAcceleration} from './physics/aerodynamics.js';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],toast=m=>{let t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2300)};
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x8298a6);scene.fog=new THREE.Fog(0x8298a6,180,600);
 const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.0001,20000);camera.position.set(24,18,34);
@@ -143,10 +144,8 @@ function physicsStep(dt){
  const liquidMdot=activeEngines.filter(p=>p.data.type==='engine').reduce((s,p)=>s+(p.data.thrust||0)*1000/(Math.max(1,p.data.isp||320)*G0),0)*throttle,solidMdot=activeEngines.filter(p=>p.data.type==='booster').reduce((s,p)=>s+(p.data.thrust||0)*1000/(Math.max(1,p.data.isp||220)*G0),0)*throttle,mdot=liquidMdot+solidMdot;
  const acceleration=(pos,vel)=>{
    const grav=gravityAcceleration(pos,BODY.mu,bodyCenter);
-   const r=new THREE.Vector3(pos.x-bodyCenter.x,pos.y-bodyCenter.y,pos.z-bodyCenter.z);
-   const altitude=Math.max(0,r.length()-BODY.radius),rho=atmosphericDensity(altitude),v=Math.hypot(vel.x,vel.y,vel.z);
-   const dragScale=v>0?-.5*rho*(v*1000)*.8/massKg:0;
-   return {x:grav.x+thrustDirection.x*totalThrustN/massKg/1000+vel.x*dragScale,y:grav.y+thrustDirection.y*totalThrustN/massKg/1000+vel.y*dragScale,z:grav.z+thrustDirection.z*totalThrustN/massKg/1000+vel.z*dragScale};
+   const aero=aerodynamicAcceleration(pos,vel,{x:thrustDirection.x,y:thrustDirection.y,z:thrustDirection.z},parts,massKg,bodyCenter);
+   return {x:grav.x+thrustDirection.x*totalThrustN/massKg/1000+aero.x,y:grav.y+thrustDirection.y*totalThrustN/massKg/1000+aero.y,z:grav.z+thrustDirection.z*totalThrustN/massKg/1000+aero.z};
  };
  properG=(totalThrustN/massKg)/G0;
  const state=rk4Step({x:position.x,y:position.y,z:position.z},{x:velocity.x,y:velocity.y,z:velocity.z},dt,acceleration);
