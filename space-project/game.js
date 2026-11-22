@@ -342,7 +342,7 @@ function renderOnePartPreview(canvas,p){
   const key=new THREE.DirectionalLight(0xffedcf,3.2);key.position.set(3,5,4);scene.add(key);
   const fill=new THREE.DirectionalLight(0x9fc8e8,1.1);fill.position.set(-4,1,-3);scene.add(fill);
   const model=partMesh(p);scene.add(model);const box=new THREE.Box3().setFromObject(model),center=box.getCenter(new THREE.Vector3()),sphere=box.getBoundingSphere(new THREE.Sphere());model.position.sub(center);
-  const camera=new THREE.PerspectiveCamera(34,2,.01,1000),dist=Math.max(.7,sphere.radius/Math.sin(THREE.MathUtils.degToRad(camera.fov/2))*1.18);camera.position.set(dist*.55,dist*.35,dist*.75);camera.lookAt(0,0,0);camera.far=dist*12;camera.updateProjectionMatrix();
+  const camera=new THREE.PerspectiveCamera(34,2,.01,1000),dist=Math.max(.7,sphere.radius/Math.sin(THREE.MathUtils.degToRad(camera.fov/2))*.59);camera.position.set(dist*.55,dist*.35,dist*.75);camera.lookAt(0,0,0);camera.far=dist*12;camera.updateProjectionMatrix();
   const originalRotation=model.rotation.clone();
   const entry={scene,camera,model,originalRotation,hovered:false,raf:0,lastFrame:0};partPreviewRenderers.set(canvas,entry);paintPartPreview(entry,canvas);
   canvas.draggable=false;
