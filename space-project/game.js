@@ -85,7 +85,7 @@ const bodyCenter=new THREE.Vector3(0,-BODY.radius,0);
 let properG=1,flightAccumulator=0;
 function physicsStep(dt){
  if(!flight||paused)return;
- elapsed+=dt;
+ elapsed+=dt;const mins=Math.floor(elapsed/60),secs=Math.floor(elapsed%60);$('#mission-time').textContent='T+ '+String(mins).padStart(2,'0')+':'+String(secs).padStart(2,'0');
  if(keys.shift)throttle=Math.min(1,throttle+dt*.35);if(keys.control)throttle=Math.max(0,throttle-dt*.35);const controlGain=rcsEnabled?1.6:.8;const pitch=(keys.w?1:0)-(keys.s?1:0),yaw=(keys.d?1:0)-(keys.a?1:0),roll=(keys.e?1:0)-(keys.q?1:0);
  angular.x+=pitch*dt*controlGain;angular.y+=yaw*dt*controlGain;angular.z+=roll*dt*controlGain;angular.multiplyScalar(Math.exp(-dt*(sasEnabled?4.5:.8)));
  const dq=new THREE.Quaternion().setFromEuler(new THREE.Euler(angular.x*dt,angular.y*dt,angular.z*dt,'YXZ'));attitude.multiply(dq).normalize();
