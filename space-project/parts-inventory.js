@@ -1,5 +1,5 @@
- // Inventory additions sourced from public KSP part indexes. Exact cfg values are not verified.
-// Gameplay mass, dimensions, price and propulsion values are explicitly provisional.
+// Inventory additions sourced from public KSP part indexes. Exact cfg values are not verified.
+// Gameplay mass, dimensions, price and propulsion values are explicitly provisional unless a referenceSource is attached.
 export const additionalParts=[
   {
     "id": "decoupler-small",
@@ -4369,8 +4369,9 @@ export const additionalParts=[
     "sourceLine": null,
     "legacyInternalId": "liquidEngine",
     "legacy": true,
-    "thrust": 240,
-    "isp": 310
+    "thrust": 215,
+    "isp": 310,
+    "referenceSource": "Community stock-part mass/thrust reference compiled from stockmasses.json and KSP .cfg data (reported range 1.4.x–1.12.x); confirm exact local 1.12.5 config."
   },
   {
     "id": "legacy-swivel",
@@ -4389,8 +4390,9 @@ export const additionalParts=[
     "sourceLine": null,
     "legacyInternalId": "liquidEngine2",
     "legacy": true,
-    "thrust": 215,
-    "isp": 320
+    "thrust": 167,
+    "isp": 320,
+    "referenceSource": "Community stock-part mass/thrust reference compiled from stockmasses.json and KSP .cfg data (reported range 1.4.x–1.12.x); confirm exact local 1.12.5 config."
   },
   {
     "id": "legacy-mk2-lander",
@@ -4409,7 +4411,8 @@ export const additionalParts=[
     "sourceLine": null,
     "legacyInternalId": "mk2LanderCabin",
     "legacy": true,
-    "crew": 2
+    "crew": 2,
+    "referenceSource": "Community stock-part mass/thrust reference compiled from stockmasses.json and KSP .cfg data (reported range 1.4.x–1.12.x); confirm exact local 1.12.5 config."
   },
   {
     "id": "legacy-hecs",
@@ -4427,7 +4430,8 @@ export const additionalParts=[
     "sourceUrl": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
     "sourceLine": null,
     "legacyInternalId": "probeCoreHex",
-    "legacy": true
+    "legacy": true,
+    "referenceSource": "Community stock-part mass/thrust reference compiled from stockmasses.json and KSP .cfg data (reported range 1.4.x–1.12.x); confirm exact local 1.12.5 config."
   },
   {
     "id": "legacy-nosecone",
@@ -4470,7 +4474,7 @@ export const additionalParts=[
     "name": "LFB KR-1x2 Twin-Boar（旧版）",
     "type": "engine",
     "tech": "basic",
-    "mass": 42.5,
+    "mass": 10.5,
     "cost": 17000,
     "height": 5,
     "radius": 1.875,
@@ -4482,8 +4486,9 @@ export const additionalParts=[
     "sourceLine": null,
     "legacyInternalId": "Size2LFB",
     "legacy": true,
-    "thrust": 2000,
-    "isp": 300
+    "thrust": 2700,
+    "isp": 300,
+    "referenceSource": "Community stock-part mass/thrust reference compiled from stockmasses.json and KSP .cfg data (reported range 1.4.x–1.12.x); confirm exact local 1.12.5 config."
   },
   {
     "id": "legacy-twitch",
@@ -4502,8 +4507,9 @@ export const additionalParts=[
     "sourceLine": null,
     "legacyInternalId": "smallRadialEngine",
     "legacy": true,
-    "thrust": 16,
-    "isp": 290
+    "thrust": 12,
+    "isp": 290,
+    "referenceSource": "Community stock-part mass/thrust reference compiled from stockmasses.json and KSP .cfg data (reported range 1.4.x–1.12.x); confirm exact local 1.12.5 config."
   },
   {
     "id": "legacy-light1",
