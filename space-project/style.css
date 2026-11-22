@@ -95,3 +95,7 @@
 .part:disabled{background:#53636d!important}
 .part-icon{background:#778894!important}
 .part-preview-canvas{background:#778894}
+
+/* Keep locked parts visually the same color as available parts */
+.part:disabled{opacity:1!important;filter:none!important;background:#53636d!important;border-color:#91a0a8!important}
+.part:disabled .part-icon{opacity:1!important;filter:none!important;background:#778894!important}
