@@ -3,3 +3,29 @@
 .career-panel{position:fixed;z-index:7;right:14px;top:102px;bottom:74px;width:min(360px,calc(100vw - 28px));overflow:auto;background:#17232cf2;border:1px solid #ffffff2a;box-shadow:0 12px 36px #0008}.career-head{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:#293b47;position:sticky;top:0}.career-head button{padding:2px 9px}.career-content{padding:12px}.career-item{padding:12px;margin:9px;border:1px solid #ffffff20;background:#24343f}.career-item h3{margin:0 0 6px;font-size:13px;color:#e7d19d}.career-item p{margin:4px 0;color:#b9c6cc;font-size:11px}.career-item button{margin-top:7px;background:#8b6d39;border-color:#d4b36f}.career-item button:disabled{opacity:.4;cursor:not-allowed}.career-tag{color:#9cb6c4;font-size:10px}
 /* Game mode selection */
 #mode-select{position:fixed;inset:0;z-index:30;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 35%,#29485d,#101923 72%);padding:20px}#mode-select.hidden{display:none}#mode-select section{width:min(760px,100%);padding:34px;background:#17232cf2;border:1px solid #ffffff30;box-shadow:0 20px 70px #0009;text-align:center}#mode-select h1{letter-spacing:5px;margin:0 0 8px}#mode-select p{color:#d6c69e;margin:0 0 24px}.mode-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.mode-cards button{min-height:130px;display:flex;flex-direction:column;justify-content:center;gap:12px;background:#263b49;border:1px solid #71838d;padding:16px;text-align:left}.mode-cards button:hover{background:#385363;border-color:#d9c28d}.mode-cards b{font-size:16px;color:#f1d79e}.mode-cards small,.mode-note{font-size:11px;color:#c1cbd0;line-height:1.6}.mode-note{display:block;margin-top:18px}@media(max-width:650px){.mode-cards{grid-template-columns:1fr}.mode-cards button{min-height:82px}}
+
+
+/* Hangar VAB-style editor */
+.parts{left:0;top:0;bottom:0;width:326px;background:linear-gradient(90deg,#26313deF,#35414bdF);border:0;border-right:2px solid #9ba6ae66;box-shadow:8px 0 28px #0008;overflow:hidden;color:#edf1f3}
+.parts-head{height:38px;background:linear-gradient(#687681,#3e4b55);border-bottom:1px solid #111a20;letter-spacing:1px;padding:0 12px}
+.parts-head small{font-size:9px;color:#c4d0d5;margin-left:8px;letter-spacing:0}
+.part-search{display:block;width:calc(100% - 18px);margin:8px 9px 5px;padding:8px 10px;border:1px solid #111b23;border-radius:3px;background:#18232ddf;color:#fff;outline:none}
+.catalog-tools{display:flex;gap:8px;align-items:center;padding:3px 9px 8px;color:#c5d0d5;font-size:10px}
+.catalog-tools select{flex:1;background:#202c35;color:#eef2f4;border:1px solid #89969d;padding:5px}
+.catalog-body{display:grid;grid-template-columns:34px 1fr;height:calc(100% - 92px);min-height:0}
+.part-categories{display:flex;flex-direction:column;gap:2px;background:#18242d88;border-right:1px solid #101a20;overflow:auto;padding:3px}
+.part-category{height:37px;min-height:37px;padding:0;border:0;border-radius:2px;background:#53636e;color:#dbe5e9;font-size:17px}
+.part-category.active{background:#d0a64e;color:#18232a;box-shadow:inset 3px 0 #ffe0a0}
+.part-list{padding:6px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:86px;align-content:start;gap:4px;overflow:auto}
+.part{min-width:0;display:flex;flex-direction:column;justify-content:space-between;gap:1px;padding:4px;background:linear-gradient(145deg,#77838b,#46545e);border:1px solid #c3cbd044;border-radius:3px;text-align:center;overflow:hidden}
+.part:hover{background:linear-gradient(145deg,#a1adb2,#64737c);border-color:#e8d18e}
+.part:disabled{opacity:.35}
+.part-icon{width:100%;height:48px;border-radius:2px;background:linear-gradient(145deg,#aeb8bb,#56646b);color:#15232c;display:grid;place-items:center;font-size:24px;text-shadow:0 1px 1px #fff8}
+.part>span:last-child{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+.part small{display:block;font-size:8px;color:#e0e8eb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vab-tools{top:8px;bottom:auto;left:50%;background:#26343edb;border:1px solid #c1cbd355;border-radius:3px;box-shadow:0 3px 12px #0008}
+.vab-tools .primary{background:#a56e25}
+#craft-name{font-size:10px;max-width:250px}
+#stage-build-label{font-size:10px}
+#viewport canvas{background:#242c32}
+@media(max-width:700px){.parts{width:240px}.part-list{grid-template-columns:repeat(2,minmax(0,1fr))}.vab-tools{left:250px;right:5px;transform:none;overflow:auto}.vab-tools span{display:none}}
