@@ -1,0 +1,240 @@
+{
+  "title": "KSP 1.12.5 hidden legacy stock parts",
+  "count": 11,
+  "source": "Old Parts Revived compatibility notes listing 11 hidden stock parts in KSP 1.12.5",
+  "sourceUrl": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
+  "caveat": "Community-sourced internal IDs; verify exact names and values against local GameData/Squad/Parts config files.",
+  "entries": [
+    {
+      "catalogId": "legacy-hg5",
+      "displayName": "HG-5 アンテナ",
+      "category": "legacy",
+      "partFamily": "hidden legacy stock part",
+      "ksp12InternalPartId": "HighGainAntenna5",
+      "internalIdStatus": "community reference; verify against local 1.12.5 cfg",
+      "mass": 0.005,
+      "cost": 300,
+      "height": 0.5,
+      "radius": 0.2,
+      "dlc": "stock legacy (hidden in 1.12.5)",
+      "source": {
+        "url": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
+        "note": "Hidden legacy stock part list; internal IDs are candidate identifiers"
+      },
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not applicable; original browser model only",
+      "status": "legacy stock candidate; verify cfg in local installation"
+    },
+    {
+      "catalogId": "legacy-reliant",
+      "displayName": "LV-T30 Reliant（旧版）",
+      "category": "legacy",
+      "partFamily": "hidden legacy stock part",
+      "ksp12InternalPartId": "liquidEngine",
+      "internalIdStatus": "community reference; verify against local 1.12.5 cfg",
+      "mass": 1.25,
+      "cost": 1100,
+      "height": 1.5,
+      "radius": 0.625,
+      "dlc": "stock legacy (hidden in 1.12.5)",
+      "source": {
+        "url": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
+        "note": "Hidden legacy stock part list; internal IDs are candidate identifiers"
+      },
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not applicable; original browser model only",
+      "status": "legacy stock candidate; verify cfg in local installation"
+    },
+    {
+      "catalogId": "legacy-swivel",
+      "displayName": "LV-T45 Swivel（旧版）",
+      "category": "legacy",
+      "partFamily": "hidden legacy stock part",
+      "ksp12InternalPartId": "liquidEngine2",
+      "internalIdStatus": "community reference; verify against local 1.12.5 cfg",
+      "mass": 1.5,
+      "cost": 1200,
+      "height": 1.6,
+      "radius": 0.625,
+      "dlc": "stock legacy (hidden in 1.12.5)",
+      "source": {
+        "url": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
+        "note": "Hidden legacy stock part list; internal IDs are candidate identifiers"
+      },
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not applicable; original browser model only",
+      "status": "legacy stock candidate; verify cfg in local installation"
+    },
+    {
+      "catalogId": "legacy-mk2-lander",
+      "displayName": "Mk2 ランダー缶（旧版）",
+      "category": "legacy",
+      "partFamily": "hidden legacy stock part",
+      "ksp12InternalPartId": "mk2LanderCabin",
+      "internalIdStatus": "community reference; verify against local 1.12.5 cfg",
+      "mass": 2.5,
+      "cost": 2500,
+      "height": 2.4,
+      "radius": 1.25,
+      "dlc": "stock legacy (hidden in 1.12.5)",
+      "source": {
+        "url": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
+        "note": "Hidden legacy stock part list; internal IDs are candidate identifiers"
+      },
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not applicable; original browser model only",
+      "status": "legacy stock candidate; verify cfg in local installation"
+    },
+    {
+      "catalogId": "legacy-hecs",
+      "displayName": "Probodobodyne HECS（旧版）",
+      "category": "legacy",
+      "partFamily": "hidden legacy stock part",
+      "ksp12InternalPartId": "probeCoreHex",
+      "internalIdStatus": "community reference; verify against local 1.12.5 cfg",
+      "mass": 0.1,
+      "cost": 650,
+      "height": 0.65,
+      "radius": 0.55,
+      "dlc": "stock legacy (hidden in 1.12.5)",
+      "source": {
+        "url": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
+        "note": "Hidden legacy stock part list; internal IDs are candidate identifiers"
+      },
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not applicable; original browser model only",
+      "status": "legacy stock candidate; verify cfg in local installation"
+    },
+    {
+      "catalogId": "legacy-nosecone",
+      "displayName": "ノーズコーン Mk7",
+      "category": "legacy",
+      "partFamily": "hidden legacy stock part",
+      "ksp12InternalPartId": "rocketNoseCone_v2",
+      "internalIdStatus": "community reference; verify against local 1.12.5 cfg",
+      "mass": 0.05,
+      "cost": 240,
+      "height": 0.5,
+      "radius": 0.625,
+      "dlc": "stock legacy (hidden in 1.12.5)",
+      "source": {
+        "url": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
+        "note": "Hidden legacy stock part list; internal IDs are candidate identifiers"
+      },
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not applicable; original browser model only",
+      "status": "legacy stock candidate; verify cfg in local installation"
+    },
+    {
+      "catalogId": "legacy-rovemate",
+      "displayName": "Probodobodyne RoveMate（旧版）",
+      "category": "legacy",
+      "partFamily": "hidden legacy stock part",
+      "ksp12InternalPartId": "roverBody",
+      "internalIdStatus": "community reference; verify against local 1.12.5 cfg",
+      "mass": 0.15,
+      "cost": 800,
+      "height": 0.6,
+      "radius": 0.7,
+      "dlc": "stock legacy (hidden in 1.12.5)",
+      "source": {
+        "url": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
+        "note": "Hidden legacy stock part list; internal IDs are candidate identifiers"
+      },
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not applicable; original browser model only",
+      "status": "legacy stock candidate; verify cfg in local installation"
+    },
+    {
+      "catalogId": "legacy-twinboar",
+      "displayName": "LFB KR-1x2 Twin-Boar（旧版）",
+      "category": "legacy",
+      "partFamily": "hidden legacy stock part",
+      "ksp12InternalPartId": "Size2LFB",
+      "internalIdStatus": "community reference; verify against local 1.12.5 cfg",
+      "mass": 42.5,
+      "cost": 17000,
+      "height": 5,
+      "radius": 1.875,
+      "dlc": "stock legacy (hidden in 1.12.5)",
+      "source": {
+        "url": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
+        "note": "Hidden legacy stock part list; internal IDs are candidate identifiers"
+      },
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not applicable; original browser model only",
+      "status": "legacy stock candidate; verify cfg in local installation"
+    },
+    {
+      "catalogId": "legacy-twitch",
+      "displayName": "24-77 Twitch（旧版）",
+      "category": "legacy",
+      "partFamily": "hidden legacy stock part",
+      "ksp12InternalPartId": "smallRadialEngine",
+      "internalIdStatus": "community reference; verify against local 1.12.5 cfg",
+      "mass": 0.09,
+      "cost": 400,
+      "height": 0.6,
+      "radius": 0.3,
+      "dlc": "stock legacy (hidden in 1.12.5)",
+      "source": {
+        "url": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
+        "note": "Hidden legacy stock part list; internal IDs are candidate identifiers"
+      },
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not applicable; original browser model only",
+      "status": "legacy stock candidate; verify cfg in local installation"
+    },
+    {
+      "catalogId": "legacy-light1",
+      "displayName": "Illuminator Mk1",
+      "category": "legacy",
+      "partFamily": "hidden legacy stock part",
+      "ksp12InternalPartId": "spotLight1",
+      "internalIdStatus": "community reference; verify against local 1.12.5 cfg",
+      "mass": 0.015,
+      "cost": 100,
+      "height": 0.25,
+      "radius": 0.25,
+      "dlc": "stock legacy (hidden in 1.12.5)",
+      "source": {
+        "url": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
+        "note": "Hidden legacy stock part list; internal IDs are candidate identifiers"
+      },
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not applicable; original browser model only",
+      "status": "legacy stock candidate; verify cfg in local installation"
+    },
+    {
+      "catalogId": "legacy-light2",
+      "displayName": "Illuminator Mk2",
+      "category": "legacy",
+      "partFamily": "hidden legacy stock part",
+      "ksp12InternalPartId": "spotlight2",
+      "internalIdStatus": "community reference; verify against local 1.12.5 cfg",
+      "mass": 0.03,
+      "cost": 200,
+      "height": 0.35,
+      "radius": 0.3,
+      "dlc": "stock legacy (hidden in 1.12.5)",
+      "source": {
+        "url": "https://forum.kerbalspaceprogram.com/topic/228538-112x-old-parts-revived-an-unofficial-successor-to-oldpartsredux-and-kerbal-historical-institute-includes-all-deprecated-parts-and-models-from-ksp-073-to-090-105-to-1121-and-more-updated-10725/",
+        "note": "Hidden legacy stock part list; internal IDs are candidate identifiers"
+      },
+      "modelAsset": null,
+      "modelLicense": null,
+      "redistributionPermission": "not applicable; original browser model only",
+      "status": "legacy stock candidate; verify cfg in local installation"
+    }
+  ]
+}
