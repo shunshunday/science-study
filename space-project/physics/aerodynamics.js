@@ -23,7 +23,7 @@ export function aerodynamicAcceleration(position, velocity, forward, parts, mass
   const frontalArea=Math.PI*maxRadius*maxRadius;
   const bodyLength=parts.reduce((sum,p)=>sum+(p.data.height||0),0);
   const sideArea=bodyLength*2*maxRadius;
-  const finArea=parts.reduce((area,p)=>{const type=p.data.type;if(type==='fin')return area+.42;if(type==='wing')return area+Math.max(.25,(p.data.radius||1)*.85);if(type==='tail'||type==='control')return area+Math.max(.12,(p.data.radius||.5)*.32);return area;},0);
+  const finArea=parts.reduce((area,p)=>{const type=p.data.type;if(type==='fin')return area+.42;if(type==='wing')return area+Math.max(.25,(p.data.radius||1)*.85);if(type==='tail'||type==='control')return area+Math.max(.12,(p.data.radius||.5)*.32);if(type==='gear')return area+.08;if(type==='intake')return area+.12;return area;},0);
   const deployedChute=parts.some(p=>p.data.type==='chute'&&p.deployed);
   const cd=0.22+0.65*sinAoA*sinAoA;
   const projectedArea=frontalArea*axial+sideArea*sinAoA*.7+finArea*sinAoA*1.4;
