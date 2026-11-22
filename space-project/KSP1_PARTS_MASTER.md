@@ -2,6 +2,9 @@
 
 Updated: 2026-11-22
 
+## Per-part audit register
+`KSP1_PARTS_MODEL_AUDIT.json` now contains 128 records corresponding to every existing project catalog entry. Each record tracks the current placeholder entry separately from the still-unverified KSP internal part ID, official part match, DLC provenance, model source, creator, asset license, redistribution permission and GLB-conversion permission. The register is a baseline for individual verification, not a completed stock/DLC inventory. No model is marked approved yet.
+
 ## Scope
 Kerbal Space Program 1.12.x base game, plus Making History and Breaking Ground. The Japanese parts index separates DLC additions:
 https://wikiwiki.jp/ksp/パーツ
