@@ -2,6 +2,7 @@
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SPACE PROGRAM</title><link rel="icon" href="../rika-kids-icon.svg"><link rel="stylesheet" href="./style.css"><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script></head>
 <body>
 <div id="viewport"></div>
+<div hidden aria-hidden="true"><b id="funds"></b><b id="science"></b><button id="funds-toggle" type="button"></button><button id="home" type="button"></button></div>
 
 <nav class="tabs"><button data-screen="center" class="active">宇宙センター</button><button data-screen="vab">ロケット組立棟</button><button data-screen="crew">乗組員</button></nav>
 <aside id="parts" class="parts"><div class="parts-head"><b>PARTS CATALOG <small id="parts-count">0 PARTS</small></b><button id="close-parts">×</button></div><input id="part-search" class="part-search" placeholder="パーツ名を検索..." autocomplete="off"><div class="catalog-tools"><select id="part-sort"><option value="name">名前順</option><option value="mass">質量順</option><option value="cost">価格順</option><option value="size">サイズ順</option></select><span id="part-result-count"></span></div><div class="catalog-body"><nav id="part-categories" class="part-categories"></nav><div class="part-list" id="part-list"></div></div></aside>
