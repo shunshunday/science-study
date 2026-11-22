@@ -72,3 +72,11 @@ https://github.com/kspcommunity/Mod-Parts-Lister
 - KSP Community mod parts index: https://github.com/kspcommunity/Mod-Parts-Lister
 - KSP Community organization: https://github.com/kspcommunity
 - Example mod reserving rights to art assets: https://github.com/post-kerbin-mining-corporation/StationPartsExpansionRedux
+
+
+## Expanded inventory files
+- `KSP1_STOCK_PARTS_EXPANSION.json`: 169 additional stock-family inventory candidates from the stock parts index.
+- `KSP1_DLC_PARTS_CANDIDATES.json`: 97 named Making History / Breaking Ground candidates.
+- `KSP1_PARTS_MODEL_AUDIT.json`: audit of the 128 current app entries; 124 candidate matches, 4 generic placeholders to replace, 0 exact `.cfg` verifications, 0 approved model assets.
+
+These inventories are discovery/verification work, not an implemented replacement. Each row still needs its exact KSP 1.12.5 part.cfg, node/module data, model design, and license clearance before it can be activated in the editor.
