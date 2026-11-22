@@ -24,7 +24,7 @@ function makeCrewFigure(member,index){
  const smile=new THREE.Mesh(new THREE.TorusGeometry(.16,.025,6,16,Math.PI),material(0x637d2d,.05));smile.position.set(0,2.78,.68);smile.rotation.z=Math.PI;root.add(smile);
  if(pilot){const helmet=new THREE.Mesh(new THREE.SphereGeometry(.91,24,18),glass);helmet.position.set(0,3.08,.02);helmet.scale.set(1.04,1.08,1);root.add(helmet);const rim=new THREE.Mesh(new THREE.TorusGeometry(.82,.045,8,28),trim);rim.position.set(0,3.05,.02);root.add(rim);}
  root.position.set((index%4-1.5)*5.2,0,(Math.floor(index/4)-1.5)*5.5);
- root.rotation.y=Math.PI;crewStage.add(root);
+ crewStage.add(root);
 }
 function rebuildCrewStage(){while(crewStage.children.length)crewStage.remove(crewStage.children[0]);crewMembers.forEach(makeCrewFigure);}
 scene.background=new THREE.Color(0x8298a6);scene.fog=new THREE.Fog(0x8298a6,180,600);
