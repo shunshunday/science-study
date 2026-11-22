@@ -1,5 +1,6 @@
 // Two-body orbital mechanics. World position/velocity use km and km/s; propulsion and atmosphere use SI units.
-export const G0 = 9.80665; // m/s²\nexport const METERS_PER_WORLD_UNIT = 1000;
+export const G0 = 9.80665; // m/s²
+export const METERS_PER_WORLD_UNIT = 1000;
 export const BODY = Object.freeze({ radius: 600, mu: 3531.6, rotationRate: 2.0e-4, atmosphereHeight: 70 });
 export function gravityAcceleration(position, mu=BODY.mu, center={x:0,y:-BODY.radius,z:0}) {
   const x=position.x-center.x, y=position.y-center.y, z=position.z-center.z;
