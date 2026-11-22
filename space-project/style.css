@@ -198,3 +198,9 @@
 .part-icon,.part-preview-canvas{background:#28546b!important}
 .part-meta,.part-meta b{color:#102b38!important}
 .part-meta small{color:#24495a!important}
+
+
+/* One matching background for the card and 3D preview frame; keep model colors unchanged */
+.part{background:#53636d!important;border-color:#91a0a8!important}
+.part-icon,.part-preview-canvas{background:#53636d!important}
+.part:hover,.part:focus,.part:active,.part:disabled{background:#53636d!important;border-color:#91a0a8!important}
