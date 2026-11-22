@@ -350,12 +350,26 @@ function renderPartPreviews(items){
   list.querySelectorAll('.part-preview-canvas').forEach(c=>partPreviewObserver.observe(c));
  }else list.querySelectorAll('.part-preview-canvas').forEach(c=>{const p=catalog.find(x=>x.id===c.dataset.partId);if(p)renderOnePartPreview(c,p);});
 }
+function partHoverInfo(p){
+ const types={pod:'有人操縦用のコマンドモジュール。飛行中の操作と乗員の搭乗に使用します。',probe:'無人探査機用のプローブコア。機体の制御ユニットとして使用します。',tank:'推進剤を貯蔵するタンク。エンジンや機体構成に合わせて容量を選びます。',engine:'推進剤を燃焼させて推力を発生するロケットエンジン。',booster:'固体推進剤を燃焼させる補助ロケット。離昇時の推力を補います。',decoupler:'ステージ分離や機体構造の切り離しに使用する装置。',fin:'大気圏内で空力安定性を高めるためのフィン。',chute:'大気圏内で展開し、降下速度を低下させるパラシュート。',battery:'電力を蓄えるバッテリーユニット。',solar:'太陽光を電力へ変換する発電パネル。',science:'飛行中に科学データを取得する実験・観測装置。'};
+ const brands=['Kerbodyne','Rockomax','Probodobodyne','Mk1','Mk2','Mk3','FL-','LV-','OX-','Z-','PPD-','EAS-','Oscar','Stayputnik','RC-','PB-','Mainsail'];
+ const maker=brands.find(b=>p.name.startsWith(b))||'汎用パーツ';
+ const lines=[p.name,'メーカー／シリーズ：'+maker,'重量：'+(p.mass??'—')+' t'];
+ if(p.thrust!=null)lines.push('最大推力：'+p.thrust+' kN');
+ if(p.isp!=null)lines.push('比推力（Isp）：'+p.isp+' s');
+ if(p.fuel!=null)lines.push('推進剤容量：'+p.fuel);
+ if(p.crew!=null)lines.push('搭乗定員：'+p.crew+' 名');
+ if(p.height!=null)lines.push('全高：'+p.height+' m');
+ if(p.radius!=null)lines.push('半径：'+p.radius+' m');
+ lines.push('費用：₡ '+Number(p.cost||0).toLocaleString('ja-JP'),' ',types[p.type]||'機体の構造・機能を構成するパーツです。');
+ return lines.join(String.fromCharCode(10));
+}
 function drawPartsCatalogV2(){
  const query=($('#part-search')?.value||'').trim().toLowerCase(),sort=$('#part-sort')?.value||'name';
  let items=catalog.filter(p=>(activePartCategory==='すべて'||categoryFor(p)===activePartCategory)&&(!query||(p.name+' '+p.id+' '+categoryFor(p)).toLowerCase().includes(query)));
  items.sort((a,b)=>sort==='mass'?a.mass-b.mass:sort==='cost'?a.cost-b.cost:sort==='size'?a.height-b.height:a.name.localeCompare(b.name,'ja'));
  $('#parts-count').textContent=catalog.length+' PARTS';$('#part-result-count').textContent=items.length+' 件';
- const simplePartNames={pod:'人が乗る場所',probe:'無人で動かす装置',tank:'燃料を入れるタンク',engine:'ロケットエンジン',decoupler:'切り離し装置',booster:'補助ロケット',fin:'向きを安定させる翼',chute:'パラシュート',battery:'電池',solar:'太陽電池',science:'実験道具'};$('#part-list').innerHTML=items.map(p=>{const unlocked=gameMode==='sandbox'||unlockedTech.has(p.tech||'basic');return '<button class="part" data-part="'+p.id+'" '+(unlocked?'':'disabled')+' data-tip="'+p.name.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'"><span class="part-icon"></span></button>';}).join('');renderPartPreviews(items);
+ const simplePartNames={pod:'人が乗る場所',probe:'無人で動かす装置',tank:'燃料を入れるタンク',engine:'ロケットエンジン',decoupler:'切り離し装置',booster:'補助ロケット',fin:'向きを安定させる翼',chute:'パラシュート',battery:'電池',solar:'太陽電池',science:'実験道具'};$('#part-list').innerHTML=items.map(p=>{const unlocked=gameMode==='sandbox'||unlockedTech.has(p.tech||'basic');return '<button class="part" data-part="'+p.id+'" '+(unlocked?'':'disabled')+' data-tip="'+partHoverInfo(p).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'"><span class="part-icon"></span></button>';}).join('');renderPartPreviews(items);
 }
 
 const techTree=[
