@@ -115,6 +115,8 @@ export function createPartModel(p,THREE){
   const nm=(p.name||'').toLowerCase(),isPiston=/cylinder|油圧/.test(nm),isRotor=/rotor|ローター/.test(nm),isController=/kal|controller|コントローラー/.test(nm);
   if(isPiston){cyl(r*.22,r*.22,h*.82,alloy,h*.42,20);cyl(r*.13,r*.13,h*.62,gold,h*.95,16);cyl(r*.38,r*.38,.12,dark,h*.08,20);cyl(r*.38,r*.38,.12,dark,h*.83,20);torus(r*.3,.04,orange,h*.82);}
   else if(isRotor){cyl(r*.52,r*.52,h*.34,dark,h*.3,32);torus(r*.48,.08,gold,h*.5);for(let i=0;i<6;i++){const a=i*Math.PI/3;box(.11,h*.16,r*1.45,alloy,[Math.cos(a)*r*.78,h*.56,Math.sin(a)*r*.78],[0,-a,0]);}cyl(r*.16,r*.16,h*.65,gold,h*.92,16);}
+  else if(/servo|サーボ/.test(nm)){cyl(r*.62,r*.62,h*.5,dark,h*.35,24);torus(r*.55,.08,gold,h*.65);box(r*1.15,.14,.18,alloy,[r*.72,h*.68,0]);sphere(.14,orange,[r*1.28,h*.68,0]);}
+  else if(/hinge|ヒンジ/.test(nm)){box(r*1.35,h*.65,r*.8,dark,[0,h*.35,0]);cyl(r*.34,r*.34,h*.9,gold,h*.55,16);for(let x of [-1,1])box(.12,h*.48,.12,alloy,[x*r*.58,h*.48,0]);}
   else if(isController){box(r*1.5,h*.68,r*1.25,white,[0,h*.38,0]);for(let i=0;i<4;i++){const a=i*Math.PI/2;sphere(.08,i%2?orange:blue,[Math.cos(a)*r*.48,h*.78,Math.sin(a)*r*.4]);}box(r*1.25,.08,r*.85,dark,[0,h*.76,0]);}
   else{cyl(r*.62,r*.62,h*.3,dark,h*.25,24);torus(r*.56,.1,gold,h*.48);const arm=box(r*1.5,.14,.18,alloy,[r*.7,h*.48,0]);arm.rotation.z=-.18;box(.16,h*.3,.16,dark,[r*1.42,h*.34,0]);sphere(.18,gold,[r*1.42,h*.15,0]);}
  }else if(p.type==='rotor-blade'){
