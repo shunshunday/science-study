@@ -7,6 +7,7 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],toa
 const scene=new THREE.Scene();
 const crewStage=new THREE.Group();crewStage.visible=false;scene.add(crewStage);
 function makeCrewFigure(member,index){
+ const material=(color,roughness=.5)=>new THREE.MeshStandardMaterial({color,roughness});
  const root=new THREE.Group(),role=member.role||'科学者',pilot=role==='パイロット',engineer=role==='エンジニア';
  const skin=material(0xc9dc4b,.05),eyeWhite=material(0xf6f7e9,.02),suit=material(pilot?0xd8ddd9:engineer?0x102e59:0x65747d,.25),trim=material(pilot?0x8b9698:engineer?0x4775a6:0xb8c2c5,.3),boot=material(0x202a32,.45);
  const faceStyles=[
