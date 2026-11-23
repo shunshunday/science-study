@@ -377,3 +377,9 @@ body.crew-roster-mode .crew-recruit button:hover{background:#355f82!important;ba
 /* KSP-style top-docked navigation bar */
 .tabs{top:0!important;right:0!important;left:auto!important;height:48px!important;border-radius:0 0 0 7px!important;box-shadow:0 3px 12px #07131d66!important}
 @media(max-width:700px){.tabs{top:0!important;right:0!important;height:48px!important;border-radius:0 0 0 6px!important}}
+
+
+/* Compact top-right navigation buttons */
+.tabs{height:38px!important;padding:2px 6px!important;gap:3px!important}
+.tabs button{padding:4px 9px!important;font-size:11px!important;line-height:1.15!important;border-radius:3px!important}
+@media(max-width:700px){.tabs{height:38px!important;padding:2px 5px!important;gap:2px!important}.tabs button{padding:4px 7px!important;font-size:10px!important}}
