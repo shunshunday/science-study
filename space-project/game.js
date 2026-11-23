@@ -468,7 +468,7 @@ function renderResearch(){$('#career-title').textContent='研究開発';$('#care
 function renderCrew(){
  $('#career-title').textContent='乗組員管理';
  rebuildCrewStage();
- crewStage.visible=false;
+ crewStage.visible=true;
  $('#career-content').innerHTML='<div class="crew-intro"><span>CREW ROSTER</span><p>3D乗組員一覧。飛行から帰還すると経験が上がります。</p></div><div class="crew-grid">'+crewMembers.map((k)=>{
   syncCrewAbilities(k);
   const stars=k.stars,bravery=k.bravery,stupidity=k.stupidity;
