@@ -299,9 +299,3 @@
 /* Use one identical opaque rail color in both expanded and collapsed catalog states. */
 .parts .part-categories,.parts.categories-collapsed .part-categories{background:#1d2934!important;background-image:none!important;opacity:1!important}
 
-/* Crew management uses a lightweight 2D backdrop; skip the 3D canvas entirely. */
-body.crew-mode{background:radial-gradient(ellipse at 78% 18%,#29495b 0%,#1b3344 38%,#111e2a 100%)}
-body.crew-mode #viewport canvas{display:none}
-body.crew-mode .crew-card{display:block;min-height:0;padding:9px 11px}
-body.crew-mode .crew-info{padding-right:28px}
-body.crew-mode .crew-avatar{display:none}
