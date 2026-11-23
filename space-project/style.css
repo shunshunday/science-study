@@ -283,3 +283,7 @@
 .parts.categories-collapsed .part-search,
 .parts.categories-collapsed .catalog-tools,
 .parts.categories-collapsed .part-list{display:none!important}
+
+
+/* When the parts browser is collapsed, keep only the category icons visible. */
+.parts.categories-collapsed{background:transparent!important;border-right:0!important;box-shadow:none!important}
