@@ -145,6 +145,74 @@ hBox(190,4,5,0,88,-94,darkSteel);hBox(190,4,5,0,3,-94,yellow);
 for(let z=-75;z<=75;z+=25){hBox(1.4,1.4,150,-112,1,z,steel);hBox(1.4,1.4,150,112,1,z,steel);}
 for(let x of [-72,72]){for(let z of [-45,45]){hBox(2,18,2,x,9,z,darkSteel);hBox(10,1,4,x,18,z,steelLight);}}
 for(let x of [-55,55])for(let z of [-30,30]){const lamp=new THREE.Mesh(new THREE.BoxGeometry(8,.8,3),new THREE.MeshBasicMaterial({color:0xffe4b5}));lamp.position.set(x,76,z);hangar.add(lamp);}
+/* Dense VAB interior detailing: roof trusses, wall cladding, catwalks and floor services */
+const wallPanel=hangarMat(0x59656a,.62,.84),wallInset=hangarMat(0x303a40,.58,.88),roofMat=hangarMat(0x39464d,.72,.8),grateMat=hangarMat(0x778287,.82,.65),stripeMat=hangarMat(0xe0b84b,.18,.8);
+for(const side of [-1,1]){
+  // Layered side walls with regularly spaced industrial cladding panels.
+  hBox(2,96,184,side*111,49,0,wallInset);
+  for(let z=-88;z<=88;z+=11){
+    hBox(1.1,17,9.8,side*109.7,10,z,wallPanel);
+    hBox(1.1,17,9.8,side*109.7,30,z,wallPanel);
+    hBox(1.1,17,9.8,side*109.7,50,z,wallPanel);
+    hBox(1.1,17,9.8,side*109.7,70,z,wallPanel);
+    hBox(1.1,17,9.8,side*109.7,90,z,wallPanel);
+    hBeam([side*108.8,2,z-5],[side*108.8,96,z+5],.38,steelLight);
+  }
+  for(const y of [8,28,48,68,88])hBox(3,1.2,184,side*108.8,y,0,steel);
+  // Elevated maintenance walkways and grated platforms.
+  for(const z of [-68,-22,24,70]){
+    hBox(18,1.1,5,side*96,24,z,grateMat);
+    hBox(18,.5,.45,side*96,26,z-2.3,yellow);
+    hBox(18,.5,.45,side*96,26,z+2.3,yellow);
+    for(let x=side*88;x!==side*105;x+=side*4.2)hBox(.45,1.1,4.5,x,25.8,z,steelLight);
+    for(const x of [side*88,side*104])hBox(1.4,23,1.4,x,12,z,darkSteel);
+  }
+}
+// Roof deck and repeating cross-trusses make the ceiling read as a tall industrial bay.
+hBox(224,2.4,190,0,101,0,roofMat);
+for(let z=-90;z<=90;z+=15){
+  hBeam([-112,99,z],[112,99,z],.95,steelLight);
+  hBeam([-112,99,z],[0,113,z],.72,steel);
+  hBeam([0,113,z],[112,99,z],.72,steel);
+  hBeam([-112,99,z],[0,99,z+15],.42,steel);
+  hBeam([0,99,z+15],[112,99,z],.42,steel);
+}
+for(let x=-100;x<=100;x+=25){
+  hBeam([x,99,-94],[x,99,94],.75,steelLight);
+  hBeam([x,99,-94],[x+12,99,94],.35,steel);
+}
+for(const z of [-72,-36,0,36,72]){
+  hBox(32,.7,8,0,96,z,steel);
+  for(let x=-13;x<=13;x+=6.5)hBox(.55,1.8,7,x,94.8,z,grateMat);
+  const light=new THREE.Mesh(new THREE.BoxGeometry(15,.65,2.2),new THREE.MeshBasicMaterial({color:0xffedc7}));
+  light.position.set(0,92,z);hangar.add(light);
+}
+// Floor construction grid, service trenches, painted safety borders and numbered work bays.
+for(let x=-100;x<=100;x+=10)hBox(.16,.035,176,x,-.17,0,wallInset);
+for(let z=-85;z<=85;z+=10)hBox(204,.035,.16,0,-.165,z,wallInset);
+for(const x of [-82,-78,78,82]){
+  hBox(1.1,.08,178,x,-.13,0,darkSteel);
+  for(let z=-82;z<=82;z+=8)hBox(1.25,.09,2.4,x,-.075,z,stripeMat);
+}
+for(const z of [-86,86]){
+  hBox(196,.04,1.2,0,-.14,z,stripeMat);
+  hBox(196,.04,.28,0,-.12,z+ (z<0?1.1:-1.1),runwayLine);
+}
+for(const x of [-48,48]){
+  hBox(1.4,.08,130,x,-.12,0,yellow);
+  hBox(1.4,.08,1.4,x,-.08,-65,stripeMat);
+  hBox(1.4,.08,1.4,x,-.08,65,stripeMat);
+}
+// Overhead travelling crane rails and a suspended maintenance hoist.
+for(const x of [-62,62]){
+  hBox(2.2,2.2,180,x,86,0,darkSteel);
+  hBox(3.8,.8,180,x,87,0,steelLight);
+}
+hBox(132,2.2,3.2,0,84,-18,yellow);
+hBox(8,5,5,-18,80,-18,darkSteel);
+hBox(1.1,14,1.1,-18,72,-18,steelLight);
+hBox(5,1.4,5,-18,65,-18,yellow);
+
 /* Aircraft workshop markings and the runway outside the hangar doors */
 const runwayMat=hangarMat(0x343d42,.15,.95),runwayLine=hangarMat(0xe5dfc7,.05,.85),taxiYellow=hangarMat(0xd2a53c,.2,.8);
 hBox(68,.18,300,0,-.12,-245,runwayMat);
