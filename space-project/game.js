@@ -154,8 +154,59 @@ for(let z=-115;z>-385;z-=22)hBox(1.3,.03,10,0,-.015,z,runwayLine);
 hBox(74,.025,2,-1,-.015,-105,taxiYellow);hBox(74,.025,2,-1,-.015,-385,taxiYellow);
 /* Yellow aircraft service bay outline on the hangar floor */
 hBox(26,.035,1.1,0,-.19,-13,taxiYellow);hBox(26,.035,1.1,0,-.19,13,taxiYellow);
-hBox(1.1,.035,26,-13,-.19,0,taxiYellow);hBox(1.1,.035,26,13,-.19,0,taxiYellow);
+hBox(1.1,.035,26,-13,-.19,0,taxiYellow);
+hBox(1.1,.035,26,13,-.19,0,taxiYellow);
 
+/* Industrial gantry crane, catwalks and maintenance buildings */
+const craneYellow=hangarMat(0xc18d2d,.62,.48),glassMat=hangarMat(0x6d9ba8,.38,.22),serviceMat=hangarMat(0x414d55,.5,.78);
+for(const z of [-54,48]){
+ hBeam([-100,82,z],[100,82,z],1.25,craneYellow);
+ hBeam([-100,78,z],[100,78,z],.75,darkSteel);
+ for(const x of [-98,98]){hBox(3,15,4,x,70,z,craneYellow);hBox(7,2,7,x,62,z,steelLight);}
+}
+hBox(18,3,15,-12,80,48,craneYellow);hBox(10,2,10,-12,77,48,darkSteel);
+hBeam([-12,76,48],[-12,47,48],.28,steelLight);hBox(2,2,2,-12,46,48,craneYellow);
+for(const side of [-1,1]){
+ const x=side*83;
+ for(const y of [28,53]){
+  hBox(8,1.1,174,x,y,0,steelLight);
+  for(const z of [-87,-62,-37,-12,13,38,63,87]){
+   hBeam([x-4,y+1,z],[x-4,y+5,z],.13,steelLight);hBeam([x+4,y+1,z],[x+4,y+5,z],.13,steelLight);
+   hBeam([x-4,y+5,z],[x+4,y+5,z],.2,craneYellow);
+  }
+ }
+ for(const z of [-67,-18,31,70]){
+  hBox(18,15,22,side*101,8,z,serviceMat);
+  hBox(18.4,1.2,22.4,side*101,16,z,steelLight);
+  hBox(.25,7,10,side*91.8,8,z,glassMat);
+  hBox(.35,8,8,side*91.65,4,z,craneYellow);
+  hBox(18.5,.45,1,side*101,1,z-11.2,craneYellow);
+ }
+ for(const z of [-48,0,48]){
+  hBeam([x,29,z],[x,52,z],.2,steelLight);
+  for(let y=31;y<52;y+=3)hBeam([x-.8,y,z],[x+.8,y,z],.13,craneYellow);
+ }
+}
+for(let i=0;i<10;i++){
+ const x=(i%5)*24-48,z=i<5?68:-72;
+ hBox(5,6,5,x,2.7,z,serviceMat);hBox(5.3,.45,5.3,x,5.9,z,steelLight);
+ hBox(3.8,2.8,.12,x,2.8,z+2.56,glassMat);
+}
+for(const x of [-64,64])for(const z of [-82,82]){
+ hBox(10,2,6,x,1,z,craneYellow);
+ for(const wx of [-4,4])for(const wz of [-2,2]){
+  const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.9,.9,.55,12),darkSteel);
+  wheel.rotation.z=Math.PI/2;wheel.position.set(x+wx,.8,z+wz);wheel.castShadow=true;hangar.add(wheel);
+ }
+ hBox(5,3.2,4,x,3.3,z,glassMat);
+}
+for(const x of [-108,108])for(const z of [-78,-38,2,42,82]){
+ hBox(1.5,24,1.5,x,12,z,craneYellow);hBox(5,1,5,x,24,z,steelLight);
+}
+for(const z of [-88,-62,-36,-10,16,42,68,92]){
+ hBox(1.2,42,.8,-109,51,z,steelLight);hBox(1.2,42,.8,109,51,z,steelLight);
+ hBox(.5,20,15,-107,63,z,glassMat);hBox(.5,20,15,107,63,z,glassMat);
+}
 
 const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);const parts=[];let mode='vab',gameMode='career',aircraftCraft=false,funds=25000,fundsUnlimited=true,science=0,stage=0,assemblyStage=0,stageUiFuelPercent=-1,throttle=0,flight=false,flightPeakAltitude=0,paused=false,sasEnabled=false,rcsEnabled=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
 const catalog=[
@@ -479,7 +530,21 @@ function renderCrew(){
 }function renderContracts(){$('#career-title').textContent='ミッション管理';$('#career-content').innerHTML='<div class="career-content">'+(activeContract?'<div class="career-item"><h3>受注中：'+activeContract.name+'</h3><p>'+activeContract.description+'</p><span class="career-tag">報酬 ₡'+activeContract.reward.toLocaleString()+' / 科学 '+activeContract.science+'</span></div>':'<p>受注中の契約はありません。</p>')+contracts.map(k=>'<div class="career-item"><h3>'+k.name+'</h3><p>'+k.description+'</p><span class="career-tag">報酬 ₡'+k.reward.toLocaleString()+' / 科学 '+k.science+'</span><br><button data-accept-contract="'+k.id+'" '+(activeContract?'disabled':'')+'>契約を受注</button></div>').join('')+'</div>';}
 try{const saveKey=gameMode==='career'?'space-career-v1':'space-'+gameMode+'-v1';const savedCareer=JSON.parse(localStorage.getItem(saveKey)||'null');if(savedCareer){funds=savedCareer.funds??funds;fundsUnlimited=savedCareer.fundsUnlimited??true;science=savedCareer.science??science;unlockedTech=new Set(savedCareer.unlocked||['basic']);activeContract=contracts.find(k=>k.id===savedCareer.activeContract)||null;crewMembers=savedCareer.crew||crewMembers;}}catch{}if(gameMode==='sandbox'){funds=999999999;unlockedTech=new Set(techTree.map(t=>t.id));activeContract=null;}if(gameMode==='science')activeContract=null;
 function partMesh(p){return createPartModel(p,THREE);}
-function renderStages(){stageUiFuelPercent=maxFuel?Math.round(fuel/maxFuel*100):0;const groups=[...new Set([...parts.map(p=>p.stage),assemblyStage])].sort((a,b)=>b-a);const cards=groups.map(n=>{const group=parts.filter(p=>p.stage===n),fuelMax=group.reduce((s,p)=>s+(p.data.fuel||0),0),fuelNow=group.reduce((s,p)=>s+(p.fuel||0),0),names=group.map(p=>p.data.name).join(' / ');return '<div class="stage-card '+(n===assemblyStage?'active':'')+'"><b>'+n+'</b><span>'+(names||'空のステージ')+'</span><small>'+(fuelMax?Math.round(fuelNow/fuelMax*100)+'% 推進剤':'パーツ '+group.length)+'</small><div class="fuel-track"><i style="width:'+(fuelMax?fuelNow/fuelMax*100:0)+'%"></i></div></div>';});$('#stage-list').innerHTML=cards.join('')||'<small>ステージなし</small>';const build=$('#build-stage-list');if(build)build.innerHTML=cards.map((c,i)=>c.replace('stage-card ','stage-card build-stage ')).join('');}
+function renderStages(){
+ stageUiFuelPercent=maxFuel?Math.round(fuel/maxFuel*100):0;
+ const groups=[...new Set([...parts.map(p=>p.stage),assemblyStage])].sort((a,b)=>b-a);
+ const cards=groups.map(n=>{
+  const group=parts.filter(p=>p.stage===n),fuelMax=group.reduce((s,p)=>s+(p.data.fuel||0),0),fuelNow=group.reduce((s,p)=>s+(p.fuel||0),0),names=group.map(p=>p.data.name).join(' / ');
+  return '<div class="stage-card '+(n===assemblyStage?'active':'')+'"><b>'+n+'</b><span>'+(names||'空のステージ')+'</span><small>'+(fuelMax?Math.round(fuelNow/fuelMax*100)+'% 推進剤':'パーツ '+group.length)+'</small><div class="fuel-track"><i style="width:'+(fuelMax?fuelNow/fuelMax*100:0)+'%"></i></div></div>';
+ });
+ $('#stage-list').innerHTML=cards.join('')||'<small>ステージなし</small>';
+ const build=$('#build-stage-list');
+ if(build)build.innerHTML=groups.map(n=>{
+  const group=parts.filter(p=>p.stage===n),fuelMax=group.reduce((s,p)=>s+(p.data.fuel||0),0),fuelNow=group.reduce((s,p)=>s+(p.fuel||0),0);
+  const items=group.map(p=>'<div class="build-stage-part"><i>'+p.data.icon+'</i><span>'+p.data.name+'</span></div>').join('');
+  return '<section class="build-stage-card '+(n===assemblyStage?'active':'')+'"><button class="build-stage-title" type="button" data-build-stage="'+n+'"><b>'+n+'</b><span>'+group.length+' パーツ</span></button><div class="build-stage-items">'+(items||'<small>空のステージ</small>')+'</div>'+(fuelMax?'<div class="build-stage-fuel"><i style="width:'+Math.round(fuelNow/fuelMax*100)+'%"></i></div>':'')+'</section>';
+ }).join('');
+}
 function recalc(){craftMass=rocketMassKg(parts)/1000;fuel=parts.reduce((s,p)=>s+(p.fuel||0),0);maxFuel=parts.reduce((s,p)=>s+(p.data.fuel||0),0);thrust=parts.reduce((s,p)=>s+(p.data.thrust||0),0);const dv=deltaV(parts);$('#craft-name').textContent='機体重量 '+craftMass.toFixed(2)+' t　Δv '+Math.round(dv)+' m/s　推力 '+thrust+' kN';$('#funds').textContent=gameMode==='sandbox'||fundsUnlimited?'∞':'₡'+funds.toLocaleString();$('#funds-toggle').textContent='資金: '+(fundsUnlimited?'無制限':'通常');$('#funds-toggle').classList.toggle('active',fundsUnlimited);$('#science').textContent=science;renderStages();}
 function disposeCraftModel(root){root.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){const materials=Array.isArray(o.material)?o.material:[o.material];for(const m of materials)m.dispose();}});}
 function layout(){for(const child of [...rocket.children])disposeCraftModel(child);rocket.clear();let y=0,z=0;for(const p of parts){const m=partMesh(p.data),h=p.data.height;p.mesh=m;m.userData.partItem=p;if(p.manualPosition&&p.position)m.position.copy(p.position);else if(aircraftCraft){p.y=0;m.position.set(0,0,z);z+=h*.82;}else{p.y=y;m.position.y=y;y+=h*.82;}rocket.add(m);}rocket.position.y=0;recalc();$('#stage-build-label').textContent='組立ステージ '+assemblyStage;}
@@ -497,6 +562,7 @@ $('#part-list').addEventListener('click',e=>{const b=e.target.closest('[data-par
 $('#clear-craft').onclick=()=>{if(flight)return;parts.length=0;assemblyStage=0;layout();toast('機体を空にしました');};
 $('#new-stage').onclick=()=>{if(flight)return;assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;toast('新しい組立ステージ '+assemblyStage);};
 $('#stage-add-side').onclick=()=>{if(flight)return;assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;renderStages();toast('新しい組立ステージ '+assemblyStage);};
+$('#build-stage-list').addEventListener('click',e=>{const b=e.target.closest('[data-build-stage]');if(!b||flight)return;assemblyStage=Number(b.dataset.buildStage);$('#stage-build-label').textContent='組立ステージ '+assemblyStage;renderStages();toast('組立ステージ '+assemblyStage+' を選択');});
 $('#save-craft').onclick=()=>{localStorage.setItem('space-craft-v1',JSON.stringify(parts.map(p=>({id:p.data.id,stage:p.stage,fuel:p.fuel,manualPosition:p.manualPosition,position:p.position? p.position.toArray():null}))));toast('機体を保存しました');};
 $('#load-craft').onclick=()=>{try{const a=JSON.parse(localStorage.getItem('space-craft-v1')||'[]');parts.length=0;a.forEach(v=>{const replacementId=legacyCatalogAliases[v.id]||v.id;const d=catalog.find(p=>p.id===replacementId);if(d)parts.push({data:d,stage:v.stage,fuel:v.fuel??d.fuel??0,manualPosition:!!v.manualPosition,position:v.position?new THREE.Vector3(...v.position):null});});assemblyStage=Math.max(0,...parts.map(p=>p.stage||0));layout();toast('機体を読み込みました');}catch{toast('保存データがありません');}};
 renderer.domElement.addEventListener('pointerdown',e=>{if(mode!=='vab'||!selectedPartId)return;const rect=renderer.domElement.getBoundingClientRect(),mouse=new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1),ray=new THREE.Raycaster();rocket.updateWorldMatrix(true,true);ray.setFromCamera(mouse,camera);const hits=ray.intersectObjects(rocket.children,true);let place=new THREE.Vector3(0,0,0),attachHit=null,attachRoot=null;for(const hit of hits){let obj=hit.object;while(obj&&!obj.userData.partItem)obj=obj.parent;if(obj){attachHit=hit;attachRoot=obj;break;}}if(attachHit){place.copy(rocket.worldToLocal(attachHit.point.clone()));const normal=attachHit.face?attachHit.face.normal.clone().transformDirection(attachHit.object.matrixWorld):new THREE.Vector3(0,1,0);const localNormal=normal.transformDirection(rocket.matrixWorld.clone().invert());const selectedData=catalog.find(p=>p.id===selectedPartId);place.addScaledVector(localNormal,Math.max(.18,selectedData?.radius||.3)*.72);}else if(parts.length){toast('機体の部品をクリックして取り付けてください');return;}addPart(selectedPartId,place);selectedPartId=null;$('#hint').textContent='部品を選択してから、機体の取り付け位置をクリック。';});
