@@ -372,3 +372,8 @@ body.crew-roster-mode .crew-avatar{background:#345673!important;background-image
 body.crew-roster-mode .crew-recruit{background:#10243a!important;background-image:none!important}
 body.crew-roster-mode .crew-recruit button{background:#294d6c!important;background-image:none!important}
 body.crew-roster-mode .crew-recruit button:hover{background:#355f82!important;background-image:none!important}
+
+
+/* KSP-style top-docked navigation bar */
+.tabs{top:0!important;right:0!important;left:auto!important;height:48px!important;border-radius:0 0 0 7px!important;box-shadow:0 3px 12px #07131d66!important}
+@media(max-width:700px){.tabs{top:0!important;right:0!important;height:48px!important;border-radius:0 0 0 6px!important}}
