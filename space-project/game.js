@@ -510,15 +510,19 @@ function orbitCollisionRoots(){
  return [ground,planet];
 }
 function keepCameraOutsideGeometry(candidate){
- const offset=candidate.clone().sub(orbitTarget),radius=offset.length();
- if(radius<1e-8)return candidate;
- const direction=offset.clone().normalize();scene.updateMatrixWorld(true);
- const raycaster=new THREE.Raycaster(candidate,direction.clone().negate(),0,radius);
- const hits=raycaster.intersectObjects(orbitCollisionRoots(),true).filter(hit=>hit.object.visible&&hit.distance>1e-7);
- if(hits.length){
-  const clearance=mode==='vab'?.00035:mode==='crew'?.18:.001;
-  const safeDistance=Math.max(.00025,hits[0].distance-clearance);
-  if(safeDistance<radius)candidate.copy(orbitTarget).addScaledVector(direction,safeDistance);
+ // Sweep from the current camera position to the proposed position.
+ // Do not raycast from the destination back toward the orbit target: that
+ // incorrectly treats every wall between the camera and target as a zoom limit.
+ const movement=candidate.clone().sub(camera.position),distance=movement.length();
+ if(distance>1e-8){
+  const direction=movement.clone().normalize();scene.updateMatrixWorld(true);
+  const raycaster=new THREE.Raycaster(camera.position.clone(),direction,0,distance);
+  const hits=raycaster.intersectObjects(orbitCollisionRoots(),true).filter(hit=>hit.object.visible&&hit.distance>1e-7);
+  if(hits.length){
+   const clearance=mode==='vab'?.00035:mode==='crew'?.18:.001;
+   const safeDistance=Math.max(0,hits[0].distance-clearance);
+   candidate.copy(camera.position).addScaledVector(direction,safeDistance);
+  }
  }
  if(mode==='vab')candidate.y=Math.max(candidate.y,-.00008);
  return candidate;
