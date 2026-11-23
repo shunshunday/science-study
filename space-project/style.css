@@ -383,3 +383,13 @@ body.crew-roster-mode .crew-recruit button:hover{background:#355f82!important;ba
 .tabs{height:38px!important;padding:2px 6px!important;gap:3px!important}
 .tabs button{padding:4px 9px!important;font-size:11px!important;line-height:1.15!important;border-radius:3px!important}
 @media(max-width:700px){.tabs{height:38px!important;padding:2px 5px!important;gap:2px!important}.tabs button{padding:4px 7px!important;font-size:10px!important}}
+
+
+/* Compact staging panel in the upper-right corner */
+.build-staging{right:8px;top:56px;bottom:auto;width:154px;max-height:34vh;padding:5px;background:#26343eeF;border:1px solid #a9b3b955;border-radius:4px;overflow:auto;box-shadow:0 3px 12px #0006}
+.build-staging-head{height:23px;padding:3px 6px;font-size:10px;letter-spacing:1.5px}
+#build-stage-list{gap:3px;padding:4px 0}
+.build-stage{grid-template-columns:18px minmax(0,1fr);gap:3px;font-size:10px}
+.build-stage span{max-height:25px;font-size:9px;line-height:1.2}
+#stage-add-side{width:100%;padding:4px 6px;font-size:10px;border-radius:3px}
+@media(max-width:700px){.build-staging{right:5px;top:50px;width:132px;max-height:30vh;padding:4px}}
