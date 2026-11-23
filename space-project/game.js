@@ -332,7 +332,7 @@ function getSharedPreviewRenderer(){
  if(!sharedPreviewRenderer){
   const surface=document.createElement('canvas');
   sharedPreviewRenderer=new THREE.WebGLRenderer({canvas:surface,antialias:false,alpha:false,powerPreference:'low-power'});
-  sharedPreviewRenderer.setPixelRatio(1);sharedPreviewRenderer.setSize(232,116,false);sharedPreviewRenderer.outputColorSpace=THREE.SRGBColorSpace;sharedPreviewRenderer.toneMapping=THREE.ACESFilmicToneMapping;sharedPreviewRenderer.toneMappingExposure=1.2;
+  sharedPreviewRenderer.setPixelRatio(1);sharedPreviewRenderer.setSize(232,232,false);sharedPreviewRenderer.outputColorSpace=THREE.SRGBColorSpace;sharedPreviewRenderer.toneMapping=THREE.ACESFilmicToneMapping;sharedPreviewRenderer.toneMappingExposure=1.2;
  }
  return sharedPreviewRenderer;
 }
@@ -348,7 +348,7 @@ function renderOnePartPreview(canvas,p){
   const key=new THREE.DirectionalLight(0xffedcf,3.2);key.position.set(3,5,4);scene.add(key);
   const fill=new THREE.DirectionalLight(0x9fc8e8,1.1);fill.position.set(-4,1,-3);scene.add(fill);
   const model=partMesh(p);scene.add(model);const box=new THREE.Box3().setFromObject(model),center=box.getCenter(new THREE.Vector3()),sphere=box.getBoundingSphere(new THREE.Sphere());model.position.sub(center);
-  const camera=new THREE.PerspectiveCamera(34,2,.01,1000),dist=Math.max(.7,sphere.radius/Math.sin(THREE.MathUtils.degToRad(camera.fov/2))*.8194);camera.position.set(dist*.55,dist*.35,dist*.75);camera.lookAt(0,0,0);camera.far=dist*12;camera.updateProjectionMatrix();
+  const camera=new THREE.PerspectiveCamera(34,1,.01,1000),dist=Math.max(.7,sphere.radius/Math.sin(THREE.MathUtils.degToRad(camera.fov/2))*.8194);camera.position.set(dist*.55,dist*.35,dist*.75);camera.lookAt(0,0,0);camera.far=dist*12;camera.updateProjectionMatrix();
   const originalRotation=model.rotation.clone();
   const entry={scene,camera,model,originalRotation,hovered:false,raf:0,lastFrame:0};partPreviewRenderers.set(canvas,entry);paintPartPreview(entry,canvas);
   canvas.draggable=false;
@@ -365,7 +365,7 @@ function renderPartPreviews(items){
  for(const [canvas] of partPreviewRenderers)disposePartPreview(canvas);
  const list=$('#part-list');list.innerHTML=list.innerHTML;
  const canvases=[...list.querySelectorAll('button[data-part]')];
- for(const button of canvases){const p=items.find(x=>x.id===button.dataset.part);const holder=button.querySelector('.part-icon');if(!p||!holder)continue;holder.innerHTML='<canvas class="part-preview-canvas" width="232" height="116" aria-label="'+p.name+' の回転可能な3Dモデル"></canvas>';const canvas=holder.firstElementChild;canvas.dataset.partId=p.id;}
+ for(const button of canvases){const p=items.find(x=>x.id===button.dataset.part);const holder=button.querySelector('.part-icon');if(!p||!holder)continue;holder.innerHTML='<canvas class="part-preview-canvas" width="232" height="232" aria-label="'+p.name+' の回転可能な3Dモデル"></canvas>';const canvas=holder.firstElementChild;canvas.dataset.partId=p.id;}
  if('IntersectionObserver' in window){
   partPreviewObserver=new IntersectionObserver(entries=>{for(const e of entries){const canvas=e.target;if(e.isIntersecting){const p=catalog.find(x=>x.id===canvas.dataset.partId);if(p)renderOnePartPreview(canvas,p);}else disposePartPreview(canvas);}},{root:list,rootMargin:'100px'});
   list.querySelectorAll('.part-preview-canvas').forEach(c=>partPreviewObserver.observe(c));
