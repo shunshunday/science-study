@@ -549,7 +549,7 @@ renderer.domElement.addEventListener('pointermove',e=>{
  activeCameraPointers.set(e.pointerId,{x:e.clientX,y:e.clientY,type:e.pointerType});
  if(activeCameraPointers.size>=2){
   const distance=getPinchDistance();
-  if(pinchDistance>0&&distance>0)cameraZoomByFactor(pinchDistance/distance);
+  if(pinchDistance>0&&distance>0)cameraZoomByFactor(Math.pow(pinchDistance/distance,3));
   pinchDistance=distance;return;
  }
  if(orbitPointerId!==e.pointerId)return;
@@ -560,7 +560,9 @@ renderer.domElement.addEventListener('pointermove',e=>{
  camera.position.copy(keepCameraOutsideGeometry(candidate));camera.lookAt(orbitTarget);
 });
 renderer.domElement.addEventListener('wheel',e=>{
- if(mode==='flight')return;e.preventDefault();syncOrbitTarget();cameraZoomByFactor(Math.exp(e.deltaY*.001));
+ if(mode==='flight')return;e.preventDefault();syncOrbitTarget();
+ const sensitivity=e.ctrlKey?3:1;
+ cameraZoomByFactor(Math.exp(e.deltaY*.001*sensitivity));
 },{passive:false});
 function endOrbitDrag(e){
  if(!activeCameraPointers.has(e.pointerId))return;
