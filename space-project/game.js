@@ -72,7 +72,7 @@ function makeCrewFigure(member,index){
 function rebuildCrewStage(){while(crewStage.children.length)crewStage.remove(crewStage.children[0]);}
 scene.background=new THREE.Color(0x8298a6);scene.fog=new THREE.Fog(0x8298a6,180,600);
 const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.0001,20000);camera.position.set(24,18,34);
-const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);
 function renderCrewPortraits(){
  const canvases=$$('.crew-avatar');if(!canvases.length)return;
  const target=new THREE.WebGLRenderTarget(96,128,{depthBuffer:true,stencilBuffer:false});
@@ -687,6 +687,6 @@ function physicsStep(dt){
  if(alt>100&&!window._orb){window._orb=true;toast('大気圏外へ到達');science+=5;$('#science').textContent=science;saveCareer();}
 }
 function physics(dt){if(!flight||paused)return;flightAccumulator+=Math.min(dt,.1);const fixed=1/120;let steps=0;while(flightAccumulator>=fixed&&steps<12){physicsStep(fixed);flightAccumulator-=fixed;steps++;}if(steps===12)flightAccumulator=0;}
-let lastRender=0;function tick(now){requestAnimationFrame(tick);if(document.hidden){last=now;return;}const dt=Math.min(.04,(now-last)/1000);last=now;physics(dt);if(!flight&&mode==='center'){rocket.rotation.y=now*.00015;}if(mode==='vab'){rocket.rotation.y=0;}const renderInterval=flight?1000/45:1000/30;if(now-lastRender>=renderInterval){renderer.render(scene,camera);lastRender=now;}}requestAnimationFrame(tick);
+function tick(now){requestAnimationFrame(tick);if(document.hidden){last=now;return;}const dt=Math.min(.04,(now-last)/1000);last=now;physics(dt);if(!flight&&mode==='center'){rocket.rotation.y=now*.00015;}if(mode==='vab'){rocket.rotation.y=0;}renderer.render(scene,camera);}requestAnimationFrame(tick);
 $('#funds-toggle').onclick=()=>{fundsUnlimited=!fundsUnlimited;saveCareer();recalc();toast(fundsUnlimited?'資金を無制限にしました':'通常の資金制に戻しました');};
 setMode('center');layout();addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
