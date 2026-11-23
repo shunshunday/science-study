@@ -286,9 +286,11 @@
 
 
 /* When the parts browser is collapsed, keep only the category icons visible. */
-.parts.categories-collapsed{background:transparent!important;border-right:0!important;box-shadow:none!important}
+.parts.categories-collapsed{background:linear-gradient(90deg,#26313def,#35414bdf)!important;border-right:2px solid #9ba6ae66!important;box-shadow:8px 0 28px #0008!important;width:46px!important}
 
 
 /* Keep the 12-icon category rail fully opaque when the parts browser is collapsed. */
 .parts.categories-collapsed .part-categories{background:#18242d88!important;border-right:1px solid #101a20!important;opacity:1!important}
 .parts.categories-collapsed .part-category{opacity:1!important}
+
+@media(max-width:700px){.parts.categories-collapsed{width:42px!important}}
