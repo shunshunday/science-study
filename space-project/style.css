@@ -300,7 +300,3 @@
 .parts .part-categories,.parts.categories-collapsed .part-categories{background:#1d2934!important;background-image:none!important;opacity:1!important}
 
 
-
-/* Crew management: replace the 3D scenery behind the panel with a lightweight 2D backdrop. */
-body.crew-mode #viewport{background:radial-gradient(ellipse at 50% 28%,#536b7b 0%,#293b49 48%,#17232d 100%)}
-body.crew-mode #viewport canvas{visibility:hidden}
