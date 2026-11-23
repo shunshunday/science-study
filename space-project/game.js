@@ -376,12 +376,9 @@ function partHoverInfo(p){
  const brands=['Kerbodyne','Rockomax','Probodobodyne','Mk1','Mk2','Mk3','FL-','LV-','OX-','Z-','PPD-','EAS-','Oscar','Stayputnik','RC-','PB-','Mainsail'];
  const maker=brands.find(b=>p.name.startsWith(b))||'汎用パーツ';
  const lines=[p.name,'メーカー／シリーズ：'+maker,'重量：'+(p.mass??'—')+' t'];
- if(p.catalogSource)lines.push('収録：'+p.catalogSource+'（追加候補）');
- if(p.referenceSource)lines.push('参考値：'+p.referenceSource);
- if(p.dataQuality==='candidate-estimate')lines.push('注意：重量・寸法・価格・性能は暫定推定値。正確な1.12.5設定値は未照合');
- if(p.thrust!=null)lines.push('最大推力（暫定値）：'+p.thrust+' kN');
+ if(p.thrust!=null)lines.push('最大推力：'+p.thrust+' kN');
  if(p.isp!=null)lines.push('比推力（Isp）：'+p.isp+' s');
- if(p.fuel!=null)lines.push('推進剤容量（暫定値）：'+p.fuel);
+ if(p.fuel!=null)lines.push('推進剤容量：'+p.fuel);
  if(p.crew!=null)lines.push('搭乗定員：'+p.crew+' 名');
  if(p.height!=null)lines.push('全高：'+p.height+' m');
  if(p.radius!=null)lines.push('半径：'+p.radius+' m');
