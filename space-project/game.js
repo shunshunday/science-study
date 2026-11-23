@@ -69,7 +69,7 @@ function makeCrewFigure(member,index){
  root.position.set(0,1.5,0);
  return root;
 }
-function rebuildCrewStage(){while(crewStage.children.length)crewStage.remove(crewStage.children[0]);}
+function rebuildCrewStage(){while(crewStage.children.length){const child=crewStage.children[0];crewStage.remove(child);child.traverse(o=>{if(o.geometry)o.geometry.dispose();});}crewMembers.forEach((member,index)=>{const figure=makeCrewFigure(member,index);figure.position.x=(index-(crewMembers.length-1)/2)*3.1;crewStage.add(figure);});}
 scene.background=new THREE.Color(0x8298a6);scene.fog=new THREE.Fog(0x8298a6,180,600);
 const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.0001,20000);camera.position.set(24,18,34);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);
@@ -467,6 +467,7 @@ function saveCareer(){const key=gameMode==='career'?'space-career-v1':'space-'+g
 function renderResearch(){$('#career-title').textContent='研究開発';$('#career-content').innerHTML='<div class="career-content"><p>利用可能な科学ポイント：<b>'+science+'</b></p>'+techTree.map(t=>{const done=unlockedTech.has(t.id),ready=t.requires.every(x=>unlockedTech.has(x))&&science>=t.cost;return '<div class="career-item"><h3>'+t.name+'</h3><p>'+t.description+'</p><span class="career-tag">必要科学：'+t.cost+'　前提：'+(t.requires.join(', ')||'なし')+'</span><br><button data-unlock-tech="'+t.id+'" '+(done||!ready?'disabled':'')+'>'+(done?'解放済み':ready?'研究を完了':'条件未達')+'</button></div>';}).join('')+'</div>';}
 function renderCrew(){
  $('#career-title').textContent='乗組員管理';
+ rebuildCrewStage();
  crewStage.visible=false;
  $('#career-content').innerHTML='<div class="crew-intro"><span>CREW ROSTER</span><p>3D乗組員一覧。飛行から帰還すると経験が上がります。</p></div><div class="crew-grid">'+crewMembers.map((k)=>{
   syncCrewAbilities(k);
