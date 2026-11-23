@@ -300,3 +300,8 @@
 .parts .part-categories,.parts.categories-collapsed .part-categories{background:#1d2934!important;background-image:none!important;opacity:1!important}
 
 
+
+
+/* Crew roster: keep the individual full-body 3D portraits and all roster controls, while replacing only the large 3D scene behind the panel with a lightweight 2D backdrop. */
+body.crew-mode #viewport{background:radial-gradient(ellipse at 50% 28%,#536b78 0%,#344b59 48%,#1b2b36 100%);}
+body.crew-mode #viewport canvas{visibility:hidden;}
