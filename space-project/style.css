@@ -360,3 +360,15 @@ body.crew-roster-mode .crew-recruit button:hover{
 /* Solid navy crew roster background */
 body.crew-roster-mode{background:#142b46!important;background-image:none!important}
 body.crew-roster-mode::before,body.crew-roster-mode::after{display:none!important;content:none!important}
+
+
+/* Crew roster: remove every gradient and use solid navy surfaces */
+body.crew-roster-mode{background:#142b46!important;background-color:#142b46!important;background-image:none!important}
+body.crew-roster-mode::before,body.crew-roster-mode::after{display:none!important;content:none!important;background:none!important;box-shadow:none!important}
+body.crew-roster-mode .career-panel{background:#10243a!important;background-image:none!important}
+body.crew-roster-mode .career-head{background:#1b3a59!important;background-image:none!important}
+body.crew-roster-mode .crew-card{background:#24415d!important;background-image:none!important}
+body.crew-roster-mode .crew-avatar{background:#345673!important;background-image:none!important}
+body.crew-roster-mode .crew-recruit{background:#10243a!important;background-image:none!important}
+body.crew-roster-mode .crew-recruit button{background:#294d6c!important;background-image:none!important}
+body.crew-roster-mode .crew-recruit button:hover{background:#355f82!important;background-image:none!important}
