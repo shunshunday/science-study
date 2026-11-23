@@ -294,3 +294,7 @@
 .parts.categories-collapsed .part-category{opacity:1!important}
 
 @media(max-width:700px){.parts.categories-collapsed{width:42px!important}}
+
+
+/* Use one identical opaque rail color in both expanded and collapsed catalog states. */
+.parts .part-categories,.parts.categories-collapsed .part-categories{background:#1d2934!important;background-image:none!important;opacity:1!important}
