@@ -540,9 +540,10 @@ function renderStages(){
  $('#stage-list').innerHTML=cards.join('')||'<small>ステージなし</small>';
  const build=$('#build-stage-list');
  if(build)build.innerHTML=groups.map(n=>{
-  const group=parts.filter(p=>p.stage===n),fuelMax=group.reduce((s,p)=>s+(p.data.fuel||0),0),fuelNow=group.reduce((s,p)=>s+(p.fuel||0),0);
-  const items=group.map(p=>'<div class="build-stage-part"><i>'+p.data.icon+'</i><span>'+p.data.name+'</span></div>').join('');
-  return '<section class="build-stage-card '+(n===assemblyStage?'active':'')+'"><button class="build-stage-title" type="button" data-build-stage="'+n+'"><b>'+n+'</b><span>'+group.length+' パーツ</span></button><div class="build-stage-items">'+(items||'<small>空のステージ</small>')+'</div>'+(fuelMax?'<div class="build-stage-fuel"><i style="width:'+Math.round(fuelNow/fuelMax*100)+'%"></i></div>':'')+'</section>';
+  const group=parts.filter(p=>p.stage===n);
+  const fuelMax=group.reduce((s,p)=>s+(p.data.fuel||0),0),fuelNow=group.reduce((s,p)=>s+(p.fuel||0),0);
+  const items=group.map(p=>'<div class="build-stage-part" title="'+p.data.name.replace(/"/g,'&quot;')+'"><i>'+p.data.icon+'</i></div>').join('');
+  return '<section class="build-stage-card '+(n===assemblyStage?'active':'')+'"><button class="build-stage-title" type="button" data-build-stage="'+n+'" title="ステージ '+n+' を編集"><b>'+n+'</b><span>Ⅲ</span></button><div class="build-stage-items">'+(items||'<small>—</small>')+'</div>'+(fuelMax?'<div class="build-stage-fuel"><i style="width:'+Math.round(fuelNow/fuelMax*100)+'%"></i></div>':'')+'</section>';
  }).join('');
 }
 function recalc(){craftMass=rocketMassKg(parts)/1000;fuel=parts.reduce((s,p)=>s+(p.fuel||0),0);maxFuel=parts.reduce((s,p)=>s+(p.data.fuel||0),0);thrust=parts.reduce((s,p)=>s+(p.data.thrust||0),0);const dv=deltaV(parts);$('#craft-name').textContent='機体重量 '+craftMass.toFixed(2)+' t　Δv '+Math.round(dv)+' m/s　推力 '+thrust+' kN';$('#funds').textContent=gameMode==='sandbox'||fundsUnlimited?'∞':'₡'+funds.toLocaleString();$('#funds-toggle').textContent='資金: '+(fundsUnlimited?'無制限':'通常');$('#funds-toggle').classList.toggle('active',fundsUnlimited);$('#science').textContent=science;renderStages();}
