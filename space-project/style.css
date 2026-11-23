@@ -393,3 +393,8 @@ body.crew-roster-mode .crew-recruit button:hover{background:#355f82!important;ba
 .build-stage span{max-height:25px;font-size:9px;line-height:1.2}
 #stage-add-side{width:100%;padding:4px 6px;font-size:10px;border-radius:3px}
 @media(max-width:700px){.build-staging{right:5px;top:50px;width:132px;max-height:30vh;padding:4px}}
+
+
+/* Dock staging panel flush to the lower-right edge */
+.build-staging{right:0;top:auto;bottom:0;border-radius:4px 0 0 0;border-right:0;border-bottom:0}
+@media(max-width:700px){.build-staging{right:0;top:auto;bottom:0}}
