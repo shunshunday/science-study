@@ -417,3 +417,56 @@ body.crew-roster-mode .crew-recruit button:hover{background:#355f82!important;ba
 .build-stage-fuel{height:3px;margin:0 4px 4px;background:#121c22}.build-stage-fuel i{display:block;height:100%;background:#e1b65d}
 #stage-add-side{width:100%!important;margin-top:4px!important;padding:5px!important;background:#596b75!important;border-color:#aebcc355!important;font-size:9px!important}
 @media(max-width:700px){.build-staging{top:45vh!important;width:124px!important;padding:4px 3px 5px!important}.build-stage-part{grid-template-columns:20px minmax(0,1fr);min-height:22px}.build-stage-part i{width:18px;height:18px}.build-stage-part span{font-size:7px}}
+
+/* Compact KSP-inspired staging stack: narrow right rail, orange stage tabs and metallic part icons */
+.build-staging{
+ position:fixed!important;right:0!important;left:auto!important;top:43vh!important;bottom:0!important;
+ width:50px!important;max-height:none!important;padding:0 0 5px!important;display:none;
+ overflow-y:auto!important;overflow-x:hidden!important;background:rgba(35,43,49,.88)!important;
+ border:1px solid #78838a!important;border-right:0!important;border-bottom:0!important;
+ border-radius:4px 0 0 0!important;box-shadow:-2px 1px 8px #0008!important;backdrop-filter:none!important
+}
+.build-staging.show{display:block!important}
+.build-staging-head{height:17px!important;display:flex;align-items:center;justify-content:center;
+ padding:1px!important;background:#343e45!important;color:#d5dce0!important;
+ border-bottom:1px solid #111a20!important;font-size:8px!important;letter-spacing:1px!important}
+#build-stage-list{display:flex!important;flex-direction:column!important;gap:5px!important;padding:4px 2px!important}
+.build-stage-card{display:block!important;min-width:0!important;margin:0!important;padding:0!important;
+ background:transparent!important;border:0!important;border-radius:0!important;overflow:visible!important}
+.build-stage-card.active{background:transparent!important;box-shadow:none!important}
+.build-stage-title{
+ width:100%!important;height:19px!important;display:flex!important;align-items:center!important;
+ justify-content:space-between!important;padding:1px 4px!important;margin:0!important;
+ border:1px solid #8a501e!important;border-bottom-color:#4b2d18!important;border-radius:3px 0 0 3px!important;
+ background:#c87924!important;color:#fff!important;text-align:left!important;font-size:10px!important;
+ line-height:1!important;font-weight:800!important;box-shadow:inset 0 1px #f6bd68!important
+}
+.build-stage-card.active .build-stage-title{background:#e08b2d!important;border-color:#f1bd70!important}
+.build-stage-title b{font-size:11px!important;color:#fff!important}
+.build-stage-title span{font-size:9px!important;color:#ffe4bd!important;letter-spacing:-2px!important}
+.build-stage-items{display:flex!important;flex-direction:column!important;align-items:center!important;
+ gap:2px!important;padding:3px 0 1px!important}
+.build-stage-items>small{display:grid;place-items:center;width:31px!important;height:22px!important;
+ color:#bac2c7!important;background:#424d55!important;border:1px solid #68737b!important;font-size:9px!important}
+.build-stage-part{
+ display:grid!important;place-items:center!important;width:32px!important;height:26px!important;min-height:26px!important;
+ padding:1px!important;background:linear-gradient(180deg,#65717a,#39434a)!important;
+ border:1px solid #8d999f!important;border-radius:2px!important;box-shadow:inset 0 1px #aeb8bd55,0 1px 2px #0008!important
+}
+.build-stage-part i{display:grid!important;place-items:center!important;width:25px!important;height:21px!important;
+ background:transparent!important;color:#f1f3f4!important;border:0!important;border-radius:0!important;
+ font-style:normal!important;font-size:16px!important;line-height:1!important}
+.build-stage-part span{display:none!important}
+.build-stage-fuel{height:3px!important;margin:1px 4px 0!important;background:#1a2227!important}
+.build-stage-fuel i{display:block!important;height:100%!important;background:#e4b24c!important}
+#stage-add-side{display:flex!important;align-items:center!important;justify-content:center!important;
+ width:42px!important;height:21px!important;margin:5px auto 0!important;padding:0!important;
+ background:#4b5962!important;border:1px solid #8b989f!important;border-radius:2px!important;
+ color:#f1f4f5!important;font-size:14px!important;line-height:1!important}
+@media(max-width:700px){
+ .build-staging{top:43vh!important;width:44px!important}
+ .build-stage-title{height:18px!important;padding:1px 3px!important}
+ .build-stage-part{width:28px!important;height:23px!important;min-height:23px!important}
+ .build-stage-part i{width:22px!important;height:19px!important;font-size:14px!important}
+ #stage-add-side{width:36px!important}
+}
