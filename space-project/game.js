@@ -439,7 +439,7 @@ function drawPartsCatalogV2(){
  const query=($('#part-search')?.value||'').trim().toLowerCase(),sort=$('#part-sort')?.value||'name';
  let items=catalog.filter(p=>(activePartCategory==='すべて'||categoryFor(p)===activePartCategory)&&(!query||(p.name+' '+p.id+' '+categoryFor(p)).toLowerCase().includes(query)));
  items.sort((a,b)=>sort==='mass'?a.mass-b.mass:sort==='cost'?a.cost-b.cost:sort==='size'?a.height-b.height:a.name.localeCompare(b.name,'ja'));
- $('#parts-count').textContent=catalog.length+' PARTS';$('#part-result-count').textContent=items.length+' 件';
+ $('#part-result-count').textContent=items.length+' 件';
  $('#part-list').innerHTML=items.map(p=>{const unlocked=gameMode==='sandbox'||unlockedTech.has(p.tech||'basic'),esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const sourceLabel=p.catalogSource==='Making History'?'MAKING HISTORY':p.catalogSource==='Breaking Ground'?'BREAKING GROUND':p.catalogSource==='stock'?'STOCK':'BASE';return '<button class="part" data-part="'+p.id+'" aria-label="'+esc(p.name)+'" '+(unlocked?'':'disabled')+' data-tip="'+esc(partHoverInfo(p))+'"><span class="part-icon"></span></button>';}).join('');renderPartPreviews(items);
 }
 
