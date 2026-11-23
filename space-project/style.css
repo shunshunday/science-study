@@ -299,6 +299,59 @@
 /* Use one identical opaque rail color in both expanded and collapsed catalog states. */
 .parts .part-categories,.parts.categories-collapsed .part-categories{background:#1d2934!important;background-image:none!important;opacity:1!important}
 
-
-
-
+/* Premium deep-space backdrop for the crew roster screen */
+body.crew-roster-mode{
+ background:
+  radial-gradient(ellipse at 50% 48%,rgba(38,91,132,.42) 0%,rgba(20,48,78,.28) 34%,transparent 68%),
+  radial-gradient(ellipse at 16% 18%,rgba(74,54,130,.34),transparent 42%),
+  radial-gradient(ellipse at 86% 82%,rgba(17,112,139,.26),transparent 40%),
+  linear-gradient(135deg,#101b31 0%,#172b46 48%,#0b172b 100%)!important;
+}
+body.crew-roster-mode::before{
+ content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+ background-image:
+  radial-gradient(2px 2px at 8% 17%,rgba(220,239,255,.9) 45%,transparent 70%),
+  radial-gradient(1px 1px at 19% 72%,rgba(190,221,255,.8) 45%,transparent 70%),
+  radial-gradient(2px 2px at 31% 29%,rgba(255,255,255,.75) 45%,transparent 70%),
+  radial-gradient(1px 1px at 44% 84%,rgba(190,221,255,.8) 45%,transparent 70%),
+  radial-gradient(2px 2px at 57% 13%,rgba(255,255,255,.85) 45%,transparent 70%),
+  radial-gradient(1px 1px at 69% 61%,rgba(190,221,255,.75) 45%,transparent 70%),
+  radial-gradient(2px 2px at 82% 26%,rgba(255,255,255,.8) 45%,transparent 70%),
+  radial-gradient(1px 1px at 93% 77%,rgba(190,221,255,.8) 45%,transparent 70%);
+ opacity:.8;
+}
+body.crew-roster-mode::after{
+ content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+ background:linear-gradient(90deg,transparent 0%,rgba(91,177,220,.07) 50%,transparent 100%);
+ box-shadow:inset 0 0 130px rgba(2,8,22,.58);
+}
+body.crew-roster-mode .career-panel{
+ background:linear-gradient(145deg,rgba(31,55,78,.94),rgba(12,27,47,.96))!important;
+ border:1px solid rgba(130,195,230,.34)!important;
+ box-shadow:0 18px 55px rgba(0,0,0,.48),0 0 34px rgba(42,142,194,.13)!important;
+ backdrop-filter:blur(12px);
+}
+body.crew-roster-mode .career-head{
+ background:linear-gradient(90deg,#315b79,#203c58)!important;
+ border-bottom:1px solid rgba(160,218,245,.2);
+}
+body.crew-roster-mode .crew-card{
+ background:linear-gradient(135deg,rgba(69,100,126,.92),rgba(30,53,75,.96))!important;
+ border-color:rgba(164,213,239,.25)!important;
+ box-shadow:0 4px 14px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.06)!important;
+}
+body.crew-roster-mode .crew-avatar{
+ background:linear-gradient(160deg,#7897aa,#344f67)!important;
+ border-color:rgba(188,225,244,.42)!important;
+}
+body.crew-roster-mode .crew-recruit{
+ background:rgba(15,34,54,.78)!important;
+ border-color:rgba(145,202,231,.22)!important;
+}
+body.crew-roster-mode .crew-recruit button{
+ background:linear-gradient(180deg,#426d89,#294c67)!important;
+ border-color:rgba(174,220,242,.32)!important;
+}
+body.crew-roster-mode .crew-recruit button:hover{
+ background:linear-gradient(180deg,#5689a8,#35617e)!important;
+}
