@@ -290,5 +290,5 @@
 
 
 /* Keep the 12-icon category rail fully opaque when the parts browser is collapsed. */
-.parts.categories-collapsed .part-categories{background:#18242d!important;border-right:1px solid #101a20!important;opacity:1!important}
+.parts.categories-collapsed .part-categories{background:#18242d88!important;border-right:1px solid #101a20!important;opacity:1!important}
 .parts.categories-collapsed .part-category{opacity:1!important}
