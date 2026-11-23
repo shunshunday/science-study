@@ -355,3 +355,8 @@ body.crew-roster-mode .crew-recruit button{
 body.crew-roster-mode .crew-recruit button:hover{
  background:linear-gradient(180deg,#5689a8,#35617e)!important;
 }
+
+
+/* Solid navy crew roster background */
+body.crew-roster-mode{background:#142b46!important;background-image:none!important}
+body.crew-roster-mode::before,body.crew-roster-mode::after{display:none!important;content:none!important}
