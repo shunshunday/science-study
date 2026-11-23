@@ -379,49 +379,13 @@ function renderCategories(){
  $('#part-categories').innerHTML=cats.map((c,i)=>'<button class="part-category '+(activePartCategory===c?'active':'')+'" data-part-category="'+c+'" title="'+c+'"><span class="cat-icon">'+icons[i]+'</span><span class="cat-label">'+c+'</span></button>').join('');
 }
 function partPreviewSvg(p){const d='<defs><linearGradient id="ps" x2="1" y2="1"><stop stop-color="#f1f3ef"/><stop offset=".5" stop-color="#9ca8aa"/><stop offset="1" stop-color="#46545c"/></linearGradient></defs>';let s=p.type==='pod'?'<path d="M29 57V31Q29 13 40 8Q51 13 51 31V57Z" fill="url(#ps)" stroke="#26333a" stroke-width="2"/><path d="M33 27Q40 17 47 27L45 34H35Z" fill="#263e4b"/>':p.type==='tank'?'<path d="M31 8H49L53 15V55L49 62H31L27 55V15Z" fill="url(#ps)" stroke="#26333a" stroke-width="2"/><path d="M28 18H52M28 51H52" stroke="#596970" stroke-width="2"/>':(p.type==='engine'||p.type==='booster')?'<path d="M31 8H49V39L55 57H25L31 39Z" fill="url(#ps)" stroke="#26333a" stroke-width="2"/><path d="M34 41H46L51 55H29Z" fill="#303b42"/><path d="M34 56L40 68L46 56Z" fill="#e58b37"/>':p.type==='solar'?'<path d="M35 27H45V43H35Z" fill="url(#ps)"/><path d="M4 20H32V50H4ZM48 20H76V50H48Z" fill="#234e75" stroke="#9eabb0" stroke-width="2"/><path d="M4 30H32M4 40H32M48 30H76M48 40H76M18 20V50M62 20V50" stroke="#9bb5c4"/>':p.type==='chute'?'<path d="M13 35Q40 2 67 35L61 43H19Z" fill="#d6c6a2" stroke="#394850" stroke-width="2"/><path d="M13 35L40 61L67 35" fill="none" stroke="#7d4d3d" stroke-width="2"/>':'<path d="M30 14H50V54H30Z" fill="url(#ps)" stroke="#26333a" stroke-width="2"/><path d="M25 22H55M25 46H55" stroke="#e0bd6b" stroke-width="2"/>';return '<svg class="part-preview" viewBox="0 0 80 72" aria-hidden="true">'+d+s+'</svg>';}
-const partPreviewRenderers=new Map();let partPreviewObserver=null,selectedPartId=null,sharedPreviewRenderer=null;
-function getSharedPreviewRenderer(){
- if(!sharedPreviewRenderer){
-  const surface=document.createElement('canvas');
-  sharedPreviewRenderer=new THREE.WebGLRenderer({canvas:surface,antialias:false,alpha:false,powerPreference:'low-power'});
-  sharedPreviewRenderer.setPixelRatio(1);sharedPreviewRenderer.setSize(232,116,false);sharedPreviewRenderer.outputColorSpace=THREE.SRGBColorSpace;sharedPreviewRenderer.toneMapping=THREE.ACESFilmicToneMapping;sharedPreviewRenderer.toneMappingExposure=1.2;
- }
- return sharedPreviewRenderer;
-}
-function paintPartPreview(entry,canvas){
- const renderer=getSharedPreviewRenderer();renderer.render(entry.scene,entry.camera);
- const ctx=canvas.getContext('2d');if(ctx)ctx.drawImage(renderer.domElement,0,0,canvas.width,canvas.height);
-}
-function disposePartPreview(canvas){const entry=partPreviewRenderers.get(canvas);if(entry){entry.hovered=false;if(entry.raf)cancelAnimationFrame(entry.raf);entry.model.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){const materials=Array.isArray(o.material)?o.material:[o.material];for(const m of materials)m.dispose();}});}partPreviewRenderers.delete(canvas);}
-function renderOnePartPreview(canvas,p){
- if(partPreviewRenderers.has(canvas))return;
- try{
-  const scene=new THREE.Scene();scene.background=new THREE.Color(0x778894);scene.add(new THREE.HemisphereLight(0xeaf4ff,0x30383d,2.1));
-  const key=new THREE.DirectionalLight(0xffedcf,3.2);key.position.set(3,5,4);scene.add(key);
-  const fill=new THREE.DirectionalLight(0x9fc8e8,1.1);fill.position.set(-4,1,-3);scene.add(fill);
-  const model=partMesh(p);scene.add(model);const box=new THREE.Box3().setFromObject(model),center=box.getCenter(new THREE.Vector3()),sphere=box.getBoundingSphere(new THREE.Sphere());model.position.sub(center);
-  const camera=new THREE.PerspectiveCamera(34,2,.01,1000),dist=Math.max(.7,sphere.radius/Math.sin(THREE.MathUtils.degToRad(camera.fov/2))*.8194);camera.position.set(dist*.55,dist*.35,dist*.75);camera.lookAt(0,0,0);camera.far=dist*12;camera.updateProjectionMatrix();
-  const originalRotation=model.rotation.clone();
-  const entry={scene,camera,model,originalRotation,hovered:false,raf:0,lastFrame:0};partPreviewRenderers.set(canvas,entry);paintPartPreview(entry,canvas);
-  canvas.draggable=false;
-  canvas.addEventListener('dragstart',e=>e.preventDefault());
-  canvas.addEventListener('click',e=>e.stopPropagation());
-  const animate=now=>{if(!entry.hovered||!canvas.isConnected){entry.raf=0;return;}if(!entry.lastFrame)entry.lastFrame=now;const dt=Math.min(.05,(now-entry.lastFrame)/1000);entry.lastFrame=now;model.rotation.y+=dt*.9;paintPartPreview(entry,canvas);entry.raf=requestAnimationFrame(animate);};
-  canvas.addEventListener('pointerenter',()=>{entry.hovered=true;entry.lastFrame=0;if(!entry.raf)entry.raf=requestAnimationFrame(animate);});
-  canvas.addEventListener('pointerleave',()=>{entry.hovered=false;entry.lastFrame=0;if(entry.raf){cancelAnimationFrame(entry.raf);entry.raf=0;}model.rotation.copy(entry.originalRotation);paintPartPreview(entry,canvas);});
-  canvas.addEventListener('pointerdown',e=>e.stopPropagation());
- }catch(err){canvas.replaceWith(Object.assign(document.createElement('span'),{className:'part-preview-error',textContent:'3D'}));}
-}
+let selectedPartId=null;
 function renderPartPreviews(items){
- if(partPreviewObserver){partPreviewObserver.disconnect();partPreviewObserver=null;}
- for(const [canvas] of partPreviewRenderers)disposePartPreview(canvas);
- const list=$('#part-list');list.innerHTML=list.innerHTML;
- const canvases=[...list.querySelectorAll('button[data-part]')];
- for(const button of canvases){const p=items.find(x=>x.id===button.dataset.part);const holder=button.querySelector('.part-icon');if(!p||!holder)continue;holder.innerHTML='<canvas class="part-preview-canvas" width="232" height="116" aria-label="'+p.name+' の回転可能な3Dモデル"></canvas>';const canvas=holder.firstElementChild;canvas.dataset.partId=p.id;}
- if('IntersectionObserver' in window){
-  partPreviewObserver=new IntersectionObserver(entries=>{for(const e of entries){const canvas=e.target;if(e.isIntersecting){const p=catalog.find(x=>x.id===canvas.dataset.partId);if(p)renderOnePartPreview(canvas,p);}else disposePartPreview(canvas);}},{root:list,rootMargin:'100px'});
-  list.querySelectorAll('.part-preview-canvas').forEach(c=>partPreviewObserver.observe(c));
- }else list.querySelectorAll('.part-preview-canvas').forEach(c=>{const p=catalog.find(x=>x.id===c.dataset.partId);if(p)renderOnePartPreview(c,p);});
+ const list=$('#part-list');
+ for(const button of list.querySelectorAll('button[data-part]')){
+  const p=items.find(x=>x.id===button.dataset.part),holder=button.querySelector('.part-icon');
+  if(p&&holder)holder.innerHTML=partPreviewSvg(p);
+ }
 }
 function partHoverInfo(p){
  const types={
