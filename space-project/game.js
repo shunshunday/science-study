@@ -687,6 +687,6 @@ function physicsStep(dt){
  if(alt>100&&!window._orb){window._orb=true;toast('大気圏外へ到達');science+=5;$('#science').textContent=science;saveCareer();}
 }
 function physics(dt){if(!flight||paused)return;flightAccumulator+=Math.min(dt,.1);const fixed=1/120;let steps=0;while(flightAccumulator>=fixed&&steps<12){physicsStep(fixed);flightAccumulator-=fixed;steps++;}if(steps===12)flightAccumulator=0;}
-function tick(now){requestAnimationFrame(tick);if(document.hidden){last=now;return;}const dt=Math.min(.04,(now-last)/1000);last=now;physics(dt);if(!flight&&mode==='center'){rocket.rotation.y=now*.00015;}if(mode==='vab'){rocket.rotation.y=0;}renderer.render(scene,camera);}requestAnimationFrame(tick);
+function tick(now){requestAnimationFrame(tick);const dt=Math.min(.04,(now-last)/1000);last=now;physics(dt);if(!flight&&mode==='center'){rocket.rotation.y=now*.00015;}if(mode==='vab'){rocket.rotation.y=0;}renderer.render(scene,camera);}requestAnimationFrame(tick);
 $('#funds-toggle').onclick=()=>{fundsUnlimited=!fundsUnlimited;saveCareer();recalc();toast(fundsUnlimited?'資金を無制限にしました':'通常の資金制に戻しました');};
 setMode('center');layout();addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
