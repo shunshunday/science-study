@@ -518,7 +518,7 @@ const contracts=[
 let unlockedTech=new Set(techTree.map(t=>t.id)),activeContract=null,crewMembers=[{id:1,name:'Jebediah Kerman',role:'パイロット',level:1},{id:2,name:'Valentina Kerman',role:'パイロット',level:1},{id:3,name:'Bob Kerman',role:'科学者',level:1}];
 function rebuildHangarCrew(){
  while(hangarCrewGroup.children.length){const child=hangarCrewGroup.children[0];hangarCrewGroup.remove(child);child.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>m.dispose());}});}
- const lanes=[-82,-62,-42,-22,22,42,62,82];
+ const lanes=[-72,72,-45,45,-18,18,-88,88];
  crewMembers.forEach((member,index)=>{
   const figure=makeCrewFigure(member,index),lane=index%lanes.length,row=Math.floor(index/lanes.length);
   const x=lanes[lane],z=-66+(row%7)*17;
