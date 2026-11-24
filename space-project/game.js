@@ -411,7 +411,7 @@ function renderCategories(){
 function partPreviewSvg(p){const d='<defs><linearGradient id="ps" x2="1" y2="1"><stop stop-color="#f1f3ef"/><stop offset=".5" stop-color="#9ca8aa"/><stop offset="1" stop-color="#46545c"/></linearGradient></defs>';let s=p.type==='pod'?'<path d="M29 57V31Q29 13 40 8Q51 13 51 31V57Z" fill="url(#ps)" stroke="#26333a" stroke-width="2"/><path d="M33 27Q40 17 47 27L45 34H35Z" fill="#263e4b"/>':p.type==='tank'?'<path d="M31 8H49L53 15V55L49 62H31L27 55V15Z" fill="url(#ps)" stroke="#26333a" stroke-width="2"/><path d="M28 18H52M28 51H52" stroke="#596970" stroke-width="2"/>':(p.type==='engine'||p.type==='booster')?'<path d="M31 8H49V39L55 57H25L31 39Z" fill="url(#ps)" stroke="#26333a" stroke-width="2"/><path d="M34 41H46L51 55H29Z" fill="#303b42"/><path d="M34 56L40 68L46 56Z" fill="#e58b37"/>':p.type==='solar'?'<path d="M35 27H45V43H35Z" fill="url(#ps)"/><path d="M4 20H32V50H4ZM48 20H76V50H48Z" fill="#234e75" stroke="#9eabb0" stroke-width="2"/><path d="M4 30H32M4 40H32M48 30H76M48 40H76M18 20V50M62 20V50" stroke="#9bb5c4"/>':p.type==='chute'?'<path d="M13 35Q40 2 67 35L61 43H19Z" fill="#d6c6a2" stroke="#394850" stroke-width="2"/><path d="M13 35L40 61L67 35" fill="none" stroke="#7d4d3d" stroke-width="2"/>':'<path d="M30 14H50V54H30Z" fill="url(#ps)" stroke="#26333a" stroke-width="2"/><path d="M25 22H55M25 46H55" stroke="#e0bd6b" stroke-width="2"/>';return '<svg class="part-preview" viewBox="0 0 80 72" aria-hidden="true">'+d+s+'</svg>';}
 const partPreviewRenderers=new Map();let partPreviewObserver=null,selectedPartId=null,sharedPreviewRenderer=null;const partPreviewQueue=[];let partPreviewQueueRaf=0;
 function queuePartPreview(canvas,p){if(partPreviewRenderers.has(canvas)||partPreviewQueue.some(item=>item.canvas===canvas))return;partPreviewQueue.push({canvas,p});if(!partPreviewQueueRaf)partPreviewQueueRaf=requestAnimationFrame(renderNextPartPreview);}
-function renderNextPartPreview(){partPreviewQueueRaf=0;const item=partPreviewQueue.shift();if(item&&item.canvas.isConnected){const list=$('#part-list'),lr=list.getBoundingClientRect(),cr=item.canvas.getBoundingClientRect();if(cr.bottom>=lr.top&&cr.top<=lr.bottom)renderOnePartPreview(item.canvas,item.p);}if(partPreviewQueue.length)partPreviewQueueRaf=requestAnimationFrame(renderNextPartPreview);}
+function renderNextPartPreview(){partPreviewQueueRaf=0;let count=0;while(partPreviewQueue.length&&count<4){const item=partPreviewQueue.shift();if(item&&item.canvas.isConnected)renderOnePartPreview(item.canvas,item.p);count++;}if(partPreviewQueue.length)partPreviewQueueRaf=requestAnimationFrame(renderNextPartPreview);}
 function getSharedPreviewRenderer(){
  if(!sharedPreviewRenderer){
   const surface=document.createElement('canvas');
@@ -450,8 +450,8 @@ function renderPartPreviews(items){
  const buttons=[...list.querySelectorAll('button[data-part]')];
  const previews=[];
  for(const button of buttons){const p=items.find(x=>x.id===button.dataset.part);const holder=button.querySelector('.part-icon');if(!p||!holder)continue;holder.innerHTML='<canvas class="part-preview-canvas" width="232" height="116" aria-label="'+p.name+' の回転可能な3Dモデル"></canvas>';const canvas=holder.firstElementChild;canvas.dataset.partId=p.id;previews.push({canvas,p});}
- // 全プレビューを初回描画でまとめて生成。表示範囲による遅延読み込みは行わない。
- for(const item of previews)renderOnePartPreview(item.canvas,item.p);
+ // すべての部品を対象にする。WebGL負荷で全体が消えないよう、1フレーム4個ずつ描画する。
+ for(const item of previews)queuePartPreview(item.canvas,item.p);
 }
 function partHoverInfo(p){
  const types={
