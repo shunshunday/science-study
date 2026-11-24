@@ -518,14 +518,19 @@ const contracts=[
 let unlockedTech=new Set(techTree.map(t=>t.id)),activeContract=null,crewMembers=[{id:1,name:'Jebediah Kerman',role:'パイロット',level:1},{id:2,name:'Valentina Kerman',role:'パイロット',level:1},{id:3,name:'Bob Kerman',role:'科学者',level:1}];
 function rebuildHangarCrew(){
  while(hangarCrewGroup.children.length){const child=hangarCrewGroup.children[0];hangarCrewGroup.remove(child);child.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>m.dispose());}});}
- const lanes=[-72,72,-45,45,-18,18,-88,88];
+ const occupied=[];
+ const randomPoint=()=>{
+  let point;
+  for(let tries=0;tries<60;tries++){
+   point=new THREE.Vector3(-88+Math.random()*176,-1.77,-84+Math.random()*168);
+   if(occupied.every(p=>p.distanceTo(point)>13))break;
+  }
+  occupied.push(point.clone());return point;
+ };
  crewMembers.forEach((member,index)=>{
-  const figure=makeCrewFigure(member,index),lane=index%lanes.length,row=Math.floor(index/lanes.length);
-  const x=lanes[lane],z=-66+(row%7)*17;
-  figure.position.set(x,-1.77,z);
-  figure.rotation.y=lane<4?Math.PI:0;
-  const route=[new THREE.Vector3(x,-1.77,z),new THREE.Vector3(x,-1.77,z+13),new THREE.Vector3(x+(lane<4?5:-5),-1.77,z+13),new THREE.Vector3(x+(lane<4?5:-5),-1.77,z)];
-  figure.userData.hangarWalk={route,target:1,mode:'think',wait:1.5+(index%4)*.7,phase:index*.83,index};
+  const figure=makeCrewFigure(member,index),point=randomPoint();
+  figure.position.copy(point);figure.rotation.y=Math.random()*Math.PI*2;
+  figure.userData.hangarWalk={target:randomPoint(),mode:'think',wait:Math.random()*3.5,phase:Math.random()*Math.PI*2,pauseIn:5+Math.random()*13,index};
   hangarCrewGroup.add(figure);
  });
 }
@@ -536,21 +541,29 @@ function updateHangarCrew(dt){
   if(state.mode==='think'){
    state.wait-=dt;
    figure.rotation.z=Math.sin(state.phase*.7)*.018;
-   parts.head.rotation.z=.12+Math.sin(state.phase*.55)*.035;
-   parts.arms[0].rotation.z=-.22+Math.sin(state.phase*.8)*.025;
+   parts.head.rotation.z=.12+Math.sin(state.phase*.55)*.045;
+   parts.arms[0].rotation.z=-.22+Math.sin(state.phase*.8)*.035;
    parts.arms[1].rotation.z=.05;
    parts.legs.forEach(leg=>leg.rotation.x=0);
-   if(state.wait<=0){state.mode='walk';parts.head.rotation.z=0;state.wait=0;}
+   figure.position.y=-1.77;
+   if(state.wait<=0){
+    state.mode='walk';state.target=new THREE.Vector3(-88+Math.random()*176,-1.77,-84+Math.random()*168);
+    state.pauseIn=6+Math.random()*16;parts.head.rotation.z=0;
+   }
   }else{
-   const target=state.route[state.target],dx=target.x-figure.position.x,dz=target.z-figure.position.z,dist=Math.hypot(dx,dz),step=Math.min(dist,dt*5.2);
+   state.pauseIn-=dt;
+   if(state.pauseIn<=0&&Math.random()<dt*.22){
+    state.mode='think';state.wait=1.2+Math.random()*3.8;continue;
+   }
+   const dx=state.target.x-figure.position.x,dz=state.target.z-figure.position.z,dist=Math.hypot(dx,dz),step=Math.min(dist,dt*(2.2+Math.random()*.35));
    if(dist>.001){figure.position.x+=dx/dist*step;figure.position.z+=dz/dist*step;figure.rotation.y=Math.atan2(dx,dz);}
-   const stride=Math.sin(state.phase*7.2);
+   const stride=Math.sin(state.phase*6.5);
    parts.legs.forEach((leg,i)=>{leg.rotation.x=(i===0?1:-1)*stride*.22;});
    parts.arms.forEach((arm,i)=>{arm.rotation.x=(i===0?-1:1)*stride*.09;});
    figure.position.y=-1.77+Math.abs(stride)*.025;
-   figure.rotation.z=Math.sin(state.phase*7.2)*.012;
+   figure.rotation.z=Math.sin(state.phase*6.5)*.012;
    parts.head.rotation.z=Math.sin(state.phase*2.4)*.018;
-   if(dist<.45){state.target=(state.target+1)%state.route.length;state.mode='think';state.wait=2.2+((state.index*3+Math.floor(state.phase))%5)*.8;figure.position.y=-1.77;parts.legs.forEach(leg=>leg.rotation.x=0);}
+   if(dist<1.1){state.mode='think';state.wait=1.8+Math.random()*5.5;figure.position.y=-1.77;parts.legs.forEach(leg=>leg.rotation.x=0);}
   }
  }
 }
