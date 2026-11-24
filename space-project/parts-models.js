@@ -48,13 +48,17 @@ export function createPartModel(p,THREE){
    for(let i=0;i<4;i++){const x=(i-1.5)*width*.35;box(.035,.025,h*.82,dark,[x,width*.95,0]);}
   }else if(donut){cyl(r,r,h*.38,white);torus(r*.93,.12,alloy);torus(r*.93,.055,dark,.14);}
   else if(baguette){mesh(new THREE.CapsuleGeometry(r*.6,h*.28,6,16),white,[0,0,0],[Math.PI/2,0,0]);}
-  else if(/adapter|アダプター/.test(n)){mesh(new THREE.CylinderGeometry(r*.58,r,h*.82,32),white,[0,h*.48,0]);torus(r*.98,.06,gold,h*.1);torus(r*.58,.06,dark,h*.88);}
+  else if(/adapter|アダプター/.test(name)){mesh(new THREE.CylinderGeometry(r*.58,r,h*.82,32),white,[0,h*.48,0]);torus(r*.98,.06,gold,h*.1);torus(r*.58,.06,dark,h*.88);}
   else if(mk2||mk3){const body=mesh(new THREE.CylinderGeometry(r*.88,r*.88,h*.78,24),white,[0,h*.5,0]);body.scale.set(mk3?1.35:1.2,1,mk3?.72:.78);for(let y of [h*.15,h*.82]){const band=mesh(new THREE.TorusGeometry(r*.88,.055,8,32),gold,[0,y,0]);band.scale.set(mk3?1.35:1.2,1,mk3?.72:.78);}for(let x of [-1,1])box(.08,h*.55,.08,dark,[x*r*.8,h*.5,0]);}
   else if(ore){cyl(r*.88,r*.88,h*.8,mat(0x788d77,.58,.55),h*.4,12);for(let y of [.15,h*.65])bodyBand(r*.9,y,gold);}
   else{
-   const shellMat=xenon?mat(0x718c9b,.72,.24):texturedWhite;lathe([[0,h*.08],[r*.48,h*.08],[r*.78,h*.105],[r*.91,h*.16],[r*.96,h*.23],[r*.96,h*.77],[r*.91,h*.84],[r*.78,h*.895],[r*.48,h*.92],[0,h*.92]],shellMat,0,64);
-   for(const y of [h*.12,h*.22,h*.78,h*.88])bodyBand(r*.96,y,y===h*.22||y===h*.78?gold:dark);
-   for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.035,h*.48,.035,dark,[Math.cos(a)*r*.95,h*.5,Math.sin(a)*r*.95]);}
+   const shellMat=xenon?mat(0x718c9b,.72,.24):texturedWhite;
+   const flSeries=/^tank-(s|m)$/.test(id)||/fl-t(100|200|400|800)/i.test(id),rockomax=/rockomax|x200/i.test(id);
+   const profile=rockomax?[[0,h*.035],[r*.72,h*.035],[r*.9,h*.06],[r*.98,h*.12],[r,h*.18],[r,h*.82],[r*.98,h*.88],[r*.9,h*.94],[r*.72,h*.965],[0,h*.965]]:flSeries?[[0,h*.035],[r*.55,h*.035],[r*.82,h*.055],[r*.94,h*.11],[r*.98,h*.18],[r*.98,h*.82],[r*.94,h*.89],[r*.82,h*.945],[r*.55,h*.965],[0,h*.965]]:[[0,h*.08],[r*.48,h*.08],[r*.78,h*.105],[r*.91,h*.16],[r*.96,h*.23],[r*.96,h*.77],[r*.91,h*.84],[r*.78,h*.895],[r*.48,h*.92],[0,h*.92]];
+   lathe(profile,shellMat,0,96);
+   if(flSeries){for(const y of [h*.105,h*.895]){bodyBand(r*.985,y,dark);bodyBand(r*.965,y+(y<h*.5?.025:-.025),alloy);}bodyBand(r*.99,h*.18,gold);bodyBand(r*.99,h*.82,gold);mesh(new THREE.BoxGeometry(r*.23,h*.47,.026),dark,[0,h*.5,r*.974]);mesh(new THREE.BoxGeometry(r*.19,h*.23,.012),mat(0xd5d8cf,.25,.78),[0,h*.53,r*.992]);for(let yy of [h*.39,h*.67])for(let xx of [-1,1])sphere(.018,alloy,[xx*r*.065,yy,r*.994]);}
+   else if(rockomax){for(const y of [h*.09,h*.91])bodyBand(r*1.015,y,alloy);for(const y of [h*.2,h*.8]){bodyBand(r*1.008,y,dark);bodyBand(r*.995,y+.025,gold);}for(let i=0;i<12;i++){const a=i*Math.PI/6;const rail=mesh(new THREE.BoxGeometry(.045,h*.58,.04),dark,[Math.cos(a)*r*.992,h*.5,Math.sin(a)*r*.992]);rail.rotation.y=-a;}}
+   else{for(const y of [h*.12,h*.22,h*.78,h*.88])bodyBand(r*.96,y,y===h*.22||y===h*.78?gold:dark);for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.035,h*.48,.035,dark,[Math.cos(a)*r*.95,h*.5,Math.sin(a)*r*.95]);}}
    if(xenon){for(let i=0;i<6;i++){const a=i*Math.PI/3;sphere(.06,gold,[Math.cos(a)*r*.6,h*.5,Math.sin(a)*r*.6]);}}
   }
  }else if(p.type==='nosecone'){
