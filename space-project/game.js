@@ -567,10 +567,11 @@ function updateHangarCrew(dt){
    parts.head.rotation.x=THREE.MathUtils.damp(parts.head.rotation.x,-.10+Math.sin(state.phase*.45)*.025,4,dt);
    parts.arms.forEach((arm,i)=>{
     const nearFace=arm.side===1;
-    arm.shoulder.rotation.x=THREE.MathUtils.damp(arm.shoulder.rotation.x,nearFace?-.22:.12,4,dt);
-    arm.shoulder.rotation.z=THREE.MathUtils.damp(arm.shoulder.rotation.z,nearFace?-.72:.16,4,dt);
-    arm.elbow.rotation.x=THREE.MathUtils.damp(arm.elbow.rotation.x,-.18,4,dt);
-    arm.elbow.rotation.z=THREE.MathUtils.damp(arm.elbow.rotation.z,nearFace?-.92:.08,4,dt);
+    // 片手はこめかみに、反対の手は胸元へ。両腕が胴体に隠れない角度に保つ
+    arm.shoulder.rotation.x=THREE.MathUtils.damp(arm.shoulder.rotation.x,nearFace?-.18:.08,5,dt);
+    arm.shoulder.rotation.z=THREE.MathUtils.damp(arm.shoulder.rotation.z,nearFace?-.48:-.38,5,dt);
+    arm.elbow.rotation.x=THREE.MathUtils.damp(arm.elbow.rotation.x,nearFace?-.12:-.08,5,dt);
+    arm.elbow.rotation.z=THREE.MathUtils.damp(arm.elbow.rotation.z,nearFace?-1.08:.82,5,dt);
    });
    parts.legs.forEach(leg=>{leg.hip.rotation.x=THREE.MathUtils.damp(leg.hip.rotation.x,0,5,dt);leg.knee.rotation.x=THREE.MathUtils.damp(leg.knee.rotation.x,0,5,dt);});
    figure.position.y=THREE.MathUtils.damp(figure.position.y,-.22+breathe,4,dt);
