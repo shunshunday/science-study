@@ -85,10 +85,6 @@ function makeCrewFigure(member,index){
  return root;
 }
 
- root.position.set(0,1.5,0);
- root.userData.walkParts={legs:legParts,arms:armParts,head:headPivot};
- return root;
-}
 function rebuildCrewStage(){while(crewStage.children.length){const child=crewStage.children[0];crewStage.remove(child);child.traverse(o=>{if(o.geometry)o.geometry.dispose();});}crewMembers.forEach((member,index)=>{const figure=makeCrewFigure(member,index);figure.position.x=(index-(crewMembers.length-1)/2)*3.1;crewStage.add(figure);});}
 scene.background=new THREE.Color(0x8298a6);scene.fog=new THREE.Fog(0x8298a6,180,600);
 const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.0001,20000);camera.position.set(24,18,34);
@@ -555,7 +551,20 @@ function updateHangarCrew(dt){
  const smooth=(a,b,t)=>{const x=THREE.MathUtils.clamp((t-a)/(b-a),0,1);return x*x*(3-2*x);};
  for(const figure of hangarCrewGroup.children){
   const state=figure.userData.hangarWalk,parts=figure.userData.walkParts;if(!state||!parts)continue;
-  state.phase+=dt;const gait=state.phase*7.2;
+  state.phase+=dt;
+  const mouth=parts.mouth;
+  if(mouth){
+   if(state.talkTimer===undefined){state.talkTimer=2+Math.random()*5;state.talkUntil=0;}
+   state.talkTimer-=dt;
+   if(state.talkTimer<=0){state.talkUntil=state.phase+.7+Math.random()*1.5;state.talkTimer=5+Math.random()*11;}
+   const talking=state.phase<state.talkUntil;
+   const syllable=talking?(0.35+.65*Math.abs(Math.sin(state.phase*13.5))):0;
+   mouth.cavity.scale.y=THREE.MathUtils.damp(mouth.cavity.scale.y,.72*(talking?.22+syllable*1.05:.12),15,dt);
+   mouth.teeth.scale.y=THREE.MathUtils.damp(mouth.teeth.scale.y,talking?.75+syllable*.45:.12,15,dt);
+   mouth.tongue.scale.y=THREE.MathUtils.damp(mouth.tongue.scale.y,talking?.42+syllable*.55:.08,13,dt);
+   mouth.smile.scale.y=THREE.MathUtils.damp(mouth.smile.scale.y,talking?.35:.12,12,dt);
+  }
+  const gait=state.phase*7.2;
   if(state.mode==='think'){
    state.wait-=dt;
    const blend=1-smooth(0,.45,Math.max(0,state.thinkBlend??0));
