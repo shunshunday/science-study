@@ -486,3 +486,9 @@ body.crew-roster-mode .crew-recruit button:hover{background:#355f82!important;ba
  #stage-add-side{font-size:6px!important;height:18px!important;min-height:18px!important}
 }
 
+
+
+/* Category symbols for the parts assigned to each staging group */
+.build-stage-category-marks{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;align-items:center!important;gap:2px!important;min-height:0!important;padding:3px 1px 1px!important;background:#202c33!important;border-bottom:1px solid #68757b66!important}
+.build-stage-category-marks span{display:grid!important;place-items:center!important;min-width:17px!important;height:17px!important;padding:0 1px!important;color:#f4f6f6!important;font-size:13px!important;line-height:1!important;white-space:nowrap!important}
+@media(max-width:700px){.build-stage-category-marks{gap:1px!important;padding:2px 0 1px!important}.build-stage-category-marks span{min-width:15px!important;height:15px!important;font-size:12px!important}}
