@@ -3,13 +3,17 @@
 export function createPartModel(p,THREE){
  const g=new THREE.Group(),r=Math.max(.08,p.radius||.5),h=Math.max(.12,p.height||.5),id=p.id||'',name=p.name||'';
  const mat=(c,m=.45,rough=.42)=>new THREE.MeshStandardMaterial({color:c,metalness:m,roughness:rough});
+ const textureCanvas=document.createElement('canvas');textureCanvas.width=512;textureCanvas.height=512;const tx=textureCanvas.getContext('2d');tx.fillStyle='#d9dcd6';tx.fillRect(0,0,512,512);for(let y=0;y<512;y+=64){tx.fillStyle=y%128===0?'#c2c9c5':'#e5e6df';tx.fillRect(0,y,512,2);tx.fillStyle='#8b9696';tx.fillRect(0,y+3,512,1);}for(let x=0;x<512;x+=128){tx.fillStyle='#aab4b1';tx.fillRect(x,0,1,512);for(let y=0;y<512;y+=64){tx.fillStyle='#667579';tx.beginPath();tx.arc(x+5,y+7,2,0,Math.PI*2);tx.fill();}}tx.fillStyle='#b28b45';tx.fillRect(0,250,512,8);tx.fillStyle='#3b4549';tx.font='bold 18px Arial';tx.fillText('AEROSPACE  /  FLIGHT HARDWARE',18,232);const industrialTexture=new THREE.CanvasTexture(textureCanvas);industrialTexture.colorSpace=THREE.SRGBColorSpace;industrialTexture.wrapS=industrialTexture.wrapT=THREE.RepeatWrapping;industrialTexture.anisotropy=4;
+ const texturedWhite=new THREE.MeshStandardMaterial({color:0xffffff,map:industrialTexture,metalness:.34,roughness:.52});
+ const lathe=(profile,ma,y=0,segments=48)=>mesh(new THREE.LatheGeometry(profile.map(v=>new THREE.Vector2(v[0],v[1])),segments),ma,[0,y,0]);
+
  const alloy=mat(0xaeb9bb,.78,.3),white=mat(0xd8d8cf,.48,.48),dark=mat(0x303b42,.8,.34),black=mat(0x17232a,.65,.25),gold=mat(0xb68b42,.72,.28),glass=mat(0x234e68,.55,.16),blue=mat(0x244f79,.62,.28),rubber=mat(0x20262a,.05,.9),orange=mat(0xc47b35,.48,.52);
  const mesh=(geo,ma,pos=[0,0,0],rot=[0,0,0],scale=null)=>{const o=new THREE.Mesh(geo,ma);o.position.set(...pos);o.rotation.set(...rot);if(scale)o.scale.set(...scale);o.castShadow=true;o.receiveShadow=true;g.add(o);return o;};
  const cyl=(rt,rb,len,ma,y=0,seg=32)=>mesh(new THREE.CylinderGeometry(rt,rb,len,seg),ma,[0,y,0]);
  const torus=(rad,tube,ma,y=0)=>mesh(new THREE.TorusGeometry(rad,tube,8,40),ma,[0,y,0],[Math.PI/2,0,0]);
  const box=(w,hh,d,ma,pos=[0,0,0],rot=[0,0,0])=>mesh(new THREE.BoxGeometry(w,hh,d),ma,pos,rot);
  const sphere=(rad,ma,pos=[0,0,0],scale=[1,1,1])=>mesh(new THREE.SphereGeometry(rad,24,16),ma,pos,[0,0,0],scale);
- const nozzle=(rad,len,ma=dark,y=0,x=0,z=0)=>{const b=cyl(rad*.48,rad,len,ma,y-len*.45,32);b.position.x=x;b.position.z=z;const ring=torus(rad*.94,.055,alloy,y-len*.9);ring.position.set(x,y-len*.9,z);};
+ const nozzle=(rad,len,ma=dark,y=0,x=0,z=0)=>{const profile=[[rad*.34,y],[rad*.42,y-len*.12],[rad*.54,y-len*.3],[rad*.72,y-len*.55],[rad*.9,y-len*.78],[rad,y-len*.94],[rad*.98,y-len],[rad*.9,y-len*.97]];const b=mesh(new THREE.LatheGeometry(profile.map(v=>new THREE.Vector2(v[0],v[1])),48),ma,[x,0,z]);const ring=torus(rad*.94,.055,alloy,y-len*.96);ring.position.set(x,y-len*.96,z);};
  const boltRing=(rad,y,count=12)=>{for(let i=0;i<count;i++){const a=i*Math.PI*2/count;sphere(.035,gold,[Math.cos(a)*rad,y,Math.sin(a)*rad],[1,1,1]);}};
  const panel=(w,hh,x,z)=>{box(w,.045,hh,blue,[x,0,z]);for(let k=1;k<5;k++)box(.018,.018,hh*.94,mat(0x82a9c2,.5,.3),[x-w/2+w*k/5,.032,z]);box(w*.98,.018,.025,alloy,[x,.034,0]);};
  const bodyBand=(rad,y,ma=dark)=>torus(rad,.045,ma,y);
@@ -47,9 +51,7 @@ export function createPartModel(p,THREE){
   else if(mk2||mk3){const body=mesh(new THREE.CylinderGeometry(r*.88,r*.88,h*.78,24),white,[0,h*.5,0]);body.scale.set(mk3?1.35:1.2,1,mk3?.72:.78);for(let y of [h*.15,h*.82]){const band=mesh(new THREE.TorusGeometry(r*.88,.055,8,32),gold,[0,y,0]);band.scale.set(mk3?1.35:1.2,1,mk3?.72:.78);}for(let x of [-1,1])box(.08,h*.55,.08,dark,[x*r*.8,h*.5,0]);}
   else if(ore){cyl(r*.88,r*.88,h*.8,mat(0x788d77,.58,.55),h*.4,12);for(let y of [.15,h*.65])bodyBand(r*.9,y,gold);}
   else{
-   cyl(r*.94,r*.94,h*.76,xenon?mat(0x718c9b,.72,.24):white,h*.5,40);
-   mesh(new THREE.SphereGeometry(r*.94,32,12,0,Math.PI*2,0,Math.PI/2),alloy,[0,h*.88,0]);
-   mesh(new THREE.SphereGeometry(r*.94,32,12,0,Math.PI*2,Math.PI/2,Math.PI/2),alloy,[0,h*.12,0]);
+   const shellMat=xenon?mat(0x718c9b,.72,.24):texturedWhite;lathe([[0,h*.08],[r*.48,h*.08],[r*.78,h*.105],[r*.91,h*.16],[r*.96,h*.23],[r*.96,h*.77],[r*.91,h*.84],[r*.78,h*.895],[r*.48,h*.92],[0,h*.92]],shellMat,0,64);
    for(const y of [h*.12,h*.22,h*.78,h*.88])bodyBand(r*.96,y,y===h*.22||y===h*.78?gold:dark);
    for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.035,h*.48,.035,dark,[Math.cos(a)*r*.95,h*.5,Math.sin(a)*r*.95]);}
    if(xenon){for(let i=0;i<6;i++){const a=i*Math.PI/3;sphere(.06,gold,[Math.cos(a)*r*.6,h*.5,Math.sin(a)*r*.6]);}}
