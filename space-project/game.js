@@ -635,10 +635,24 @@ function placeSelectedPartAt(clientX,clientY){
  if(mode!=='vab'||!selectedPartId)return;
  const rect=renderer.domElement.getBoundingClientRect(),mouse=new THREE.Vector2((clientX-rect.left)/rect.width*2-1,-(clientY-rect.top)/rect.height*2+1),ray=new THREE.Raycaster();
  rocket.updateWorldMatrix(true,true);ray.setFromCamera(mouse,camera);
- const hits=ray.intersectObjects(rocket.children,true);let place=new THREE.Vector3(0,0,0),attachHit=null;
- for(const hit of hits){let obj=hit.object;while(obj&&!obj.userData.partItem)obj=obj.parent;if(obj){attachHit=hit;break;}}
+ const hits=ray.intersectObjects(rocket.children,true);let place=new THREE.Vector3(0,0,0),attachHit=null,attachRoot=null;
+ for(const hit of hits){let obj=hit.object;while(obj&&!obj.userData.partItem)obj=obj.parent;if(obj){attachHit=hit;attachRoot=obj;break;}}
  let rotation=null;
- if(attachHit){place.copy(rocket.worldToLocal(attachHit.point.clone()));const normal=attachHit.face?attachHit.face.normal.clone().transformDirection(attachHit.object.matrixWorld):new THREE.Vector3(0,1,0);const localNormal=normal.transformDirection(rocket.matrixWorld.clone().invert()).normalize();const selectedData=catalog.find(p=>p.id===selectedPartId);place.addScaledVector(localNormal,Math.max(.18,selectedData?.radius||.3)*.52);rotation=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),localNormal);}
+ if(attachHit){
+  place.copy(rocket.worldToLocal(attachHit.point.clone()));
+  const normal=attachHit.face?attachHit.face.normal.clone().transformDirection(attachHit.object.matrixWorld):new THREE.Vector3(0,1,0);
+  const localNormal=normal.transformDirection(rocket.matrixWorld.clone().invert()).normalize();
+  const components=[Math.abs(localNormal.x),Math.abs(localNormal.y),Math.abs(localNormal.z)],axis=components.indexOf(Math.max(...components));
+  if(components[axis]>.62){localNormal.set(axis===0?Math.sign(localNormal.x):0,axis===1?Math.sign(localNormal.y):0,axis===2?Math.sign(localNormal.z):0);}
+  rotation=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),localNormal);
+  const selectedData=catalog.find(p=>p.id===selectedPartId),sample=partMesh(selectedData);sample.quaternion.copy(rotation);sample.updateMatrixWorld(true);
+  const sampleBounds=new THREE.Box3().setFromObject(sample),attachBounds=new THREE.Box3().setFromObject(attachRoot),gap=.025;
+  if(components[axis]>.62){
+   const key=axis===0?'x':axis===1?'y':'z',sign=localNormal.getComponent(axis);
+   place.setComponent(axis,sign>0?attachBounds.max.getComponent(axis)-sampleBounds.min.getComponent(axis)+gap:attachBounds.min.getComponent(axis)-sampleBounds.max.getComponent(axis)-gap);
+  }else place.addScaledVector(localNormal,Math.max(.18,selectedData?.radius||.3)*.52);
+  sample.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>m.dispose());}});
+ }
  else if(parts.length){toast('機体の部品をクリックして取り付けてください');return;}
  addPart(selectedPartId,parts.length?place:null,rotation);selectedPartId=null;$('#hint').textContent='部品を選択してから、機体の取り付け位置をクリック。';
 }
