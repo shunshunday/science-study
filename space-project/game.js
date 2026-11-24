@@ -9,82 +9,86 @@ const crewStage=new THREE.Group();crewStage.visible=false;scene.add(crewStage);
 function makeCrewFigure(member,index){
  const mat=(color,roughness=.62,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
  const root=new THREE.Group(),legParts=[],armParts=[];
- const skin=mat(0x8eae43,.82),eyeWhite=mat(0xf5f4e9,.18),pupilMat=mat(0x18251d,.2),suit=mat(0xe6e5d9,.72),suitShade=mat(0xb9c1bc,.7),orange=mat(0xd87932,.62),bootMat=mat(0x4b5558,.78),badgeMat=mat(index%3===0?0x3f7190:index%3===1?0x9b563e:0x5d7850,.7);
+ const skin=mat(0x8eae43,.84),eyeWhite=mat(0xf5f4e9,.18),pupilMat=mat(0x18251d,.2),suit=mat(0xe6e5d9,.76),suitShade=mat(0xb9c1bc,.72),orange=mat(0xd87932,.62),bootMat=mat(0x4b5558,.78),rubber=mat(0x252d30,.9),badgeMat=mat(index%3===0?0x3f7190:index%3===1?0x9b563e:0x5d7850,.7);
  const sphere=(parent,r,material,x,y,z,scale)=>{const mesh=new THREE.Mesh(new THREE.SphereGeometry(r,24,18),material);mesh.position.set(x,y,z);if(scale)mesh.scale.set(...scale);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
- const segment=(parent,length,radius,material)=>{const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius*.9,radius,length,16),material);mesh.position.y=-length/2;mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
- // Compact Kerbal-like proportions: short limbs, small torso, oversized green head.
+ const box=(parent,w,h,d,material,x,y,z)=>{const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
+ const segment=(parent,length,radius,material)=>{const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius*.9,radius,length,18),material);mesh.position.y=-length/2;mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
+ // Short, sturdy suit silhouette with separate hip, knee and ankle pivots.
+ const pelvis=new THREE.Group();pelvis.position.y=.92;root.add(pelvis);
+ sphere(pelvis,.31,suit,0,0,0,[1.18,.72,.92]);
  for(const side of [-1,1]){
-  const hip=new THREE.Group();hip.position.set(side*.235,.78,0);root.add(hip);
-  sphere(hip,.19,suit,0,-.06,0,[.9,1.15,.95]);
-  segment(hip,.39,.155,suit);
-  const knee=new THREE.Group();knee.position.y=-.39;hip.add(knee);
-  segment(knee,.39,.135,suit);
-  const kneeCap=sphere(knee,.14,suitShade,0,-.08,.035,[1,.8,.8]);
-  const boot=new THREE.Mesh(new THREE.BoxGeometry(.29,.17,.39),bootMat);boot.position.set(0,-.43,.12);boot.castShadow=true;boot.receiveShadow=true;knee.add(boot);
-  const bootToe=sphere(knee,.14,suit,0,-.39,.22,[1,.58,.9]);
-  legParts.push({hip,knee,side});
+  const hip=new THREE.Group();hip.position.set(side*.235,-.08,0);pelvis.add(hip);
+  sphere(hip,.17,suit,0,-.04,0,[1,1.12,.96]);
+  segment(hip,.38,.145,suit);
+  const knee=new THREE.Group();knee.position.y=-.38;hip.add(knee);
+  sphere(knee,.145,suitShade,0,0,0,[1,.9,.92]);
+  segment(knee,.37,.128,suit);
+  const ankle=new THREE.Group();ankle.position.set(0,-.36,.015);knee.add(ankle);
+  const cuff=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.09,18),orange);cuff.rotation.x=Math.PI/2;cuff.position.set(0,.015,.005);ankle.add(cuff);
+  const boot=new THREE.Group();boot.position.set(0,-.075,.095);ankle.add(boot);
+  box(boot,.275,.19,.36,bootMat,0,-.015,.045);
+  box(boot,.28,.055,.32,rubber,0,-.112,.045);
+  sphere(boot,.14,suitShade,0,.025,.19,[1,.62,.75]);
+  legParts.push({hip,knee,ankle,side});
  }
- const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.39,.48,6,16),suit);torso.scale.set(1.08,1,.82);torso.position.y=1.39;torso.castShadow=true;torso.receiveShadow=true;root.add(torso);
- // Neck ring and the characteristic orange suit details.
- const collar=new THREE.Mesh(new THREE.TorusGeometry(.34,.095,10,28),orange);collar.position.set(0,1.99,0);collar.rotation.x=Math.PI/2;collar.castShadow=true;root.add(collar);
- const chestPanel=new THREE.Mesh(new THREE.BoxGeometry(.42,.35,.075),suitShade);chestPanel.position.set(0,1.48,.345);chestPanel.castShadow=true;root.add(chestPanel);
- const chestMark=new THREE.Mesh(new THREE.BoxGeometry(.22,.12,.025),badgeMat);chestMark.position.set(0,1.55,.39);root.add(chestMark);
- // Life-support backpack, kept close to the silhouette.
- const pack=new THREE.Mesh(new THREE.BoxGeometry(.58,.78,.34),suitShade);pack.position.set(0,1.42,-.39);pack.castShadow=true;pack.receiveShadow=true;root.add(pack);
- const packTop=new THREE.Mesh(new THREE.BoxGeometry(.42,.18,.37),orange);packTop.position.set(0,1.86,-.39);root.add(packTop);
+ // Suit torso, panel, webbing, seams and compact life-support pack.
+ const torso=new THREE.Group();torso.position.y=1.42;root.add(torso);
+ const torsoMesh=new THREE.Mesh(new THREE.CapsuleGeometry(.37,.48,7,20),suit);torsoMesh.scale.set(1.08,1,.84);torsoMesh.castShadow=true;torsoMesh.receiveShadow=true;torso.add(torsoMesh);
+ box(torso,.43,.34,.075,suitShade,0,-.035,.325);
+ box(torso,.22,.105,.025,badgeMat,0,.045,.372);
+ box(torso,.12,.07,.03,orange,0,-.17,.375);
+ // Shoulder-to-waist suit seams and harness strips.
  for(const side of [-1,1]){
-  const shoulderCap=sphere(root,.205,suit,side*.54,1.72,0,[1,.98,.96]);
-  const shoulder=new THREE.Group();shoulder.position.set(side*.55,1.72,0);root.add(shoulder);
-  segment(shoulder,.43,.155,suit);
-  const elbow=new THREE.Group();elbow.position.set(side*.015,-.43,.035);shoulder.add(elbow);
-  segment(elbow,.38,.135,suit);
-  const cuff=new THREE.Mesh(new THREE.CylinderGeometry(.145,.145,.105,16),orange);cuff.position.set(0,-.34,0);elbow.add(cuff);
-  const glove=sphere(elbow,.16,suitShade,0,-.445,.055,[.94,.92,.88]);
-  armParts.push({shoulder,elbow,side});
+  const strap=box(torso,.055,.62,.035,suitShade,side*.255,.02,.315);strap.rotation.z=side*.12;
+  box(torso,.07,.12,.045,orange,side*.29,.24,.31);
  }
- // Kerbal-like head: tall rounded-rectangle silhouette, dark hair, protruding eyes, toothy mouth.
+ const pack=new THREE.Group();pack.position.set(0,.015,-.34);torso.add(pack);
+ box(pack,.55,.72,.34,suitShade,0,0,0);
+ box(pack,.42,.13,.36,orange,0,.32,0);
+ box(pack,.42,.12,.035,bootMat,0,-.22,.18);
+ for(const side of [-1,1])box(pack,.1,.42,.37,bootMat,side*.25,-.02,0);
+ const collar=new THREE.Mesh(new THREE.TorusGeometry(.32,.085,10,28),orange);collar.position.set(0,.43,0);collar.rotation.x=Math.PI/2;collar.castShadow=true;torso.add(collar);
+ // Fully articulated arms: shoulder -> elbow -> wrist -> glove.
+ for(const side of [-1,1]){
+  sphere(root,.19,suit,side*.49,1.67,0,[1,.95,.95]);
+  const shoulder=new THREE.Group();shoulder.position.set(side*.51,1.66,0);root.add(shoulder);
+  segment(shoulder,.39,.145,suit);
+  const elbow=new THREE.Group();elbow.position.set(0,-.39,.025);shoulder.add(elbow);
+  sphere(elbow,.135,suitShade,0,0,0,[1,.92,.92]);
+  segment(elbow,.34,.125,suit);
+  const wrist=new THREE.Group();wrist.position.set(0,-.33,.025);elbow.add(wrist);
+  const wristRing=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.075,18),orange);wristRing.rotation.x=Math.PI/2;wrist.add(wristRing);
+  sphere(wrist,.145,suitShade,0,-.09,.035,[.94,.9,.9]);
+  box(wrist,.17,.19,.19,suitShade,0,-.17,.08);
+  armParts.push({shoulder,elbow,wrist,side});
+ }
+ // Capsule-like head volume: no cheek pads, no human-style cheek protrusions.
  const headPivot=new THREE.Group();headPivot.position.set(0,2.72,0);root.add(headPivot);
- // Rounded, deep head volume: a softened vertical cylinder rather than a thin extruded face.
- const headCore=new THREE.Mesh(new THREE.CylinderGeometry(.59,.62,1.12,40,1,false),skin);
- headCore.position.set(0,.02,0);headCore.scale.set(1,.98,.96);headCore.castShadow=true;headCore.receiveShadow=true;headPivot.add(headCore);
- const crownVolume=sphere(headPivot,.57,skin,0,.565,0,[1,.28,.96]);
- const chinVolume=sphere(headPivot,.55,skin,0,-.535,0,[1,.24,.96]);
- // Subtle cheek volumes keep the front readable while preserving the rounded side silhouette.
- for(const side of [-1,1])sphere(headPivot,.25,skin,side*.39,-.17,.34,[.9,.78,.88]);
- // Hair is a distinct sculpted cap with a visible hairline and swept locks.
+ const head=sphere(headPivot,.62,skin,0,.015,0,[.91,1.13,.88]);
+ // A restrained short military-style hair cap, kept behind the face.
  const hairColors=[0x211b18,0x17191d,0x493020,0x30231d,0x9a733c,0x51413a];
- const hairMat=mat(hairColors[Math.abs(index)%hairColors.length],.88);
- sphere(headPivot,.59,hairMat,0,.665,-.015,[1.1,.32,1.02]);
- const fringe=sphere(headPivot,.49,hairMat,-.05,.56,.47,[1.12,.24,.48]);
- fringe.rotation.z=-.08;
- for(let n=0;n<5;n++){
-  const lock=sphere(headPivot,.12,hairMat,-.39+n*.19,.55+(n%2)*.045,.53,[.72,1.65,.62]);
-  lock.rotation.z=-.22+(n*.09);
- }
- // The eyes sit forward from the face; their unequal height and gaze are intentional.
+ const hairMat=mat(hairColors[Math.abs(index)%hairColors.length],.9);
+ sphere(headPivot,.565,hairMat,0,.53,-.055,[1.02,.30,.94]);
+ const hairline=sphere(headPivot,.49,hairMat,0,.42,.27,[1.02,.13,.35]);
+ hairline.rotation.x=-.08;
+ // Unequal, protruding eyes are part of the head rig and therefore bob with it.
+ const eyes=[];
  for(const side of [-1,1]){
-  const eyeX=side*.34,eyeY=side===-1?.12:.045;
-  sphere(headPivot,.275,eyeWhite,eyeX,eyeY,.555,[.98,1.06,.82]);
-  sphere(headPivot,.112,pupilMat,eyeX+side*.035,eyeY-.015,.715,[.95,1.02,.72]);
-  sphere(headPivot,.034,mat(0xffffff,.12),eyeX+side*.012,eyeY+.045,.765);
+  const eyeGroup=new THREE.Group();eyeGroup.position.set(side*.255,.095,.455);headPivot.add(eyeGroup);
+  const size=side===-1?.255:.235;
+  sphere(eyeGroup,size,eyeWhite,0,0,.035,[.94,1.05,.92]);
+  sphere(eyeGroup,size*.39,pupilMat,side*.035,-.012,.245,[.95,1,.78]);
+  sphere(eyeGroup,size*.12,mat(0xffffff,.12),side*.012,.075,.285);
+  eyes.push(eyeGroup);
  }
- // Wide mouth with a dark cavity, visible white teeth and tongue. Jaw opens during chatter.
- const mouthGroup=new THREE.Group();mouthGroup.position.set(0,-.39,.565);headPivot.add(mouthGroup);
- const cavity=sphere(mouthGroup,.245,mat(0x30120f,.72),0,0,.075,[1.22,.72,.34]);
- const teethGroup=new THREE.Group();mouthGroup.add(teethGroup);
- for(let t=-2;t<=2;t++){
-  const tooth=new THREE.Mesh(new THREE.BoxGeometry(.105,.105,.055),mat(0xf5f3e8,.28));
-  tooth.position.set(t*.092,.105,.185);tooth.rotation.z=-t*.025;tooth.castShadow=true;teethGroup.add(tooth);
- }
- const tongue=sphere(mouthGroup,.105,mat(0xa94d50,.52),0,-.13,.17,[1.25,.42,.5]);
- const mouthSmile=new THREE.Mesh(new THREE.TorusGeometry(.255,.026,8,28,Math.PI),mat(0x557333,.82));
- mouthSmile.position.set(0,-.015,.09);mouthSmile.rotation.z=Math.PI;mouthGroup.add(mouthSmile);
+ const mouthGroup=new THREE.Group();mouthGroup.position.set(0,-.39,.535);headPivot.add(mouthGroup);
+ const mouthDark=mat(0x30120f,.76);
+ const cavity=sphere(mouthGroup,.105,mouthDark,0,0,.02,[1.45,.48,.34]);
+ const mouthLine=new THREE.Mesh(new THREE.TorusGeometry(.13,.018,6,20,Math.PI),mat(0x42632c,.82));mouthLine.position.set(0,-.025,.045);mouthLine.rotation.z=Math.PI;mouthGroup.add(mouthLine);
  root.scale.setScalar(.88);
- root.position.set(0,1.5,0);
- root.userData.walkParts={legs:legParts,arms:armParts,head:headPivot,mouth:{cavity,teeth:teethGroup,tongue,smile:mouthSmile}};
+ root.userData.walkParts={legs:legParts,arms:armParts,head:headPivot,eyes,mouth:{cavity,smile:mouthLine}};
  return root;
 }
-
 function rebuildCrewStage(){while(crewStage.children.length){const child=crewStage.children[0];crewStage.remove(child);child.traverse(o=>{if(o.geometry)o.geometry.dispose();});}crewMembers.forEach((member,index)=>{const figure=makeCrewFigure(member,index);figure.position.x=(index-(crewMembers.length-1)/2)*3.1;crewStage.add(figure);});}
 scene.background=new THREE.Color(0x8298a6);scene.fog=new THREE.Fog(0x8298a6,180,600);
 const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.0001,20000);camera.position.set(24,18,34);
@@ -548,56 +552,50 @@ function rebuildHangarCrew(){
  });
 }
 function updateHangarCrew(dt){
- const smooth=(a,b,t)=>{const x=THREE.MathUtils.clamp((t-a)/(b-a),0,1);return x*x*(3-2*x);};
  for(const figure of hangarCrewGroup.children){
   const state=figure.userData.hangarWalk,parts=figure.userData.walkParts;if(!state||!parts)continue;
   state.phase+=dt;
+  const gait=state.phase*7.2;
   const mouth=parts.mouth;
   if(mouth){
    if(state.talkTimer===undefined){state.talkTimer=2+Math.random()*5;state.talkUntil=0;}
    state.talkTimer-=dt;
    if(state.talkTimer<=0){state.talkUntil=state.phase+.7+Math.random()*1.5;state.talkTimer=5+Math.random()*11;}
-   const talking=state.phase<state.talkUntil;
-   const syllable=talking?(0.35+.65*Math.abs(Math.sin(state.phase*13.5))):0;
-   mouth.cavity.scale.y=THREE.MathUtils.damp(mouth.cavity.scale.y,.72*(talking?.22+syllable*1.05:.12),15,dt);
-   mouth.teeth.scale.y=THREE.MathUtils.damp(mouth.teeth.scale.y,talking?.75+syllable*.45:.12,15,dt);
-   mouth.tongue.scale.y=THREE.MathUtils.damp(mouth.tongue.scale.y,talking?.42+syllable*.55:.08,13,dt);
+   const talking=state.phase<state.talkUntil,syllable=talking?Math.abs(Math.sin(state.phase*13.5)):0;
+   mouth.cavity.scale.y=THREE.MathUtils.damp(mouth.cavity.scale.y,talking?.18+syllable*.72:.12,15,dt);
    mouth.smile.scale.y=THREE.MathUtils.damp(mouth.smile.scale.y,talking?.35:.12,12,dt);
   }
-  const gait=state.phase*7.2;
   if(state.mode==='think'){
    state.wait-=dt;
-   const blend=1-smooth(0,.45,Math.max(0,state.thinkBlend??0));
-   state.thinkBlend=Math.min(.45,(state.thinkBlend??0)+dt);
    const breathe=Math.sin(state.phase*1.25)*.012;
+   figure.position.y=THREE.MathUtils.damp(figure.position.y,-.22+breathe,4,dt);
    figure.rotation.z=THREE.MathUtils.damp(figure.rotation.z,Math.sin(state.phase*.55)*.012,3,dt);
-   parts.head.rotation.z=THREE.MathUtils.damp(parts.head.rotation.z,.24+Math.sin(state.phase*.65)*.035,4,dt);
-   parts.head.rotation.x=THREE.MathUtils.damp(parts.head.rotation.x,-.10+Math.sin(state.phase*.45)*.025,4,dt);
-   parts.arms.forEach((arm,i)=>{
+   parts.head.rotation.z=THREE.MathUtils.damp(parts.head.rotation.z,.18+Math.sin(state.phase*.65)*.025,4,dt);
+   parts.head.rotation.x=THREE.MathUtils.damp(parts.head.rotation.x,-.08+Math.sin(state.phase*.45)*.02,4,dt);
+   parts.arms.forEach(arm=>{
     const nearFace=arm.side===1;
-    // 片手はこめかみに、反対の手は胸元へ。両腕が胴体に隠れない角度に保つ
     arm.shoulder.rotation.x=THREE.MathUtils.damp(arm.shoulder.rotation.x,nearFace?-.18:.08,5,dt);
     arm.shoulder.rotation.z=THREE.MathUtils.damp(arm.shoulder.rotation.z,nearFace?-.48:-.38,5,dt);
     arm.elbow.rotation.x=THREE.MathUtils.damp(arm.elbow.rotation.x,nearFace?-.12:-.08,5,dt);
     arm.elbow.rotation.z=THREE.MathUtils.damp(arm.elbow.rotation.z,nearFace?-1.08:.82,5,dt);
    });
-   parts.legs.forEach(leg=>{leg.hip.rotation.x=THREE.MathUtils.damp(leg.hip.rotation.x,0,5,dt);leg.knee.rotation.x=THREE.MathUtils.damp(leg.knee.rotation.x,0,5,dt);});
-   figure.position.y=THREE.MathUtils.damp(figure.position.y,-.22+breathe,4,dt);
-   if(state.wait<=0){
-    state.mode='walk';state.thinkBlend=0;state.target=new THREE.Vector3(-88+Math.random()*176,-.22,-84+Math.random()*168);
-    state.pauseIn=7+Math.random()*17;
-   }
+   parts.legs.forEach(leg=>{leg.hip.rotation.x=THREE.MathUtils.damp(leg.hip.rotation.x,0,5,dt);leg.knee.rotation.x=THREE.MathUtils.damp(leg.knee.rotation.x,0,5,dt);leg.ankle.rotation.x=THREE.MathUtils.damp(leg.ankle.rotation.x,0,5,dt);});
+   if(state.wait<=0){state.mode='walk';state.target=new THREE.Vector3(-88+Math.random()*176,-.22,-84+Math.random()*168);state.pauseIn=7+Math.random()*17;}
   }else{
    state.pauseIn-=dt;
-   if(state.pauseIn<=0&&Math.random()<dt*.16){state.mode='think';state.wait=2+Math.random()*4;state.thinkBlend=0;continue;}
+   if(state.pauseIn<=0&&Math.random()<dt*.16){state.mode='think';state.wait=2+Math.random()*4;continue;}
    const dx=state.target.x-figure.position.x,dz=state.target.z-figure.position.z,dist=Math.hypot(dx,dz);
    const speed=2.0+Math.sin(state.phase*.4)*.18,step=Math.min(dist,dt*speed);
    if(dist>.001){figure.position.x+=dx/dist*step;figure.position.z+=dz/dist*step;figure.rotation.y=THREE.MathUtils.damp(figure.rotation.y,Math.atan2(dx,dz),5,dt);}
-   const stride=Math.sin(gait),opposite=Math.sin(gait+Math.PI);
-   parts.legs.forEach((leg)=>{
-    const swing=Math.sin(gait+(leg.side<0?0:Math.PI));
-    leg.hip.rotation.x=THREE.MathUtils.damp(leg.hip.rotation.x,swing*.48,12,dt);
-    leg.knee.rotation.x=THREE.MathUtils.damp(leg.knee.rotation.x,Math.max(0,-swing)*.72,12,dt);
+   const stride=Math.sin(gait),bob=Math.max(0,Math.sin(gait*2))*.045;
+   parts.legs.forEach(leg=>{
+    const phase=gait+(leg.side<0?0:Math.PI),swing=Math.sin(phase);
+    const lift=Math.max(0,-swing);
+    const kneeBend=lift*.92+Math.max(0,Math.sin(phase+Math.PI*.5))*.12;
+    leg.hip.rotation.x=THREE.MathUtils.damp(leg.hip.rotation.x,swing*.43,13,dt);
+    leg.knee.rotation.x=THREE.MathUtils.damp(leg.knee.rotation.x,kneeBend,15,dt);
+    // Toe lifts during swing and levels on stance, keeping the boot from clipping through the floor.
+    leg.ankle.rotation.x=THREE.MathUtils.damp(leg.ankle.rotation.x,-swing*.18-kneeBend*.42,13,dt);
    });
    parts.arms.forEach(arm=>{
     const swing=Math.sin(gait+(arm.side<0?Math.PI:0));
@@ -605,13 +603,17 @@ function updateHangarCrew(dt){
     arm.shoulder.rotation.z=THREE.MathUtils.damp(arm.shoulder.rotation.z,arm.side*.045,8,dt);
     arm.elbow.rotation.x=THREE.MathUtils.damp(arm.elbow.rotation.x,-.12+Math.max(0,swing)*.16,9,dt);
     arm.elbow.rotation.z=THREE.MathUtils.damp(arm.elbow.rotation.z,0,8,dt);
+    arm.wrist.rotation.x=THREE.MathUtils.damp(arm.wrist.rotation.x,-swing*.08,8,dt);
    });
-   figure.position.y=THREE.MathUtils.damp(figure.position.y,-.22+Math.max(0,Math.sin(gait*2))*.045,10,dt);
+   figure.position.y=THREE.MathUtils.damp(figure.position.y,-.22+bob,10,dt);
    figure.rotation.z=THREE.MathUtils.damp(figure.rotation.z,Math.sin(gait)*.012,8,dt);
+   // Head and eyes share the same moving rig: the whole gaze visibly rises and falls with each step.
+   parts.head.position.y=THREE.MathUtils.damp(parts.head.position.y,2.72+bob*.42,10,dt);
    parts.head.rotation.z=THREE.MathUtils.damp(parts.head.rotation.z,Math.sin(state.phase*1.8)*.018,5,dt);
-   parts.head.rotation.x=THREE.MathUtils.damp(parts.head.rotation.x,0,5,dt);
-   if(dist<1.1){state.mode='think';state.wait=2+Math.random()*5;state.thinkBlend=0;}
+   parts.head.rotation.x=THREE.MathUtils.damp(parts.head.rotation.x,Math.sin(gait)*.018,6,dt);
+   if(dist<1.1){state.mode='think';state.wait=2+Math.random()*5;}
   }
+  if(state.mode==='think')parts.head.position.y=THREE.MathUtils.damp(parts.head.position.y,2.72,7,dt);
  }
 }
 const abilityRanges={1:{stupidity:[70,100],bravery:[0,30]},2:{stupidity:[50,69],bravery:[31,50]},3:{stupidity:[30,49],bravery:[51,70]},4:{stupidity:[10,29],bravery:[71,90]},5:{stupidity:[0,9],bravery:[91,100]}};
