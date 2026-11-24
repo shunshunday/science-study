@@ -143,12 +143,14 @@ const crew=makeCrew();crew.position.set(4,0,7);campus.add(crew);
 const hangar=new THREE.Group();hangar.scale.set(.0018,.0022,.0018);scene.add(hangar);
 const hangarCrewGroup=new THREE.Group();hangar.add(hangarCrewGroup);
 const hangarMat=(color,metalness=.45,roughness=.72)=>new THREE.MeshStandardMaterial({color,metalness,roughness});
-const steel=hangarMat(0x46525a,.78),steelLight=hangarMat(0x899398,.72),darkSteel=hangarMat(0x202a30,.55),yellow=hangarMat(0xb18a35,.55),floorMat=hangarMat(0x62696b,.2,.92);
+const steel=hangarMat(0x657782,.72,.62),steelLight=hangarMat(0xb1bdc1,.68,.48),darkSteel=hangarMat(0x34434b,.62,.58),yellow=hangarMat(0xc5c9c5,.28,.72),floorMat=hangarMat(0x777f80,.12,.96);
 function hBox(w,h,d,x,y,z,mat,parent=hangar){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
 function hBeam(a,b,r=.42,mat=steel){const va=new THREE.Vector3(...a),vb=new THREE.Vector3(...b),d=vb.clone().sub(va),m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,d.length(),6),mat);m.position.copy(va.add(vb).multiplyScalar(.5));m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());m.castShadow=true;hangar.add(m);}
 hBox(230,.8,270,0,-.65,0,floorMat);
-for(let x=-110;x<=110;x+=22)hBox(.45,.025,265,x,-.21,0,hangarMat(0x9b9b8d,.1,.95));
-for(let z=-125;z<=125;z+=22)hBox(225,.025,.45,0,-.2,z,hangarMat(0x9b9b8d,.1,.95));
+/* Broad poured-concrete floor: only a few expansion joints, no distracting tile grid. */
+const floorJoint=hangarMat(0x646d70,.04,.98),floorMark=hangarMat(0xc4c8c2,.02,.9);
+hBox(.12,.012,258,0,-.244,0,floorJoint);hBox(220,.012,.12,0,-.244,-64,floorJoint);hBox(220,.012,.12,0,-.244,64,floorJoint);
+hBox(1.1,.018,48,-15,-.232,0,floorMark);hBox(1.1,.018,48,15,-.232,0,floorMark);
 for(let x of [-105,-75,-45,45,75,105]){
  hBox(3,150,3,x,74,-95,steel);hBox(3,150,3,x,74,95,steel);
  hBeam([x,1,-95],[x,148,-95],.72,steelLight);hBeam([x,1,95],[x,148,95],.72,steelLight);
