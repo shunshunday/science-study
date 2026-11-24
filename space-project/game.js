@@ -605,7 +605,7 @@ function addPart(id,place=null,rotation=null){
  layout();toast(d.name+(count>1?' を'+count+'方向に対称配置しました':' を設置しました'));
 }
 function craftSnapshot(){return parts.map(p=>({id:p.data.id,stage:p.stage,fuel:p.fuel,manualPosition:!!p.manualPosition,position:p.position?p.position.toArray():null,rotation:p.rotation?p.rotation.toArray():null}));}
-function updateUndoButtons(){const undo=$('#undo-craft'),redo=$('#redo-craft'),del=$('#delete-part');if(undo)undo.disabled=!undoStack.length;if(redo)redo.disabled=!redoStack.length;if(del)del.disabled=!selectedPartItem;}
+function updateUndoButtons(){const undo=$('#undo-craft'),redo=$('#redo-craft'),del=$('#delete-part'),up=$('#part-stage-up'),down=$('#part-stage-down');if(undo)undo.disabled=!undoStack.length;if(redo)redo.disabled=!redoStack.length;if(del)del.disabled=!selectedPartItem;if(up)up.disabled=!selectedPartItem;if(down)down.disabled=!selectedPartItem;}
 function pushUndoSnapshot(){undoStack.push(craftSnapshot());if(undoStack.length>80)undoStack.shift();redoStack.length=0;updateUndoButtons();}
 function restoreCraftSnapshot(snapshot){selectedPartItem=null;parts.length=0;for(const v of snapshot){const d=catalog.find(p=>p.id===v.id);if(d)parts.push({data:d,stage:v.stage??0,fuel:v.fuel??d.fuel??0,manualPosition:!!v.manualPosition,position:v.position?new THREE.Vector3(...v.position):null,rotation:v.rotation?new THREE.Quaternion(...v.rotation):null});}assemblyStage=Math.max(0,...parts.map(p=>p.stage||0));layout();updateUndoButtons();}
 function undoCraft(){if(!undoStack.length)return;redoStack.push(craftSnapshot());restoreCraftSnapshot(undoStack.pop());toast('操作を元に戻しました');}
