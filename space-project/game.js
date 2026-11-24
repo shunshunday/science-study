@@ -9,6 +9,7 @@ const crewStage=new THREE.Group();crewStage.visible=false;scene.add(crewStage);
 function makeCrewFigure(member,index){
  const material=(color,roughness=.5)=>new THREE.MeshStandardMaterial({color,roughness});
  const root=new THREE.Group(),role=member.role||'科学者',pilot=role==='パイロット',engineer=role==='エンジニア';
+ const legParts=[],armParts=[];
  const skin=material(0xc9dc4b,.05),eyeWhite=material(0xf6f7e9,.02),suit=material(pilot?0xd8ddd9:engineer?0x102e59:0x65747d,.25),trim=material(pilot?0x8b9698:engineer?0x4775a6:0xb8c2c5,.3),boot=material(0x202a32,.45);
  const faceStyles=[
   {pupil:0x17232c,brow:0x53652c,eyeGap:.31,mouth:0x637d2d,freckles:false},
@@ -22,10 +23,10 @@ function makeCrewFigure(member,index){
  const sphere=(r,mat,x,y,z,scale=null)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(r,18,14),mat);m.position.set(x,y,z);if(scale)m.scale.set(...scale);root.add(m);m.castShadow=true;return m;};
  const limb=(a,b,r1,r2,mat)=>{const v=new THREE.Vector3().subVectors(b,a),m=new THREE.Mesh(new THREE.CylinderGeometry(r2,r1,v.length(),12),mat);m.position.copy(a).add(b).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),v.normalize());root.add(m);m.castShadow=true;return m;};
  // 全員共通の体格・頭部サイズ
- for(const x of [-.43,.43]){limb(new THREE.Vector3(x,.65,0),new THREE.Vector3(x,.18,0),.19,.15,suit);sphere(.2,boot,x,.13,.08,[1,.55,1.35]);}
+ for(const x of [-.43,.43]){legParts.push(limb(new THREE.Vector3(x,.65,0),new THREE.Vector3(x,.18,0),.19,.15,suit));sphere(.2,boot,x,.13,.08,[1,.55,1.35]);}
  const torso=new THREE.Mesh(new THREE.CylinderGeometry(.62,.48,1.25,18),suit);torso.position.y=1.48;root.add(torso);torso.castShadow=true;
  sphere(.57,trim,0,2.02,0,[1,.34,.82]);
- for(const x of [-.72,.72]){sphere(.24,suit,x,1.88,0);limb(new THREE.Vector3(x,1.9,0),new THREE.Vector3(x*1.18,1.12,.12),.17,.13,suit);sphere(.16,trim,x*1.18,1.1,.13);}
+ for(const x of [-.72,.72]){sphere(.24,suit,x,1.88,0);armParts.push(limb(new THREE.Vector3(x,1.9,0),new THREE.Vector3(x*1.18,1.12,.12),.17,.13,suit));sphere(.16,trim,x*1.18,1.1,.13);}
  const pack=new THREE.Mesh(new THREE.BoxGeometry(.62,.95,.35),trim);pack.position.set(0,1.62,-.48);root.add(pack);
  const chest=new THREE.Mesh(new THREE.BoxGeometry(.45,.34,.07),material(engineer?0xb8c9d9:0x3b6476,.45));chest.position.set(0,1.63,.53);root.add(chest);
  if(engineer){const patch=new THREE.Mesh(new THREE.CircleGeometry(.16,20),material(0xb83232,.1));patch.position.set(.28,1.95,.51);root.add(patch);}
@@ -68,6 +69,7 @@ function makeCrewFigure(member,index){
  if(face.freckles){for(const x of [-.43,.43])for(const y of [2.98,3.04])sphere(.022,mouthMat,x,y,.37);}
  root.scale.setScalar(.88);
  root.position.set(0,1.5,0);
+ root.userData.walkParts={legs:legParts,arms:armParts,head};
  return root;
 }
 function rebuildCrewStage(){while(crewStage.children.length){const child=crewStage.children[0];crewStage.remove(child);child.traverse(o=>{if(o.geometry)o.geometry.dispose();});}crewMembers.forEach((member,index)=>{const figure=makeCrewFigure(member,index);figure.position.x=(index-(crewMembers.length-1)/2)*3.1;crewStage.add(figure);});}
@@ -119,7 +121,8 @@ function makeCrew(){const g=new THREE.Group(),suit=new THREE.MeshStandardMateria
 const crew=makeCrew();crew.position.set(4,0,7);campus.add(crew);
 
 // 大型格納庫：鉄骨トラス、格子床、黄色い格納扉、照明、作業足場を独自モデルで構成
-const hangar=new THREE.Group();hangar.scale.setScalar(.0015);scene.add(hangar);
+const hangar=new THREE.Group();hangar.scale.set(.0018,.0022,.0018);scene.add(hangar);
+const hangarCrewGroup=new THREE.Group();hangar.add(hangarCrewGroup);
 const hangarMat=(color,metalness=.45,roughness=.72)=>new THREE.MeshStandardMaterial({color,metalness,roughness});
 const steel=hangarMat(0x46525a,.78),steelLight=hangarMat(0x899398,.72),darkSteel=hangarMat(0x202a30,.55),yellow=hangarMat(0xb18a35,.55),floorMat=hangarMat(0x62696b,.2,.92);
 function hBox(w,h,d,x,y,z,mat,parent=hangar){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
@@ -128,12 +131,18 @@ hBox(230,.8,270,0,-.65,0,floorMat);
 for(let x=-110;x<=110;x+=22)hBox(.45,.025,265,x,-.21,0,hangarMat(0x9b9b8d,.1,.95));
 for(let z=-125;z<=125;z+=22)hBox(225,.025,.45,0,-.2,z,hangarMat(0x9b9b8d,.1,.95));
 for(let x of [-105,-75,-45,45,75,105]){
- hBox(3,100,3,x,49,-95,steel);hBox(3,100,3,x,49,95,steel);
- hBeam([x,2,-95],[x,98,-95],.65,steelLight);hBeam([x,2,95],[x,98,95],.65,steelLight);
+ hBox(3,150,3,x,74,-95,steel);hBox(3,150,3,x,74,95,steel);
+ hBeam([x,1,-95],[x,148,-95],.72,steelLight);hBeam([x,1,95],[x,148,95],.72,steelLight);
 }
-for(let y of [12,34,56,78,98]){
- hBeam([-112,y,-95],[112,y,-95],.85,steelLight);
- hBeam([-112,y,95],[112,y,95],.85,steelLight);
+for(let y of [18,48,78,108,138,150]){
+ hBeam([-112,y,-95],[112,y,-95],.9,steelLight);
+ hBeam([-112,y,95],[112,y,95],.9,steelLight);
+}
+/* Tall roof trusses and cross-bracing keep the assembly hall enclosed overhead. */
+for(let z=-88;z<=66;z+=22){
+ hBeam([-112,148,z],[0,164,z],.72,steelLight);hBeam([0,164,z],[112,148,z],.72,steelLight);
+ hBeam([-112,148,z],[0,148,z],.48,steel);hBeam([0,148,z],[112,148,z],.48,steel);
+ hBeam([-112,148,z],[0,164,z+22],.32,steel);hBeam([112,148,z],[0,164,z+22],.32,steel);
 }
 for(let x=-105;x<105;x+=21){
  hBeam([x,12,-95],[x+21,34,-95],.55,steel);hBeam([x+21,12,-95],[x,34,-95],.55,steel);
@@ -141,8 +150,8 @@ for(let x=-105;x<105;x+=21){
  hBeam([x,12,95],[x+21,34,95],.55,steel);hBeam([x+21,12,95],[x,34,95],.55,steel);
 }
 for(let x of [-95,-65,65,95]){hBox(5,88,5,x,44,0,darkSteel);for(let y=12;y<88;y+=18)hBox(12,1,10,x+(x<0?7:-7),y,0,steelLight);}
-for(let x=-42;x<=42;x+=14){hBox(13,78,1.8,x,39,-94,yellow);for(let y=7;y<78;y+=14)hBox(12,.7,2,x,y,-92,darkSteel);}
-hBox(190,4,5,0,88,-94,darkSteel);hBox(190,4,5,0,3,-94,yellow);
+for(let x=-42;x<=42;x+=14){hBox(13,128,1.8,x,65,-94,yellow);for(let y=8;y<128;y+=16)hBox(12,.7,2,x,y,-92,darkSteel);}
+hBox(190,5,5,0,140,-94,darkSteel);hBox(190,4,5,0,3,-94,yellow);
 for(let z=-75;z<=75;z+=25){hBox(1.4,1.4,150,-112,1,z,steel);hBox(1.4,1.4,150,112,1,z,steel);}
 for(let x of [-72,72]){for(let z of [-45,45]){hBox(2,18,2,x,9,z,darkSteel);hBox(10,1,4,x,18,z,steelLight);}}
 for(let x of [-55,55])for(let z of [-30,30]){const lamp=new THREE.Mesh(new THREE.BoxGeometry(8,.8,3),new THREE.MeshBasicMaterial({color:0xffe4b5}));lamp.position.set(x,76,z);hangar.add(lamp);}
@@ -507,6 +516,44 @@ const contracts=[
 {id:'orbit',name:'低軌道投入',description:'近点70 km以上・遠点100 km以上の軌道へ投入する。',orbit:true,reward:15000,science:30}
 ];
 let unlockedTech=new Set(techTree.map(t=>t.id)),activeContract=null,crewMembers=[{id:1,name:'Jebediah Kerman',role:'パイロット',level:1},{id:2,name:'Valentina Kerman',role:'パイロット',level:1},{id:3,name:'Bob Kerman',role:'科学者',level:1}];
+function rebuildHangarCrew(){
+ while(hangarCrewGroup.children.length){const child=hangarCrewGroup.children[0];hangarCrewGroup.remove(child);child.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>m.dispose());}});}
+ const lanes=[-82,-62,-42,-22,22,42,62,82];
+ crewMembers.forEach((member,index)=>{
+  const figure=makeCrewFigure(member,index),lane=index%lanes.length,row=Math.floor(index/lanes.length);
+  const x=lanes[lane],z=-66+(row%7)*17;
+  figure.position.set(x,-1.77,z);
+  figure.rotation.y=lane<4?Math.PI:0;
+  const route=[new THREE.Vector3(x,-1.77,z),new THREE.Vector3(x,-1.77,z+13),new THREE.Vector3(x+(lane<4?5:-5),-1.77,z+13),new THREE.Vector3(x+(lane<4?5:-5),-1.77,z)];
+  figure.userData.hangarWalk={route,target:1,mode:'think',wait:1.5+(index%4)*.7,phase:index*.83,index};
+  hangarCrewGroup.add(figure);
+ });
+}
+function updateHangarCrew(dt){
+ for(const figure of hangarCrewGroup.children){
+  const state=figure.userData.hangarWalk,parts=figure.userData.walkParts;if(!state||!parts)continue;
+  state.phase+=dt;
+  if(state.mode==='think'){
+   state.wait-=dt;
+   figure.rotation.z=Math.sin(state.phase*.7)*.018;
+   parts.head.rotation.z=.12+Math.sin(state.phase*.55)*.035;
+   parts.arms[0].rotation.z=-.22+Math.sin(state.phase*.8)*.025;
+   parts.arms[1].rotation.z=.05;
+   parts.legs.forEach(leg=>leg.rotation.x=0);
+   if(state.wait<=0){state.mode='walk';parts.head.rotation.z=0;state.wait=0;}
+  }else{
+   const target=state.route[state.target],dx=target.x-figure.position.x,dz=target.z-figure.position.z,dist=Math.hypot(dx,dz),step=Math.min(dist,dt*5.2);
+   if(dist>.001){figure.position.x+=dx/dist*step;figure.position.z+=dz/dist*step;figure.rotation.y=Math.atan2(dx,dz);}
+   const stride=Math.sin(state.phase*7.2);
+   parts.legs.forEach((leg,i)=>{leg.rotation.x=(i===0?1:-1)*stride*.22;});
+   parts.arms.forEach((arm,i)=>{arm.rotation.x=(i===0?-1:1)*stride*.09;});
+   figure.position.y=-1.77+Math.abs(stride)*.025;
+   figure.rotation.z=Math.sin(state.phase*7.2)*.012;
+   parts.head.rotation.z=Math.sin(state.phase*2.4)*.018;
+   if(dist<.45){state.target=(state.target+1)%state.route.length;state.mode='think';state.wait=2.2+((state.index*3+Math.floor(state.phase))%5)*.8;figure.position.y=-1.77;parts.legs.forEach(leg=>leg.rotation.x=0);}
+  }
+ }
+}
 const abilityRanges={1:{stupidity:[70,100],bravery:[0,30]},2:{stupidity:[50,69],bravery:[31,50]},3:{stupidity:[30,49],bravery:[51,70]},4:{stupidity:[10,29],bravery:[71,90]},5:{stupidity:[0,9],bravery:[91,100]}};
 function syncCrewAbilities(member){
  const stars=Math.max(1,Math.min(5,Math.round(member.stars??1))),range=abilityRanges[stars];
@@ -526,6 +573,7 @@ function renderCrew(){
   return '<article class="crew-card"><canvas class="crew-avatar" data-crew-index="'+crewMembers.indexOf(k)+'" width="96" height="128" aria-label="'+k.name+' の全身3Dモデル"></canvas><div class="crew-info"><h3>'+k.name+'</h3><span class="crew-role">'+k.role+' ・ 経験 '+('★'.repeat(stars))+('☆'.repeat(5-stars))+'</span><div class="crew-stat"><div><span>バカ度</span><b>'+stupidity+'%</b></div><div class="crew-meter"><i style="width:'+stupidity+'%"></i></div></div><div class="crew-stat"><div><span>勇敢度</span><b>'+bravery+'%</b></div><div class="crew-meter brave"><i style="width:'+bravery+'%"></i></div></div><button class="crew-retire" data-retire-crew="'+crewMembers.indexOf(k)+'" type="button" aria-label="'+k.name+' を退職させる" title="退職させる">×</button></div></article>';
  }).join('')+'</div><section class="crew-recruit"><b>乗組員を雇用</b><div><button data-hire-crew="pilot">パイロットを雇用</button><button data-hire-crew="engineer">エンジニアを雇用</button><button data-hire-crew="scientist">科学者を雇用</button></div></section>';
  renderCrewPortraits();
+ rebuildHangarCrew();
  saveCareer();
 }function renderContracts(){$('#career-title').textContent='ミッション管理';$('#career-content').innerHTML='<div class="career-content">'+(activeContract?'<div class="career-item"><h3>受注中：'+activeContract.name+'</h3><p>'+activeContract.description+'</p><span class="career-tag">報酬 ₡'+activeContract.reward.toLocaleString()+' / 科学 '+activeContract.science+'</span></div>':'<p>受注中の契約はありません。</p>')+contracts.map(k=>'<div class="career-item"><h3>'+k.name+'</h3><p>'+k.description+'</p><span class="career-tag">報酬 ₡'+k.reward.toLocaleString()+' / 科学 '+k.science+'</span><br><button data-accept-contract="'+k.id+'" '+(activeContract?'disabled':'')+'>契約を受注</button></div>').join('')+'</div>';}
 try{const saveKey=gameMode==='career'?'space-career-v1':'space-'+gameMode+'-v1';const savedCareer=JSON.parse(localStorage.getItem(saveKey)||'null');if(savedCareer){funds=savedCareer.funds??funds;fundsUnlimited=savedCareer.fundsUnlimited??true;science=savedCareer.science??science;unlockedTech=new Set(savedCareer.unlocked||['basic']);activeContract=contracts.find(k=>k.id===savedCareer.activeContract)||null;crewMembers=savedCareer.crew||crewMembers;}}catch{}if(gameMode==='sandbox'){funds=999999999;unlockedTech=new Set(techTree.map(t=>t.id));activeContract=null;}if(gameMode==='science')activeContract=null;
@@ -558,7 +606,7 @@ $$('[data-screen]').forEach(b=>b.onclick=()=>{setMode(b.dataset.screen);if(b.dat
 $('#career-content').addEventListener('click',e=>{const retire=e.target.closest('[data-retire-crew]');if(retire){const index=Number(retire.dataset.retireCrew),member=crewMembers[index];if(member){crewMembers.splice(index,1);saveCareer();renderCrew();toast(member.name+' が退職しました');}return;}const hire=e.target.closest('[data-hire-crew]');if(hire){const role=hire.dataset.hireCrew,cost=2500;if(gameMode!=='sandbox'&&!fundsUnlimited&&funds<cost){toast('雇用資金が不足しています');return;}if(gameMode!=='sandbox'&&!fundsUnlimited)funds-=cost;const names=['Avery','Boris','Caden','Daisy','Elwin','Fiona','Gordon','Hana','Ivo','Juno','Kellan','Lena','Marek','Nora','Otto','Piper','Quinn','Rhea','Soren','Talia','Uma','Viktor','Willa','Xander','Yuri','Zelda','Arlo','Bria','Cyrus','Della','Ezra','Freya','Hugo','Iris','Jonas','Kaia','Luka','Mira','Niko','Orla','Pavel','Rina','Silas','Tess','Uri','Vera','Wes','Yara','Zane','Adrian','Beatrix','Callum','Delia','Emmett','Flora','Gideon','Helena','Isak','Juniper','Kieran','Lyra','Milo','Nadia','Oren','Petra','Quincy','Ronan','Sasha','Thea','Ulric','Violet','Warren','Yvette','Zora','Alistair','Brenna','Corin','Dorian','Evelyn','Felix','Greta','Hollis','Imogen','Jasper','Kira','Leander','Maeve','Noel','Opal','Percy','Rowan','Selene','Tobin','Una','Vance','Winona','Yael','Zeke'];const roleNames={pilot:'パイロット',engineer:'エンジニア',scientist:'科学者'};const firstName=names.find(n=>!crewMembers.some(k=>k.name===n+' Kerman'))||'Kerbal';let name=firstName+' Kerman';let suffix='';while(crewMembers.some(k=>k.name===name)){suffix+=' Jr';name=firstName+suffix+' Kerman';}const recruit={id:Date.now(),name,role:roleNames[role],level:1,stars:1};syncCrewAbilities(recruit);crewMembers.push(recruit);saveCareer();renderCrew();recalc();toast(name+' を雇用しました');}const tech=e.target.closest('[data-unlock-tech]');if(tech){const item=techTree.find(t=>t.id===tech.dataset.unlockTech);if(item&&!unlockedTech.has(item.id)&&item.requires.every(x=>unlockedTech.has(x))&&science>=item.cost){science-=item.cost;unlockedTech.add(item.id);saveCareer();drawPartsCatalogV2();renderResearch();recalc();toast(item.name+' を研究しました');}}const contract=e.target.closest('[data-accept-contract]');if(contract&&!activeContract){activeContract=contracts.find(k=>k.id===contract.dataset.acceptContract)||null;if(activeContract){saveCareer();renderContracts();toast('契約を受注しました');}}});
 function panelMessage(title,msg){toast(title+' — '+msg.replaceAll('\n',' / '));}
 $('#home').onclick=()=>{flight=false;setMode('vab');};
-renderCategories();drawPartsCatalogV2();
+renderCategories();drawPartsCatalogV2();rebuildHangarCrew();
 
 $('#part-categories').addEventListener('click',e=>{const b=e.target.closest('[data-part-category]');if(b){const chosen=b.dataset.partCategory;const panel=$('#parts');if(activePartCategory===chosen&&!panel.classList.contains('categories-collapsed')){panel.classList.add('categories-collapsed');return;}activePartCategory=chosen;panel.classList.remove('categories-collapsed');renderCategories();drawPartsCatalogV2();}});
 $('#part-search').addEventListener('input',drawPartsCatalogV2);$('#part-sort').addEventListener('change',drawPartsCatalogV2);
@@ -690,6 +738,6 @@ function physicsStep(dt){
  if(alt>100&&!window._orb){window._orb=true;toast('大気圏外へ到達');science+=5;$('#science').textContent=science;saveCareer();}
 }
 function physics(dt){if(!flight||paused)return;flightAccumulator+=Math.min(dt,.1);const fixed=1/120;let steps=0;while(flightAccumulator>=fixed&&steps<12){physicsStep(fixed);flightAccumulator-=fixed;steps++;}if(steps===12)flightAccumulator=0;}
-function tick(now){requestAnimationFrame(tick);const dt=Math.min(.04,(now-last)/1000);last=now;physics(dt);if(mode==='vab'){rocket.rotation.y=0;}if(mode!=='crew')renderer.render(scene,camera);}requestAnimationFrame(tick);
+function tick(now){requestAnimationFrame(tick);const dt=Math.min(.04,(now-last)/1000);last=now;physics(dt);if(mode==='vab'){rocket.rotation.y=0;updateHangarCrew(dt);}if(mode!=='crew')renderer.render(scene,camera);}requestAnimationFrame(tick);
 $('#funds-toggle').onclick=()=>{fundsUnlimited=!fundsUnlimited;saveCareer();recalc();toast(fundsUnlimited?'資金を無制限にしました':'通常の資金制に戻しました');};
 setMode('vab');layout();addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
