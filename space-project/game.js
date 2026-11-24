@@ -309,7 +309,7 @@ const partPreviewRenderers=new Map();let partPreviewObserver=null,selectedPartId
 function getSharedPreviewRenderer(){
  if(!sharedPreviewRenderer){
   const surface=document.createElement('canvas');
-  sharedPreviewRenderer=new THREE.WebGLRenderer({canvas:surface,antialias:false,alpha:false,powerPreference:'low-power'});
+  sharedPreviewRenderer=new THREE.WebGLRenderer({canvas:surface,antialias:true,alpha:false,powerPreference:'high-performance'});
   sharedPreviewRenderer.setPixelRatio(1);sharedPreviewRenderer.setSize(232,116,false);sharedPreviewRenderer.outputColorSpace=THREE.SRGBColorSpace;sharedPreviewRenderer.toneMapping=THREE.ACESFilmicToneMapping;sharedPreviewRenderer.toneMappingExposure=1.2;
  }
  return sharedPreviewRenderer;
