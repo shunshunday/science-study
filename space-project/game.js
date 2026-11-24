@@ -134,7 +134,7 @@ const crew=makeCrew();crew.position.set(4,0,7);campus.add(crew);
 const hangar=createVABEnvironment(THREE);scene.add(hangar);
 const hangarCrewGroup=new THREE.Group();hangar.add(hangarCrewGroup);
 
-const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);const parts=[];let mode='vab',gameMode='career',aircraftCraft=false,funds=25000,fundsUnlimited=true,science=0,stage=0,assemblyStage=0,stageUiFuelPercent=-1,throttle=0,flight=false,flightPeakAltitude=0,paused=false,sasEnabled=false,rcsEnabled=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
+const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);const parts=[],undoStack=[],redoStack=[];let mode='vab',gameMode='career',aircraftCraft=false,funds=25000,fundsUnlimited=true,science=0,stage=0,assemblyStage=0,stageUiFuelPercent=-1,throttle=0,flight=false,flightPeakAltitude=0,paused=false,sasEnabled=false,rcsEnabled=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
 const catalog=[
 {id:'pod',name:'Mk1 コマンドポッド',type:'pod',tech:'basic',mass:0.84,cost:600,crew:1,icon:'◉',height:2,radius:.9},
 {id:'probe',name:'プローブコア',type:'probe',tech:'basic',mass:.1,cost:450,icon:'⌖',height:.7,radius:.65},
@@ -591,10 +591,16 @@ function addPart(id,place=null,rotation=null){
  const d=catalog.find(x=>x.id===id);if(!d)return;
  if(gameMode!=='sandbox'&&!fundsUnlimited&&funds<d.cost){toast('資金が不足しています');return;}
  if(gameMode!=='sandbox'&&!fundsUnlimited)funds-=d.cost;
- saveCareer();const item={data:d,fuel:d.fuel||0,stage:assemblyStage};
+ pushUndoSnapshot();saveCareer();const item={data:d,fuel:d.fuel||0,stage:assemblyStage};
  if(place){item.manualPosition=true;item.position=place.clone();if(rotation)item.rotation=rotation.clone();}
  parts.push(item);layout();toast(d.name+' を設置しました');
 }
+function craftSnapshot(){return parts.map(p=>({id:p.data.id,stage:p.stage,fuel:p.fuel,manualPosition:!!p.manualPosition,position:p.position?p.position.toArray():null,rotation:p.rotation?p.rotation.toArray():null}));}
+function updateUndoButtons(){const undo=$('#undo-craft'),redo=$('#redo-craft');if(undo)undo.disabled=!undoStack.length;if(redo)redo.disabled=!redoStack.length;}
+function pushUndoSnapshot(){undoStack.push(craftSnapshot());if(undoStack.length>80)undoStack.shift();redoStack.length=0;updateUndoButtons();}
+function restoreCraftSnapshot(snapshot){parts.length=0;for(const v of snapshot){const d=catalog.find(p=>p.id===v.id);if(d)parts.push({data:d,stage:v.stage??0,fuel:v.fuel??d.fuel??0,manualPosition:!!v.manualPosition,position:v.position?new THREE.Vector3(...v.position):null,rotation:v.rotation?new THREE.Quaternion(...v.rotation):null});}assemblyStage=Math.max(0,...parts.map(p=>p.stage||0));layout();updateUndoButtons();}
+function undoCraft(){if(!undoStack.length)return;redoStack.push(craftSnapshot());restoreCraftSnapshot(undoStack.pop());toast('操作を元に戻しました');}
+function redoCraft(){if(!redoStack.length)return;undoStack.push(craftSnapshot());restoreCraftSnapshot(redoStack.pop());toast('操作をやり直しました');}
 function setMode(m){mode=m;document.body.classList.toggle('crew-roster-mode',m==='crew');renderer.domElement.style.display=m==='crew'?'none':'block';crewStage.visible=false;campus.visible=false;hangar.visible=m==='vab';ground.visible=m!=='crew';planet.visible=m!=='crew';atmosphere.visible=m!=='crew';$('#build-staging').classList.toggle('show',m==='vab');$('.tabs').classList.toggle('hidden',m==='flight');$('#home').classList.toggle('hidden',m==='flight');$$('[data-screen]').forEach(b=>b.classList.toggle('active',b.dataset.screen===m));$('#parts').classList.toggle('open',m==='vab');$('#flight-hud').classList.toggle('show',m==='flight');$('#career-panel').classList.toggle('hidden',m!=='crew');$('.vab-tools').classList.toggle('hidden',m!=='vab');$('#hint').classList.toggle('hidden',m==='flight');if(m==='center'){camera.position.set(.14,.10,.20);camera.lookAt(0,.005,0);rocket.visible=false;$('#hint').textContent='宇宙センター：ロケット組立棟で機体を設計し、発射場から宇宙へ。';}if(m==='vab'){rocket.visible=true;rocket.position.set(0,0,0);camera.position.copy(aircraftCraft?new THREE.Vector3(.033,.025,.006):new THREE.Vector3(.025,.032,.045));camera.lookAt(0,aircraftCraft ? .002 : .006,0);focusVABCamera();$('#hint').textContent=aircraftCraft?'航空機組立：コックピット・胴体を中心に、主翼・尾翼・エンジン・着陸脚を取り付けます。':'ロケット組立：下段から上段へ順にパーツを追加します。';}if(m==='crew'){rocket.visible=false;crewStage.visible=false;$('#hint').textContent='';}else{crewStage.visible=false;}if(m==='flight'){rocket.visible=true;camera.position.set(.022,.014,.027);}}
 $$('[data-screen]').forEach(b=>b.onclick=()=>{setMode(b.dataset.screen);if(b.dataset.screen==='crew')renderCrew();});
 
@@ -606,12 +612,12 @@ renderCategories();drawPartsCatalogV2();rebuildHangarCrew();
 $('#part-categories').addEventListener('click',e=>{const b=e.target.closest('[data-part-category]');if(b){const chosen=b.dataset.partCategory;const panel=$('#parts');if(activePartCategory===chosen&&!panel.classList.contains('categories-collapsed')){panel.classList.add('categories-collapsed');return;}activePartCategory=chosen;panel.classList.remove('categories-collapsed');renderCategories();drawPartsCatalogV2();}});
 $('#part-search').addEventListener('input',drawPartsCatalogV2);$('#part-sort').addEventListener('change',drawPartsCatalogV2);
 $('#part-list').addEventListener('click',e=>{const b=e.target.closest('[data-part]');if(b){selectedPartId=b.dataset.part;$('#hint').textContent='設置モード：3D機体上の取り付けたい場所をクリック。Escでキャンセル。';toast('設置する場所を3D機体上でクリック');}});
-$('#clear-craft').onclick=()=>{if(flight)return;parts.length=0;assemblyStage=0;layout();toast('機体を空にしました');};
-$('#new-stage').onclick=()=>{if(flight)return;assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;toast('新しい組立ステージ '+assemblyStage);};
-$('#stage-add-side').onclick=()=>{if(flight)return;assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;renderStages();toast('新しい組立ステージ '+assemblyStage);};
+$('#clear-craft').onclick=()=>{if(flight)return;pushUndoSnapshot();parts.length=0;assemblyStage=0;layout();toast('機体を空にしました');};
+$('#new-stage').onclick=()=>{if(flight)return;pushUndoSnapshot();assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;toast('新しい組立ステージ '+assemblyStage);};
+$('#stage-add-side').onclick=()=>{if(flight)return;pushUndoSnapshot();assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;renderStages();toast('新しい組立ステージ '+assemblyStage);};
 $('#build-stage-list').addEventListener('click',e=>{const b=e.target.closest('[data-build-stage]');if(!b||flight)return;assemblyStage=Number(b.dataset.buildStage);$('#stage-build-label').textContent='組立ステージ '+assemblyStage;renderStages();toast('組立ステージ '+assemblyStage+' を選択');});
 $('#save-craft').onclick=()=>{localStorage.setItem('space-craft-v1',JSON.stringify(parts.map(p=>({id:p.data.id,stage:p.stage,fuel:p.fuel,manualPosition:p.manualPosition,position:p.position?p.position.toArray():null,rotation:p.rotation?p.rotation.toArray():null}))));toast('機体を保存しました');};
-$('#load-craft').onclick=()=>{try{const a=JSON.parse(localStorage.getItem('space-craft-v1')||'[]');parts.length=0;a.forEach(v=>{const replacementId=legacyCatalogAliases[v.id]||v.id;const d=catalog.find(p=>p.id===replacementId);if(d)parts.push({data:d,stage:v.stage,fuel:v.fuel??d.fuel??0,manualPosition:!!v.manualPosition,position:v.position?new THREE.Vector3(...v.position):null,rotation:v.rotation?new THREE.Quaternion(...v.rotation):null});});assemblyStage=Math.max(0,...parts.map(p=>p.stage||0));layout();toast('機体を読み込みました');}catch{toast('保存データがありません');}};
+$('#load-craft').onclick=()=>{try{pushUndoSnapshot();const a=JSON.parse(localStorage.getItem('space-craft-v1')||'[]');parts.length=0;a.forEach(v=>{const replacementId=legacyCatalogAliases[v.id]||v.id;const d=catalog.find(p=>p.id===replacementId);if(d)parts.push({data:d,stage:v.stage,fuel:v.fuel??d.fuel??0,manualPosition:!!v.manualPosition,position:v.position?new THREE.Vector3(...v.position):null,rotation:v.rotation?new THREE.Quaternion(...v.rotation):null});});assemblyStage=Math.max(0,...parts.map(p=>p.stage||0));layout();toast('機体を読み込みました');}catch{toast('保存データがありません');}};
 renderer.domElement.addEventListener('pointerdown',e=>{if(mode!=='vab'||!selectedPartId)return;const rect=renderer.domElement.getBoundingClientRect(),mouse=new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1),ray=new THREE.Raycaster();rocket.updateWorldMatrix(true,true);ray.setFromCamera(mouse,camera);const hits=ray.intersectObjects(rocket.children,true);let place=new THREE.Vector3(0,0,0),attachHit=null,attachRoot=null;for(const hit of hits){let obj=hit.object;while(obj&&!obj.userData.partItem)obj=obj.parent;if(obj){attachHit=hit;attachRoot=obj;break;}}let rotation=null;if(attachHit){place.copy(rocket.worldToLocal(attachHit.point.clone()));const normal=attachHit.face?attachHit.face.normal.clone().transformDirection(attachHit.object.matrixWorld):new THREE.Vector3(0,1,0);const localNormal=normal.transformDirection(rocket.matrixWorld.clone().invert()).normalize();const selectedData=catalog.find(p=>p.id===selectedPartId);place.addScaledVector(localNormal,Math.max(.18,selectedData?.radius||.3)*.52);rotation=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),localNormal);}else if(parts.length){toast('機体の部品をクリックして取り付けてください');return;}addPart(selectedPartId,place,rotation);selectedPartId=null;$('#hint').textContent='部品を選択してから、機体の取り付け位置をクリック。';});
 // Orbit by dragging, zoom by wheel or two-finger trackpad/touch pinch.
 let orbitPointerId=null,orbitLastX=0,orbitLastY=0,pinchDistance=0;
@@ -696,7 +702,7 @@ renderer.domElement.addEventListener('pointercancel',endOrbitDrag);function star
 $('#aircraft-mode').onclick=()=>{aircraftCraft=!aircraftCraft;activePartCategory=aircraftCraft?'航空機':'すべて';renderCategories();drawPartsCatalogV2();layout();setMode('vab');$('#aircraft-mode').classList.toggle('active',aircraftCraft);$('#aircraft-mode').textContent=aircraftCraft?'✈ 航空機組立中':'🚀 ロケット組立中';toast(aircraftCraft?'航空機組立モード：航空機パーツを表示':'ロケット組立モード：全パーツを表示');};
 $('#launch').onclick=startFlight;$('#stage-next').onclick=()=>{if(flight)activateStage();};function runScienceExperiment(){if(!flight){toast('飛行中に実験できます');return;}const instruments=parts.filter(p=>['pod','probe','science'].includes(p.data.type));if(!instruments.length){toast('実験装置・プローブ・乗員ポッドが必要です');return;}const altitude=position.clone().sub(bodyCenter).length()-BODY.radius;const situation=altitude>=70?'宇宙空間':altitude>=10?'高高度大気圏':'低高度・地表';if(experimentLog.includes(situation)){toast('この飛行状況の実験は完了しています');return;}const scienceParts=parts.filter(p=>p.data.type==='science').length;const reward=(situation==='宇宙空間'?10:situation==='高高度大気圏'?6:3)+scienceParts*5;experimentLog.push(situation);science+=reward;saveCareer();recalc();toast(situation+'の実験データを回収：科学 +'+reward);}
 $('#science-experiment').onclick=runScienceExperiment;$('#map-toggle').onclick=()=>{map=!map;toast(map?'軌道マップ表示（M）':'飛行ビュー');};
-let keys={};addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key==='Escape'&&selectedPartId){selectedPartId=null;toast('部品設置をキャンセル');}if(e.key==='Escape'&&mode==='flight'){flight=false;throttle=0;setMode('vab');toast('ロケット組立棟へ戻りました');}if(e.code==='Space'&&flight){e.preventDefault();activateStage();}if(e.key.toLowerCase()==='z')throttle=1;if(e.key.toLowerCase()==='x')throttle=0;if(e.key.toLowerCase()==='t'){sasEnabled=!sasEnabled;toast('SAS '+(sasEnabled?'ON':'OFF'));}if(e.key.toLowerCase()==='r'){rcsEnabled=!rcsEnabled;toast('RCS '+(rcsEnabled?'ON':'OFF'));}if(e.key.toLowerCase()==='p'&&flight){const alt=position.clone().sub(bodyCenter).length()-BODY.radius,speed=velocity.length()*1000,chutes=parts.filter(p=>p.data.type==='chute');if(!chutes.length)toast('パラシュートがありません');else if(alt>10||speed>250)toast('展開条件外：高度10 km以下・速度250 m/s以下が必要');else{chutes.forEach(p=>p.deployed=true);toast('パラシュートを展開しました');}}if(e.key.toLowerCase()==='m'&&flight){map=!map;}});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+let keys={};addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key==='Escape'&&selectedPartId){selectedPartId=null;toast('部品設置をキャンセル');}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undoCraft();}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redoCraft();}if(e.key==='Escape'&&mode==='flight'){flight=false;throttle=0;setMode('vab');toast('ロケット組立棟へ戻りました');}if(e.code==='Space'&&flight){e.preventDefault();activateStage();}if(e.key.toLowerCase()==='z')throttle=1;if(e.key.toLowerCase()==='x')throttle=0;if(e.key.toLowerCase()==='t'){sasEnabled=!sasEnabled;toast('SAS '+(sasEnabled?'ON':'OFF'));}if(e.key.toLowerCase()==='r'){rcsEnabled=!rcsEnabled;toast('RCS '+(rcsEnabled?'ON':'OFF'));}if(e.key.toLowerCase()==='p'&&flight){const alt=position.clone().sub(bodyCenter).length()-BODY.radius,speed=velocity.length()*1000,chutes=parts.filter(p=>p.data.type==='chute');if(!chutes.length)toast('パラシュートがありません');else if(alt>10||speed>250)toast('展開条件外：高度10 km以下・速度250 m/s以下が必要');else{chutes.forEach(p=>p.deployed=true);toast('パラシュートを展開しました');}}if(e.key.toLowerCase()==='m'&&flight){map=!map;}});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 function activateStage(){const previous=stage;stage++;const hasSeparator=parts.some(p=>p.data.type==='decoupler'&&p.stage===previous);if(hasSeparator){for(let i=parts.length-1;i>=0;i--)if(parts[i].stage===previous)parts.splice(i,1);layout();}toast('ステージ '+stage+' 作動');}
 const bodyCenter=new THREE.Vector3(0,-BODY.radius,0);
 let properG=1,flightAccumulator=0,experimentLog=[];
@@ -735,16 +741,22 @@ function physicsStep(dt){
 function physics(dt){if(!flight||paused)return;flightAccumulator+=Math.min(dt,.1);const fixed=1/120;let steps=0;while(flightAccumulator>=fixed&&steps<12){physicsStep(fixed);flightAccumulator-=fixed;steps++;}if(steps===12)flightAccumulator=0;}
 function tick(now){requestAnimationFrame(tick);const dt=Math.min(.04,(now-last)/1000);last=now;physics(dt);if(mode==='vab'){rocket.rotation.y=0;updateHangarCrew(dt);}if(mode!=='crew')renderer.render(scene,camera);}requestAnimationFrame(tick);
 $('#funds-toggle').onclick=()=>{fundsUnlimited=!fundsUnlimited;saveCareer();recalc();toast(fundsUnlimited?'資金を無制限にしました':'通常の資金制に戻しました');};
+$('#undo-craft').onclick=undoCraft;$('#redo-craft').onclick=redoCraft;updateUndoButtons();
 setMode('vab');
 if(!parts.length&&!localStorage.getItem('space-vab-starter-seen')){
- const engine=catalog.find(p=>p.id==='engine-l')||catalog.find(p=>p.type==='engine');
+ const lowerEngine=catalog.find(p=>p.id==='engine-l')||catalog.find(p=>p.type==='engine');
+ const upperEngine=catalog.find(p=>p.id==='engine-s')||lowerEngine;
  const tanks=catalog.filter(p=>p.type==='tank').sort((a,b)=>(b.height||0)-(a.height||0)).slice(0,4);
- const pod=catalog.find(p=>p.id==='pod'),chute=catalog.find(p=>p.type==='chute');
- if(engine&&pod&&tanks.length){
-  parts.push({data:engine,fuel:engine.fuel||0,stage:0});
-  tanks.forEach(t=>parts.push({data:t,fuel:t.fuel||0,stage:0}));
-  parts.push({data:pod,fuel:pod.fuel||0,stage:0});
-  if(chute)parts.push({data:chute,fuel:0,stage:0});
+ const pod=catalog.find(p=>p.id==='pod'),chute=catalog.find(p=>p.type==='chute'),decoupler=catalog.find(p=>p.type==='decoupler');
+ if(lowerEngine&&upperEngine&&pod&&tanks.length>=4){
+  parts.push({data:lowerEngine,fuel:lowerEngine.fuel||0,stage:0});
+  tanks.slice(0,2).forEach(t=>parts.push({data:t,fuel:t.fuel||0,stage:0}));
+  if(decoupler)parts.push({data:decoupler,fuel:0,stage:0});
+  parts.push({data:upperEngine,fuel:upperEngine.fuel||0,stage:1});
+  tanks.slice(2,4).forEach(t=>parts.push({data:t,fuel:t.fuel||0,stage:1}));
+  parts.push({data:pod,fuel:pod.fuel||0,stage:1});
+  if(chute)parts.push({data:chute,fuel:0,stage:1});
+  assemblyStage=0;
  }
  localStorage.setItem('space-vab-starter-seen','1');
 }
