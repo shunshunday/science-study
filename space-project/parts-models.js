@@ -188,10 +188,31 @@ export function createPartModel(p,THREE){
   if(adapter){lathe([[0,h*.12],[r*.5,h*.12],[r*.55,h*.22],[r*.85,h*.48],[r*.95,h*.5],[0,h*.5]],ivory,64);band(r*.55,h*.22,.035,gold);}
   if(tri||quad||bi){const n=tri?3:quad?4:2;for(let i=0;i<n;i++){const a=i*Math.PI*2/n,x=Math.cos(a)*r*.58,z=Math.sin(a)*r*.58;lathe([[0,h*.12],[r*.22,h*.12],[r*.24,h*.48],[0,h*.48]],aluminium,32,[x,0,z]);band(r*.23,h*.46,.025,gold).position.set(x,h*.46,z);}}
  };
+ const makeRollingWheel=(radius,width,at=[0,0,0],variant='rover')=>{
+  const wheel=new THREE.Group();wheel.name='wheel-spin';wheel.position.set(...at);wheel.userData.rollRadius=radius;wheel.userData.rollAxis='x';g.add(wheel);
+  const tireMat=M(0x171a1d,.02,.96),sideMat=M(0x252a2e,.08,.86),rimMat=M(variant==='aircraft'?0x9ca6aa:0xb9c0bd,.82,.28),hubMat=M(0x46535a,.78,.34),markMat=M(0xe0bd69,.62,.34),grooveMat=M(0x090d10,.02,.98);
+  const tire=new THREE.Mesh(new THREE.TorusGeometry(radius*.79,radius*.21,20,64),tireMat);tire.rotation.y=Math.PI/2;tire.castShadow=true;tire.receiveShadow=true;wheel.add(tire);
+  for(const side of [-1,1]){
+   const face=new THREE.Mesh(new THREE.TorusGeometry(radius*.77,radius*.035,8,64),sideMat);face.rotation.y=Math.PI/2;face.position.x=side*width*.38;wheel.add(face);
+   const rim=new THREE.Mesh(new THREE.CylinderGeometry(radius*.47,radius*.47,width*.86,48),rimMat);rim.rotation.z=Math.PI/2;wheel.add(rim);
+   const hub=new THREE.Mesh(new THREE.CylinderGeometry(radius*.2,radius*.2,width*.96,32),hubMat);hub.rotation.z=Math.PI/2;wheel.add(hub);
+   const stripe=new THREE.Mesh(new THREE.BoxGeometry(width*.08,radius*.72,radius*.075),markMat);stripe.position.set(side*width*.48,radius*.36,0);wheel.add(stripe);
+   for(let i=0;i<8;i++){const a=i*Math.PI/4,bolt=new THREE.Mesh(new THREE.SphereGeometry(radius*.035,10,8),markMat);bolt.position.set(side*width*.49,Math.cos(a)*radius*.31,Math.sin(a)*radius*.31);wheel.add(bolt);}
+  }
+  for(let i=0;i<28;i++){const a=i*Math.PI*2/28;const tread=new THREE.Mesh(new THREE.BoxGeometry(width*.92,radius*.085,radius*.12),i%2?grooveMat:sideMat);tread.position.set(0,Math.cos(a)*radius*.96,Math.sin(a)*radius*.96);tread.rotation.x=a;wheel.add(tread);}
+  return wheel;
+ };
+ const makeRoverWheel=()=>{
+  const rr=Math.max(r*.62,.16),width=Math.max(rr*.48,.09);
+  const mount=new THREE.Mesh(new THREE.CylinderGeometry(rr*.17,rr*.17,h*.62,20),steel);mount.position.set(0,h*.32,0);g.add(mount);
+  const arm=new THREE.Mesh(new THREE.BoxGeometry(rr*.2,h*.18,rr*.22),aluminium);arm.position.set(0,h*.05,0);g.add(arm);
+  makeRollingWheel(rr,width,[0,-h*.08,0],'rover');
+  const badge=new THREE.Mesh(new THREE.CylinderGeometry(rr*.24,rr*.24,width*.12,32),gold);badge.rotation.z=Math.PI/2;badge.position.set(width*.48,-h*.08,0);g.add(badge);
+ };
  const makeGear=()=>{
   const large=id.includes('large'),legR=large?.09:.06,spread=r*.72;
   lathe([[0,-h*.42],[r*.42,-h*.42],[r*.52,-h*.25],[r*.42,h*.38],[r*.3,h*.44],[0,h*.44]],steel,32);
-  for(let side of [-1,1]){const x=side*spread; tube([[side*r*.25,h*.2,0],[x,h*.02,0],[side*r*.9,-h*.35,0]],legR,aluminium);tube([[side*r*.2,h*.12,0],[x*1.25,-h*.18,0],[x*1.25,-h*.43,0]],legR*.55,gold);const foot=box(large?.42:.28,.08,.22,rubber,[side*r*.9,-h*.4,0]);foot.rotation.z=side*.08;}
+  for(let side of [-1,1]){const x=side*spread; tube([[side*r*.25,h*.2,0],[x,h*.02,0],[side*r*.9,-h*.35,0]],legR,aluminium);tube([[side*r*.2,h*.12,0],[x*1.25,-h*.18,0],[x*1.25,-h*.43,0]],legR*.55,gold);makeRollingWheel(large?r*.42:r*.34,large?.2:.15,[side*r*.9,-h*.4,0],'aircraft');}
   band(r*.5,h*.34,.04,gold);
  };
  const makeIntake=()=>{
@@ -268,6 +289,7 @@ export function createPartModel(p,THREE){
  else if(type==='battery')makeBattery();
  else if(type==='science')makeScience();
  else if(type==='decoupler'||type==='structural')makeDecoupler();
+ else if(type==='ground'&&/wheel/.test(id))makeRoverWheel();
  else if(type==='gear'||type==='ground')makeGear();
  else if(type==='intake')makeIntake();
  else if(type==='comm')makeComm();
