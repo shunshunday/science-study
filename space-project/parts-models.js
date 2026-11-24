@@ -23,11 +23,10 @@ export function createPartModel(p,THREE){
   return M(0xffffff,.22,.62,{map:tex});
  };
  let labelMaterial=null;const getLabelMaterial=()=>labelMaterial||(labelMaterial=makeLabel(id.includes('rockomax')||id.includes('x200')?'#b84c36':id.includes('s3')?'#b68b4e':'#b68b4e',id.includes('rockomax')?'ROCKOMAX INDUSTRIES':'KERBODYNE',id));
- const radialLabel=(radius,y,w,hh,mat=labelMat)=>{const m=add(new THREE.PlaneGeometry(w,hh),mat,[0,y,radius]);return m;};
+ const radialLabel=(radius,y,w,hh,mat=getLabelMaterial())=>{const m=add(new THREE.PlaneGeometry(w,hh),mat,[0,y,radius]);return m;};
  const torusAt=(rad,y,t,mat)=>band(rad,y,t,mat);
  const detailRivets=(rad,y,count=16,offset=0)=>{for(let i=0;i<count;i++){const a=i*Math.PI*2/count+offset;bolt(Math.cos(a)*rad,y,Math.sin(a)*rad,.018);}};
  const radialPipe=(rad,y0,y1,a,mat=aluminium,thick=.018)=>tube([[Math.cos(a)*rad,y0,Math.sin(a)*rad],[Math.cos(a*1.02)*rad*1.025,(y0+y1)/2,Math.sin(a*1.02)*rad*1.025],[Math.cos(a)*rad,y1,Math.sin(a)*rad]],thick,mat); 
- const tankTexture=labelMat;
  const makeTank=()=>{
   const isRcs=id.startsWith('rcs-'),xenon=id.includes('xenon'),oscar=id.includes('oscar'),donut=id.includes('donut')||id.includes('r12'),baguette=id.includes('baguette')||id.includes('r11'),rock=/rockomax|x200|jumbo/i.test(id+' '+name),kerb=id.includes('s3-'),mk2=id.includes('mk2-lf'),mk3=id.includes('mk3-lf'),mk0=id.includes('mk0-lf');
   if(donut){const ring=add(new THREE.TorusGeometry(r*.76,r*.27,24,72),M(0xd6d7cf,.42,.5));ring.scale.set(1,.82,1);band(r*.98,.04,.035,steel);band(r*.98,-.04,.035,gold);cyl(r*.22,r*.22,.12,dark,0,32);detailRivets(r*.96,0,20);}
