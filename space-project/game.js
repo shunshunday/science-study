@@ -44,32 +44,32 @@ function makeCrewFigure(member,index){
  }
  // Kerbal-like head: tall rounded-rectangle silhouette, dark hair, protruding eyes, toothy mouth.
  const headPivot=new THREE.Group();headPivot.position.set(0,2.72,0);root.add(headPivot);
- const headShape=new THREE.Shape();
- headShape.moveTo(-.48,-.64);headShape.lineTo(.48,-.64);headShape.quadraticCurveTo(.67,-.64,.67,-.42);
- headShape.lineTo(.67,.54);headShape.quadraticCurveTo(.67,.72,.47,.74);headShape.lineTo(-.47,.74);
- headShape.quadraticCurveTo(-.67,.72,-.67,.54);headShape.lineTo(-.67,-.42);headShape.quadraticCurveTo(-.67,-.64,-.48,-.64);
- const headGeo=new THREE.ExtrudeGeometry(headShape,{depth:.36,bevelEnabled:true,bevelSegments:7,steps:1,bevelSize:.12,bevelThickness:.09,curveSegments:16});
- headGeo.computeVertexNormals();
- const headMesh=new THREE.Mesh(headGeo,skin);headMesh.position.set(0,0,-.18);headMesh.castShadow=true;headMesh.receiveShadow=true;headPivot.add(headMesh);
+ // Rounded, deep head volume: a softened vertical cylinder rather than a thin extruded face.
+ const headCore=new THREE.Mesh(new THREE.CylinderGeometry(.59,.62,1.12,40,1,false),skin);
+ headCore.position.set(0,.02,0);headCore.scale.set(1,.98,.96);headCore.castShadow=true;headCore.receiveShadow=true;headPivot.add(headCore);
+ const crownVolume=sphere(headPivot,.57,skin,0,.565,0,[1,.28,.96]);
+ const chinVolume=sphere(headPivot,.55,skin,0,-.535,0,[1,.24,.96]);
+ // Subtle cheek volumes keep the front readable while preserving the rounded side silhouette.
+ for(const side of [-1,1])sphere(headPivot,.25,skin,side*.39,-.17,.34,[.9,.78,.88]);
  // Hair is a distinct sculpted cap with a visible hairline and swept locks.
  const hairColors=[0x211b18,0x17191d,0x493020,0x30231d,0x9a733c,0x51413a];
  const hairMat=mat(hairColors[Math.abs(index)%hairColors.length],.88);
- sphere(headPivot,.58,hairMat,0,.665,.015,[1.12,.31,.82]);
- const fringe=sphere(headPivot,.49,hairMat,-.05,.56,.285,[1.12,.24,.48]);
+ sphere(headPivot,.59,hairMat,0,.665,-.015,[1.1,.32,1.02]);
+ const fringe=sphere(headPivot,.49,hairMat,-.05,.56,.47,[1.12,.24,.48]);
  fringe.rotation.z=-.08;
  for(let n=0;n<5;n++){
-  const lock=sphere(headPivot,.12,hairMat,-.39+n*.19,.55+(n%2)*.045,.37,[.72,1.65,.62]);
+  const lock=sphere(headPivot,.12,hairMat,-.39+n*.19,.55+(n%2)*.045,.53,[.72,1.65,.62]);
   lock.rotation.z=-.22+(n*.09);
  }
  // The eyes sit forward from the face; their unequal height and gaze are intentional.
  for(const side of [-1,1]){
   const eyeX=side*.34,eyeY=side===-1?.12:.045;
-  sphere(headPivot,.275,eyeWhite,eyeX,eyeY,.49,[.98,1.06,.82]);
+  sphere(headPivot,.275,eyeWhite,eyeX,eyeY,.555,[.98,1.06,.82]);
   sphere(headPivot,.112,pupilMat,eyeX+side*.035,eyeY-.015,.715,[.95,1.02,.72]);
   sphere(headPivot,.034,mat(0xffffff,.12),eyeX+side*.012,eyeY+.045,.765);
  }
  // Wide mouth with a dark cavity, visible white teeth and tongue. Jaw opens during chatter.
- const mouthGroup=new THREE.Group();mouthGroup.position.set(0,-.39,.405);headPivot.add(mouthGroup);
+ const mouthGroup=new THREE.Group();mouthGroup.position.set(0,-.39,.565);headPivot.add(mouthGroup);
  const cavity=sphere(mouthGroup,.245,mat(0x30120f,.72),0,0,.075,[1.22,.72,.34]);
  const teethGroup=new THREE.Group();mouthGroup.add(teethGroup);
  for(let t=-2;t<=2;t++){
