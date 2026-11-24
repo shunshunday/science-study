@@ -239,10 +239,10 @@ export function createPartModel(p,THREE){
  };
  const makeFuselage=()=>{
   const mk0=id.includes('mk0'),mk2=id.includes('mk2'),mk3=id.includes('mk3'),w=r*(mk3?1.2:mk2?1.05:mk0?.72:.9),height=r*(mk3?.9:mk2?.78:.82);
-  const shell=add(new THREE.CylinderGeometry(w*.92,w,h*.82,48,1,false),mk0?M(0x9da8a9,.55,.42):ivory,[0,0,0],[Math.PI/2,0,0],[1,height/w,1]);
-  const end1=add(new THREE.TorusGeometry(w*.94,.045,10,48),steel,[0,0,-h*.41],[Math.PI/2,0,0],[1,height/w,1]);
-  const end2=add(new THREE.TorusGeometry(w*.94,.045,10,48),gold,[0,0,h*.41],[Math.PI/2,0,0],[1,height/w,1]);
-  for(let z of [-h*.26,0,h*.26]){const seam=add(new THREE.TorusGeometry(w*.925,.018,8,48),aluminium,[0,0,z],[Math.PI/2,0,0],[1,height/w,1]);}
+  const shell=add(new THREE.CylinderGeometry(w*.92,w,h*.82,48,1,false),mk0?M(0x9da8a9,.55,.42):ivory,[0,0,0],[Math.PI/2,0,0],[1,1,height/w]);
+  const end1=add(new THREE.TorusGeometry(w*.94,.045,10,48),steel,[0,0,-h*.41],[0,0,0],[1,height/w,1]);
+  const end2=add(new THREE.TorusGeometry(w*.94,.045,10,48),gold,[0,0,h*.41],[0,0,0],[1,height/w,1]);
+  for(let z of [-h*.26,0,h*.26]){const seam=add(new THREE.TorusGeometry(w*.925,.018,8,48),aluminium,[0,0,z],[0,0,0],[1,height/w,1]);}
   // Side service strip and fuel inspection windows are aligned to the fuselage axis.
   box(w*.72,.055,h*.46,dark,[0,height*.92,0]);for(let i=0;i<5;i++)box(w*.09,.018,h*.38,blue,[(i-2)*w*.13,height*.96,0]);
   for(let z of [-h*.32,h*.32])for(let side of [-1,1])bolt(side*w*.72,0,z,.035,gold);
