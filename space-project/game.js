@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {createPartModel} from './parts-models.js?v=20261124-real-parts-02';
+import {createPartModel} from './parts-models.js?v=20261124-real-parts-03';
 import {additionalParts} from './parts-inventory.js?v=20261124-rollback-01';
 import {BODY,G0,gravityAcceleration,atmosphericDensity,orbitalElements,rk4Step,deltaV,rocketMassKg} from './physics/orbital.js';
 import {aerodynamicAcceleration} from './physics/aerodynamics.js';
@@ -242,12 +242,12 @@ const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);co
 const catalog=[
 {id:'pod',name:'Mk1 コマンドポッド',type:'pod',tech:'basic',mass:0.84,cost:600,crew:1,icon:'◉',height:2,radius:.9},
 {id:'probe',name:'プローブコア',type:'probe',tech:'basic',mass:.1,cost:450,icon:'⌖',height:.7,radius:.65},
-{id:'tank-s',name:'FL-T100 燃料タンク',type:'tank',tech:'basic',mass:.0725,fuel:490,cost:150,icon:'▤',height:1.4,radius:.62},
-{id:'tank-m',name:'FL-T400 燃料タンク',type:'tank',tech:'basic',mass:.25,fuel:2000,cost:500,icon:'▤',height:2.8,radius:.72},
-{id:'tank-l',name:'X200-16 燃料タンク',type:'tank',tech:'heavy',mass:1,fuel:8000,cost:1550,icon:'▤',height:3.5,radius:1.25},
+{id:'tank-s',name:'FL-T100 燃料タンク',type:'tank',tech:'basic',mass:.0725,fuel:490,cost:150,icon:'▤',height:.5,radius:.625},
+{id:'tank-m',name:'FL-T400 燃料タンク',type:'tank',tech:'basic',mass:.25,fuel:2000,cost:500,icon:'▤',height:2,radius:.625},
+{id:'tank-l',name:'X200-16 燃料タンク',type:'tank',tech:'heavy',mass:1,fuel:8000,cost:1550,icon:'▤',height:2.5,radius:1.25},
 {id:'engine-s',name:'LV-909 液体エンジン',type:'engine',tech:'basic',mass:.5,cost:390,thrust:60,seaLevelThrust:14.783,isp:345,seaLevelIsp:85,icon:'◈',height:1.3,radius:.65},
-{id:'engine-m',name:'LV-T45 エンジン',type:'engine',tech:'basic',mass:1.5,cost:1200,thrust:215,seaLevelThrust:167.969,isp:320,seaLevelIsp:250,icon:'◈',height:2,radius:.9},
-{id:'engine-l',name:'Mainsail 大型エンジン',type:'engine',tech:'heavy',mass:6,cost:13000,thrust:1500,seaLevelThrust:1379.03,isp:310,seaLevelIsp:285,icon:'◈',height:3,radius:1.5},
+{id:'engine-m',name:'LV-T45 スウィーベル液体エンジン',type:'engine',tech:'basic',mass:1.5,cost:1200,thrust:215,seaLevelThrust:167.969,isp:320,seaLevelIsp:250,icon:'◈',height:2,radius:.9},
+{id:'engine-l',name:'RE-M3 メインセイル液体エンジン',type:'engine',tech:'heavy',mass:6,cost:13000,thrust:1500,seaLevelThrust:1379.03,isp:310,seaLevelIsp:285,icon:'◈',height:3,radius:1.5},
 {id:'decoupler',name:'TD-12 デカプラー',type:'decoupler',tech:'basic',mass:.05,cost:400,icon:'⊖',height:.35,radius:.78},
 {id:'booster',name:'RT-10 ハマー固体燃料ブースター',type:'booster',tech:'basic',mass:.75,cost:400,fuel:2810,thrust:227,seaLevelThrust:197.9,isp:195,seaLevelIsp:170,icon:'▥',height:3.5,radius:.55},
 {id:'fin',name:'空力フィン',type:'fin',tech:'basic',mass:.08,cost:120,icon:'△',height:.6,radius:.9},
