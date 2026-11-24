@@ -134,7 +134,7 @@ const crew=makeCrew();crew.position.set(4,0,7);campus.add(crew);
 const hangar=createVABEnvironment(THREE);scene.add(hangar);
 const hangarCrewGroup=new THREE.Group();hangar.add(hangarCrewGroup);
 
-const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);const parts=[],undoStack=[],redoStack=[];let selectedPartItem=null,selectionHelper=null;let mode='vab',gameMode='career',aircraftCraft=false,funds=25000,fundsUnlimited=true,science=0,stage=0,assemblyStage=0,stageUiFuelPercent=-1,throttle=0,flight=false,flightPeakAltitude=0,paused=false,sasEnabled=false,rcsEnabled=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
+const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);const parts=[],undoStack=[],redoStack=[];let selectedPartItem=null,selectionHelper=null,symmetryMode=1;let mode='vab',gameMode='career',aircraftCraft=false,funds=25000,fundsUnlimited=true,science=0,stage=0,assemblyStage=0,stageUiFuelPercent=-1,throttle=0,flight=false,flightPeakAltitude=0,paused=false,sasEnabled=false,rcsEnabled=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
 const catalog=[
 {id:'pod',name:'Mk1 コマンドポッド',type:'pod',tech:'basic',mass:0.84,cost:600,crew:1,icon:'◉',height:2,radius:.9},
 {id:'probe',name:'プローブコア',type:'probe',tech:'basic',mass:.1,cost:450,icon:'⌖',height:.7,radius:.65},
@@ -594,9 +594,15 @@ function addPart(id,place=null,rotation=null){
  const d=catalog.find(x=>x.id===id);if(!d)return;
  if(gameMode!=='sandbox'&&!fundsUnlimited&&funds<d.cost){toast('資金が不足しています');return;}
  if(gameMode!=='sandbox'&&!fundsUnlimited)funds-=d.cost;
- pushUndoSnapshot();saveCareer();const item={data:d,fuel:d.fuel||0,stage:assemblyStage};
- if(place){item.manualPosition=true;item.position=place.clone();if(rotation)item.rotation=rotation.clone();}
- parts.push(item);layout();toast(d.name+' を設置しました');
+ pushUndoSnapshot();saveCareer();
+ const radial=!!place&&Math.hypot(place.x,place.z)>.08,count=radial?symmetryMode:1;
+ for(let i=0;i<count;i++){
+  const angle=count>1?i*Math.PI*2/count:0,q=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),angle);
+  const item={data:d,fuel:d.fuel||0,stage:assemblyStage};
+  if(place){item.manualPosition=true;item.position=place.clone().applyAxisAngle(new THREE.Vector3(0,1,0),angle);if(rotation)item.rotation=q.clone().multiply(rotation);}
+  parts.push(item);
+ }
+ layout();toast(d.name+(count>1?' を'+count+'方向に対称配置しました':' を設置しました'));
 }
 function craftSnapshot(){return parts.map(p=>({id:p.data.id,stage:p.stage,fuel:p.fuel,manualPosition:!!p.manualPosition,position:p.position?p.position.toArray():null,rotation:p.rotation?p.rotation.toArray():null}));}
 function updateUndoButtons(){const undo=$('#undo-craft'),redo=$('#redo-craft'),del=$('#delete-part');if(undo)undo.disabled=!undoStack.length;if(redo)redo.disabled=!redoStack.length;if(del)del.disabled=!selectedPartItem;}
@@ -769,7 +775,7 @@ function physicsStep(dt){
 function physics(dt){if(!flight||paused)return;flightAccumulator+=Math.min(dt,.1);const fixed=1/120;let steps=0;while(flightAccumulator>=fixed&&steps<12){physicsStep(fixed);flightAccumulator-=fixed;steps++;}if(steps===12)flightAccumulator=0;}
 function tick(now){requestAnimationFrame(tick);const dt=Math.min(.04,(now-last)/1000);last=now;physics(dt);if(mode==='vab'){rocket.rotation.y=0;updateHangarCrew(dt);if(selectionHelper)selectionHelper.update();}if(mode!=='crew')renderer.render(scene,camera);}requestAnimationFrame(tick);
 $('#funds-toggle').onclick=()=>{fundsUnlimited=!fundsUnlimited;saveCareer();recalc();toast(fundsUnlimited?'資金を無制限にしました':'通常の資金制に戻しました');};
-$('#undo-craft').onclick=undoCraft;$('#redo-craft').onclick=redoCraft;$('#delete-part').onclick=removeSelectedPart;updateUndoButtons();
+$('#undo-craft').onclick=undoCraft;$('#redo-craft').onclick=redoCraft;$('#delete-part').onclick=removeSelectedPart;$('#symmetry-mode').onclick=()=>{const modes=[1,2,3,4,6,8];symmetryMode=modes[(modes.indexOf(symmetryMode)+1)%modes.length];$('#symmetry-mode').textContent='対称: '+symmetryMode+'x';toast('対称配置 '+symmetryMode+'x');};updateUndoButtons();
 setMode('vab');
 if(!parts.length&&!localStorage.getItem('space-vab-starter-seen')){
  const lowerEngine=catalog.find(p=>p.id==='engine-l')||catalog.find(p=>p.type==='engine');
