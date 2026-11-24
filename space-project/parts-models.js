@@ -94,8 +94,12 @@ export function createPartModel(p,THREE){
   if(count===3)box(.08,.08,2.5,alloy,[0,h*.5,0]);
  }else if(p.type==='chute'){
   cyl(r*.78,r*.78,h*.7,white,h*.38,24);torus(r*.78,.06,gold,h*.73);cyl(r*.56,r*.56,.12,orange,h*.78,20);
-  const canopy=new THREE.Group();for(let i=0;i<12;i++){const a=i*Math.PI/6;const seg=mesh(new THREE.SphereGeometry(r*.55,12,8,0,Math.PI/6,0,Math.PI/2),i%2?white:orange,[Math.cos(a)*r*.22,h*.95,Math.sin(a)*r*.22],[0,-a,0],[1,.28,1]);}
-  for(let i=0;i<8;i++){const a=i*Math.PI/4;const line=mesh(new THREE.CylinderGeometry(.008,.008,h*.45,5),gold,[Math.cos(a)*r*.25,h*.6,Math.sin(a)*r*.25]);}
+  const rig=new THREE.Group();rig.name='parachute-rig';rig.visible=false;
+  const canopy=new THREE.Group();canopy.name='parachute-canopy';canopy.position.y=h*1.28;canopy.scale.setScalar(.04);
+  for(let i=0;i<12;i++){const a=i*Math.PI/6;const panel=new THREE.Mesh(new THREE.SphereGeometry(r*.78,18,12,0,Math.PI/6,0,Math.PI/2),i%2?white:orange);panel.position.set(Math.cos(a)*r*.12,0,Math.sin(a)*r*.12);panel.scale.set(1,.32,1);panel.rotation.y=-a;panel.castShadow=true;canopy.add(panel);}
+  rig.add(canopy);
+  for(let i=0;i<8;i++){const a=i*Math.PI/4,start=new THREE.Vector3(Math.cos(a)*r*.2,h*.72,Math.sin(a)*r*.2),end=new THREE.Vector3(Math.cos(a)*r*.62,h*1.25,Math.sin(a)*r*.62),dir=end.clone().sub(start),line=new THREE.Mesh(new THREE.CylinderGeometry(.009,.009,dir.length(),6),gold);line.position.copy(start).add(end).multiplyScalar(.5);line.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());rig.add(line);}
+  g.add(rig);
  }else if(p.type==='battery'){
   const fuelCell=id.includes('fuelcell'),wheel=id.includes('wheel');box(r*1.65,h*.72,r*1.4,fuelCell?mat(0x687f70,.65,.4):white,[0,h*.45,0]);box(r*1.5,.08,r*1.25,dark,[0,h*.84,0]);for(let x of [-1,1])for(let z of [-1,1])box(.07,.12,.07,gold,[x*r*.65,h*.9,z*r*.55]);
   if(wheel){torus(r*.52,.09,gold,h*.48);cyl(r*.35,r*.35,.14,dark,h*.48,20);}
