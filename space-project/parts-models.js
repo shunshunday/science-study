@@ -53,7 +53,7 @@ export function createPartModel(p,THREE){
   else if(ore){cyl(r*.88,r*.88,h*.8,mat(0x788d77,.58,.55),h*.4,12);for(let y of [.15,h*.65])bodyBand(r*.9,y,gold);}
   else{
    const shellMat=xenon?mat(0x718c9b,.72,.24):texturedWhite;
-   const flSeries=/^tank-(s|m)$/.test(id)||/fl-t(100|200|400|800)/i.test(id),rockomax=/rockomax|x200/i.test(id);
+   const flSeries=/^tank-(s|m)$/.test(id)||/fl-t(100|200|400|800)/i.test(id),rockomax=/rockomax|x200/i.test(id+' '+name);
    const profile=rockomax?[[0,h*.035],[r*.72,h*.035],[r*.9,h*.06],[r*.98,h*.12],[r,h*.18],[r,h*.82],[r*.98,h*.88],[r*.9,h*.94],[r*.72,h*.965],[0,h*.965]]:flSeries?[[0,h*.035],[r*.55,h*.035],[r*.82,h*.055],[r*.94,h*.11],[r*.98,h*.18],[r*.98,h*.82],[r*.94,h*.89],[r*.82,h*.945],[r*.55,h*.965],[0,h*.965]]:[[0,h*.08],[r*.48,h*.08],[r*.78,h*.105],[r*.91,h*.16],[r*.96,h*.23],[r*.96,h*.77],[r*.91,h*.84],[r*.78,h*.895],[r*.48,h*.92],[0,h*.92]];
    lathe(profile,shellMat,0,96);
    if(flSeries){for(const y of [h*.105,h*.895]){bodyBand(r*.985,y,dark);bodyBand(r*.965,y+(y<h*.5?.025:-.025),alloy);}bodyBand(r*.99,h*.18,gold);bodyBand(r*.99,h*.82,gold);mesh(new THREE.BoxGeometry(r*.23,h*.47,.026),dark,[0,h*.5,r*.974]);mesh(new THREE.BoxGeometry(r*.19,h*.23,.012),mat(0xd5d8cf,.25,.78),[0,h*.53,r*.992]);for(let yy of [h*.39,h*.67])for(let xx of [-1,1])sphere(.018,alloy,[xx*r*.065,yy,r*.994]);}
