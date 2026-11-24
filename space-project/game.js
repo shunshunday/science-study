@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import {createPartModel} from './parts-models.js?v=20261124-99-authored-meshes-v2';
-import {createVABEnvironment} from './vab-environment.js?v=20261124-117-vab-support-towers';
+import {createPartModel} from './parts-models.js?v=20261122-6-engine-tank-models';
 import {additionalParts} from './parts-inventory.js?v=20261122-7-twinboar-caveat';
 import {BODY,G0,gravityAcceleration,atmosphericDensity,orbitalElements,rk4Step,deltaV,rocketMassKg} from './physics/orbital.js';
 import {aerodynamicAcceleration} from './physics/aerodynamics.js';
@@ -8,74 +7,84 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],toa
 const scene=new THREE.Scene();
 const crewStage=new THREE.Group();crewStage.visible=false;scene.add(crewStage);
 function makeCrewFigure(member,index){
- const mat=(color,roughness=.68,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
+ const mat=(color,roughness=.62,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
  const root=new THREE.Group(),legParts=[],armParts=[];
- const skin=mat(0x8eae43,.82),eyeWhite=mat(0xf5f4e9,.2),pupilMat=mat(0x18251d,.2),suit=mat(0xe6e5d9,.74),suitShade=mat(0xb9c1bc,.72),orange=mat(0xd87932,.58),bootMat=mat(0x4b5558,.78),rubber=mat(0x252d30,.9),badgeMat=mat(index%3===0?0x3f7190:index%3===1?0x9b563e:0x5d7850,.7);
- const add=(parent,geo,material,pos=[0,0,0],rot=[0,0,0],scale=null)=>{const m=new THREE.Mesh(geo,material);m.position.set(...pos);m.rotation.set(...rot);if(scale)m.scale.set(...scale);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;};
- const lathe=(parent,profile,material,segments=32)=>add(parent,new THREE.LatheGeometry(profile.map(([r,y])=>new THREE.Vector2(r,y)),segments),material);
- const tapered=(parent,length,radius,material,topScale=1)=>lathe(parent,[[0,-length],[radius*.72,-length],[radius*.9,-length*.88],[radius,-length*.55],[radius*topScale,-.12],[radius*topScale*.82,0],[0,0]],material,24);
+ const skin=mat(0x8eae43,.84),eyeWhite=mat(0xf5f4e9,.18),pupilMat=mat(0x18251d,.2),suit=mat(0xe6e5d9,.76),suitShade=mat(0xb9c1bc,.72),orange=mat(0xd87932,.62),bootMat=mat(0x4b5558,.78),rubber=mat(0x252d30,.9),badgeMat=mat(index%3===0?0x3f7190:index%3===1?0x9b563e:0x5d7850,.7);
+ const sphere=(parent,r,material,x,y,z,scale)=>{const mesh=new THREE.Mesh(new THREE.SphereGeometry(r,40,28),material);mesh.position.set(x,y,z);if(scale)mesh.scale.set(...scale);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
+ const box=(parent,w,h,d,material,x,y,z)=>{const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
+ const segment=(parent,length,radius,material)=>{const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius*.9,radius,length,28),material);mesh.position.y=-length/2;mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
+ // Short, sturdy suit silhouette with separate hip, knee and ankle pivots.
  const pelvis=new THREE.Group();pelvis.position.y=.92;root.add(pelvis);
- lathe(pelvis,[[0,-.22],[.18,-.21],[.27,-.15],[.31,-.03],[.29,.12],[.2,.2],[0,.22]],suit,36);
+ sphere(pelvis,.31,suit,0,0,0,[1.18,.72,.92]);
  for(const side of [-1,1]){
   const hip=new THREE.Group();hip.position.set(side*.235,-.08,0);pelvis.add(hip);
-  tapered(hip,.39,.15,suit,.9);
+  sphere(hip,.17,suit,0,-.04,0,[1,1.12,.96]);
+  segment(hip,.38,.145,suit);
   const knee=new THREE.Group();knee.position.y=-.38;hip.add(knee);
-  lathe(knee,[[0,-.075],[.105,-.075],[.14,-.025],[.14,.045],[.105,.09],[0,.09]],suitShade,24);
-  tapered(knee,.37,.13,suit,.92);
+  sphere(knee,.145,suitShade,0,0,0,[1,.9,.92]);
+  segment(knee,.37,.128,suit);
   const ankle=new THREE.Group();ankle.position.set(0,-.36,.015);knee.add(ankle);
-  lathe(ankle,[[0,-.045],[.11,-.045],[.14,-.015],[.14,.045],[.11,.075],[0,.075]],orange,24);
+  const cuff=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.09,28),orange);cuff.rotation.x=Math.PI/2;cuff.position.set(0,.015,.005);ankle.add(cuff);
   const boot=new THREE.Group();boot.position.set(0,-.075,.095);ankle.add(boot);
-  const bootShape=new THREE.Shape();bootShape.moveTo(-.13,-.09);bootShape.lineTo(.13,-.09);bootShape.lineTo(.145,.035);bootShape.lineTo(.105,.12);bootShape.lineTo(-.105,.12);bootShape.lineTo(-.145,.035);bootShape.closePath();
-  add(boot,new THREE.ExtrudeGeometry(bootShape,{depth:.3,bevelEnabled:true,bevelSegments:4,bevelSize:.035,bevelThickness:.025}),bootMat,[0,0,-.12]);
-  add(boot,new THREE.BoxGeometry(.27,.045,.29),rubber,[0,-.105,.025]);
+  box(boot,.275,.19,.36,bootMat,0,-.015,.045);
+  box(boot,.28,.055,.32,rubber,0,-.112,.045);
+  sphere(boot,.14,suitShade,0,.025,.19,[1,.62,.75]);
   legParts.push({hip,knee,ankle,side});
  }
+ // Suit torso, panel, webbing, seams and compact life-support pack.
  const torso=new THREE.Group();torso.position.y=1.42;root.add(torso);
- lathe(torso,[[0,-.46],[.23,-.45],[.31,-.36],[.35,-.16],[.4,.12],[.39,.3],[.31,.43],[.2,.47],[0,.47]],suit,48);
- // Tailored pressure-suit chest panel, webbing and service pack.
- const chestShape=new THREE.Shape();chestShape.moveTo(-.2,-.2);chestShape.lineTo(.2,-.2);chestShape.lineTo(.18,.19);chestShape.lineTo(-.18,.19);chestShape.closePath();
- add(torso,new THREE.ExtrudeGeometry(chestShape,{depth:.035,bevelEnabled:true,bevelSegments:3,bevelSize:.018,bevelThickness:.012}),suitShade,[0,-.06,.342]);
- add(torso,new THREE.BoxGeometry(.22,.075,.025),badgeMat,[0,.13,.385]);
- add(torso,new THREE.BoxGeometry(.12,.055,.028),orange,[0,-.17,.38]);
+ const torsoMesh=new THREE.Mesh(new THREE.CapsuleGeometry(.37,.48,7,20),suit);torsoMesh.scale.set(1.08,1,.84);torsoMesh.castShadow=true;torsoMesh.receiveShadow=true;torso.add(torsoMesh);
+ box(torso,.43,.34,.075,suitShade,0,-.035,.325);
+ box(torso,.22,.105,.025,badgeMat,0,.045,.372);
+ box(torso,.12,.07,.03,orange,0,-.17,.375);
+ // Shoulder-to-waist suit seams and harness strips.
  for(const side of [-1,1]){
-  const strap=add(torso,new THREE.BoxGeometry(.055,.62,.035),suitShade,[side*.255,.015,.31]);strap.rotation.z=side*.12;
-  add(torso,new THREE.BoxGeometry(.075,.11,.04),orange,[side*.29,.24,.31]);
+  const strap=box(torso,.055,.62,.035,suitShade,side*.255,.02,.315);strap.rotation.z=side*.12;
+  box(torso,.07,.12,.045,orange,side*.29,.24,.31);
  }
  const pack=new THREE.Group();pack.position.set(0,.015,-.34);torso.add(pack);
- const packShape=new THREE.Shape();packShape.moveTo(-.25,-.32);packShape.lineTo(.25,-.32);packShape.lineTo(.27,.27);packShape.lineTo(.18,.36);packShape.lineTo(-.18,.36);packShape.lineTo(-.27,.27);packShape.closePath();
- add(pack,new THREE.ExtrudeGeometry(packShape,{depth:.3,bevelEnabled:true,bevelSegments:4,bevelSize:.035,bevelThickness:.025}),suitShade,[0,0,-.15]);
- add(pack,new THREE.BoxGeometry(.4,.11,.32),orange,[0,.32,0]);
- for(const side of [-1,1])add(pack,new THREE.BoxGeometry(.09,.4,.32),bootMat,[side*.25,-.02,0]);
- const collar=add(torso,new THREE.TorusGeometry(.29,.065,10,32),orange,[0,.43,0],[Math.PI/2,0,0]);
+ box(pack,.55,.72,.34,suitShade,0,0,0);
+ box(pack,.42,.13,.36,orange,0,.32,0);
+ box(pack,.42,.12,.035,bootMat,0,-.22,.18);
+ for(const side of [-1,1])box(pack,.1,.42,.37,bootMat,side*.25,-.02,0);
+ const collar=new THREE.Mesh(new THREE.TorusGeometry(.32,.085,10,28),orange);collar.position.set(0,.43,0);collar.rotation.x=Math.PI/2;collar.castShadow=true;torso.add(collar);
+ // Fully articulated arms: shoulder -> elbow -> wrist -> glove.
  for(const side of [-1,1]){
+  sphere(root,.19,suit,side*.49,1.67,0,[1,.95,.95]);
   const shoulder=new THREE.Group();shoulder.position.set(side*.51,1.66,0);root.add(shoulder);
-  tapered(shoulder,.39,.145,suit,.9);
+  segment(shoulder,.39,.145,suit);
   const elbow=new THREE.Group();elbow.position.set(0,-.39,.025);shoulder.add(elbow);
-  lathe(elbow,[[0,-.065],[.11,-.065],[.14,-.02],[.14,.045],[.1,.08],[0,.08]],suitShade,24);
-  tapered(elbow,.34,.125,suit,.9);
+  sphere(elbow,.135,suitShade,0,0,0,[1,.92,.92]);
+  segment(elbow,.34,.125,suit);
   const wrist=new THREE.Group();wrist.position.set(0,-.33,.025);elbow.add(wrist);
-  lathe(wrist,[[0,-.04],[.105,-.04],[.13,0],[.13,.045],[.1,.075],[0,.075]],orange,24);
-  const gloveShape=new THREE.Shape();gloveShape.moveTo(-.09,-.12);gloveShape.lineTo(.09,-.12);gloveShape.lineTo(.11,.05);gloveShape.lineTo(.07,.13);gloveShape.lineTo(-.07,.13);gloveShape.lineTo(-.11,.05);gloveShape.closePath();
-  add(wrist,new THREE.ExtrudeGeometry(gloveShape,{depth:.15,bevelEnabled:true,bevelSegments:3,bevelSize:.02,bevelThickness:.015}),suitShade,[0,-.17,.02]);
+  const wristRing=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.075,28),orange);wristRing.rotation.x=Math.PI/2;wrist.add(wristRing);
+  sphere(wrist,.145,suitShade,0,-.09,.035,[.94,.9,.9]);
+  box(wrist,.17,.19,.19,suitShade,0,-.17,.08);
   armParts.push({shoulder,elbow,wrist,side});
  }
+ // Capsule-like head volume: no cheek pads, no human-style cheek protrusions.
  const headPivot=new THREE.Group();headPivot.position.set(0,2.72,0);root.add(headPivot);
- lathe(headPivot,[[0,-.61],[.28,-.59],[.46,-.46],[.55,-.2],[.57,.08],[.53,.35],[.39,.55],[.18,.62],[0,.63]],skin,56);
- // Custom helmet-like hair cap silhouette rather than a sphere attached to the head.
- const hairColors=[0x211b18,0x17191d,0x493020,0x30231d,0x9a733c,0x51413a],hairMat=mat(hairColors[Math.abs(index)%hairColors.length],.9);
- const capProfile=[[0,.29],[.56,.29],[.55,.42],[.46,.55],[.28,.62],[0,.64]];
- lathe(headPivot,capProfile,hairMat,40);
+ const head=sphere(headPivot,.62,skin,0,.015,0,[.91,1.13,.88]);
+ // A restrained short military-style hair cap, kept behind the face.
+ const hairColors=[0x211b18,0x17191d,0x493020,0x30231d,0x9a733c,0x51413a];
+ const hairMat=mat(hairColors[Math.abs(index)%hairColors.length],.9);
+ sphere(headPivot,.565,hairMat,0,.53,-.055,[1.02,.30,.94]);
+ const hairline=sphere(headPivot,.49,hairMat,0,.42,.27,[1.02,.13,.35]);
+ hairline.rotation.x=-.08;
+ // Unequal, protruding eyes are part of the head rig and therefore bob with it.
  const eyes=[];
  for(const side of [-1,1]){
-  const eyeGroup=new THREE.Group();eyeGroup.position.set(side*.245,.075,.465);headPivot.add(eyeGroup);
-  add(eyeGroup,new THREE.SphereGeometry(.205,24,16),eyeWhite,[0,0,.02],[0,0,0],[1,1,.72]);
-  add(eyeGroup,new THREE.SphereGeometry(.078,18,12),pupilMat,[side*.025,-.012,.198]);
-  add(eyeGroup,new THREE.SphereGeometry(.025,12,8),mat(0xffffff,.1),[side*.012,.065,.225]);
+  const eyeGroup=new THREE.Group();eyeGroup.position.set(side*.255,.095,.455);headPivot.add(eyeGroup);
+  const size=side===-1?.255:.235;
+  sphere(eyeGroup,size,eyeWhite,0,0,.035,[.94,1.05,.92]);
+  sphere(eyeGroup,size*.39,pupilMat,side*.035,-.012,.245,[.95,1,.78]);
+  sphere(eyeGroup,size*.12,mat(0xffffff,.12),side*.012,.075,.285);
   eyes.push(eyeGroup);
  }
- const mouthGroup=new THREE.Group();mouthGroup.position.set(0,-.37,.51);headPivot.add(mouthGroup);
- const mouthDark=mat(0x30120f,.76),cavity=add(mouthGroup,new THREE.SphereGeometry(.105,18,12),mouthDark,[0,0,.015],[0,0,0],[1.45,.48,.34]);
- const mouthLine=add(mouthGroup,new THREE.TorusGeometry(.13,.018,6,20,Math.PI),mat(0x42632c,.82),[0,-.025,.045],[0,0,Math.PI]);
+ const mouthGroup=new THREE.Group();mouthGroup.position.set(0,-.39,.535);headPivot.add(mouthGroup);
+ const mouthDark=mat(0x30120f,.76);
+ const cavity=sphere(mouthGroup,.105,mouthDark,0,0,.02,[1.45,.48,.34]);
+ const mouthLine=new THREE.Mesh(new THREE.TorusGeometry(.13,.018,6,20,Math.PI),mat(0x42632c,.82));mouthLine.position.set(0,-.025,.045);mouthLine.rotation.z=Math.PI;mouthGroup.add(mouthLine);
  root.scale.setScalar(.88);
  root.userData.walkParts={legs:legParts,arms:armParts,head:headPivot,eyes,mouth:{cavity,smile:mouthLine}};
  return root;
@@ -130,11 +139,104 @@ for(let i=0;i<18;i++){const x=-82+(i%9)*20,z=-65+Math.floor(i/9)*145;const trunk
 function makeCrew(){const g=new THREE.Group(),suit=new THREE.MeshStandardMaterial({color:0xd8d6c8,roughness:.75}),visor=new THREE.MeshStandardMaterial({color:0x263e4c,metalness:.55,roughness:.2}),skin=new THREE.MeshStandardMaterial({color:0x83a66b,roughness:.85});const body=new THREE.Mesh(new THREE.CapsuleGeometry(.32,.55,4,8),suit);body.position.y=.85;g.add(body);const head=new THREE.Mesh(new THREE.SphereGeometry(.29,12,10),skin);head.position.y=1.48;g.add(head);const helmet=new THREE.Mesh(new THREE.TorusGeometry(.3,.055,6,16),suit);helmet.position.y=1.48;g.add(helmet);const glass=new THREE.Mesh(new THREE.SphereGeometry(.19,12,8,0,Math.PI*2,0,Math.PI/2),visor);glass.position.set(0,1.49,.17);g.add(glass);for(const side of [-1,1]){const arm=new THREE.Mesh(new THREE.CylinderGeometry(.09,.12,.55,7),suit);arm.position.set(side*.38,.9,0);arm.rotation.z=side*.2;g.add(arm);const leg=new THREE.Mesh(new THREE.CylinderGeometry(.12,.14,.55,7),suit);leg.position.set(side*.16,.28,0);g.add(leg);}g.traverse(o=>{if(o.isMesh)o.castShadow=true;});return g;}
 const crew=makeCrew();crew.position.set(4,0,7);campus.add(crew);
 
-// Purpose-built VAB architecture (separate authored scene module).
-const hangar=createVABEnvironment(THREE);scene.add(hangar);
+// 大型格納庫：鉄骨トラス、格子床、黄色い格納扉、照明、作業足場を独自モデルで構成
+const hangar=new THREE.Group();hangar.scale.set(.0018,.0022,.0018);scene.add(hangar);
 const hangarCrewGroup=new THREE.Group();hangar.add(hangarCrewGroup);
+const hangarMat=(color,metalness=.45,roughness=.72)=>new THREE.MeshStandardMaterial({color,metalness,roughness});
+const steel=hangarMat(0x46525a,.78),steelLight=hangarMat(0x899398,.72),darkSteel=hangarMat(0x202a30,.55),yellow=hangarMat(0xb18a35,.55),floorMat=hangarMat(0x62696b,.2,.92);
+function hBox(w,h,d,x,y,z,mat,parent=hangar){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
+function hBeam(a,b,r=.42,mat=steel){const va=new THREE.Vector3(...a),vb=new THREE.Vector3(...b),d=vb.clone().sub(va),m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,d.length(),6),mat);m.position.copy(va.add(vb).multiplyScalar(.5));m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());m.castShadow=true;hangar.add(m);}
+hBox(230,.8,270,0,-.65,0,floorMat);
+for(let x=-110;x<=110;x+=22)hBox(.45,.025,265,x,-.21,0,hangarMat(0x9b9b8d,.1,.95));
+for(let z=-125;z<=125;z+=22)hBox(225,.025,.45,0,-.2,z,hangarMat(0x9b9b8d,.1,.95));
+for(let x of [-105,-75,-45,45,75,105]){
+ hBox(3,150,3,x,74,-95,steel);hBox(3,150,3,x,74,95,steel);
+ hBeam([x,1,-95],[x,148,-95],.72,steelLight);hBeam([x,1,95],[x,148,95],.72,steelLight);
+}
+for(let y of [18,48,78,108,138,150]){
+ hBeam([-112,y,-95],[112,y,-95],.9,steelLight);
+ hBeam([-112,y,95],[112,y,95],.9,steelLight);
+}
+/* Tall roof trusses and cross-bracing keep the assembly hall enclosed overhead. */
+for(let z=-88;z<=66;z+=22){
+ hBeam([-112,148,z],[0,164,z],.72,steelLight);hBeam([0,164,z],[112,148,z],.72,steelLight);
+ hBeam([-112,148,z],[0,148,z],.48,steel);hBeam([0,148,z],[112,148,z],.48,steel);
+ hBeam([-112,148,z],[0,164,z+22],.32,steel);hBeam([112,148,z],[0,164,z+22],.32,steel);
+}
+for(let x=-105;x<105;x+=21){
+ hBeam([x,12,-95],[x+21,34,-95],.55,steel);hBeam([x+21,12,-95],[x,34,-95],.55,steel);
+ hBeam([x,56,-95],[x+21,78,-95],.55,steel);hBeam([x+21,56,-95],[x,78,-95],.55,steel);
+ hBeam([x,12,95],[x+21,34,95],.55,steel);hBeam([x+21,12,95],[x,34,95],.55,steel);
+}
+for(let x of [-95,-65,65,95]){hBox(5,88,5,x,44,0,darkSteel);for(let y=12;y<88;y+=18)hBox(12,1,10,x+(x<0?7:-7),y,0,steelLight);}
+for(let x=-42;x<=42;x+=14){hBox(13,128,1.8,x,65,-94,yellow);for(let y=8;y<128;y+=16)hBox(12,.7,2,x,y,-92,darkSteel);}
+hBox(190,5,5,0,140,-94,darkSteel);hBox(190,4,5,0,3,-94,yellow);
+for(let z=-75;z<=75;z+=25){hBox(1.4,1.4,150,-112,1,z,steel);hBox(1.4,1.4,150,112,1,z,steel);}
+for(let x of [-72,72]){for(let z of [-45,45]){hBox(2,18,2,x,9,z,darkSteel);hBox(10,1,4,x,18,z,steelLight);}}
+for(let x of [-55,55])for(let z of [-30,30]){const lamp=new THREE.Mesh(new THREE.BoxGeometry(8,.8,3),new THREE.MeshBasicMaterial({color:0xffe4b5}));lamp.position.set(x,76,z);hangar.add(lamp);}
+/* Aircraft workshop markings and the runway outside the hangar doors */
+const runwayMat=hangarMat(0x343d42,.15,.95),runwayLine=hangarMat(0xe5dfc7,.05,.85),taxiYellow=hangarMat(0xd2a53c,.2,.8);
+hBox(68,.18,300,0,-.12,-245,runwayMat);
+hBox(2,.025,290,-34,-.015,-245,runwayLine);hBox(2,.025,290,34,-.015,-245,runwayLine);
+for(let z=-115;z>-385;z-=22)hBox(1.3,.03,10,0,-.015,z,runwayLine);
+hBox(74,.025,2,-1,-.015,-105,taxiYellow);hBox(74,.025,2,-1,-.015,-385,taxiYellow);
+/* Yellow aircraft service bay outline on the hangar floor */
+hBox(26,.035,1.1,0,-.19,-13,taxiYellow);hBox(26,.035,1.1,0,-.19,13,taxiYellow);
+hBox(1.1,.035,26,-13,-.19,0,taxiYellow);
+hBox(1.1,.035,26,13,-.19,0,taxiYellow);
 
-const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);const parts=[],undoStack=[],redoStack=[];let selectedPartItem=null,selectionHelper=null,symmetryMode=1;let mode='vab',gameMode='career',aircraftCraft=false,funds=25000,fundsUnlimited=true,science=0,stage=0,assemblyStage=0,stageUiFuelPercent=-1,throttle=0,flight=false,flightPeakAltitude=0,paused=false,sasEnabled=false,rcsEnabled=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
+/* Industrial gantry crane, catwalks and maintenance buildings */
+const craneYellow=hangarMat(0xc18d2d,.62,.48),glassMat=hangarMat(0x6d9ba8,.38,.22),serviceMat=hangarMat(0x414d55,.5,.78);
+for(const z of [-54,48]){
+ hBeam([-100,82,z],[100,82,z],1.25,craneYellow);
+ hBeam([-100,78,z],[100,78,z],.75,darkSteel);
+ for(const x of [-98,98]){hBox(3,15,4,x,70,z,craneYellow);hBox(7,2,7,x,62,z,steelLight);}
+}
+hBox(18,3,15,-12,80,48,craneYellow);hBox(10,2,10,-12,77,48,darkSteel);
+hBeam([-12,76,48],[-12,47,48],.28,steelLight);hBox(2,2,2,-12,46,48,craneYellow);
+for(const side of [-1,1]){
+ const x=side*83;
+ for(const y of [28,53]){
+  hBox(8,1.1,174,x,y,0,steelLight);
+  for(const z of [-87,-62,-37,-12,13,38,63,87]){
+   hBeam([x-4,y+1,z],[x-4,y+5,z],.13,steelLight);hBeam([x+4,y+1,z],[x+4,y+5,z],.13,steelLight);
+   hBeam([x-4,y+5,z],[x+4,y+5,z],.2,craneYellow);
+  }
+ }
+ for(const z of [-67,-18,31,70]){
+  hBox(18,15,22,side*101,8,z,serviceMat);
+  hBox(18.4,1.2,22.4,side*101,16,z,steelLight);
+  hBox(.25,7,10,side*91.8,8,z,glassMat);
+  hBox(.35,8,8,side*91.65,4,z,craneYellow);
+  hBox(18.5,.45,1,side*101,1,z-11.2,craneYellow);
+ }
+ for(const z of [-48,0,48]){
+  hBeam([x,29,z],[x,52,z],.2,steelLight);
+  for(let y=31;y<52;y+=3)hBeam([x-.8,y,z],[x+.8,y,z],.13,craneYellow);
+ }
+}
+for(let i=0;i<10;i++){
+ const x=(i%5)*24-48,z=i<5?68:-72;
+ hBox(5,6,5,x,2.7,z,serviceMat);hBox(5.3,.45,5.3,x,5.9,z,steelLight);
+ hBox(3.8,2.8,.12,x,2.8,z+2.56,glassMat);
+}
+for(const x of [-64,64])for(const z of [-82,82]){
+ hBox(10,2,6,x,1,z,craneYellow);
+ for(const wx of [-4,4])for(const wz of [-2,2]){
+  const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.9,.9,.55,12),darkSteel);
+  wheel.rotation.z=Math.PI/2;wheel.position.set(x+wx,.8,z+wz);wheel.castShadow=true;hangar.add(wheel);
+ }
+ hBox(5,3.2,4,x,3.3,z,glassMat);
+}
+for(const x of [-108,108])for(const z of [-78,-38,2,42,82]){
+ hBox(1.5,24,1.5,x,12,z,craneYellow);hBox(5,1,5,x,24,z,steelLight);
+}
+for(const z of [-88,-62,-36,-10,16,42,68,92]){
+ hBox(1.2,42,.8,-109,51,z,steelLight);hBox(1.2,42,.8,109,51,z,steelLight);
+ hBox(.5,20,15,-107,63,z,glassMat);hBox(.5,20,15,107,63,z,glassMat);
+}
+
+const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);const parts=[];let mode='vab',gameMode='career',aircraftCraft=false,funds=25000,fundsUnlimited=true,science=0,stage=0,assemblyStage=0,stageUiFuelPercent=-1,throttle=0,flight=false,flightPeakAltitude=0,paused=false,sasEnabled=false,rcsEnabled=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
 const catalog=[
 {id:'pod',name:'Mk1 コマンドポッド',type:'pod',tech:'basic',mass:0.84,cost:600,crew:1,icon:'◉',height:2,radius:.9},
 {id:'probe',name:'プローブコア',type:'probe',tech:'basic',mass:.1,cost:450,icon:'⌖',height:.7,radius:.65},
@@ -309,7 +411,7 @@ const partPreviewRenderers=new Map();let partPreviewObserver=null,selectedPartId
 function getSharedPreviewRenderer(){
  if(!sharedPreviewRenderer){
   const surface=document.createElement('canvas');
-  sharedPreviewRenderer=new THREE.WebGLRenderer({canvas:surface,antialias:true,alpha:false,powerPreference:'high-performance'});
+  sharedPreviewRenderer=new THREE.WebGLRenderer({canvas:surface,antialias:false,alpha:false,powerPreference:'low-power'});
   sharedPreviewRenderer.setPixelRatio(1);sharedPreviewRenderer.setSize(232,116,false);sharedPreviewRenderer.outputColorSpace=THREE.SRGBColorSpace;sharedPreviewRenderer.toneMapping=THREE.ACESFilmicToneMapping;sharedPreviewRenderer.toneMappingExposure=1.2;
  }
  return sharedPreviewRenderer;
@@ -330,7 +432,7 @@ function renderOnePartPreview(canvas,p){
   const originalRotation=model.rotation.clone();
   const entry={scene,camera,model,originalRotation,hovered:false,raf:0,lastFrame:0};partPreviewRenderers.set(canvas,entry);paintPartPreview(entry,canvas);
   canvas.draggable=false;
-  
+  canvas.addEventListener('dragstart',e=>e.preventDefault());
   canvas.addEventListener('click',e=>e.stopPropagation());
   const animate=now=>{if(!entry.hovered||!canvas.isConnected){entry.raf=0;return;}if(!entry.lastFrame)entry.lastFrame=now;const dt=Math.min(.05,(now-entry.lastFrame)/1000);entry.lastFrame=now;model.rotation.y+=dt*.9;paintPartPreview(entry,canvas);entry.raf=requestAnimationFrame(animate);};
   canvas.addEventListener('pointerenter',()=>{entry.hovered=true;entry.lastFrame=0;if(!entry.raf)entry.raf=requestAnimationFrame(animate);});
@@ -418,7 +520,7 @@ function drawPartsCatalogV2(){
  let items=catalog.filter(p=>(activePartCategory==='すべて'||categoryFor(p)===activePartCategory)&&(!query||(p.name+' '+p.id+' '+categoryFor(p)).toLowerCase().includes(query)));
  items.sort((a,b)=>sort==='mass'?a.mass-b.mass:sort==='cost'?a.cost-b.cost:sort==='size'?a.height-b.height:a.name.localeCompare(b.name,'ja'));
  $('#part-result-count').textContent=items.length+' 件';
- $('#part-list').innerHTML=items.map(p=>{const unlocked=gameMode==='sandbox'||unlockedTech.has(p.tech||'basic'),esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const sourceLabel=p.catalogSource==='Making History'?'MAKING HISTORY':p.catalogSource==='Breaking Ground'?'BREAKING GROUND':p.catalogSource==='stock'?'STOCK':'BASE';return '<button class="part" draggable="true" data-part="'+p.id+'" aria-label="'+esc(p.name)+'" '+(unlocked?'':'disabled')+' data-tip="'+esc(partHoverInfo(p))+'"><span class="part-icon"></span><span class="part-name">'+esc(p.name)+'</span><small class="part-stats">'+Number(p.mass||0).toFixed(2)+' t · ₡'+Number(p.cost||0).toLocaleString('ja-JP')+' · '+Number(p.height||0).toFixed(1)+' m</small></button>';}).join('');renderPartPreviews(items);
+ $('#part-list').innerHTML=items.map(p=>{const unlocked=gameMode==='sandbox'||unlockedTech.has(p.tech||'basic'),esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const sourceLabel=p.catalogSource==='Making History'?'MAKING HISTORY':p.catalogSource==='Breaking Ground'?'BREAKING GROUND':p.catalogSource==='stock'?'STOCK':'BASE';return '<button class="part" data-part="'+p.id+'" aria-label="'+esc(p.name)+'" '+(unlocked?'':'disabled')+' data-tip="'+esc(partHoverInfo(p))+'"><span class="part-icon"></span></button>';}).join('');renderPartPreviews(items);
 }
 
 const techTree=[
@@ -560,69 +662,9 @@ function renderStages(){
 }
 function recalc(){craftMass=rocketMassKg(parts)/1000;fuel=parts.reduce((s,p)=>s+(p.fuel||0),0);maxFuel=parts.reduce((s,p)=>s+(p.data.fuel||0),0);thrust=parts.reduce((s,p)=>s+(p.data.thrust||0),0);const dv=deltaV(parts);$('#craft-name').textContent='機体重量 '+craftMass.toFixed(2)+' t　Δv '+Math.round(dv)+' m/s　推力 '+thrust+' kN';$('#funds').textContent=gameMode==='sandbox'||fundsUnlimited?'∞':'₡'+funds.toLocaleString();$('#funds-toggle').textContent='資金: '+(fundsUnlimited?'無制限':'通常');$('#funds-toggle').classList.toggle('active',fundsUnlimited);$('#science').textContent=science;renderStages();}
 function disposeCraftModel(root){root.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){const materials=Array.isArray(o.material)?o.material:[o.material];for(const m of materials)m.dispose();}});}
-function layout(){
- for(const child of [...rocket.children])disposeCraftModel(child);rocket.clear();
- let stackY=0,stackZ=0;
- for(const p of parts){
-  const m=partMesh(p.data);p.mesh=m;m.userData.partItem=p;if(p.rotation)m.quaternion.copy(p.rotation);
-  if(p.manualPosition&&p.position){m.position.copy(p.position);}
-  else{
-   const bounds=new THREE.Box3().setFromObject(m);
-   if(aircraftCraft){
-    const offset=stackZ-bounds.min.z;m.position.z+=offset;bounds.translate(new THREE.Vector3(0,0,offset));stackZ=bounds.max.z+.035;
-   }else{
-    const offset=stackY-bounds.min.y;m.position.y+=offset;bounds.translate(new THREE.Vector3(0,offset,0));stackY=bounds.max.y+.035;
-   }
-  }
-  rocket.add(m);
- }
- rocket.position.y=0;
- if(selectionHelper){scene.remove(selectionHelper);selectionHelper.geometry.dispose();selectionHelper.material.dispose();selectionHelper=null;}
- if(selectedPartItem?.mesh){selectionHelper=new THREE.BoxHelper(selectedPartItem.mesh,0xffc85a);scene.add(selectionHelper);}
- recalc();updateUndoButtons();$('#stage-build-label').textContent='組立ステージ '+assemblyStage;
-}
-function focusVABCamera(){
- rocket.updateWorldMatrix(true,true);
- const bounds=new THREE.Box3().setFromObject(rocket);
- if(bounds.isEmpty())return;
- const center=bounds.getCenter(new THREE.Vector3()),size=bounds.getSize(new THREE.Vector3());
- const radius=Math.max(size.y*.5,size.x*.8,size.z*.8,.008);
- camera.position.copy(center).add(new THREE.Vector3(radius*.9,radius*1.8,radius*2.5));
- camera.lookAt(center);camera.updateProjectionMatrix();
-}
-function addPart(id,place=null,rotation=null){
- const d=catalog.find(x=>x.id===id);if(!d)return;
- if(gameMode!=='sandbox'&&!fundsUnlimited&&funds<d.cost){toast('資金が不足しています');return;}
- const radial=!!place&&Math.hypot(place.x,place.z)>.08,count=radial?symmetryMode:1,additions=[],pendingBounds=[];
- for(let i=0;i<count;i++){
-  const angle=count>1?i*Math.PI*2/count:0,q=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),angle);
-  const item={data:d,fuel:d.fuel||0,stage:assemblyStage};
-  if(place){item.manualPosition=true;item.position=place.clone().applyAxisAngle(new THREE.Vector3(0,1,0),angle);if(rotation)item.rotation=q.clone().multiply(rotation);}
-  additions.push(item);
- }
- if(place){
-  rocket.updateWorldMatrix(true,true);
-  for(const item of additions){
-   const probe=partMesh(d);probe.position.copy(item.position);if(item.rotation)probe.quaternion.copy(item.rotation);rocket.add(probe);rocket.updateWorldMatrix(true,true);
-   const bounds=new THREE.Box3().setFromObject(probe);
-   const overlap=parts.some(existing=>existing.mesh&&bounds.intersectsBox(new THREE.Box3().setFromObject(existing.mesh)))||pendingBounds.some(other=>bounds.intersectsBox(other));
-   rocket.remove(probe);disposeCraftModel(probe);
-   if(overlap){toast('部品が既存パーツと重なります。接続位置を変えてください');return;}
-   pendingBounds.push(bounds);
-  }
- }
- pushUndoSnapshot();
- if(gameMode!=='sandbox'&&!fundsUnlimited)funds-=d.cost;
- saveCareer();additions.forEach(item=>parts.push(item));
- layout();toast(d.name+(count>1?' を'+count+'方向に対称配置しました':' を設置しました'));
-}
-function craftSnapshot(){return {assemblyStage,parts:parts.map(p=>({id:p.data.id,stage:p.stage,fuel:p.fuel,manualPosition:!!p.manualPosition,position:p.position?p.position.toArray():null,rotation:p.rotation?p.rotation.toArray():null}))};}
-function updateUndoButtons(){const undo=$('#undo-craft'),redo=$('#redo-craft'),del=$('#delete-part'),up=$('#part-stage-up'),down=$('#part-stage-down');if(undo)undo.disabled=!undoStack.length;if(redo)redo.disabled=!redoStack.length;if(del)del.disabled=!selectedPartItem;if(up)up.disabled=!selectedPartItem;if(down)down.disabled=!selectedPartItem;}
-function pushUndoSnapshot(){undoStack.push(craftSnapshot());if(undoStack.length>80)undoStack.shift();redoStack.length=0;updateUndoButtons();}
-function restoreCraftSnapshot(snapshot){selectedPartItem=null;parts.length=0;for(const v of (snapshot.parts||[])){const d=catalog.find(p=>p.id===v.id);if(d)parts.push({data:d,stage:v.stage??0,fuel:v.fuel??d.fuel??0,manualPosition:!!v.manualPosition,position:v.position?new THREE.Vector3(...v.position):null,rotation:v.rotation?new THREE.Quaternion(...v.rotation):null});}assemblyStage=snapshot.assemblyStage??Math.max(0,...parts.map(p=>p.stage||0));layout();updateUndoButtons();}
-function undoCraft(){if(!undoStack.length)return;redoStack.push(craftSnapshot());restoreCraftSnapshot(undoStack.pop());toast('操作を元に戻しました');}
-function redoCraft(){if(!redoStack.length)return;undoStack.push(craftSnapshot());restoreCraftSnapshot(redoStack.pop());toast('操作をやり直しました');}
-function setMode(m){mode=m;$('.vab-resource-hud').style.display=m==='vab'?'flex':'none';if(m!=='vab'&&selectionHelper){scene.remove(selectionHelper);selectionHelper.geometry.dispose();selectionHelper.material.dispose();selectionHelper=null;selectedPartItem=null;updateUndoButtons();}document.body.classList.toggle('crew-roster-mode',m==='crew');renderer.domElement.style.display=m==='crew'?'none':'block';crewStage.visible=false;campus.visible=false;hangar.visible=m==='vab';ground.visible=m!=='crew';planet.visible=m!=='crew';atmosphere.visible=m!=='crew';$('#build-staging').classList.toggle('show',m==='vab');$('.tabs').classList.toggle('hidden',m==='flight');$('#home').classList.toggle('hidden',m==='flight');$$('[data-screen]').forEach(b=>b.classList.toggle('active',b.dataset.screen===m));$('#parts').classList.toggle('open',m==='vab');$('#flight-hud').classList.toggle('show',m==='flight');$('#career-panel').classList.toggle('hidden',m!=='crew');$('.vab-tools').classList.toggle('hidden',m!=='vab');$('#hint').classList.toggle('hidden',m==='flight');if(m==='center'){camera.position.set(.14,.10,.20);camera.lookAt(0,.005,0);rocket.visible=false;$('#hint').textContent='宇宙センター：ロケット組立棟で機体を設計し、発射場から宇宙へ。';}if(m==='vab'){rocket.visible=true;rocket.position.set(0,0,0);camera.position.copy(aircraftCraft?new THREE.Vector3(.033,.025,.006):new THREE.Vector3(.025,.032,.045));camera.lookAt(0,aircraftCraft ? .002 : .006,0);focusVABCamera();$('#hint').textContent=aircraftCraft?'航空機組立：パーツをドラッグまたは選択して取り付け。選択後は矢印で移動、Q/Eで回転、PageUp/Downでステージ変更、Deleteで削除。':'ロケット組立：パーツをドラッグまたは選択して取り付け。選択後は矢印で移動、Q/Eで回転、PageUp/Downでステージ変更、Deleteで削除。Ctrl+Z/Yで戻す・やり直し。';}if(m==='crew'){rocket.visible=false;crewStage.visible=false;$('#hint').textContent='';}else{crewStage.visible=false;}if(m==='flight'){rocket.visible=true;camera.position.set(.022,.014,.027);}}
+function layout(){for(const child of [...rocket.children])disposeCraftModel(child);rocket.clear();let y=0,z=0;for(const p of parts){const m=partMesh(p.data),h=p.data.height;p.mesh=m;m.userData.partItem=p;if(p.manualPosition&&p.position)m.position.copy(p.position);else if(aircraftCraft){p.y=0;m.position.set(0,0,z);z+=h*.82;}else{p.y=y;m.position.y=y;y+=h*.82;}rocket.add(m);}rocket.position.y=0;recalc();$('#stage-build-label').textContent='組立ステージ '+assemblyStage;}
+function addPart(id,place=null){const d=catalog.find(x=>x.id===id);if(!d)return;if(gameMode!=='sandbox'&&!fundsUnlimited&&funds<d.cost){toast('資金が不足しています');return;}if(gameMode!=='sandbox'&&!fundsUnlimited)funds-=d.cost;saveCareer();const item={data:d,fuel:d.fuel||0,stage:assemblyStage};if(place){item.manualPosition=true;item.position=place.clone();}parts.push(item);layout();toast(d.name+' を設置しました');}
+function setMode(m){mode=m;document.body.classList.toggle('crew-roster-mode',m==='crew');renderer.domElement.style.display=m==='crew'?'none':'block';crewStage.visible=false;campus.visible=false;hangar.visible=m==='vab';ground.visible=m!=='crew';planet.visible=m!=='crew';atmosphere.visible=m!=='crew';$('#build-staging').classList.toggle('show',m==='vab');$('.tabs').classList.toggle('hidden',m==='flight');$('#home').classList.toggle('hidden',m==='flight');$$('[data-screen]').forEach(b=>b.classList.toggle('active',b.dataset.screen===m));$('#parts').classList.toggle('open',m==='vab');$('#flight-hud').classList.toggle('show',m==='flight');$('#career-panel').classList.toggle('hidden',m!=='crew');$('.vab-tools').classList.toggle('hidden',m!=='vab');$('#hint').classList.toggle('hidden',m==='flight');if(m==='center'){camera.position.set(.14,.10,.20);camera.lookAt(0,.005,0);rocket.visible=false;$('#hint').textContent='宇宙センター：ロケット組立棟で機体を設計し、発射場から宇宙へ。';}if(m==='vab'){rocket.visible=true;rocket.position.set(0,0,0);camera.position.copy(aircraftCraft?new THREE.Vector3(.033,.015,.003):new THREE.Vector3(.018,.0135,.024));camera.lookAt(0,aircraftCraft ? .002 : .005,0);$('#hint').textContent=aircraftCraft?'航空機組立：コックピット・胴体を中心に、主翼・尾翼・エンジン・着陸脚を取り付けます。':'ロケット組立：下段から上段へ順にパーツを追加します。';}if(m==='crew'){rocket.visible=false;crewStage.visible=false;$('#hint').textContent='';}else{crewStage.visible=false;}if(m==='flight'){rocket.visible=true;camera.position.set(.022,.014,.027);}}
 $$('[data-screen]').forEach(b=>b.onclick=()=>{setMode(b.dataset.screen);if(b.dataset.screen==='crew')renderCrew();});
 
 $('#career-content').addEventListener('click',e=>{const retire=e.target.closest('[data-retire-crew]');if(retire){const index=Number(retire.dataset.retireCrew),member=crewMembers[index];if(member){crewMembers.splice(index,1);saveCareer();renderCrew();toast(member.name+' が退職しました');}return;}const hire=e.target.closest('[data-hire-crew]');if(hire){const role=hire.dataset.hireCrew,cost=2500;if(gameMode!=='sandbox'&&!fundsUnlimited&&funds<cost){toast('雇用資金が不足しています');return;}if(gameMode!=='sandbox'&&!fundsUnlimited)funds-=cost;const names=['Avery','Boris','Caden','Daisy','Elwin','Fiona','Gordon','Hana','Ivo','Juno','Kellan','Lena','Marek','Nora','Otto','Piper','Quinn','Rhea','Soren','Talia','Uma','Viktor','Willa','Xander','Yuri','Zelda','Arlo','Bria','Cyrus','Della','Ezra','Freya','Hugo','Iris','Jonas','Kaia','Luka','Mira','Niko','Orla','Pavel','Rina','Silas','Tess','Uri','Vera','Wes','Yara','Zane','Adrian','Beatrix','Callum','Delia','Emmett','Flora','Gideon','Helena','Isak','Juniper','Kieran','Lyra','Milo','Nadia','Oren','Petra','Quincy','Ronan','Sasha','Thea','Ulric','Violet','Warren','Yvette','Zora','Alistair','Brenna','Corin','Dorian','Evelyn','Felix','Greta','Hollis','Imogen','Jasper','Kira','Leander','Maeve','Noel','Opal','Percy','Rowan','Selene','Tobin','Una','Vance','Winona','Yael','Zeke'];const roleNames={pilot:'パイロット',engineer:'エンジニア',scientist:'科学者'};const firstName=names.find(n=>!crewMembers.some(k=>k.name===n+' Kerman'))||'Kerbal';let name=firstName+' Kerman';let suffix='';while(crewMembers.some(k=>k.name===name)){suffix+=' Jr';name=firstName+suffix+' Kerman';}const recruit={id:Date.now(),name,role:roleNames[role],level:1,stars:1};syncCrewAbilities(recruit);crewMembers.push(recruit);saveCareer();renderCrew();recalc();toast(name+' を雇用しました');}const tech=e.target.closest('[data-unlock-tech]');if(tech){const item=techTree.find(t=>t.id===tech.dataset.unlockTech);if(item&&!unlockedTech.has(item.id)&&item.requires.every(x=>unlockedTech.has(x))&&science>=item.cost){science-=item.cost;unlockedTech.add(item.id);saveCareer();drawPartsCatalogV2();renderResearch();recalc();toast(item.name+' を研究しました');}}const contract=e.target.closest('[data-accept-contract]');if(contract&&!activeContract){activeContract=contracts.find(k=>k.id===contract.dataset.acceptContract)||null;if(activeContract){saveCareer();renderContracts();toast('契約を受注しました');}}});
@@ -633,74 +675,13 @@ renderCategories();drawPartsCatalogV2();rebuildHangarCrew();
 $('#part-categories').addEventListener('click',e=>{const b=e.target.closest('[data-part-category]');if(b){const chosen=b.dataset.partCategory;const panel=$('#parts');if(activePartCategory===chosen&&!panel.classList.contains('categories-collapsed')){panel.classList.add('categories-collapsed');return;}activePartCategory=chosen;panel.classList.remove('categories-collapsed');renderCategories();drawPartsCatalogV2();}});
 $('#part-search').addEventListener('input',drawPartsCatalogV2);$('#part-sort').addEventListener('change',drawPartsCatalogV2);
 $('#part-list').addEventListener('click',e=>{const b=e.target.closest('[data-part]');if(b){selectedPartId=b.dataset.part;$('#hint').textContent='設置モード：3D機体上の取り付けたい場所をクリック。Escでキャンセル。';toast('設置する場所を3D機体上でクリック');}});
-$('#part-list').addEventListener('dragstart',e=>{const b=e.target.closest('[data-part]');if(!b||!e.dataTransfer)return;e.dataTransfer.effectAllowed='copy';e.dataTransfer.setData('text/plain',b.dataset.part);});
-renderer.domElement.addEventListener('dragover',e=>{if(mode==='vab'&&e.dataTransfer&&Array.from(e.dataTransfer.types).includes('text/plain'))e.preventDefault();});
-renderer.domElement.addEventListener('drop',e=>{if(mode!=='vab'||!e.dataTransfer)return;const id=e.dataTransfer.getData('text/plain');if(!catalog.some(p=>p.id===id))return;e.preventDefault();selectedPartId=id;placeSelectedPartAt(e.clientX,e.clientY);});
-
-$('#clear-craft').onclick=()=>{if(flight)return;pushUndoSnapshot();selectedPartItem=null;parts.length=0;assemblyStage=0;layout();toast('機体を空にしました');};
-$('#new-stage').onclick=()=>{if(flight)return;pushUndoSnapshot();assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;toast('新しい組立ステージ '+assemblyStage);};
-$('#stage-add-side').onclick=()=>{if(flight)return;pushUndoSnapshot();assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;renderStages();toast('新しい組立ステージ '+assemblyStage);};
-$('#build-stage-list').addEventListener('click',e=>{const b=e.target.closest('[data-build-stage]');if(!b||flight)return;const next=Number(b.dataset.buildStage);if(selectedPartItem){assignSelectedPartStage(next);return;}assemblyStage=next;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;renderStages();toast('組立ステージ '+assemblyStage+' を選択');});
-$('#save-craft').onclick=()=>{localStorage.setItem('space-craft-v1',JSON.stringify({assemblyStage,parts:parts.map(p=>({id:p.data.id,stage:p.stage,fuel:p.fuel,manualPosition:p.manualPosition,position:p.position?p.position.toArray():null,rotation:p.rotation?p.rotation.toArray():null}))}));toast('機体を保存しました');};
-$('#load-craft').onclick=()=>{try{pushUndoSnapshot();selectedPartItem=null;const saved=JSON.parse(localStorage.getItem('space-craft-v1')||'null');const a=Array.isArray(saved)?saved:(saved?.parts||[]);parts.length=0;a.forEach(v=>{const replacementId=legacyCatalogAliases[v.id]||v.id;const d=catalog.find(p=>p.id===replacementId);if(d)parts.push({data:d,stage:v.stage,fuel:v.fuel??d.fuel??0,manualPosition:!!v.manualPosition,position:v.position?new THREE.Vector3(...v.position):null,rotation:v.rotation?new THREE.Quaternion(...v.rotation):null});});assemblyStage=Array.isArray(saved)?Math.max(0,...parts.map(p=>p.stage||0)):(saved?.assemblyStage??Math.max(0,...parts.map(p=>p.stage||0)));layout();toast('機体を読み込みました');}catch{toast('保存データがありません');}};
-function placeSelectedPartAt(clientX,clientY){
- if(mode!=='vab'||!selectedPartId)return;
- const rect=renderer.domElement.getBoundingClientRect(),mouse=new THREE.Vector2((clientX-rect.left)/rect.width*2-1,-(clientY-rect.top)/rect.height*2+1),ray=new THREE.Raycaster();
- rocket.updateWorldMatrix(true,true);ray.setFromCamera(mouse,camera);
- const hits=ray.intersectObjects(rocket.children,true);let place=new THREE.Vector3(0,0,0),attachHit=null,attachRoot=null;
- for(const hit of hits){let obj=hit.object;while(obj&&!obj.userData.partItem)obj=obj.parent;if(obj){attachHit=hit;attachRoot=obj;break;}}
- let rotation=null;
- if(attachHit){
-  place.copy(rocket.worldToLocal(attachHit.point.clone()));
-  const normal=attachHit.face?attachHit.face.normal.clone().transformDirection(attachHit.object.matrixWorld):new THREE.Vector3(0,1,0);
-  const localNormal=normal.transformDirection(rocket.matrixWorld.clone().invert()).normalize();
-  const components=[Math.abs(localNormal.x),Math.abs(localNormal.y),Math.abs(localNormal.z)],axis=components.indexOf(Math.max(...components));
-  if(components[axis]>.62){localNormal.set(axis===0?Math.sign(localNormal.x):0,axis===1?Math.sign(localNormal.y):0,axis===2?Math.sign(localNormal.z):0);}
-  rotation=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),localNormal);
-  const selectedData=catalog.find(p=>p.id===selectedPartId),sample=partMesh(selectedData);sample.quaternion.copy(rotation);sample.updateMatrixWorld(true);
-  const sampleBounds=new THREE.Box3().setFromObject(sample),worldAttachBounds=new THREE.Box3().setFromObject(attachRoot),attachCorners=[];
-  for(const x of [worldAttachBounds.min.x,worldAttachBounds.max.x])for(const y of [worldAttachBounds.min.y,worldAttachBounds.max.y])for(const z of [worldAttachBounds.min.z,worldAttachBounds.max.z])attachCorners.push(rocket.worldToLocal(new THREE.Vector3(x,y,z)));
-  const attachBounds=new THREE.Box3().setFromPoints(attachCorners),gap=.025;
-  if(components[axis]>.62){
-   const key=axis===0?'x':axis===1?'y':'z',sign=localNormal.getComponent(axis);
-   place.setComponent(axis,sign>0?attachBounds.max.getComponent(axis)-sampleBounds.min.getComponent(axis)+gap:attachBounds.min.getComponent(axis)-sampleBounds.max.getComponent(axis)-gap);
-  }else place.addScaledVector(localNormal,Math.max(.18,selectedData?.radius||.3)*.52);
-  sample.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>m.dispose());}});
- }
- else if(parts.length){toast('機体の部品をクリックして取り付けてください');return;}
- addPart(selectedPartId,parts.length?place:null,rotation);selectedPartId=null;$('#hint').textContent='部品を選択してから、機体の取り付け位置をクリック。';
-}
-renderer.domElement.addEventListener('pointerdown',e=>placeSelectedPartAt(e.clientX,e.clientY));
-function selectCraftPartAtPointer(e){
- if(mode!=='vab'||selectedPartId)return;
- const rect=renderer.domElement.getBoundingClientRect(),mouse=new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1),ray=new THREE.Raycaster();
- rocket.updateWorldMatrix(true,true);ray.setFromCamera(mouse,camera);
- const hits=ray.intersectObjects(rocket.children,true);let item=null;
- for(const hit of hits){let obj=hit.object;while(obj&&!obj.userData.partItem)obj=obj.parent;if(obj){item=obj.userData.partItem;break;}}
- if(item){selectedPartItem=item;if(!item.manualPosition&&item.mesh){item.position=item.mesh.position.clone();item.manualPosition=true;}layout();updateUndoButtons();toast(item.data.name+' を選択 — Deleteで削除、矢印キーで移動、Q/Eで回転');}
-}
-renderer.domElement.addEventListener('click',selectCraftPartAtPointer);
-function assignSelectedPartStage(nextStage){
- if(!selectedPartItem||flight)return;
- const value=Math.max(0,Math.floor(nextStage));if(value===selectedPartItem.stage)return;
- pushUndoSnapshot();selectedPartItem.stage=value;assemblyStage=value;layout();toast(selectedPartItem.data.name+' をステージ '+value+' に割り当てました');
-}
-function removeSelectedPart(){
- if(!selectedPartItem||flight)return;
- pushUndoSnapshot();const index=parts.indexOf(selectedPartItem);if(index>=0)parts.splice(index,1);
- const name=selectedPartItem.data.name;selectedPartItem=null;layout();updateUndoButtons();toast(name+' を削除しました');
-}
-function moveSelectedPart(dx,dy,dz){
- if(!selectedPartItem||flight)return;
- pushUndoSnapshot();if(!selectedPartItem.manualPosition){selectedPartItem.position=selectedPartItem.mesh.position.clone();selectedPartItem.manualPosition=true;}
- selectedPartItem.position.add(new THREE.Vector3(dx,dy,dz));layout();
-}
-function rotateSelectedPart(axis,angle){
- if(!selectedPartItem||flight)return;
- pushUndoSnapshot();if(!selectedPartItem.manualPosition){selectedPartItem.position=selectedPartItem.mesh.position.clone();selectedPartItem.manualPosition=true;}
- const q=new THREE.Quaternion().setFromAxisAngle(axis,angle);
- selectedPartItem.rotation=(selectedPartItem.rotation||selectedPartItem.mesh.quaternion).clone().multiply(q);layout();
-}
+$('#clear-craft').onclick=()=>{if(flight)return;parts.length=0;assemblyStage=0;layout();toast('機体を空にしました');};
+$('#new-stage').onclick=()=>{if(flight)return;assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;toast('新しい組立ステージ '+assemblyStage);};
+$('#stage-add-side').onclick=()=>{if(flight)return;assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;renderStages();toast('新しい組立ステージ '+assemblyStage);};
+$('#build-stage-list').addEventListener('click',e=>{const b=e.target.closest('[data-build-stage]');if(!b||flight)return;assemblyStage=Number(b.dataset.buildStage);$('#stage-build-label').textContent='組立ステージ '+assemblyStage;renderStages();toast('組立ステージ '+assemblyStage+' を選択');});
+$('#save-craft').onclick=()=>{localStorage.setItem('space-craft-v1',JSON.stringify(parts.map(p=>({id:p.data.id,stage:p.stage,fuel:p.fuel,manualPosition:p.manualPosition,position:p.position? p.position.toArray():null}))));toast('機体を保存しました');};
+$('#load-craft').onclick=()=>{try{const a=JSON.parse(localStorage.getItem('space-craft-v1')||'[]');parts.length=0;a.forEach(v=>{const replacementId=legacyCatalogAliases[v.id]||v.id;const d=catalog.find(p=>p.id===replacementId);if(d)parts.push({data:d,stage:v.stage,fuel:v.fuel??d.fuel??0,manualPosition:!!v.manualPosition,position:v.position?new THREE.Vector3(...v.position):null});});assemblyStage=Math.max(0,...parts.map(p=>p.stage||0));layout();toast('機体を読み込みました');}catch{toast('保存データがありません');}};
+renderer.domElement.addEventListener('pointerdown',e=>{if(mode!=='vab'||!selectedPartId)return;const rect=renderer.domElement.getBoundingClientRect(),mouse=new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1),ray=new THREE.Raycaster();rocket.updateWorldMatrix(true,true);ray.setFromCamera(mouse,camera);const hits=ray.intersectObjects(rocket.children,true);let place=new THREE.Vector3(0,0,0),attachHit=null,attachRoot=null;for(const hit of hits){let obj=hit.object;while(obj&&!obj.userData.partItem)obj=obj.parent;if(obj){attachHit=hit;attachRoot=obj;break;}}if(attachHit){place.copy(rocket.worldToLocal(attachHit.point.clone()));const normal=attachHit.face?attachHit.face.normal.clone().transformDirection(attachHit.object.matrixWorld):new THREE.Vector3(0,1,0);const localNormal=normal.transformDirection(rocket.matrixWorld.clone().invert());const selectedData=catalog.find(p=>p.id===selectedPartId);place.addScaledVector(localNormal,Math.max(.18,selectedData?.radius||.3)*.72);}else if(parts.length){toast('機体の部品をクリックして取り付けてください');return;}addPart(selectedPartId,place);selectedPartId=null;$('#hint').textContent='部品を選択してから、機体の取り付け位置をクリック。';});
 // Orbit by dragging, zoom by wheel or two-finger trackpad/touch pinch.
 let orbitPointerId=null,orbitLastX=0,orbitLastY=0,pinchDistance=0;
 const activeCameraPointers=new Map(),orbitTarget=new THREE.Vector3();
@@ -729,7 +710,7 @@ function keepCameraOutsideGeometry(candidate){
  if(mode==='vab')candidate.y=Math.max(candidate.y,-.00008);
  return candidate;
 }
-function syncOrbitTarget(){if(mode==='vab'){rocket.updateWorldMatrix(true,true);const bounds=new THREE.Box3().setFromObject(rocket);if(!bounds.isEmpty()){bounds.getCenter(orbitTarget);return;}}orbitTarget.set(0,mode==='crew'?1.8:.005,0);}
+function syncOrbitTarget(){orbitTarget.set(0,mode==='crew'?1.8:mode==='vab'?(aircraftCraft?.002:.005):.005,0);}
 function cameraZoomByFactor(factor){
  const spherical=new THREE.Spherical().setFromVector3(camera.position.clone().sub(orbitTarget));
  const minRadius=mode==='vab'?.0012:mode==='crew'?3.5:.025;
@@ -784,18 +765,8 @@ renderer.domElement.addEventListener('pointercancel',endOrbitDrag);function star
 $('#aircraft-mode').onclick=()=>{aircraftCraft=!aircraftCraft;activePartCategory=aircraftCraft?'航空機':'すべて';renderCategories();drawPartsCatalogV2();layout();setMode('vab');$('#aircraft-mode').classList.toggle('active',aircraftCraft);$('#aircraft-mode').textContent=aircraftCraft?'✈ 航空機組立中':'🚀 ロケット組立中';toast(aircraftCraft?'航空機組立モード：航空機パーツを表示':'ロケット組立モード：全パーツを表示');};
 $('#launch').onclick=startFlight;$('#stage-next').onclick=()=>{if(flight)activateStage();};function runScienceExperiment(){if(!flight){toast('飛行中に実験できます');return;}const instruments=parts.filter(p=>['pod','probe','science'].includes(p.data.type));if(!instruments.length){toast('実験装置・プローブ・乗員ポッドが必要です');return;}const altitude=position.clone().sub(bodyCenter).length()-BODY.radius;const situation=altitude>=70?'宇宙空間':altitude>=10?'高高度大気圏':'低高度・地表';if(experimentLog.includes(situation)){toast('この飛行状況の実験は完了しています');return;}const scienceParts=parts.filter(p=>p.data.type==='science').length;const reward=(situation==='宇宙空間'?10:situation==='高高度大気圏'?6:3)+scienceParts*5;experimentLog.push(situation);science+=reward;saveCareer();recalc();toast(situation+'の実験データを回収：科学 +'+reward);}
 $('#science-experiment').onclick=runScienceExperiment;$('#map-toggle').onclick=()=>{map=!map;toast(map?'軌道マップ表示（M）':'飛行ビュー');};
-let keys={};addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key==='Escape'&&selectedPartId){selectedPartId=null;toast('部品設置をキャンセル');}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undoCraft();}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redoCraft();}if(mode==='vab'&&selectedPartItem){const step=e.shiftKey?1:.25,turn=Math.PI/12;if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelectedPart();}else if(e.key==='PageUp'){e.preventDefault();assignSelectedPartStage(selectedPartItem.stage+1);}else if(e.key==='PageDown'){e.preventDefault();assignSelectedPartStage(selectedPartItem.stage-1);}else if(e.key==='ArrowUp'){e.preventDefault();moveSelectedPart(0,0,-step);}else if(e.key==='ArrowDown'){e.preventDefault();moveSelectedPart(0,0,step);}else if(e.key==='ArrowLeft'){e.preventDefault();moveSelectedPart(-step,0,0);}else if(e.key==='ArrowRight'){e.preventDefault();moveSelectedPart(step,0,0);}else if(e.key.toLowerCase()==='q'){rotateSelectedPart(new THREE.Vector3(0,1,0),-turn);}else if(e.key.toLowerCase()==='e'){rotateSelectedPart(new THREE.Vector3(0,1,0),turn);}else if(e.key.toLowerCase()==='r'){rotateSelectedPart(new THREE.Vector3(1,0,0),turn);}else if(e.key.toLowerCase()==='f'){rotateSelectedPart(new THREE.Vector3(1,0,0),-turn);}else if(e.key.toLowerCase()==='t'){rotateSelectedPart(new THREE.Vector3(0,0,1),turn);}else if(e.key.toLowerCase()==='g'){rotateSelectedPart(new THREE.Vector3(0,0,1),-turn);}}if(e.key==='Escape'&&mode==='flight'){flight=false;throttle=0;setMode('vab');toast('ロケット組立棟へ戻りました');}if(e.code==='Space'&&flight){e.preventDefault();activateStage();}if(e.key.toLowerCase()==='z'&&flight)throttle=1;if(e.key.toLowerCase()==='x'&&flight)throttle=0;if(e.key.toLowerCase()==='t'&&flight){sasEnabled=!sasEnabled;toast('SAS '+(sasEnabled?'ON':'OFF'));}if(e.key.toLowerCase()==='r'&&flight){rcsEnabled=!rcsEnabled;toast('RCS '+(rcsEnabled?'ON':'OFF'));}if(e.key.toLowerCase()==='p'&&flight){const alt=position.clone().sub(bodyCenter).length()-BODY.radius,speed=velocity.length()*1000,chutes=parts.filter(p=>p.data.type==='chute');if(!chutes.length)toast('パラシュートがありません');else if(alt>10||speed>250)toast('展開条件外：高度10 km以下・速度250 m/s以下が必要');else{chutes.forEach(p=>p.deployed=true);toast('パラシュートを展開しました');}}if(e.key.toLowerCase()==='m'&&flight){map=!map;}});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
-function activateStage(){
- const previous=stage;stage++;
- const hasSeparator=parts.some(p=>p.data.type==='decoupler'&&p.stage===previous);
- if(hasSeparator){
-  for(let i=parts.length-1;i>=0;i--)if(parts[i].stage===previous)parts.splice(i,1);
-  const separationAxis=new THREE.Vector3(0,1,0).applyQuaternion(attitude).normalize();
-  velocity.addScaledVector(separationAxis,.00025);
-  layout();
- }
- toast('ステージ '+stage+' 作動');
-}
+let keys={};addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key==='Escape'&&selectedPartId){selectedPartId=null;toast('部品設置をキャンセル');}if(e.key==='Escape'&&mode==='flight'){flight=false;throttle=0;setMode('vab');toast('ロケット組立棟へ戻りました');}if(e.code==='Space'&&flight){e.preventDefault();activateStage();}if(e.key.toLowerCase()==='z')throttle=1;if(e.key.toLowerCase()==='x')throttle=0;if(e.key.toLowerCase()==='t'){sasEnabled=!sasEnabled;toast('SAS '+(sasEnabled?'ON':'OFF'));}if(e.key.toLowerCase()==='r'){rcsEnabled=!rcsEnabled;toast('RCS '+(rcsEnabled?'ON':'OFF'));}if(e.key.toLowerCase()==='p'&&flight){const alt=position.clone().sub(bodyCenter).length()-BODY.radius,speed=velocity.length()*1000,chutes=parts.filter(p=>p.data.type==='chute');if(!chutes.length)toast('パラシュートがありません');else if(alt>10||speed>250)toast('展開条件外：高度10 km以下・速度250 m/s以下が必要');else{chutes.forEach(p=>p.deployed=true);toast('パラシュートを展開しました');}}if(e.key.toLowerCase()==='m'&&flight){map=!map;}});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+function activateStage(){const previous=stage;stage++;const hasSeparator=parts.some(p=>p.data.type==='decoupler'&&p.stage===previous);if(hasSeparator){for(let i=parts.length-1;i>=0;i--)if(parts[i].stage===previous)parts.splice(i,1);layout();}toast('ステージ '+stage+' 作動');}
 const bodyCenter=new THREE.Vector3(0,-BODY.radius,0);
 let properG=1,flightAccumulator=0,experimentLog=[];
 function physicsStep(dt){
@@ -831,25 +802,6 @@ function physicsStep(dt){
  if(alt>100&&!window._orb){window._orb=true;toast('大気圏外へ到達');science+=5;$('#science').textContent=science;saveCareer();}
 }
 function physics(dt){if(!flight||paused)return;flightAccumulator+=Math.min(dt,.1);const fixed=1/120;let steps=0;while(flightAccumulator>=fixed&&steps<12){physicsStep(fixed);flightAccumulator-=fixed;steps++;}if(steps===12)flightAccumulator=0;}
-function tick(now){requestAnimationFrame(tick);const dt=Math.min(.04,(now-last)/1000);last=now;physics(dt);if(mode==='vab'){rocket.rotation.y=0;updateHangarCrew(dt);if(selectionHelper)selectionHelper.update();}if(mode!=='crew')renderer.render(scene,camera);}requestAnimationFrame(tick);
+function tick(now){requestAnimationFrame(tick);const dt=Math.min(.04,(now-last)/1000);last=now;physics(dt);if(mode==='vab'){rocket.rotation.y=0;updateHangarCrew(dt);}if(mode!=='crew')renderer.render(scene,camera);}requestAnimationFrame(tick);
 $('#funds-toggle').onclick=()=>{fundsUnlimited=!fundsUnlimited;saveCareer();recalc();toast(fundsUnlimited?'資金を無制限にしました':'通常の資金制に戻しました');};
-$('#undo-craft').onclick=undoCraft;$('#redo-craft').onclick=redoCraft;$('#delete-part').onclick=removeSelectedPart;$('#part-stage-up').onclick=()=>{if(selectedPartItem)assignSelectedPartStage(selectedPartItem.stage+1);};$('#part-stage-down').onclick=()=>{if(selectedPartItem)assignSelectedPartStage(selectedPartItem.stage-1);};$('#symmetry-mode').onclick=()=>{const modes=[1,2,3,4,6,8];symmetryMode=modes[(modes.indexOf(symmetryMode)+1)%modes.length];$('#symmetry-mode').textContent='対称: '+symmetryMode+'x';toast('対称配置 '+symmetryMode+'x');};updateUndoButtons();
-setMode('vab');
-if(!parts.length&&!localStorage.getItem('space-vab-starter-seen')){
- const lowerEngine=catalog.find(p=>p.id==='engine-l')||catalog.find(p=>p.type==='engine');
- const upperEngine=catalog.find(p=>p.id==='engine-s')||lowerEngine;
- const tanks=catalog.filter(p=>p.type==='tank').sort((a,b)=>(b.height||0)-(a.height||0)).slice(0,4);
- const pod=catalog.find(p=>p.id==='pod'),chute=catalog.find(p=>p.type==='chute'),decoupler=catalog.find(p=>p.type==='decoupler');
- if(lowerEngine&&upperEngine&&pod&&tanks.length>=4){
-  parts.push({data:lowerEngine,fuel:lowerEngine.fuel||0,stage:0});
-  tanks.slice(0,2).forEach(t=>parts.push({data:t,fuel:t.fuel||0,stage:0}));
-  if(decoupler)parts.push({data:decoupler,fuel:0,stage:0});
-  parts.push({data:upperEngine,fuel:upperEngine.fuel||0,stage:1});
-  tanks.slice(2,4).forEach(t=>parts.push({data:t,fuel:t.fuel||0,stage:1}));
-  parts.push({data:pod,fuel:pod.fuel||0,stage:1});
-  if(chute)parts.push({data:chute,fuel:0,stage:1});
-  assemblyStage=0;
- }
- localStorage.setItem('space-vab-starter-seen','1');
-}
-layout();if(mode==='vab')focusVABCamera();addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+setMode('vab');layout();addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
