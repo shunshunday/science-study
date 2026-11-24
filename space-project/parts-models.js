@@ -5,7 +5,7 @@ export function createPartModel(p,THREE){
  const mat=(c,m=.45,rough=.42)=>new THREE.MeshStandardMaterial({color:c,metalness:m,roughness:rough});
  const textureCanvas=document.createElement('canvas');textureCanvas.width=512;textureCanvas.height=512;const tx=textureCanvas.getContext('2d');tx.fillStyle='#d9dcd6';tx.fillRect(0,0,512,512);for(let y=0;y<512;y+=64){tx.fillStyle=y%128===0?'#c2c9c5':'#e5e6df';tx.fillRect(0,y,512,2);tx.fillStyle='#8b9696';tx.fillRect(0,y+3,512,1);}for(let x=0;x<512;x+=128){tx.fillStyle='#aab4b1';tx.fillRect(x,0,1,512);for(let y=0;y<512;y+=64){tx.fillStyle='#667579';tx.beginPath();tx.arc(x+5,y+7,2,0,Math.PI*2);tx.fill();}}tx.fillStyle='#b28b45';tx.fillRect(0,250,512,8);tx.fillStyle='#3b4549';tx.font='bold 18px Arial';tx.fillText('AEROSPACE  /  FLIGHT HARDWARE',18,232);const industrialTexture=new THREE.CanvasTexture(textureCanvas);industrialTexture.colorSpace=THREE.SRGBColorSpace;industrialTexture.wrapS=industrialTexture.wrapT=THREE.RepeatWrapping;industrialTexture.anisotropy=4;
  const texturedWhite=new THREE.MeshStandardMaterial({color:0xffffff,map:industrialTexture,metalness:.34,roughness:.52});
- white.map=industrialTexture;white.color.set(0xffffff);white.needsUpdate=true;
+
  const lathe=(profile,ma,y=0,segments=48)=>mesh(new THREE.LatheGeometry(profile.map(v=>new THREE.Vector2(v[0],v[1])),segments),ma,[0,y,0]);
 
  const alloy=mat(0xaeb9bb,.78,.3),white=mat(0xd8d8cf,.48,.48),dark=mat(0x303b42,.8,.34),black=mat(0x17232a,.65,.25),gold=mat(0xb68b42,.72,.28),glass=mat(0x234e68,.55,.16),blue=mat(0x244f79,.62,.28),rubber=mat(0x20262a,.05,.9),orange=mat(0xc47b35,.48,.52);
