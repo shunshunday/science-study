@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {createPartModel} from './parts-models.js?v=20261124-ksp-vab-02';
+import {createPartModel} from './parts-models.js?v=20261124-real-parts-01';
 import {additionalParts} from './parts-inventory.js?v=20261124-rollback-01';
 import {BODY,G0,gravityAcceleration,atmosphericDensity,orbitalElements,rk4Step,deltaV,rocketMassKg} from './physics/orbital.js';
 import {aerodynamicAcceleration} from './physics/aerodynamics.js';
@@ -803,10 +803,10 @@ function physicsStep(dt){
  angular.x+=pitch*dt*controlGain;angular.y+=yaw*dt*controlGain;angular.z+=roll*dt*controlGain;angular.multiplyScalar(Math.exp(-dt*(sasEnabled?4.5:.8)));
  const dq=new THREE.Quaternion().setFromEuler(new THREE.Euler(angular.x*dt,angular.y*dt,angular.z*dt,'YXZ'));attitude.multiply(dq).normalize();
  const liquidTanks=parts.filter(p=>['tank','fuselage'].includes(p.data.type)&&p.stage<=stage&&p.fuel>0);const activeEngines=parts.filter(p=>['engine','booster','jet'].includes(p.data.type)&&p.stage<=stage&&(p.data.type==='booster'?p.fuel>0:liquidTanks.length>0));
- const totalThrustN=activeEngines.reduce((s,p)=>s+(p.data.thrust||0)*1000,0)*throttle;
+ const liquidEngines=activeEngines.filter(p=>p.data.type==='engine'||p.data.type==='jet'),solidEngines=activeEngines.filter(p=>p.data.type==='booster');const totalThrustN=liquidEngines.reduce((s,p)=>s+(p.data.thrust||0)*1000,0)*throttle+solidEngines.reduce((s,p)=>s+(p.data.thrust||0)*1000,0);
  const massKg=Math.max(1,rocketMassKg(parts));
  const thrustDirection=new THREE.Vector3(0,aircraftCraft?0:1,aircraftCraft?1:0).applyQuaternion(attitude).normalize();
- const liquidMdot=activeEngines.filter(p=>p.data.type==='engine'||p.data.type==='jet').reduce((s,p)=>s+(p.data.thrust||0)*1000/(Math.max(1,p.data.isp||320)*G0),0)*throttle,solidMdot=activeEngines.filter(p=>p.data.type==='booster').reduce((s,p)=>s+(p.data.thrust||0)*1000/(Math.max(1,p.data.isp||220)*G0),0)*throttle,mdot=liquidMdot+solidMdot;
+ const liquidMdot=liquidEngines.reduce((s,p)=>s+(p.data.thrust||0)*1000/(Math.max(1,p.data.isp||320)*G0),0)*throttle,solidMdot=solidEngines.reduce((s,p)=>s+(p.data.thrust||0)*1000/(Math.max(1,p.data.isp||220)*G0),0),mdot=liquidMdot+solidMdot;
  const acceleration=(pos,vel)=>{
    const grav=gravityAcceleration(pos,BODY.mu,bodyCenter);
    const aero=aerodynamicAcceleration(pos,vel,{x:thrustDirection.x,y:thrustDirection.y,z:thrustDirection.z},parts,massKg,bodyCenter);
@@ -815,10 +815,10 @@ function physicsStep(dt){
  properG=(totalThrustN/massKg)/G0;
  const state=rk4Step({x:position.x,y:position.y,z:position.z},{x:velocity.x,y:velocity.y,z:velocity.z},dt,acceleration);
  position.set(state.position.x,state.position.y,state.position.z);velocity.set(state.velocity.x,state.velocity.y,state.velocity.z);
- if(mdot>0){let liquidBurn=liquidMdot*dt;for(const tank of liquidTanks){const take=Math.min(tank.fuel,liquidBurn);tank.fuel-=take;liquidBurn-=take;if(liquidBurn<=1e-8)break;}let solidBurn=solidMdot*dt;for(const booster of activeEngines.filter(p=>p.data.type==='booster')){const take=Math.min(booster.fuel,solidBurn);booster.fuel-=take;solidBurn-=take;if(solidBurn<=1e-8)break;}fuel=parts.reduce((s,p)=>s+(p.fuel||0),0);if((maxFuel?Math.round(fuel/maxFuel*100):0)!==stageUiFuelPercent)renderStages();}
+ if(mdot>0){let liquidBurn=liquidMdot*dt;const feedable=liquidTanks.filter(t=>t.fuel>0),feedTotal=feedable.reduce((s,t)=>s+t.fuel,0);if(feedTotal>0){for(const tank of feedable){const share=liquidBurn*(tank.fuel/feedTotal);tank.fuel=Math.max(0,tank.fuel-Math.min(tank.fuel,share));}}let solidBurn=solidMdot*dt;for(const booster of solidEngines){const take=Math.min(booster.fuel,solidBurn);booster.fuel-=take;solidBurn-=take;if(solidBurn<=1e-8)break;}fuel=parts.reduce((s,p)=>s+(p.fuel||0),0);if((maxFuel?Math.round(fuel/maxFuel*100):0)!==stageUiFuelPercent)renderStages();}
  const radial=position.clone().sub(bodyCenter),radius=radial.length(),altitude=radius-BODY.radius;
  if(altitude>flightPeakAltitude)flightPeakAltitude=altitude;if(altitude<=0){position.copy(bodyCenter).add(radial.normalize().multiplyScalar(BODY.radius));const normal=position.clone().sub(bodyCenter).normalize(),impact=velocity.dot(normal);if(impact< -8){flight=false;toast('地表衝突 — 機体が破損しました');}else{velocity.addScaledVector(normal,-Math.min(0,impact));velocity.multiplyScalar(.985);if(flight&&flightPeakAltitude>=1){flight=false;throttle=0;const earnedStars=flightPeakAltitude>=70?5:flightPeakAltitude>=10?2:1;crewMembers.forEach(k=>{k.stars=Math.max(1,Math.min(5,Math.max(1,k.stars??1)+earnedStars));k.stupidity=undefined;k.bravery=undefined;syncCrewAbilities(k);});saveCareer();toast(flightPeakAltitude>=70?'宇宙飛行から帰還！乗組員の経験が★5になりました':flightPeakAltitude>=10?'高高度飛行から帰還！乗組員の経験が上がりました':'飛行回収成功！乗組員の経験が上がりました');}}}
- rocket.position.copy(position);rocket.quaternion.copy(attitude);for(const part of parts){if(part.mesh){const plume=part.mesh.getObjectByName('engine-flame');if(plume){plume.visible=flight&&throttle>0&&activeEngines.includes(part);plume.scale.setScalar(.5+throttle*1.4);}}}
+ rocket.position.copy(position);rocket.quaternion.copy(attitude);for(const part of parts){if(part.mesh){const plume=part.mesh.getObjectByName('engine-flame');if(plume){plume.visible=flight&&activeEngines.includes(part)&&(part.data.type==='booster'?part.fuel>0:throttle>0);plume.scale.setScalar(.5+throttle*1.4);}}}
  const forward=new THREE.Vector3(0,0,1).applyQuaternion(attitude),heading=(Math.atan2(forward.x,forward.z)*180/Math.PI+360)%360;$('#heading').textContent='HDG '+Math.round(heading).toString().padStart(3,'0')+'°';const attitudeEuler=new THREE.Euler().setFromQuaternion(attitude,'YXZ');$('.navball-sky').style.transform='rotate('+(-attitudeEuler.z*180/Math.PI)+'deg)';
  const elements=orbitalElements(position,velocity,BODY.mu,bodyCenter),alt=Math.max(0,elements.altitude),spd=elements.speed,verticalSpeed=velocity.dot(position.clone().sub(bodyCenter).normalize());
  if(activeContract&&(activeContract.orbit?(elements.periapsisAltitude>=70&&elements.apoapsisAltitude>=100):alt>=activeContract.altitude)){funds+=activeContract.reward;science+=activeContract.science;toast('契約達成：'+activeContract.name+'　報酬 ₡'+activeContract.reward.toLocaleString());activeContract=null;saveCareer();recalc();if(mode==='contracts')renderContracts();}
