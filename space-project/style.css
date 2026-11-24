@@ -566,3 +566,9 @@ button.active{background:linear-gradient(180deg,#d79a4d,#9e6328);border-color:#f
 
 /* Hide the lower-left assembly instruction label. */
 #hint{display:none!important;}
+
+/* KSP-style direct part handling: make catalog cards feel draggable and mark a valid drop target. */
+#part-list .part[draggable="true"]{cursor:grab;user-select:none;-webkit-user-drag:element;}
+#part-list .part[draggable="true"]:active{cursor:grabbing;}
+body.part-drag-over #viewport{outline:2px solid #d9b56d;outline-offset:-3px;}
+body.part-drag-over #viewport canvas{cursor:copy!important;}
