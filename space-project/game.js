@@ -330,7 +330,7 @@ function renderOnePartPreview(canvas,p){
   const originalRotation=model.rotation.clone();
   const entry={scene,camera,model,originalRotation,hovered:false,raf:0,lastFrame:0};partPreviewRenderers.set(canvas,entry);paintPartPreview(entry,canvas);
   canvas.draggable=false;
-  canvas.addEventListener('dragstart',e=>e.preventDefault());
+  
   canvas.addEventListener('click',e=>e.stopPropagation());
   const animate=now=>{if(!entry.hovered||!canvas.isConnected){entry.raf=0;return;}if(!entry.lastFrame)entry.lastFrame=now;const dt=Math.min(.05,(now-entry.lastFrame)/1000);entry.lastFrame=now;model.rotation.y+=dt*.9;paintPartPreview(entry,canvas);entry.raf=requestAnimationFrame(animate);};
   canvas.addEventListener('pointerenter',()=>{entry.hovered=true;entry.lastFrame=0;if(!entry.raf)entry.raf=requestAnimationFrame(animate);});
@@ -623,7 +623,7 @@ $('#part-search').addEventListener('input',drawPartsCatalogV2);$('#part-sort').a
 $('#part-list').addEventListener('click',e=>{const b=e.target.closest('[data-part]');if(b){selectedPartId=b.dataset.part;$('#hint').textContent='設置モード：3D機体上の取り付けたい場所をクリック。Escでキャンセル。';toast('設置する場所を3D機体上でクリック');}});
 $('#part-list').addEventListener('dragstart',e=>{const b=e.target.closest('[data-part]');if(!b||!e.dataTransfer)return;e.dataTransfer.effectAllowed='copy';e.dataTransfer.setData('text/plain',b.dataset.part);});
 renderer.domElement.addEventListener('dragover',e=>{if(mode==='vab'&&e.dataTransfer&&Array.from(e.dataTransfer.types).includes('text/plain'))e.preventDefault();});
-renderer.domElement.addEventListener('drop',e=>{if(mode!=='vab'||!e.dataTransfer)return;const id=e.dataTransfer.getData('text/plain');if(!catalog.some(p=>p.id===id))return;e.preventDefault();selectedPartId=id;renderer.domElement.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,clientX:e.clientX,clientY:e.clientY,pointerType:'mouse',button:0}));});
+renderer.domElement.addEventListener('drop',e=>{if(mode!=='vab'||!e.dataTransfer)return;const id=e.dataTransfer.getData('text/plain');if(!catalog.some(p=>p.id===id))return;e.preventDefault();selectedPartId=id;placeSelectedPartAt(e.clientX,e.clientY);});
 
 $('#clear-craft').onclick=()=>{if(flight)return;pushUndoSnapshot();selectedPartItem=null;parts.length=0;assemblyStage=0;layout();toast('機体を空にしました');};
 $('#new-stage').onclick=()=>{if(flight)return;pushUndoSnapshot();assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;toast('新しい組立ステージ '+assemblyStage);};
@@ -631,7 +631,18 @@ $('#stage-add-side').onclick=()=>{if(flight)return;pushUndoSnapshot();assemblySt
 $('#build-stage-list').addEventListener('click',e=>{const b=e.target.closest('[data-build-stage]');if(!b||flight)return;const next=Number(b.dataset.buildStage);if(selectedPartItem){assignSelectedPartStage(next);return;}assemblyStage=next;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;renderStages();toast('組立ステージ '+assemblyStage+' を選択');});
 $('#save-craft').onclick=()=>{localStorage.setItem('space-craft-v1',JSON.stringify(parts.map(p=>({id:p.data.id,stage:p.stage,fuel:p.fuel,manualPosition:p.manualPosition,position:p.position?p.position.toArray():null,rotation:p.rotation?p.rotation.toArray():null}))));toast('機体を保存しました');};
 $('#load-craft').onclick=()=>{try{pushUndoSnapshot();selectedPartItem=null;const a=JSON.parse(localStorage.getItem('space-craft-v1')||'[]');parts.length=0;a.forEach(v=>{const replacementId=legacyCatalogAliases[v.id]||v.id;const d=catalog.find(p=>p.id===replacementId);if(d)parts.push({data:d,stage:v.stage,fuel:v.fuel??d.fuel??0,manualPosition:!!v.manualPosition,position:v.position?new THREE.Vector3(...v.position):null,rotation:v.rotation?new THREE.Quaternion(...v.rotation):null});});assemblyStage=Math.max(0,...parts.map(p=>p.stage||0));layout();toast('機体を読み込みました');}catch{toast('保存データがありません');}};
-renderer.domElement.addEventListener('pointerdown',e=>{if(mode!=='vab'||!selectedPartId)return;const rect=renderer.domElement.getBoundingClientRect(),mouse=new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1),ray=new THREE.Raycaster();rocket.updateWorldMatrix(true,true);ray.setFromCamera(mouse,camera);const hits=ray.intersectObjects(rocket.children,true);let place=new THREE.Vector3(0,0,0),attachHit=null,attachRoot=null;for(const hit of hits){let obj=hit.object;while(obj&&!obj.userData.partItem)obj=obj.parent;if(obj){attachHit=hit;attachRoot=obj;break;}}let rotation=null;if(attachHit){place.copy(rocket.worldToLocal(attachHit.point.clone()));const normal=attachHit.face?attachHit.face.normal.clone().transformDirection(attachHit.object.matrixWorld):new THREE.Vector3(0,1,0);const localNormal=normal.transformDirection(rocket.matrixWorld.clone().invert()).normalize();const selectedData=catalog.find(p=>p.id===selectedPartId);place.addScaledVector(localNormal,Math.max(.18,selectedData?.radius||.3)*.52);rotation=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),localNormal);}else if(parts.length){toast('機体の部品をクリックして取り付けてください');return;}addPart(selectedPartId,parts.length?place:null,rotation);selectedPartId=null;$('#hint').textContent='部品を選択してから、機体の取り付け位置をクリック。';});
+function placeSelectedPartAt(clientX,clientY){
+ if(mode!=='vab'||!selectedPartId)return;
+ const rect=renderer.domElement.getBoundingClientRect(),mouse=new THREE.Vector2((clientX-rect.left)/rect.width*2-1,-(clientY-rect.top)/rect.height*2+1),ray=new THREE.Raycaster();
+ rocket.updateWorldMatrix(true,true);ray.setFromCamera(mouse,camera);
+ const hits=ray.intersectObjects(rocket.children,true);let place=new THREE.Vector3(0,0,0),attachHit=null;
+ for(const hit of hits){let obj=hit.object;while(obj&&!obj.userData.partItem)obj=obj.parent;if(obj){attachHit=hit;break;}}
+ let rotation=null;
+ if(attachHit){place.copy(rocket.worldToLocal(attachHit.point.clone()));const normal=attachHit.face?attachHit.face.normal.clone().transformDirection(attachHit.object.matrixWorld):new THREE.Vector3(0,1,0);const localNormal=normal.transformDirection(rocket.matrixWorld.clone().invert()).normalize();const selectedData=catalog.find(p=>p.id===selectedPartId);place.addScaledVector(localNormal,Math.max(.18,selectedData?.radius||.3)*.52);rotation=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),localNormal);}
+ else if(parts.length){toast('機体の部品をクリックして取り付けてください');return;}
+ addPart(selectedPartId,parts.length?place:null,rotation);selectedPartId=null;$('#hint').textContent='部品を選択してから、機体の取り付け位置をクリック。';
+}
+renderer.domElement.addEventListener('pointerdown',e=>placeSelectedPartAt(e.clientX,e.clientY));
 function selectCraftPartAtPointer(e){
  if(mode!=='vab'||selectedPartId)return;
  const rect=renderer.domElement.getBoundingClientRect(),mouse=new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1),ray=new THREE.Raycaster();
