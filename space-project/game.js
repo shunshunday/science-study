@@ -7,84 +7,56 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],toa
 const scene=new THREE.Scene();
 const crewStage=new THREE.Group();crewStage.visible=false;scene.add(crewStage);
 function makeCrewFigure(member,index){
- const material=(color,roughness=.5)=>new THREE.MeshStandardMaterial({color,roughness});
- const root=new THREE.Group(),role=member.role||'科学者',pilot=role==='パイロット',engineer=role==='エンジニア';
- const legParts=[],armParts=[];
- const skin=material(0xc9dc4b,.05),eyeWhite=material(0xf6f7e9,.02),suit=material(pilot?0xd8ddd9:engineer?0x102e59:0x65747d,.25),trim=material(pilot?0x8b9698:engineer?0x4775a6:0xb8c2c5,.3),boot=material(0x202a32,.45);
- const faceStyles=[
-  {pupil:0x17232c,brow:0x53652c,eyeGap:.31,mouth:0x637d2d,freckles:false},
-  {pupil:0x263d70,brow:0x45552a,eyeGap:.34,mouth:0x8a593d,freckles:true},
-  {pupil:0x382b20,brow:0x66502b,eyeGap:.28,mouth:0x526b38,freckles:false},
-  {pupil:0x174c43,brow:0x53652c,eyeGap:.32,mouth:0x795044,freckles:true},
-  {pupil:0x49345f,brow:0x62502a,eyeGap:.29,mouth:0x637d2d,freckles:false},
-  {pupil:0x26313b,brow:0x76502c,eyeGap:.35,mouth:0x8a593d,freckles:true}
- ];
- const face=faceStyles[Math.abs(index)%faceStyles.length],pupil=material(face.pupil,.02),browMat=material(face.brow,.12),mouthMat=material(face.mouth,.05);
- const sphere=(r,mat,x,y,z,scale=null)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(r,18,14),mat);m.position.set(x,y,z);if(scale)m.scale.set(...scale);root.add(m);m.castShadow=true;return m;};
- const limb=(a,b,r1,r2,mat)=>{const v=new THREE.Vector3().subVectors(b,a),m=new THREE.Mesh(new THREE.CylinderGeometry(r2,r1,v.length(),12),mat);m.position.copy(a).add(b).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),v.normalize());root.add(m);m.castShadow=true;return m;};
- // 全員共通の体格・頭部サイズ
- const segment=(parent,length,radius,mat,y=-length/2)=>{const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius*.82,radius,length,14),mat);mesh.position.y=y;parent.add(mesh);mesh.castShadow=true;return mesh;};
+ const mat=(color,roughness=.62,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
+ const root=new THREE.Group(),legParts=[],armParts=[];
+ const skin=mat(0x8eae43,.82),eyeWhite=mat(0xf5f4e9,.18),pupilMat=mat(0x18251d,.2),suit=mat(0xe6e5d9,.72),suitShade=mat(0xb9c1bc,.7),orange=mat(0xd87932,.62),bootMat=mat(0x4b5558,.78),badgeMat=mat(index%3===0?0x3f7190:index%3===1?0x9b563e:0x5d7850,.7);
+ const sphere=(parent,r,material,x,y,z,scale)=>{const mesh=new THREE.Mesh(new THREE.SphereGeometry(r,24,18),material);mesh.position.set(x,y,z);if(scale)mesh.scale.set(...scale);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
+ const segment=(parent,length,radius,material)=>{const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius*.9,radius,length,16),material);mesh.position.y=-length/2;mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
+ // Compact Kerbal-like proportions: short limbs, small torso, oversized green head.
  for(const side of [-1,1]){
-  const hip=new THREE.Group();hip.position.set(side*.29,.78,0);root.add(hip);segment(hip,.43,.17,suit,-.215);
-  const knee=new THREE.Group();knee.position.y=-.43;hip.add(knee);segment(knee,.42,.145,suit,-.21);
-  const foot=new THREE.Mesh(new THREE.BoxGeometry(.29,.17,.43),boot);foot.position.set(0,-.45,.13);knee.add(foot);foot.castShadow=true;
+  const hip=new THREE.Group();hip.position.set(side*.235,.78,0);root.add(hip);
+  sphere(hip,.19,suit,0,-.06,0,[.9,1.15,.95]);
+  segment(hip,.39,.155,suit);
+  const knee=new THREE.Group();knee.position.y=-.39;hip.add(knee);
+  segment(knee,.39,.135,suit);
+  const kneeCap=sphere(knee,.14,suitShade,0,-.08,.035,[1,.8,.8]);
+  const boot=new THREE.Mesh(new THREE.BoxGeometry(.29,.17,.39),bootMat);boot.position.set(0,-.43,.12);boot.castShadow=true;boot.receiveShadow=true;knee.add(boot);
+  const bootToe=sphere(knee,.14,suit,0,-.39,.22,[1,.58,.9]);
   legParts.push({hip,knee,side});
  }
- const torso=new THREE.Mesh(new THREE.CylinderGeometry(.62,.48,1.25,18),suit);torso.position.y=1.48;root.add(torso);torso.castShadow=true;
- sphere(.57,trim,0,2.02,0,[1,.34,.82]);
+ const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.39,.48,6,16),suit);torso.scale.set(1.08,1,.82);torso.position.y=1.39;torso.castShadow=true;torso.receiveShadow=true;root.add(torso);
+ // Neck ring and the characteristic orange suit details.
+ const collar=new THREE.Mesh(new THREE.TorusGeometry(.34,.095,10,28),orange);collar.position.set(0,1.99,0);collar.rotation.x=Math.PI/2;collar.castShadow=true;root.add(collar);
+ const chestPanel=new THREE.Mesh(new THREE.BoxGeometry(.42,.35,.075),suitShade);chestPanel.position.set(0,1.48,.345);chestPanel.castShadow=true;root.add(chestPanel);
+ const chestMark=new THREE.Mesh(new THREE.BoxGeometry(.22,.12,.025),badgeMat);chestMark.position.set(0,1.55,.39);root.add(chestMark);
+ // Life-support backpack, kept close to the silhouette.
+ const pack=new THREE.Mesh(new THREE.BoxGeometry(.58,.78,.34),suitShade);pack.position.set(0,1.42,-.39);pack.castShadow=true;pack.receiveShadow=true;root.add(pack);
+ const packTop=new THREE.Mesh(new THREE.BoxGeometry(.42,.18,.37),orange);packTop.position.set(0,1.86,-.39);root.add(packTop);
  for(const side of [-1,1]){
-  sphere(.24,suit,side*.72,1.88,0);
-  const shoulder=new THREE.Group();shoulder.position.set(side*.72,1.9,0);root.add(shoulder);segment(shoulder,.43,.155,suit,-.215);
-  const elbow=new THREE.Group();elbow.position.set(side*.02,-.43,.015);shoulder.add(elbow);segment(elbow,.39,.13,suit,-.195);
-  const hand=new THREE.Mesh(new THREE.SphereGeometry(.145,14,12),skin);hand.position.set(0,-.405,.035);elbow.add(hand);
+  const shoulderCap=sphere(root,.205,suit,side*.54,1.72,0,[1,.98,.96]);
+  const shoulder=new THREE.Group();shoulder.position.set(side*.55,1.72,0);root.add(shoulder);
+  segment(shoulder,.43,.155,suit);
+  const elbow=new THREE.Group();elbow.position.set(side*.015,-.43,.035);shoulder.add(elbow);
+  segment(elbow,.38,.135,suit);
+  const cuff=new THREE.Mesh(new THREE.CylinderGeometry(.145,.145,.105,16),orange);cuff.position.set(0,-.34,0);elbow.add(cuff);
+  const glove=sphere(elbow,.16,suitShade,0,-.445,.055,[.94,.92,.88]);
   armParts.push({shoulder,elbow,side});
  }
- const pack=new THREE.Mesh(new THREE.BoxGeometry(.62,.95,.35),trim);pack.position.set(0,1.62,-.48);root.add(pack);
- const chest=new THREE.Mesh(new THREE.BoxGeometry(.45,.34,.07),material(engineer?0xb8c9d9:0x3b6476,.45));chest.position.set(0,1.63,.53);root.add(chest);
- if(engineer){const patch=new THREE.Mesh(new THREE.CircleGeometry(.16,20),material(0xb83232,.1));patch.position.set(.28,1.95,.51);root.add(patch);}
- // 頭部を独立した首ピボットにまとめ、首振り・傾げを自然にする
- const headPivot=new THREE.Group();headPivot.position.set(0,3.05,0);root.add(headPivot);
- const headStart=root.children.length;
- // 全員同じ大きさの縦長・丸角四角フェイス
- const faceShape=new THREE.Shape();
- // 縦長の四角形をベースに、角だけを少し丸めた顔
- faceShape.moveTo(-.49,-.69);faceShape.lineTo(.49,-.69);faceShape.quadraticCurveTo(.62,-.69,.62,-.56);
- faceShape.lineTo(.62,.56);faceShape.quadraticCurveTo(.62,.69,.49,.69);faceShape.lineTo(-.49,.69);
- faceShape.quadraticCurveTo(-.62,.69,-.62,.56);faceShape.lineTo(-.62,-.56);faceShape.quadraticCurveTo(-.62,-.69,-.49,-.69);
- // 円柱と縦長四角柱の中間になるよう、丸みのある角丸四角柱を顔の輪郭にする
- const faceGeo=new THREE.ExtrudeGeometry(faceShape,{depth:.48,bevelEnabled:true,bevelSegments:5,steps:1,bevelSize:.11,bevelThickness:.09,curveSegments:12});
- faceGeo.computeVertexNormals();
- // 顔の奥に縦向き円柱を重ね、側面に円柱らしい丸みを加える
- const faceCore=new THREE.Mesh(new THREE.CylinderGeometry(.615,.615,1.38,32,1,false),skin);
- faceCore.position.set(0,3.05,-.55);root.add(faceCore);faceCore.castShadow=true;
- const head=new THREE.Mesh(faceGeo,skin);head.position.set(0,3.05,-.27);root.add(head);head.castShadow=true;
- // 髪は頭頂部に薄く乗せ、前髪や分け目だけを乗組員ごとに変える
- const hairStyles=[
-  {color:0x3b281b,kind:0},{color:0x17191d,kind:1},{color:0x8a5526,kind:2},
-  {color:0x4b3025,kind:3},{color:0xb9a15d,kind:4},{color:0x6d777b,kind:5},
-  {color:0x202c45,kind:6},{color:0x9b4c32,kind:7}
- ];
- const hs=hairStyles[Math.abs(index)%hairStyles.length],hairMat=material(hs.color,.08);
- sphere(.59,hairMat,0,3.72,-.005,[1,.16,.82]);
- if(hs.kind===0||hs.kind===3){sphere(.34,hairMat,-.2,3.69,.34,[1.25,.12,.42]);}
- if(hs.kind===1||hs.kind===6){sphere(.38,hairMat,.18,3.7,.34,[1.1,.11,.4]);}
- if(hs.kind===2||hs.kind===4){for(let j=-1;j<=1;j++)sphere(.17,hairMat,j*.24,3.7,.34,[1,.12,.42]);}
- if(hs.kind===5){sphere(.42,hairMat,0,3.74,-.12,[1.05,.14,.7]);}
- if(hs.kind===7){sphere(.3,hairMat,.27,3.7,.3,[1.2,.12,.4]);}
- for(const x of [-face.eyeGap,face.eyeGap]){
-  sphere(.295,eyeWhite,x,3.12,.32,[.84,1.14,.58]);
-  sphere(.14,pupil,x+.025,3.1,.455,[.92,1.1,.58]);
-  sphere(.039,material(0xffffff,.02),x+.045,3.16,.49);
-  const brow=new THREE.Mesh(new THREE.BoxGeometry(.29,.055,.07),browMat);brow.position.set(x,3.43,.39);brow.rotation.z=x<0?.12:-.12;root.add(brow);
+ // Large rounded green head with protruding white eyes and small mouth.
+ const headPivot=new THREE.Group();headPivot.position.set(0,2.72,0);root.add(headPivot);
+ sphere(headPivot,.76,skin,0,0,0,[1,.99,.91]);
+ for(const side of [-1,1]){
+  sphere(headPivot,.265,eyeWhite,side*.285,.12,.555,[.96,1.05,.58]);
+  sphere(headPivot,.125,pupilMat,side*.285+.025,.105,.704,[.95,1.02,.58]);
+  sphere(headPivot,.038,mat(0xffffff,.12),side*.285+.045,.155,.755);
+  // Soft green brow ridge, subtle rather than human hair.
+  const brow=sphere(headPivot,.19,skin,side*.285,.405,.51,[1,.22,.35]);
+  brow.rotation.z=side*.08;
+  sphere(headPivot,.115,skin,side*.705,-.04,.015,[.48,.72,.7]);
  }
- // 顔の中央に縦向きの小さな円柱パーツ（鼻）
- const nose=new THREE.Mesh(new THREE.CylinderGeometry(.082,.092,.32,12),skin);
- nose.position.set(0,3.0,.52);root.add(nose);nose.castShadow=true;
- const smile=new THREE.Mesh(new THREE.TorusGeometry(.15,.023,6,16,Math.PI),mouthMat);smile.position.set(0,2.82,.42);smile.rotation.z=Math.PI;root.add(smile);
- if(face.freckles){for(const x of [-.43,.43])for(const y of [2.98,3.04])sphere(.022,mouthMat,x,y,.37);}
- // 顔・髪・目・鼻・口を首の回転中心へ移動
- const headChildren=root.children.slice(headStart);
- for(const child of headChildren){root.remove(child);child.position.y-=3.05;headPivot.add(child);}
+ sphere(headPivot,.075,skin,0,-.12,.68,[.9,.78,.78]);
+ const mouth=new THREE.Mesh(new THREE.TorusGeometry(.105,.018,8,20,Math.PI),mat(0x40552b,.8));mouth.position.set(0,-.34,.635);mouth.rotation.z=Math.PI;mouth.castShadow=true;headPivot.add(mouth);
+ // No human hairstyle: keep the clean, iconic green Kerbal head.
  root.scale.setScalar(.88);
  root.position.set(0,1.5,0);
  root.userData.walkParts={legs:legParts,arms:armParts,head:headPivot};
