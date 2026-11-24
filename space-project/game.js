@@ -522,7 +522,7 @@ function rebuildHangarCrew(){
  const randomPoint=()=>{
   let point;
   for(let tries=0;tries<60;tries++){
-   point=new THREE.Vector3(-88+Math.random()*176,-1.77,-84+Math.random()*168);
+   point=new THREE.Vector3(-88+Math.random()*176,-.22,-84+Math.random()*168);
    if(occupied.every(p=>p.distanceTo(point)>13))break;
   }
   occupied.push(point.clone());return point;
@@ -545,9 +545,9 @@ function updateHangarCrew(dt){
    parts.arms[0].rotation.z=-.22+Math.sin(state.phase*.8)*.035;
    parts.arms[1].rotation.z=.05;
    parts.legs.forEach(leg=>leg.rotation.x=0);
-   figure.position.y=-1.77;
+   figure.position.y=-.22;
    if(state.wait<=0){
-    state.mode='walk';state.target=new THREE.Vector3(-88+Math.random()*176,-1.77,-84+Math.random()*168);
+    state.mode='walk';state.target=new THREE.Vector3(-88+Math.random()*176,-.22,-84+Math.random()*168);
     state.pauseIn=6+Math.random()*16;parts.head.rotation.z=0;
    }
   }else{
@@ -560,10 +560,10 @@ function updateHangarCrew(dt){
    const stride=Math.sin(state.phase*6.5);
    parts.legs.forEach((leg,i)=>{leg.rotation.x=(i===0?1:-1)*stride*.22;});
    parts.arms.forEach((arm,i)=>{arm.rotation.x=(i===0?-1:1)*stride*.09;});
-   figure.position.y=-1.77+Math.abs(stride)*.025;
+   figure.position.y=-.22+Math.abs(stride)*.025;
    figure.rotation.z=Math.sin(state.phase*6.5)*.012;
    parts.head.rotation.z=Math.sin(state.phase*2.4)*.018;
-   if(dist<1.1){state.mode='think';state.wait=1.8+Math.random()*5.5;figure.position.y=-1.77;parts.legs.forEach(leg=>leg.rotation.x=0);}
+   if(dist<1.1){state.mode='think';state.wait=1.8+Math.random()*5.5;figure.position.y=-.22;parts.legs.forEach(leg=>leg.rotation.x=0);}
   }
  }
 }
