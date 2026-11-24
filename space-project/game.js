@@ -238,7 +238,7 @@ for(const z of [-88,-62,-36,-10,16,42,68,92]){
  hBox(.5,20,15,-107,63,z,glassMat);hBox(.5,20,15,107,63,z,glassMat);
 }
 
-const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);const parts=[];let mode='vab',gameMode='career',aircraftCraft=false,funds=25000,fundsUnlimited=true,science=0,stage=0,assemblyStage=0,stageUiFuelPercent=-1,throttle=0,flight=false,flightPeakAltitude=0,paused=false,sasEnabled=false,rcsEnabled=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
+const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);const parts=[],debrisAssemblies=[];let mode='vab',gameMode='career',aircraftCraft=false,funds=25000,fundsUnlimited=true,science=0,stage=0,assemblyStage=0,stageUiFuelPercent=-1,throttle=0,flight=false,flightPeakAltitude=0,paused=false,sasEnabled=false,rcsEnabled=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
 const catalog=[
 {id:'pod',name:'Mk1 コマンドポッド',type:'pod',tech:'basic',mass:0.84,cost:600,crew:1,icon:'◉',height:2,radius:.9},
 {id:'probe',name:'プローブコア',type:'probe',tech:'basic',mass:.1,cost:450,icon:'⌖',height:.7,radius:.65},
@@ -788,17 +788,44 @@ function endOrbitDrag(e){
  pinchDistance=getPinchDistance();
 }
 renderer.domElement.addEventListener('pointerup',endOrbitDrag);
-renderer.domElement.addEventListener('pointercancel',endOrbitDrag);function startFlight(){if(!parts.length){toast('先に機体を組み立ててください');return;}aircraftCraft=parts.some(p=>p.data.type==='jet'||p.data.type==='rotor-blade');const hasPropulsion=parts.some(p=>['engine','booster','jet'].includes(p.data.type));if(!hasPropulsion){toast('ロケットエンジンまたはジェットエンジンが必要です');return;}const hasFuel=parts.some(p=>['tank','fuselage','booster'].includes(p.data.type)&&(p.fuel||0)>0);if(!hasFuel){toast('燃料タンクまたは燃料入り胴体が必要です');return;}if(aircraftCraft&&!parts.some(p=>p.data.type==='fuselage'||p.data.type==='cockpit')){toast('飛行機には胴体またはコックピットが必要です');return;}flight=true;flightPeakAltitude=0;paused=false;elapsed=0;stage=0;throttle=0;flightAccumulator=0;experimentLog=[];window._orb=false;sasEnabled=false;rcsEnabled=false;position.set(0,.002,0);velocity.set(0,0,0);if(aircraftCraft)velocity.set(0,0,.06);angular.set(0,0,0);attitude.identity();rocket.position.copy(position);rocket.quaternion.copy(attitude);rocket.visible=true;setMode('flight');toast(aircraftCraft?'航空機飛行開始 — Zで推力、姿勢操作で操縦':'発射準備完了 — Zでスロットル最大、Spaceで点火');}
+renderer.domElement.addEventListener('pointercancel',endOrbitDrag);function startFlight(){if(!parts.length){toast('先に機体を組み立ててください');return;}aircraftCraft=parts.some(p=>p.data.type==='jet'||p.data.type==='rotor-blade');const hasPropulsion=parts.some(p=>['engine','booster','jet'].includes(p.data.type));if(!hasPropulsion){toast('ロケットエンジンまたはジェットエンジンが必要です');return;}const hasFuel=parts.some(p=>['tank','fuselage','booster'].includes(p.data.type)&&(p.fuel||0)>0);if(!hasFuel){toast('燃料タンクまたは燃料入り胴体が必要です');return;}if(aircraftCraft&&!parts.some(p=>p.data.type==='fuselage'||p.data.type==='cockpit')){toast('飛行機には胴体またはコックピットが必要です');return;}clearStageDebris();flight=true;flightPeakAltitude=0;paused=false;elapsed=0;stage=0;throttle=0;flightAccumulator=0;experimentLog=[];window._orb=false;sasEnabled=false;rcsEnabled=false;position.set(0,.002,0);velocity.set(0,0,0);if(aircraftCraft)velocity.set(0,0,.06);angular.set(0,0,0);attitude.identity();rocket.position.copy(position);rocket.quaternion.copy(attitude);rocket.visible=true;setMode('flight');toast(aircraftCraft?'航空機飛行開始 — Zで推力、姿勢操作で操縦':'発射準備完了 — Zでスロットル最大、Spaceで点火');}
 $('#aircraft-mode').onclick=()=>{aircraftCraft=!aircraftCraft;activePartCategory=aircraftCraft?'航空機':'すべて';renderCategories();drawPartsCatalogV2();layout();setMode('vab');$('#aircraft-mode').classList.toggle('active',aircraftCraft);$('#aircraft-mode').textContent=aircraftCraft?'✈ 航空機組立中':'🚀 ロケット組立中';toast(aircraftCraft?'航空機組立モード：航空機パーツを表示':'ロケット組立モード：全パーツを表示');};
 $('#launch').onclick=startFlight;$('#stage-next').onclick=()=>{if(flight)activateStage();};function runScienceExperiment(){if(!flight){toast('飛行中に実験できます');return;}const instruments=parts.filter(p=>['pod','probe','science'].includes(p.data.type));if(!instruments.length){toast('実験装置・プローブ・乗員ポッドが必要です');return;}const altitude=position.clone().sub(bodyCenter).length()-BODY.radius;const situation=altitude>=70?'宇宙空間':altitude>=10?'高高度大気圏':'低高度・地表';if(experimentLog.includes(situation)){toast('この飛行状況の実験は完了しています');return;}const scienceParts=parts.filter(p=>p.data.type==='science').length;const reward=(situation==='宇宙空間'?10:situation==='高高度大気圏'?6:3)+scienceParts*5;experimentLog.push(situation);science+=reward;saveCareer();recalc();toast(situation+'の実験データを回収：科学 +'+reward);}
 $('#science-experiment').onclick=runScienceExperiment;$('#map-toggle').onclick=()=>{map=!map;toast(map?'軌道マップ表示（M）':'飛行ビュー');};
 let keys={};addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key==='Escape'&&selectedPartId){selectedPartId=null;toast('部品設置をキャンセル');}if(e.key==='Escape'&&mode==='flight'){flight=false;throttle=0;setMode('vab');toast('ロケット組立棟へ戻りました');}if(e.code==='Space'&&flight){e.preventDefault();activateStage();}if(e.key.toLowerCase()==='z')throttle=1;if(e.key.toLowerCase()==='x')throttle=0;if(e.key.toLowerCase()==='t'){sasEnabled=!sasEnabled;toast('SAS '+(sasEnabled?'ON':'OFF'));}if(e.key.toLowerCase()==='r'){rcsEnabled=!rcsEnabled;toast('RCS '+(rcsEnabled?'ON':'OFF'));}if(e.key.toLowerCase()==='p'&&flight){const alt=position.clone().sub(bodyCenter).length()-BODY.radius,speed=velocity.length()*1000,chutes=parts.filter(p=>p.data.type==='chute');if(!chutes.length)toast('パラシュートがありません');else if(alt>10||speed>250)toast('展開条件外：高度10 km以下・速度250 m/s以下が必要');else{chutes.forEach(p=>{p.deployed=true;p.deployProgress=0;});toast('パラシュートを展開しました');}}if(e.key.toLowerCase()==='m'&&flight){map=!map;}});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
-function activateStage(){const previous=stage;stage++;const hasSeparator=parts.some(p=>p.data.type==='decoupler'&&p.stage===previous);if(hasSeparator){for(let i=parts.length-1;i>=0;i--)if(parts[i].stage===previous)parts.splice(i,1);layout();}toast('ステージ '+stage+' 作動');}
+function spawnStageDebris(dropped,impulse){
+ if(!dropped.length)return;
+ const group=new THREE.Group();group.position.copy(position);group.quaternion.copy(attitude);group.scale.setScalar(.001);
+ for(const part of dropped){const model=partMesh(part.data);if(part.mesh){model.position.copy(part.mesh.position);model.quaternion.copy(part.mesh.quaternion);model.scale.copy(part.mesh.scale);}group.add(model);}
+ scene.add(group);debrisAssemblies.push({group,velocity:velocity.clone().addScaledVector(impulse,-.00022),age:0});
+}
+function updateStageDebris(dt){
+ for(let i=debrisAssemblies.length-1;i>=0;i--){
+  const debris=debrisAssemblies[i];debris.age+=dt;
+  const gravity=gravityAcceleration(debris.group.position,BODY.mu,bodyCenter);
+  debris.velocity.add(new THREE.Vector3(gravity.x,gravity.y,gravity.z).multiplyScalar(dt));
+  debris.group.position.addScaledVector(debris.velocity,dt);debris.group.rotateX(dt*.16);debris.group.rotateZ(dt*.11);
+  if(debris.age>90||debris.group.position.distanceTo(position)>2.5){scene.remove(debris.group);disposeCraftModel(debris.group);debrisAssemblies.splice(i,1);}
+ }
+}
+function clearStageDebris(){for(const debris of debrisAssemblies){scene.remove(debris.group);disposeCraftModel(debris.group);}debrisAssemblies.length=0;}
+function activateStage(){
+ const nextStage=stage+1,hasSeparator=parts.some(p=>p.data.type==='decoupler'&&p.stage===nextStage);
+ if(hasSeparator){
+  const impulse=new THREE.Vector3(0,1,0).applyQuaternion(attitude).normalize();
+  const dropped=parts.filter(p=>p.stage<nextStage||(p.data.type==='decoupler'&&p.stage===nextStage));
+  spawnStageDebris(dropped,impulse);
+  for(let i=parts.length-1;i>=0;i--)if(parts[i].stage<nextStage||(parts[i].data.type==='decoupler'&&parts[i].stage===nextStage))parts.splice(i,1);
+  velocity.addScaledVector(impulse,.00022);layout();
+ }
+ stage=nextStage;
+ toast(hasSeparator?'ステージ '+stage+' 作動 — 下段を分離':'ステージ '+stage+' 作動');
+}
 const bodyCenter=new THREE.Vector3(0,-BODY.radius,0);
 let properG=1,flightAccumulator=0,experimentLog=[];
 function physicsStep(dt){
  if(!flight||paused)return;
- elapsed+=dt;const mins=Math.floor(elapsed/60),secs=Math.floor(elapsed%60);$('#mission-time').textContent='T+ '+String(mins).padStart(2,'0')+':'+String(secs).padStart(2,'0');
+ elapsed+=dt;updateStageDebris(dt);const mins=Math.floor(elapsed/60),secs=Math.floor(elapsed%60);$('#mission-time').textContent='T+ '+String(mins).padStart(2,'0')+':'+String(secs).padStart(2,'0');
  if(keys.shift)throttle=Math.min(1,throttle+dt*.35);if(keys.control)throttle=Math.max(0,throttle-dt*.35);const controlGain=rcsEnabled?1.6:.8;const pitch=(keys.w?1:0)-(keys.s?1:0),yaw=(keys.d?1:0)-(keys.a?1:0),roll=(keys.e?1:0)-(keys.q?1:0);
  angular.x+=pitch*dt*controlGain;angular.y+=yaw*dt*controlGain;angular.z+=roll*dt*controlGain;angular.multiplyScalar(Math.exp(-dt*(sasEnabled?4.5:.8)));
  const dq=new THREE.Quaternion().setFromEuler(new THREE.Euler(angular.x*dt,angular.y*dt,angular.z*dt,'YXZ'));attitude.multiply(dq).normalize();
