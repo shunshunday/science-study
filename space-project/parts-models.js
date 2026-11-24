@@ -228,10 +228,40 @@ export function createPartModel(p,THREE){
   else if(/drill|採掘/.test(name)){lathe([[0,-h*.5],[r*.65,-h*.5],[r*.7,h*.1],[r*.38,h*.35],[r*.12,h*.5],[0,h*.5]],aluminium,40);for(let i=0;i<4;i++){const a=i*Math.PI/2;radialPipe(r*.7,-h*.3,h*.28,a,gold,.035);}}
   else{lathe([[0,-h*.5],[r*.75,-h*.5],[r*.85,-h*.3],[r*.85,h*.35],[r*.7,h*.5],[0,h*.5]],ivory,40);band(r*.84,h*.32,.04,gold);radialLabel(r*.86,0,r*.7,h*.2,labelMat);}
  };
+ const makeNosecone=()=>{
+  const heat=id.includes('heat')||/heat shield|耐熱/.test(name.toLowerCase()),small=id.includes('small')||id.includes('tiny'),mk=id.includes('mk7')||id.includes('mk12')||id.includes('mk16');
+  const tip=small?.018:r*.035,base=r*.92;
+  const profile=heat?[[0,-h*.5],[base*.78,-h*.5],[base,-h*.36],[base*.98,-h*.2],[base*.72,-h*.12],[base*.18,-h*.08],[0,-h*.08]]:mk?[[0,h*.5],[tip,h*.48],[base*.12,h*.38],[base*.42,h*.12],[base*.78,-h*.22],[base,-h*.42],[base*.98,-h*.5],[0,-h*.5]]:[[0,h*.5],[tip,h*.48],[base*.16,h*.35],[base*.46,h*.08],[base*.78,-h*.25],[base,-h*.44],[base*.98,-h*.5],[0,-h*.5]];
+  lathe(profile,heat?M(0x6c6258,.28,.9):ivory,64);
+  band(base*.99,-h*.43,.045,steel);band(base*.92,-h*.34,.025,gold);
+  if(heat){for(let i=0;i<16;i++){const a=i*Math.PI/8;radialPipe(base*.98,-h*.4,-h*.2,a,dark,.018);}cyl(base*.72,base*.72,.06,dark,-h*.48,64);}
+  else{for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(base*.94,-h*.38,h*.22,a,aluminium,.012);}sphere(tip*1.6,gold,[0,h*.47,0]);}
+ };
+ const makeFuselage=()=>{
+  const mk0=id.includes('mk0'),mk2=id.includes('mk2'),mk3=id.includes('mk3'),w=r*(mk3?1.2:mk2?1.05:mk0?.72:.9),height=r*(mk3?.9:mk2?.78:.82);
+  const shell=add(new THREE.CylinderGeometry(w*.92,w,h*.82,48,1,false),mk0?M(0x9da8a9,.55,.42):ivory,[0,0,0],[Math.PI/2,0,0],[1,height/w,1]);
+  const end1=add(new THREE.TorusGeometry(w*.94,.045,10,48),steel,[0,0,-h*.41],[Math.PI/2,0,0],[1,height/w,1]);
+  const end2=add(new THREE.TorusGeometry(w*.94,.045,10,48),gold,[0,0,h*.41],[Math.PI/2,0,0],[1,height/w,1]);
+  for(let z of [-h*.26,0,h*.26]){const seam=add(new THREE.TorusGeometry(w*.925,.018,8,48),aluminium,[0,0,z],[Math.PI/2,0,0],[1,height/w,1]);}
+  // Side service strip and fuel inspection windows are aligned to the fuselage axis.
+  box(w*.72,.055,h*.46,dark,[0,height*.92,0]);for(let i=0;i<5;i++)box(w*.09,.018,h*.38,blue,[(i-2)*w*.13,height*.96,0]);
+  for(let z of [-h*.32,h*.32])for(let side of [-1,1])bolt(side*w*.72,0,z,.035,gold);
+ };
+ const makeAirbrake=()=>{
+  const root=lathe([[0,-h*.28],[r*.36,-h*.28],[r*.44,h*.22],[r*.36,h*.28],[0,h*.28]],steel,32);
+  const bladeShape=new THREE.Shape();bladeShape.moveTo(-r*.72,-h*.42);bladeShape.lineTo(r*.72,-h*.42);bladeShape.lineTo(r*.62,h*.42);bladeShape.lineTo(-r*.62,h*.42);bladeShape.closePath();
+  const blade=add(new THREE.ExtrudeGeometry(bladeShape,{depth:.07,bevelEnabled:true,bevelSegments:3,bevelSize:.035,bevelThickness:.02}),ivory,[0,0,r*.22],[Math.PI/2,0,0]);
+  for(let i=0;i<5;i++){box(.025,h*.64,.018,gold,[(i-2)*r*.24,.09,r*.27]);}
+  for(let side of [-1,1]){tube([[side*r*.28,-h*.2,0],[side*r*.6,h*.05,r*.22],[side*r*.62,h*.2,r*.28]],.035,aluminium);bolt(side*r*.35,-h*.18,0,.05,gold);}
+  band(r*.42,h*.22,.035,gold);
+ };
  // Select a dedicated construction family; no one-size-fits-all primitive stand-in.
  if(type==='tank'||type==='resource')makeTank();
  else if(type==='engine'||type==='jet'||type==='booster')makeEngine();
  else if(type==='pod'||type==='cockpit')makePod();
+ else if(type==='fuselage')makeFuselage();
+ else if(type==='nosecone')makeNosecone();
+ else if(type==='airbrake')makeAirbrake();
  else if(type==='probe')makeProbe();
  else if(type==='fin'||type==='wing'||type==='tail'||type==='control')makeWing();
  else if(type==='solar')makeSolar();
