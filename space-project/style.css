@@ -470,3 +470,18 @@ body.crew-roster-mode .crew-recruit button:hover{background:#355f82!important;ba
  .build-stage-part i{width:22px!important;height:19px!important;font-size:14px!important}
  #stage-add-side{width:36px!important}
 }
+
+/* Keep the staging add control compact like the original KSP rail */
+#stage-add-side{
+ height:19px!important;
+ min-height:19px!important;
+ padding:0 2px!important;
+ font-size:7px!important;
+ line-height:1!important;
+ letter-spacing:-.25px!important;
+ white-space:nowrap!important;
+ overflow:hidden!important;
+}
+@media(max-width:700px){
+ #stage-add-side{font-size:6px!important;height:18px!important;min-height:18px!important}
+}
