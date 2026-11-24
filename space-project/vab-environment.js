@@ -11,10 +11,10 @@ export function createVABEnvironment(THREE){
   const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),dir=B.clone().sub(A),len=dir.length();
   const shape=new THREE.Shape();const flange=w,web=w*.19,thick=w*.17;
   shape.moveTo(-flange/2,-w/2);shape.lineTo(flange/2,-w/2);shape.lineTo(flange/2,-w/2+thick);shape.lineTo(web/2,-w/2+thick);shape.lineTo(web/2,w/2-thick);shape.lineTo(flange/2,w/2-thick);shape.lineTo(flange/2,w/2);shape.lineTo(-flange/2,w/2);shape.lineTo(-flange/2,w/2-thick);shape.lineTo(-web/2,w/2-thick);shape.lineTo(-web/2,-w/2+thick);shape.lineTo(-flange/2,-w/2+thick);shape.closePath();
-  const geo=new THREE.ExtrudeGeometry(shape,{depth:len,bevelEnabled:true,bevelSegments:1,steps:1,bevelSize:.025,bevelThickness:.018,curveSegments:1});
+  const geo=new THREE.ExtrudeGeometry(shape,{depth:len,bevelEnabled:true,bevelSegments:1,steps:1,bevelSize:.025,bevelThickness:.018,curveSegments:1});geo.translate(0,0,-len/2);
   const m=add(geo,ma,A.clone().add(B).multiplyScalar(.5));m.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),dir.normalize());return m;
  };
- const panel=(w,h,x,y,z,ma=steel)=>box(w,h,.65,x,y,z,ma);
+ const panel=(w,h,x,y,z,ma=steel)=>box(.65,h,w,x,y,z,ma);
  // Painted, high-resolution concrete apron with wear, seams, safety zones and bay IDs.
  const canvas=document.createElement('canvas');canvas.width=2048;canvas.height=2048;const ctx=canvas.getContext('2d');
  ctx.fillStyle='#777a78';ctx.fillRect(0,0,2048,2048);
@@ -81,7 +81,7 @@ export function createVABEnvironment(THREE){
   }
   // Stair flights and landings, repeated in bays.
   for(const z of [-58,24]){
-   box(13,1,12,x,y=18,z,darkSteel);
+   box(13,1,12,x,18,z,darkSteel);
    beam([x,19,z-7],[x,34,z+7],.6,edgeSteel);
    for(let i=0;i<10;i++)box(5,.22,1.2,x,20+i*1.25,z-6+i*1.35,steel);
   }
