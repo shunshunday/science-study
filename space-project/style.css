@@ -547,3 +547,52 @@ button.active{background:linear-gradient(180deg,#d79a4d,#9e6328);border-color:#f
 .navball{border:4px solid #aab4b5;box-shadow:0 2px 10px #0009}
 #toast{background:#46545d;border:1px solid #aeb9bb;border-radius:2px}
 #viewport canvas{background:transparent}
+
+
+/* KSP1 VAB layout refinement: narrow catalog rail, compact staging rail, top command strip. */
+#parts{left:0!important;top:0!important;bottom:0!important;width:274px!important;background:linear-gradient(90deg,#252f38f5,#3b464df0)!important;border-right:2px solid #9ba5a9!important;box-shadow:5px 0 18px #0009!important}
+#parts .parts-head{height:34px!important;padding:0 9px!important;background:linear-gradient(#707c83,#424d54)!important;font-size:11px!important}
+#parts .part-search{height:32px!important;margin:5px 7px 4px!important;width:calc(100% - 14px)!important;padding:6px 9px!important;font-size:12px!important}
+#parts .catalog-tools{height:27px!important;padding:2px 7px 5px!important}
+#parts .catalog-body{height:calc(100% - 101px)!important;grid-template-columns:31px minmax(0,1fr)!important}
+#parts .part-categories{padding:2px!important;gap:2px!important;background:#1c262d!important}
+#parts .part-category{height:34px!important;min-height:34px!important;font-size:16px!important;background:linear-gradient(#687780,#46545d)!important;border:1px solid #9ca8ad!important}
+#parts .part-category.active{background:linear-gradient(#e0b75f,#a97530)!important;color:#1e282e!important;border-color:#f3d18a!important}
+#parts .part-list{grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-rows:76px!important;gap:4px!important;padding:5px!important}
+#parts .part{padding:2px!important;border:1px solid #9da8ac!important;background:linear-gradient(145deg,#76838a,#4b575f)!important;border-radius:3px!important}
+#parts .part-icon{height:100%!important;min-height:0!important;background:linear-gradient(145deg,#87949a,#3d4950)!important}
+#parts .part-preview-canvas{transform:none!important;width:100%!important;height:100%!important}
+#parts .part::after{left:280px!important;width:245px!important}
+.vab-tools{top:7px!important;bottom:auto!important;left:50%!important;transform:translateX(-50%)!important;max-width:calc(100vw - 350px)!important;min-height:49px!important;gap:4px!important;padding:4px!important;background:linear-gradient(#59666dF5,#303b42F5)!important;border:1px solid #9aa5a8!important;border-radius:3px!important}
+.vab-tools button{height:40px!important;min-width:48px!important;padding:5px 10px!important;background:linear-gradient(#77838a,#4b5961)!important;border:1px solid #aeb8b9!important;border-radius:2px!important;font-size:12px!important;white-space:nowrap!important}
+.vab-tools button.primary{background:linear-gradient(#d49b4b,#98632d)!important;border-color:#f0c47c!important}
+.vab-tools span{font-size:9px!important;padding:0 5px!important;white-space:nowrap!important}
+#craft-name{max-width:190px!important}
+.build-staging{top:0!important;bottom:0!important;right:0!important;width:52px!important;padding:4px 3px!important;background:linear-gradient(90deg,#303b42f0,#46535bf5)!important;border-left:1px solid #a2adb0!important;box-shadow:-4px 0 12px #0008!important}
+.build-staging-head{height:24px!important;padding:5px 0!important;text-align:center!important;font-size:8px!important;letter-spacing:1px!important}
+#build-stage-list{gap:5px!important;padding:4px 0!important}
+.build-stage{display:flex!important;flex-direction:column!important;gap:2px!important}
+.build-stage-title{height:24px!important;min-height:24px!important;padding:2px!important;display:flex!important;justify-content:space-around!important;background:linear-gradient(#d28e39,#995d27)!important;border:1px solid #f1c47c!important;border-radius:2px!important}
+.build-stage-title b{font-size:11px!important}
+.build-stage-title span{font-size:10px!important}
+.build-stage-category-marks{display:none!important}
+.build-stage-items{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:2px!important}
+.build-stage-part{width:21px!important;height:22px!important;min-height:22px!important;padding:0!important;background:linear-gradient(#75828a,#45515a)!important;border:1px solid #a5b0b3!important}
+.build-stage-part i{font-size:12px!important}
+#stage-add-side{width:38px!important;height:20px!important;margin:4px auto!important;font-size:12px!important}
+.bottom-hint{left:282px!important;bottom:7px!important;max-width:340px!important;padding:5px 8px!important;font-size:10px!important;background:#202a30dd!important}
+@media(max-width:850px){
+ #parts{width:236px!important}
+ .vab-tools{left:244px!important;right:57px!important;max-width:none!important;transform:none!important;overflow-x:auto!important;justify-content:flex-start!important}
+ .vab-tools span{display:none!important}
+ .build-staging{width:48px!important}
+ .bottom-hint{display:none!important}
+}
+@media(max-width:560px){
+ #parts{width:198px!important}
+ #parts .catalog-body{grid-template-columns:28px minmax(0,1fr)!important}
+ #parts .part-list{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .vab-tools{left:204px!important;right:50px!important;min-height:40px!important}
+ .vab-tools button{height:34px!important;padding:3px 7px!important;font-size:10px!important}
+ .build-staging{width:44px!important}
+}
