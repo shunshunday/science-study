@@ -11,7 +11,7 @@ function makeCrewFigure(member,index){
  const mat=(color,roughness=.68,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
  const root=new THREE.Group(),legParts=[],armParts=[];
  const skin=mat(0x8eae43,.82),eyeWhite=mat(0xf5f4e9,.2),pupilMat=mat(0x18251d,.2),suit=mat(0xe6e5d9,.74),suitShade=mat(0xb9c1bc,.72),orange=mat(0xd87932,.58),bootMat=mat(0x4b5558,.78),rubber=mat(0x252d30,.9),badgeMat=mat(index%3===0?0x3f7190:index%3===1?0x9b563e:0x5d7850,.7);
- const add=(parent,geo,material,pos=[0,0,0],rot=[0,0,0])=>{const m=new THREE.Mesh(geo,material);m.position.set(...pos);m.rotation.set(...rot);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;};
+ const add=(parent,geo,material,pos=[0,0,0],rot=[0,0,0],scale=null)=>{const m=new THREE.Mesh(geo,material);m.position.set(...pos);m.rotation.set(...rot);if(scale)m.scale.set(...scale);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;};
  const lathe=(parent,profile,material,segments=32)=>add(parent,new THREE.LatheGeometry(profile.map(([r,y])=>new THREE.Vector2(r,y)),segments),material);
  const tapered=(parent,length,radius,material,topScale=1)=>lathe(parent,[[0,-length],[radius*.72,-length],[radius*.9,-length*.88],[radius,-length*.55],[radius*topScale,-.12],[radius*topScale*.82,0],[0,0]],material,24);
  const pelvis=new THREE.Group();pelvis.position.y=.92;root.add(pelvis);
@@ -63,18 +63,18 @@ function makeCrewFigure(member,index){
  lathe(headPivot,[[0,-.61],[.28,-.59],[.46,-.46],[.55,-.2],[.57,.08],[.53,.35],[.39,.55],[.18,.62],[0,.63]],skin,56);
  // Custom helmet-like hair cap silhouette rather than a sphere attached to the head.
  const hairColors=[0x211b18,0x17191d,0x493020,0x30231d,0x9a733c,0x51413a],hairMat=mat(hairColors[Math.abs(index)%hairColors.length],.9);
- const capProfile=[[0,.64],[.28,.62],[.46,.55],[.55,.42],[.56,.29],[.48,.31],[.32,.4],[0,.43]];
+ const capProfile=[[0,.29],[.56,.29],[.55,.42],[.46,.55],[.28,.62],[0,.64]];
  lathe(headPivot,capProfile,hairMat,40);
  const eyes=[];
  for(const side of [-1,1]){
   const eyeGroup=new THREE.Group();eyeGroup.position.set(side*.245,.075,.465);headPivot.add(eyeGroup);
-  add(eyeGroup,new THREE.SphereGeometry(.205,24,16),eyeWhite,[0,0,.02],[0,0,0]);
+  add(eyeGroup,new THREE.SphereGeometry(.205,24,16),eyeWhite,[0,0,.02],[0,0,0],[1,1,.72]);
   add(eyeGroup,new THREE.SphereGeometry(.078,18,12),pupilMat,[side*.025,-.012,.198]);
   add(eyeGroup,new THREE.SphereGeometry(.025,12,8),mat(0xffffff,.1),[side*.012,.065,.225]);
   eyes.push(eyeGroup);
  }
  const mouthGroup=new THREE.Group();mouthGroup.position.set(0,-.37,.51);headPivot.add(mouthGroup);
- const mouthDark=mat(0x30120f,.76),cavity=add(mouthGroup,new THREE.SphereGeometry(.105,18,12),mouthDark,[0,0,.015],[1.45,.48,.34]);
+ const mouthDark=mat(0x30120f,.76),cavity=add(mouthGroup,new THREE.SphereGeometry(.105,18,12),mouthDark,[0,0,.015],[0,0,0],[1.45,.48,.34]);
  const mouthLine=add(mouthGroup,new THREE.TorusGeometry(.13,.018,6,20,Math.PI),mat(0x42632c,.82),[0,-.025,.045],[0,0,Math.PI]);
  root.scale.setScalar(.88);
  root.userData.walkParts={legs:legParts,arms:armParts,head:headPivot,eyes,mouth:{cavity,smile:mouthLine}};
