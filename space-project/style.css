@@ -562,3 +562,7 @@ button.active{background:linear-gradient(180deg,#d79a4d,#9e6328);border-color:#f
 }
 #parts .part-list .part-preview-canvas{touch-action:pan-y!important;}
 #parts .part-categories{overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;scrollbar-width:auto!important;}
+
+
+/* Hide the lower-left assembly instruction label. */
+#hint{display:none!important;}
