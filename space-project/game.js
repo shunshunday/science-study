@@ -763,7 +763,7 @@ renderer.domElement.addEventListener('pointermove',e=>{
  if(orbitPointerId!==e.pointerId)return;
  const dx=e.clientX-orbitLastX,dy=e.clientY-orbitLastY;orbitLastX=e.clientX;orbitLastY=e.clientY;
  const spherical=new THREE.Spherical().setFromVector3(camera.position.clone().sub(orbitTarget));
- spherical.theta-=dx*.006;spherical.phi=THREE.MathUtils.clamp(spherical.phi+dy*.006,.08,Math.PI-.08);
+ spherical.theta-=dx*.006;spherical.phi=THREE.MathUtils.clamp(spherical.phi-dy*.006,.08,Math.PI-.08);
  const candidate=orbitTarget.clone().add(new THREE.Vector3().setFromSpherical(spherical));
  camera.position.copy(keepCameraOutsideGeometry(candidate));camera.lookAt(orbitTarget);
 });
