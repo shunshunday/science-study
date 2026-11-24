@@ -23,13 +23,28 @@ function makeCrewFigure(member,index){
  const sphere=(r,mat,x,y,z,scale=null)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(r,18,14),mat);m.position.set(x,y,z);if(scale)m.scale.set(...scale);root.add(m);m.castShadow=true;return m;};
  const limb=(a,b,r1,r2,mat)=>{const v=new THREE.Vector3().subVectors(b,a),m=new THREE.Mesh(new THREE.CylinderGeometry(r2,r1,v.length(),12),mat);m.position.copy(a).add(b).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),v.normalize());root.add(m);m.castShadow=true;return m;};
  // 全員共通の体格・頭部サイズ
- for(const x of [-.43,.43]){legParts.push(limb(new THREE.Vector3(x,.65,0),new THREE.Vector3(x,.18,0),.19,.15,suit));sphere(.2,boot,x,.13,.08,[1,.55,1.35]);}
+ const segment=(parent,length,radius,mat,y=-length/2)=>{const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius*.82,radius,length,14),mat);mesh.position.y=y;parent.add(mesh);mesh.castShadow=true;return mesh;};
+ for(const side of [-1,1]){
+  const hip=new THREE.Group();hip.position.set(side*.29,.78,0);root.add(hip);segment(hip,.43,.17,suit,-.215);
+  const knee=new THREE.Group();knee.position.y=-.43;hip.add(knee);segment(knee,.42,.145,suit,-.21);
+  const foot=new THREE.Mesh(new THREE.BoxGeometry(.29,.17,.43),boot);foot.position.set(0,-.45,.13);knee.add(foot);foot.castShadow=true;
+  legParts.push({hip,knee,side});
+ }
  const torso=new THREE.Mesh(new THREE.CylinderGeometry(.62,.48,1.25,18),suit);torso.position.y=1.48;root.add(torso);torso.castShadow=true;
  sphere(.57,trim,0,2.02,0,[1,.34,.82]);
- for(const x of [-.72,.72]){sphere(.24,suit,x,1.88,0);armParts.push(limb(new THREE.Vector3(x,1.9,0),new THREE.Vector3(x*1.18,1.12,.12),.17,.13,suit));sphere(.16,trim,x*1.18,1.1,.13);}
+ for(const side of [-1,1]){
+  sphere(.24,suit,side*.72,1.88,0);
+  const shoulder=new THREE.Group();shoulder.position.set(side*.72,1.9,0);root.add(shoulder);segment(shoulder,.43,.155,suit,-.215);
+  const elbow=new THREE.Group();elbow.position.set(side*.02,-.43,.015);shoulder.add(elbow);segment(elbow,.39,.13,suit,-.195);
+  const hand=new THREE.Mesh(new THREE.SphereGeometry(.145,14,12),skin);hand.position.set(0,-.405,.035);elbow.add(hand);
+  armParts.push({shoulder,elbow,side});
+ }
  const pack=new THREE.Mesh(new THREE.BoxGeometry(.62,.95,.35),trim);pack.position.set(0,1.62,-.48);root.add(pack);
  const chest=new THREE.Mesh(new THREE.BoxGeometry(.45,.34,.07),material(engineer?0xb8c9d9:0x3b6476,.45));chest.position.set(0,1.63,.53);root.add(chest);
  if(engineer){const patch=new THREE.Mesh(new THREE.CircleGeometry(.16,20),material(0xb83232,.1));patch.position.set(.28,1.95,.51);root.add(patch);}
+ // 頭部を独立した首ピボットにまとめ、首振り・傾げを自然にする
+ const headPivot=new THREE.Group();headPivot.position.set(0,3.05,0);root.add(headPivot);
+ const headStart=root.children.length;
  // 全員同じ大きさの縦長・丸角四角フェイス
  const faceShape=new THREE.Shape();
  // 縦長の四角形をベースに、角だけを少し丸めた顔
@@ -67,9 +82,12 @@ function makeCrewFigure(member,index){
  nose.position.set(0,3.0,.52);root.add(nose);nose.castShadow=true;
  const smile=new THREE.Mesh(new THREE.TorusGeometry(.15,.023,6,16,Math.PI),mouthMat);smile.position.set(0,2.82,.42);smile.rotation.z=Math.PI;root.add(smile);
  if(face.freckles){for(const x of [-.43,.43])for(const y of [2.98,3.04])sphere(.022,mouthMat,x,y,.37);}
+ // 顔・髪・目・鼻・口を首の回転中心へ移動
+ const headChildren=root.children.slice(headStart);
+ for(const child of headChildren){root.remove(child);child.position.y-=3.05;headPivot.add(child);}
  root.scale.setScalar(.88);
  root.position.set(0,1.5,0);
- root.userData.walkParts={legs:legParts,arms:armParts,head};
+ root.userData.walkParts={legs:legParts,arms:armParts,head:headPivot};
  return root;
 }
 function rebuildCrewStage(){while(crewStage.children.length){const child=crewStage.children[0];crewStage.remove(child);child.traverse(o=>{if(o.geometry)o.geometry.dispose();});}crewMembers.forEach((member,index)=>{const figure=makeCrewFigure(member,index);figure.position.x=(index-(crewMembers.length-1)/2)*3.1;crewStage.add(figure);});}
@@ -535,35 +553,55 @@ function rebuildHangarCrew(){
  });
 }
 function updateHangarCrew(dt){
+ const smooth=(a,b,t)=>{const x=THREE.MathUtils.clamp((t-a)/(b-a),0,1);return x*x*(3-2*x);};
  for(const figure of hangarCrewGroup.children){
   const state=figure.userData.hangarWalk,parts=figure.userData.walkParts;if(!state||!parts)continue;
-  state.phase+=dt;
+  state.phase+=dt;const gait=state.phase*7.2;
   if(state.mode==='think'){
    state.wait-=dt;
-   figure.rotation.z=Math.sin(state.phase*.7)*.018;
-   parts.head.rotation.z=.12+Math.sin(state.phase*.55)*.045;
-   parts.arms[0].rotation.z=-.22+Math.sin(state.phase*.8)*.035;
-   parts.arms[1].rotation.z=.05;
-   parts.legs.forEach(leg=>leg.rotation.x=0);
-   figure.position.y=-.22;
+   const blend=1-smooth(0,.45,Math.max(0,state.thinkBlend??0));
+   state.thinkBlend=Math.min(.45,(state.thinkBlend??0)+dt);
+   const breathe=Math.sin(state.phase*1.25)*.012;
+   figure.rotation.z=THREE.MathUtils.damp(figure.rotation.z,Math.sin(state.phase*.55)*.012,3,dt);
+   parts.head.rotation.z=THREE.MathUtils.damp(parts.head.rotation.z,.24+Math.sin(state.phase*.65)*.035,4,dt);
+   parts.head.rotation.x=THREE.MathUtils.damp(parts.head.rotation.x,-.10+Math.sin(state.phase*.45)*.025,4,dt);
+   parts.arms.forEach((arm,i)=>{
+    const nearFace=arm.side===1;
+    arm.shoulder.rotation.x=THREE.MathUtils.damp(arm.shoulder.rotation.x,nearFace?-.22:.12,4,dt);
+    arm.shoulder.rotation.z=THREE.MathUtils.damp(arm.shoulder.rotation.z,nearFace?-.72:.16,4,dt);
+    arm.elbow.rotation.x=THREE.MathUtils.damp(arm.elbow.rotation.x,-.18,4,dt);
+    arm.elbow.rotation.z=THREE.MathUtils.damp(arm.elbow.rotation.z,nearFace?-.92:.08,4,dt);
+   });
+   parts.legs.forEach(leg=>{leg.hip.rotation.x=THREE.MathUtils.damp(leg.hip.rotation.x,0,5,dt);leg.knee.rotation.x=THREE.MathUtils.damp(leg.knee.rotation.x,0,5,dt);});
+   figure.position.y=THREE.MathUtils.damp(figure.position.y,-.22+breathe,4,dt);
    if(state.wait<=0){
-    state.mode='walk';state.target=new THREE.Vector3(-88+Math.random()*176,-.22,-84+Math.random()*168);
-    state.pauseIn=6+Math.random()*16;parts.head.rotation.z=0;
+    state.mode='walk';state.thinkBlend=0;state.target=new THREE.Vector3(-88+Math.random()*176,-.22,-84+Math.random()*168);
+    state.pauseIn=7+Math.random()*17;
    }
   }else{
    state.pauseIn-=dt;
-   if(state.pauseIn<=0&&Math.random()<dt*.22){
-    state.mode='think';state.wait=1.2+Math.random()*3.8;continue;
-   }
-   const dx=state.target.x-figure.position.x,dz=state.target.z-figure.position.z,dist=Math.hypot(dx,dz),step=Math.min(dist,dt*(2.2+Math.random()*.35));
-   if(dist>.001){figure.position.x+=dx/dist*step;figure.position.z+=dz/dist*step;figure.rotation.y=Math.atan2(dx,dz);}
-   const stride=Math.sin(state.phase*6.5);
-   parts.legs.forEach((leg,i)=>{leg.rotation.x=(i===0?1:-1)*stride*.22;});
-   parts.arms.forEach((arm,i)=>{arm.rotation.x=(i===0?-1:1)*stride*.09;});
-   figure.position.y=-.22+Math.abs(stride)*.025;
-   figure.rotation.z=Math.sin(state.phase*6.5)*.012;
-   parts.head.rotation.z=Math.sin(state.phase*2.4)*.018;
-   if(dist<1.1){state.mode='think';state.wait=1.8+Math.random()*5.5;figure.position.y=-.22;parts.legs.forEach(leg=>leg.rotation.x=0);}
+   if(state.pauseIn<=0&&Math.random()<dt*.16){state.mode='think';state.wait=2+Math.random()*4;state.thinkBlend=0;continue;}
+   const dx=state.target.x-figure.position.x,dz=state.target.z-figure.position.z,dist=Math.hypot(dx,dz);
+   const speed=2.0+Math.sin(state.phase*.4)*.18,step=Math.min(dist,dt*speed);
+   if(dist>.001){figure.position.x+=dx/dist*step;figure.position.z+=dz/dist*step;figure.rotation.y=THREE.MathUtils.damp(figure.rotation.y,Math.atan2(dx,dz),5,dt);}
+   const stride=Math.sin(gait),opposite=Math.sin(gait+Math.PI);
+   parts.legs.forEach((leg)=>{
+    const swing=Math.sin(gait+(leg.side<0?0:Math.PI));
+    leg.hip.rotation.x=THREE.MathUtils.damp(leg.hip.rotation.x,swing*.48,12,dt);
+    leg.knee.rotation.x=THREE.MathUtils.damp(leg.knee.rotation.x,Math.max(0,-swing)*.72,12,dt);
+   });
+   parts.arms.forEach(arm=>{
+    const swing=Math.sin(gait+(arm.side<0?Math.PI:0));
+    arm.shoulder.rotation.x=THREE.MathUtils.damp(arm.shoulder.rotation.x,-swing*.32,10,dt);
+    arm.shoulder.rotation.z=THREE.MathUtils.damp(arm.shoulder.rotation.z,arm.side*.045,8,dt);
+    arm.elbow.rotation.x=THREE.MathUtils.damp(arm.elbow.rotation.x,-.12+Math.max(0,swing)*.16,9,dt);
+    arm.elbow.rotation.z=THREE.MathUtils.damp(arm.elbow.rotation.z,0,8,dt);
+   });
+   figure.position.y=THREE.MathUtils.damp(figure.position.y,-.22+Math.max(0,Math.sin(gait*2))*.045,10,dt);
+   figure.rotation.z=THREE.MathUtils.damp(figure.rotation.z,Math.sin(gait)*.012,8,dt);
+   parts.head.rotation.z=THREE.MathUtils.damp(parts.head.rotation.z,Math.sin(state.phase*1.8)*.018,5,dt);
+   parts.head.rotation.x=THREE.MathUtils.damp(parts.head.rotation.x,0,5,dt);
+   if(dist<1.1){state.mode='think';state.wait=2+Math.random()*5;state.thinkBlend=0;}
   }
  }
 }
