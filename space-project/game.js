@@ -90,7 +90,7 @@ function makeCrewFigure(member,index){
  return root;
 }
 function rebuildCrewStage(){while(crewStage.children.length){const child=crewStage.children[0];crewStage.remove(child);child.traverse(o=>{if(o.geometry)o.geometry.dispose();});}crewMembers.forEach((member,index)=>{const figure=makeCrewFigure(member,index);figure.position.x=(index-(crewMembers.length-1)/2)*3.1;crewStage.add(figure);});}
-scene.background=new THREE.Color(0x8298a6);scene.fog=new THREE.Fog(0x8298a6,180,600);
+scene.background=new THREE.Color(0x91b6ce);scene.fog=new THREE.Fog(0x91b6ce,210,720);
 const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.0001,20000);camera.position.set(24,18,34);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);
 function renderCrewPortraits(){
@@ -118,8 +118,8 @@ function renderCrewPortraits(){
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;$('#viewport').appendChild(renderer.domElement);
 renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();paused=true;toast('3D表示を一時停止しました。復旧を待っています…');});renderer.domElement.addEventListener('webglcontextrestored',()=>{paused=false;last=performance.now();toast('3D表示が復旧しました');});
 document.addEventListener('visibilitychange',()=>{last=performance.now();});
-scene.add(new THREE.HemisphereLight(0xd8e8ff,0x665344,1.8));const sun=new THREE.DirectionalLight(0xffedcf,3.1);sun.position.set(-35,70,25);sun.castShadow=true;scene.add(sun);
-const ground=new THREE.Mesh(new THREE.PlaneGeometry(.9,.9),new THREE.MeshStandardMaterial({color:0x7e8d73,roughness:1}));ground.rotation.x=-Math.PI/2;ground.position.y=-.001;ground.receiveShadow=true;scene.add(ground);
+scene.add(new THREE.HemisphereLight(0xe5f0fb,0x76634e,1.55));const sun=new THREE.DirectionalLight(0xfff1dc,2.75);sun.position.set(-35,70,25);sun.castShadow=true;scene.add(sun);const skyFill=new THREE.DirectionalLight(0xc5e0f4,.62);skyFill.position.set(38,24,-42);scene.add(skyFill);
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(.9,.9),new THREE.MeshStandardMaterial({color:0x827b65,roughness:1,metalness:0}));ground.rotation.x=-Math.PI/2;ground.position.y=-.001;ground.receiveShadow=true;scene.add(ground);
 const planetGeo=new THREE.SphereGeometry(BODY.radius,160,112),planetPos=planetGeo.attributes.position,planetColors=new Float32Array(planetPos.count*3),ocean=new THREE.Color(0x245b82),shallow=new THREE.Color(0x4d8fa0),landLow=new THREE.Color(0x547b49),landHigh=new THREE.Color(0x9a8c6b);for(let i=0;i<planetPos.count;i++){const x=planetPos.getX(i)/BODY.radius,y=planetPos.getY(i)/BODY.radius,z=planetPos.getZ(i)/BODY.radius,n=Math.sin(x*13+Math.sin(z*9)*1.7)*.38+Math.cos(y*17-z*7)*.27+Math.sin(z*23+x*5)*.18+Math.cos(y*31+x*19)*.12;let color;if(n<-.12)color=ocean.clone().lerp(shallow,THREE.MathUtils.clamp((n+.55)/.43,0,1));else{const elevation=THREE.MathUtils.clamp((n-.12)/.48,0,1);color=landLow.clone().lerp(landHigh,elevation);}planetColors[i*3]=color.r;planetColors[i*3+1]=color.g;planetColors[i*3+2]=color.b;}planetGeo.setAttribute('color',new THREE.BufferAttribute(planetColors,3));const planet=new THREE.Mesh(planetGeo,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.92}));planet.position.set(0,-BODY.radius,0);planet.visible=true;planet.receiveShadow=true;scene.add(planet);const atmosphere=new THREE.Mesh(new THREE.SphereGeometry(BODY.radius+3,96,64),new THREE.MeshBasicMaterial({color:0x5ba8d5,transparent:true,opacity:.075,side:THREE.BackSide,depthWrite:false}));atmosphere.position.copy(planet.position);scene.add(atmosphere);
 
 // 宇宙センターの3D施設群（独自モデル）
