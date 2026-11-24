@@ -1,199 +1,265 @@
-// Original, independently authored KSP-inspired part geometry.
-// No proprietary KSP meshes, textures, logos, or extracted game assets are used.
+// Independently authored high-detail KSP1-inspired procedural part models.
+// Each stock-style part family gets its own silhouette, finish, decals and mechanical detailing.
 export function createPartModel(p,THREE){
- const g=new THREE.Group(),r=Math.max(.08,p.radius||.5),h=Math.max(.12,p.height||.5),id=p.id||'',name=p.name||'';
- const mat=(c,m=.45,rough=.42)=>new THREE.MeshStandardMaterial({color:c,metalness:m,roughness:rough});
- const textureCanvas=document.createElement('canvas');textureCanvas.width=512;textureCanvas.height=512;const tx=textureCanvas.getContext('2d');tx.fillStyle='#e1e1d8';tx.fillRect(0,0,512,512);for(let y=0;y<512;y+=32){tx.fillStyle=y%128===0?'#c7cbc6':'#d8dbd4';tx.fillRect(0,y,512,1);if(y%128===0){tx.fillStyle='#f1f0e8';tx.fillRect(0,y+2,512,3);tx.fillStyle='#a4aaa7';tx.fillRect(0,y+6,512,1);}}for(let x=0;x<512;x+=64){tx.fillStyle=x%128===0?'#aab2b0':'#c3c9c5';tx.fillRect(x,0,1,512);if(x%128===0){for(let y=20;y<512;y+=64){tx.fillStyle='#68757a';tx.beginPath();tx.arc(x+3,y,1.8,0,Math.PI*2);tx.fill();tx.fillStyle='#f4f2e9';tx.beginPath();tx.arc(x+2.5,y-.6,1,0,Math.PI*2);tx.fill();}}}tx.fillStyle='#b08b4d';tx.fillRect(0,246,512,5);tx.fillStyle='#8e9997';tx.fillRect(0,253,512,1);const industrialTexture=new THREE.CanvasTexture(textureCanvas);industrialTexture.colorSpace=THREE.SRGBColorSpace;industrialTexture.wrapS=industrialTexture.wrapT=THREE.RepeatWrapping;industrialTexture.anisotropy=4;
- const texturedWhite=new THREE.MeshStandardMaterial({color:0xffffff,map:industrialTexture,metalness:.34,roughness:.52});
-
- const lathe=(profile,ma,y=0,segments=48)=>mesh(new THREE.LatheGeometry(profile.map(v=>new THREE.Vector2(v[0],v[1])),segments),ma,[0,y,0]);
-
- const alloy=mat(0xaeb9bb,.78,.3),white=mat(0xd8d8cf,.48,.48),dark=mat(0x303b42,.8,.34),black=mat(0x17232a,.65,.25),gold=mat(0xb68b42,.72,.28),glass=mat(0x234e68,.55,.16),blue=mat(0x244f79,.62,.28),rubber=mat(0x20262a,.05,.9),orange=mat(0xc47b35,.48,.52);
- const mesh=(geo,ma,pos=[0,0,0],rot=[0,0,0],scale=null)=>{const o=new THREE.Mesh(geo,ma);o.position.set(...pos);o.rotation.set(...rot);if(scale)o.scale.set(...scale);o.castShadow=true;o.receiveShadow=true;g.add(o);return o;};
- const cyl=(rt,rb,len,ma,y=0,seg=32)=>mesh(new THREE.CylinderGeometry(rt,rb,len,seg),ma,[0,y,0]);
- const torus=(rad,tube,ma,y=0)=>mesh(new THREE.TorusGeometry(rad,tube,8,40),ma,[0,y,0],[Math.PI/2,0,0]);
- const box=(w,hh,d,ma,pos=[0,0,0],rot=[0,0,0])=>mesh(new THREE.BoxGeometry(w,hh,d),ma,pos,rot);
- const sphere=(rad,ma,pos=[0,0,0],scale=[1,1,1])=>mesh(new THREE.SphereGeometry(rad,24,16),ma,pos,[0,0,0],scale);
- const nozzle=(rad,len,ma=dark,y=0,x=0,z=0)=>{const profile=[[rad*.34,y],[rad*.42,y-len*.12],[rad*.54,y-len*.3],[rad*.72,y-len*.55],[rad*.9,y-len*.78],[rad,y-len*.94],[rad*.98,y-len],[rad*.9,y-len*.97]];const b=mesh(new THREE.LatheGeometry(profile.map(v=>new THREE.Vector2(v[0],v[1])),48),ma,[x,0,z]);const ring=torus(rad*.94,.055,alloy,y-len*.96);ring.position.set(x,y-len*.96,z);};
- const boltRing=(rad,y,count=12)=>{for(let i=0;i<count;i++){const a=i*Math.PI*2/count;sphere(.035,gold,[Math.cos(a)*rad,y,Math.sin(a)*rad],[1,1,1]);}};
- const panel=(w,hh,x,z)=>{box(w,.045,hh,blue,[x,0,z]);for(let k=1;k<5;k++)box(.018,.018,hh*.94,mat(0x82a9c2,.5,.3),[x-w/2+w*k/5,.032,z]);box(w*.98,.018,.025,alloy,[x,.034,0]);};
- const bodyBand=(rad,y,ma=dark)=>torus(rad,.045,ma,y);
- if(['pod','cockpit'].includes(p.type)){
-  const inline=id.includes('inline'),lander=id.includes('lander'),cupola=id.includes('cupola'),mk2=id.includes('mk2'),mk3=id.includes('mk3'),seat=id==='seat';
-  if(seat){box(.52,.16,.55,dark,[0,.12,0]);box(.42,.72,.12,white,[0,.52,-.18]);for(const x of [-.19,.19])box(.1,.45,.1,alloy,[x,.28,.1]);}
+ const g=new THREE.Group(),id=String(p.id||''),name=String(p.name||''),type=String(p.type||''),r=Math.max(.055,Number(p.radius)||.5),h=Math.max(.12,Number(p.height)||.5);
+ const M=(color,metalness=.35,roughness=.48,extra={})=>new THREE.MeshStandardMaterial({color,metalness,roughness,...extra});
+ const ivory=M(0xd9d9d0,.42,.52),paint=M(0xe7e6dc,.28,.6),aluminium=M(0xaeb9bd,.82,.28),steel=M(0x59666d,.82,.34),dark=M(0x252f35,.68,.38),rubber=M(0x171b1e,.04,.91),gold=M(0xb68b4e,.72,.32),orange=M(0xc56b31,.35,.58),blue=M(0x28547c,.58,.3),glass=M(0x173f5c,.62,.14,{emissive:0x071a2c,emissiveIntensity:.22}),black=M(0x111a20,.45,.25);
+ const add=(geo,mat,pos=[0,0,0],rot=[0,0,0],scale)=>{const o=new THREE.Mesh(geo,mat);o.position.set(...pos);o.rotation.set(...rot);if(scale)o.scale.set(...scale);o.castShadow=true;o.receiveShadow=true;g.add(o);return o;};
+ const lathe=(profile,mat,segments=64,pos=[0,0,0])=>add(new THREE.LatheGeometry(profile.map(v=>new THREE.Vector2(v[0],v[1])),segments),mat,pos);
+ const band=(radius,y,t=.025,mat=steel)=>add(new THREE.TorusGeometry(radius,t,8,64),mat,[0,y,0],[Math.PI/2,0,0]);
+ const cyl=(top,bottom,len,mat,y=0,segments=48)=>add(new THREE.CylinderGeometry(top,bottom,len,segments,1,false),mat,[0,y,0]);
+ const box=(w,d,depth,mat,pos=[0,0,0],rot=[0,0,0])=>add(new THREE.BoxGeometry(w,d,depth),mat,pos,rot);
+ const sphere=(rad,mat,pos=[0,0,0],scale=[1,1,1])=>add(new THREE.SphereGeometry(rad,24,16),mat,pos,[0,0,0],scale);
+ const tube=(points,rad,mat)=>{const curve=new THREE.CatmullRomCurve3(points.map(v=>new THREE.Vector3(...v)));return add(new THREE.TubeGeometry(curve,32,rad,8,false),mat);};
+ const bolt=(x,y,z,rad=.018,mat=aluminium)=>sphere(rad,mat,[x,y,z],[1,1,.42]);
+ const makeLabel=(accent='#b58b4d',caption='KERBAL SPACE PROGRAM',serial=id.toUpperCase())=>{
+  const c=document.createElement('canvas');c.width=512;c.height=256;const q=c.getContext('2d');
+  q.fillStyle='#e3e3da';q.fillRect(0,0,512,256);q.fillStyle=accent;q.fillRect(0,0,512,18);q.fillRect(0,228,512,8);
+  q.strokeStyle='#9ba5a5';q.lineWidth=2;for(let y=42;y<220;y+=28){q.beginPath();q.moveTo(18,y);q.lineTo(494,y);q.stroke();}
+  q.fillStyle='#26343a';q.font='bold 28px Arial';q.fillText(caption,22,76);q.font='bold 23px Arial';q.fillText(serial.slice(0,25),22,116);
+  q.font='16px Arial';q.fillText('FLIGHT HARDWARE  •  FLIGHT READY',22,158);q.fillText('PRESSURE / STRUCTURAL SYSTEMS',22,190);
+  for(let i=0;i<12;i++){q.fillStyle=i%2?'#5c666a':'#b7c0be';q.fillRect(22+i*13,207,8,10);}
+  const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=8;
+  return M(0xffffff,.22,.62,{map:tex});
+ };
+ const labelMat=makeLabel(id.includes('rockomax')||id.includes('x200')?'#b84c36':id.includes('s3')?'#b68b4e':'#b68b4e',id.includes('rockomax')?'ROCKOMAX INDUSTRIES':'KERBODYNE',id);
+ const radialLabel=(radius,y,w,hh,mat=labelMat)=>{const m=add(new THREE.PlaneGeometry(w,hh),mat,[0,y,radius]);return m;};
+ const torusAt=(rad,y,t,mat)=>band(rad,y,t,mat);
+ const detailRivets=(rad,y,count=16,offset=0)=>{for(let i=0;i<count;i++){const a=i*Math.PI*2/count+offset;bolt(Math.cos(a)*rad,y,Math.sin(a)*rad,.018);}};
+ const radialPipe=(rad,y0,y1,a,mat=aluminium,thick=.018)=>tube([[Math.cos(a)*rad,y0,Math.sin(a)*rad],[Math.cos(a*1.02)*rad*1.025,(y0+y1)/2,Math.sin(a*1.02)*rad*1.025],[Math.cos(a)*rad,y1,Math.sin(a)*rad]],thick,mat); 
+ const tankTexture=labelMat;
+ const makeTank=()=>{
+  const isRcs=id.startsWith('rcs-'),xenon=id.includes('xenon'),oscar=id.includes('oscar'),donut=id.includes('donut')||id.includes('r12'),baguette=id.includes('baguette')||id.includes('r11'),rock=/rockomax|x200|jumbo/i.test(id+' '+name),kerb=id.includes('s3-'),mk2=id.includes('mk2-lf'),mk3=id.includes('mk3-lf'),mk0=id.includes('mk0-lf');
+  if(donut){const ring=add(new THREE.TorusGeometry(r*.76,r*.27,24,72),M(0xd6d7cf,.42,.5));ring.scale.set(1,.82,1);band(r*.98,.04,.035,steel);band(r*.98,-.04,.035,gold);cyl(r*.22,r*.22,.12,dark,0,32);detailRivets(r*.96,0,20);}
+  else if(baguette){lathe([[0,-h*.48],[r*.45,-h*.48],[r*.68,-h*.42],[r*.72,-h*.32],[r*.72,h*.32],[r*.65,h*.44],[r*.42,h*.48],[0,h*.48]],ivory,64);band(r*.71,-h*.38,.025,gold);band(r*.71,h*.38,.025,steel);for(let y of [-h*.25,h*.25])band(r*.72,y,.012,aluminium);}
   else{
-   const radius=mk3?r*.78:mk2?r*.84:r*.7;
-   cyl(radius*.9,radius,h*.65,white,h*.34,40);cyl(radius*.9,radius*.9,.12,dark,h*.68,40);torus(radius*.92,.07,alloy,h*.68);
-   if(lander){cyl(radius*.9,radius*.65,.22,orange,h*.72,32);for(let i=0;i<4;i++){const a=i*Math.PI/2;box(.12,.62,.12,alloy,[Math.cos(a)*radius*1.5,-.06,Math.sin(a)*radius*1.5]);}}
-   else if(cupola){sphere(radius*.94,white,[0,h*.7,0],[1,.52,1]);for(let i=0;i<6;i++){const a=i*Math.PI/3;const w=box(.14,.23,.05,glass,[Math.cos(a)*radius*.75,h*.78,Math.sin(a)*radius*.75]);w.lookAt(Math.cos(a)*2,h*.78,Math.sin(a)*2);}}
-   else{mesh(new THREE.ConeGeometry(radius*.92,h*.34,32),white,[0,h*.82,0]);}
-   const windowCount=inline?2:mk3?5:mk2?4:3;
-   for(let i=0;i<windowCount;i++){const a=(i-(windowCount-1)/2)*.42;const x=Math.sin(a)*radius*.7,z=Math.cos(a)*radius*.7;mesh(new THREE.SphereGeometry(radius*.19,18,12),glass,[x,h*.43,z],[0,0,0],[1,.78,.18]);torus(radius*.19,.025,alloy,h*.43).position.set(x,h*.43,z);}
-   bodyBand(radius*.94,h*.18);bodyBand(radius*.94,h*.58,gold);
-   for(let i=0;i<4;i++){const a=i*Math.PI/2;box(.13,.34,.16,dark,[Math.cos(a)*radius*1.02,h*.1,Math.sin(a)*radius*1.02]);}
-   if(p.crew>1)for(let i=0;i<Math.min(4,p.crew);i++){const a=i*Math.PI/2;mesh(new THREE.SphereGeometry(.08,10,8),gold,[Math.cos(a)*radius*.45,-h*.02,Math.sin(a)*radius*.45]);}
+   let rad=r,profile;
+   if(mk2||mk3){rad*=mk3?1.05:1;profile=[[0,-h*.5],[rad*.72,-h*.5],[rad*.93,-h*.45],[rad,-h*.35],[rad,h*.35],[rad*.93,h*.45],[rad*.72,h*.5],[0,h*.5]];}
+   else if(oscar){profile=[[0,-h*.5],[r*.65,-h*.5],[r*.92,-h*.42],[r,-h*.25],[r,h*.25],[r*.92,h*.42],[r*.65,h*.5],[0,h*.5]];}
+   else if(rock){profile=[[0,-h*.5],[r*.72,-h*.5],[r*.9,-h*.47],[r*.98,-h*.42],[r,-h*.34],[r,h*.34],[r*.98,h*.42],[r*.9,h*.47],[r*.72,h*.5],[0,h*.5]];}
+   else if(kerb){profile=[[0,-h*.5],[r*.68,-h*.5],[r*.88,-h*.47],[r*.97,-h*.42],[r,h*.42],[r*.97,h*.46],[r*.88,h*.49],[r*.68,h*.5],[0,h*.5]];}
+   else{profile=[[0,-h*.5],[r*.58,-h*.5],[r*.82,-h*.48],[r*.94,-h*.44],[r*.985,-h*.36],[r*.985,h*.36],[r*.94,h*.44],[r*.82,h*.48],[r*.58,h*.5],[0,h*.5]];}
+   const shellMat=xenon?M(0x708b9c,.7,.24):isRcs?M(0xc5c8c3,.48,.48):mk2||mk3?M(0xc4c9c7,.5,.5):ivory;
+   lathe(profile,shellMat,96);
+   const rimR=rad*(rock?1.005:.99);
+   for(const y of [-h*.44,h*.44]){band(rimR,y,.035,steel);band(rimR*.97,y+(y<0?.035:-.035),.018,aluminium);}
+   if(rock){band(r*1.01,-h*.34,.032,orange);band(r*1.01,h*.34,.032,orange);for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(r*.99,-h*.31,h*.31,a,steel,.022);}radialLabel(r*1.004,0,r*.72,h*.2,labelMat);}
+   else if(kerb){for(let y of [-h*.34,h*.34])band(r*.99,y,.026,gold);for(let i=0;i<16;i++){const a=i*Math.PI/8;radialPipe(r*.99,-h*.36,h*.36,a,aluminium,.012);}radialLabel(r*1.002,0,r*.72,h*.16,labelMat);}
+   else if(xenon){for(let y of [-h*.34,h*.34])band(r*.99,y,.026,gold);radialLabel(r*1.003,0,r*.68,h*.2,M(0xffffff,.25,.5,{map:makeLabel('#648ba0','XENON STORAGE',id).map}));}
+   else if(isRcs){for(let y of [-h*.3,h*.3])band(r*.99,y,.028,orange);radialLabel(r*1.004,0,r*.65,h*.22,labelMat);}
+   else if(oscar){band(r*1.01,-h*.32,.025,dark);band(r*1.01,h*.32,.025,gold);for(let i=0;i<8;i++){const a=i*Math.PI/4;bolt(Math.cos(a)*r*.96,0,Math.sin(a)*r*.96,.025,gold);}}
+   else if(mk2||mk3||mk0){for(let y of [-h*.35,h*.35])band(r*.99,y,.035,dark);for(let i=0;i<4;i++){const a=i*Math.PI/2;radialPipe(r*.98,-h*.36,h*.36,a,steel,.024);}radialLabel(r*1.002,0,r*.72,h*.18,labelMat);}
+   else{for(let y of [-h*.36,h*.36])band(r*.99,y,.026,dark);band(r*.99,-h*.27,.018,gold);band(r*.99,h*.27,.018,gold);for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(r*.98,-h*.32,h*.32,a,aluminium,.012);}radialLabel(r*1.002,0,r*.66,h*.22,labelMat);}
+   detailRivets(rimR,-h*.44,16);detailRivets(rimR,h*.44,16,.1);
+   if(!oscar&&!donut){cyl(r*.72,r*.72,.065,steel,h*.49,64);cyl(r*.7,r*.7,.05,dark,-h*.49,64);}
   }
- }else if(p.type==='probe'){
-  const oct=id.includes('okto')||id.includes('hecs'),flat=id.includes('stayputnik'),qbe=id.includes('qbe');
-  if(flat){cyl(r*.92,r*.92,h*.38,white);torus(r*.9,.07,gold,h*.2);for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.12,.08,.42,alloy,[Math.cos(a)*r*.65,0,Math.sin(a)*r*.65],[0,-a,0]);}}
-  else if(oct){mesh(new THREE.BoxGeometry(r*1.5,h*.85,r*1.5),white,[0,h*.45,0],[0,Math.PI/4,0]);for(let x of [-1,1])for(let z of [-1,1])sphere(.07,gold,[x*r*.52,h*.45,z*r*.52]);}
-  else{cyl(r*.8,r*.8,h*.65,white,h*.36,8);torus(r*.78,.06,gold,h*.68);for(let i=0;i<4;i++){const a=i*Math.PI/2;box(.12,.42,.12,alloy,[Math.cos(a)*r*.8,h*.25,Math.sin(a)*r*.8]);}}
-  cyl(r*.18,r*.22,h*.7,dark,h*1.02,12);sphere(r*.28,gold,[0,h*1.42,0]);for(let i=0;i<3;i++){const a=i*Math.PI*2/3;box(.05,.5,.05,alloy,[Math.cos(a)*r*.55,h*1.22,Math.sin(a)*r*.55]);}
-  if(qbe)box(r*1.8,.12,r*1.8,black,[0,-h*.1,0]);
- }else if(p.type==='tank'||p.type==='fuselage'||p.type==='resource'){
-  const aircraft=p.type==='fuselage',mk2=id.includes('mk2'),mk3=id.includes('mk3'),donut=id.includes('donut'),baguette=id.includes('baguette'),xenon=id.includes('xenon'),ore=id.includes('ore');
-  if(aircraft){
-   const width=mk3?r*1.35:mk2?r*1.2:r;const shell=mesh(new THREE.CylinderGeometry(width,width,h,32),white,[0,0,0],[Math.PI/2,0,0]);torus(width*.96,.06,dark).rotation.x=0;
-   for(const z of [-h*.34,0,h*.34])mesh(new THREE.TorusGeometry(width*.96,.045,8,32),gold,[0,0,z]);
-   for(let i=0;i<4;i++){const x=(i-1.5)*width*.35;box(.035,.025,h*.82,dark,[x,width*.95,0]);}
-  }else if(donut){cyl(r,r,h*.38,white);torus(r*.93,.12,alloy);torus(r*.93,.055,dark,.14);}
-  else if(baguette){mesh(new THREE.CapsuleGeometry(r*.6,h*.28,6,16),white,[0,0,0],[Math.PI/2,0,0]);}
-  else if(/adapter|アダプター/.test(name)){mesh(new THREE.CylinderGeometry(r*.58,r,h*.82,32),white,[0,h*.48,0]);torus(r*.98,.06,gold,h*.1);torus(r*.58,.06,dark,h*.88);}
-  else if(mk2||mk3){const body=mesh(new THREE.CylinderGeometry(r*.88,r*.88,h*.78,24),white,[0,h*.5,0]);body.scale.set(mk3?1.35:1.2,1,mk3?.72:.78);for(let y of [h*.15,h*.82]){const band=mesh(new THREE.TorusGeometry(r*.88,.055,8,32),gold,[0,y,0]);band.scale.set(mk3?1.35:1.2,1,mk3?.72:.78);}for(let x of [-1,1])box(.08,h*.55,.08,dark,[x*r*.8,h*.5,0]);}
-  else if(ore){cyl(r*.88,r*.88,h*.8,mat(0x788d77,.58,.55),h*.4,12);for(let y of [.15,h*.65])bodyBand(r*.9,y,gold);}
-  else{
-   const shellMat=xenon?mat(0x718c9b,.72,.24):texturedWhite;
-   const flSeries=/^tank-(s|m)$/.test(id)||/fl-t(100|200|400|800)/i.test(id),rockomax=/rockomax|x200/i.test(id+' '+name);
-   const profile=rockomax?[[0,h*.035],[r*.72,h*.035],[r*.9,h*.06],[r*.98,h*.12],[r,h*.18],[r,h*.82],[r*.98,h*.88],[r*.9,h*.94],[r*.72,h*.965],[0,h*.965]]:flSeries?[[0,h*.035],[r*.55,h*.035],[r*.82,h*.055],[r*.94,h*.11],[r*.98,h*.18],[r*.98,h*.82],[r*.94,h*.89],[r*.82,h*.945],[r*.55,h*.965],[0,h*.965]]:[[0,h*.08],[r*.48,h*.08],[r*.78,h*.105],[r*.91,h*.16],[r*.96,h*.23],[r*.96,h*.77],[r*.91,h*.84],[r*.78,h*.895],[r*.48,h*.92],[0,h*.92]];
-   lathe(profile,shellMat,0,96);
-   if(flSeries){for(const y of [h*.105,h*.895]){bodyBand(r*.985,y,dark);bodyBand(r*.965,y+(y<h*.5?.025:-.025),alloy);}bodyBand(r*.99,h*.18,gold);bodyBand(r*.99,h*.82,gold);mesh(new THREE.BoxGeometry(r*.23,h*.47,.026),dark,[0,h*.5,r*.974]);mesh(new THREE.BoxGeometry(r*.19,h*.23,.012),mat(0xd5d8cf,.25,.78),[0,h*.53,r*.992]);for(let yy of [h*.39,h*.67])for(let xx of [-1,1])sphere(.018,alloy,[xx*r*.065,yy,r*.994]);}
-   else if(rockomax){for(const y of [h*.09,h*.91])bodyBand(r*1.015,y,alloy);for(const y of [h*.2,h*.8]){bodyBand(r*1.008,y,dark);bodyBand(r*.995,y+.025,gold);}for(let i=0;i<12;i++){const a=i*Math.PI/6;const rail=mesh(new THREE.BoxGeometry(.045,h*.58,.04),dark,[Math.cos(a)*r*.992,h*.5,Math.sin(a)*r*.992]);rail.rotation.y=-a;}}
-   else{for(const y of [h*.12,h*.22,h*.78,h*.88])bodyBand(r*.96,y,y===h*.22||y===h*.78?gold:dark);for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.035,h*.48,.035,dark,[Math.cos(a)*r*.95,h*.5,Math.sin(a)*r*.95]);}}
-   if(xenon){for(let i=0;i<6;i++){const a=i*Math.PI/3;sphere(.06,gold,[Math.cos(a)*r*.6,h*.5,Math.sin(a)*r*.6]);}}
-  }
- }else if(p.type==='nosecone'){
-  mesh(new THREE.ConeGeometry(r,h,32),white,[0,h*.5,0]);torus(r*.92,.055,gold,h*.08);torus(r*.42,.025,dark,h*.82);
- }else if(p.type==='engine'||p.type==='jet'||p.type==='booster'){
-  const jet=p.type==='jet'||id.startsWith('jet-'),solid=p.type==='booster',ion=id.includes('ion')||id.includes('dawn'),nerv=id.includes('nerv'),mammoth=id.includes('mammoth'),vector=id.includes('vector'),spider=id.includes('spider'),poodle=id.includes('poodle'),twin=id.includes('twinboar');
-  const count=mammoth?4:twin||id.includes('rapier')?2:spider?4:1;
+ };
+ const makeEngine=()=>{
+  const jet=type==='jet'||id.startsWith('jet-'),ion=id.includes('ion')||id.includes('dawn'),nuclear=id.includes('nerv'),dart=id.includes('dart'),vector=id.includes('vector'),mammoth=id.includes('mammoth'),twin=id.includes('twinboar'),spider=id.includes('spider'),thud=id.includes('thud'),poodle=id.includes('poodle'),rapier=id.includes('rapier');
   if(jet){
-   cyl(r*.72,r,h*.72,alloy,h*.53,40);const lip=mesh(new THREE.TorusGeometry(r*.72,.1,12,40),gold,[0,0,h*.18],[Math.PI/2,0,0]);mesh(new THREE.CylinderGeometry(r*.52,r*.52,.07,32),black,[0,0,h*.22],[Math.PI/2,0,0]);for(let i=0;i<12;i++){const a=i*Math.PI/6;box(.035,.035,r*.95,alloy,[Math.cos(a)*r*.45,Math.sin(a)*r*.45,h*.22]);}
-   if(id.includes('whiplash'))for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.06,.08,h*.58,dark,[Math.cos(a)*r*.9,Math.sin(a)*r*.9,0]);}
-   if(id.includes('goliath'))for(let i=0;i<16;i++){const a=i*Math.PI/8;box(.025,.035,r*.48,gold,[Math.cos(a)*r*.38,Math.sin(a)*r*.38,h*.22]);}
-  }else if(ion){cyl(r*.34,r*.65,h*.32,alloy,h*.35);for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.035,h*.55,.035,gold,[Math.cos(a)*r*.52,h*.48,Math.sin(a)*r*.52]);}mesh(new THREE.CylinderGeometry(r*.5,r*.28,.08,24),blue,[0,h*.72,0]);}
-  else{
-   if(solid){cyl(r,r,h*.72,white,h*.52,32);mesh(new THREE.ConeGeometry(r*.98,h*.28,32),orange,[0,h*.99,0]);}
-   else{cyl(r*.9,r,h*.48,white,h*.7,36);for(let i=0;i<count;i++){const a=i*Math.PI*2/count,x=count===1?0:Math.cos(a)*r*.42,z=count===1?0:Math.sin(a)*r*.42;const nr=count===4?r*.38:count===2?r*.43:r*.78;nozzle(nr,h*.62,dark,-h*.03,x,z);}}
-   if(nerv){cyl(r*.38,r*.5,h*.6,gold,h*.23);for(let i=0;i<12;i++){const a=i*Math.PI/6;box(.07,h*.5,.07,dark,[Math.cos(a)*r*.65,h*.38,Math.sin(a)*r*.65]);}}
-   else if(id.includes('dart')){cyl(r*.16,r*.05,h*.62,gold,-h*.22,24);torus(r*.7,.08,alloy,-h*.02);}
-   else if(vector){torus(r*.68,.09,gold,h*.14);for(let i=0;i<4;i++){const a=i*Math.PI/2;box(.08,h*.52,.08,alloy,[Math.cos(a)*r*.72,h*.2,Math.sin(a)*r*.72]);}}
-   else if(poodle){for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.07,.24,.07,gold,[Math.cos(a)*r*.8,h*.42,Math.sin(a)*r*.8]);}}
-   else{for(let i=0;i<6;i++){const a=i*Math.PI/3;box(.035,h*.22,.035,dark,[Math.cos(a)*r*.91,h*.65,Math.sin(a)*r*.91]);}}
+   const shellR=r*.78;lathe([[0,-h*.43],[shellR*.7,-h*.43],[shellR,-h*.34],[shellR,h*.32],[shellR*.82,h*.44],[shellR*.45,h*.47],[0,h*.47]],aluminium,64);
+   const inlet=add(new THREE.TorusGeometry(shellR*.72,.075,16,64),steel,[0,0,h*.43],[Math.PI/2,0,0]);add(new THREE.CircleGeometry(shellR*.66,48),black,[0,0,h*.432],[Math.PI/2,0,0]);
+   for(let i=0;i<14;i++){const a=i*Math.PI*2/14;box(.025,.025,shellR*.58,aluminium,[Math.cos(a)*shellR*.34,Math.sin(a)*shellR*.34,h*.44],[0,0,a]);}
+   for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(shellR*1.02,-h*.28,h*.28,a,steel,.026);}
+   band(shellR,-h*.3,.045,gold);band(shellR,h*.32,.045,dark);
+   if(id.includes('panther')){for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(shellR*1.04,-h*.2,h*.22,a,orange,.018);}}
+   if(id.includes('whiplash')){for(let i=0;i<10;i++){const a=i*Math.PI/5;radialPipe(shellR*1.06,-h*.35,h*.3,a,steel,.035);}}
+   if(id.includes('goliath')){for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(shellR*1.03,-h*.3,h*.3,a,gold,.035);}}
+  }else if(ion){
+   lathe([[0,-h*.28],[r*.25,-h*.28],[r*.42,-h*.12],[r*.48,h*.1],[r*.32,h*.25],[0,h*.25]],steel,48);
+   for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(r*.46,-h*.2,h*.28,a,gold,.018);}
+   add(new THREE.TorusGeometry(r*.4,.055,12,48),gold,[0,h*.23,0]);add(new THREE.CircleGeometry(r*.36,48),blue,[0,h*.25,0]);
+   for(let i=0;i<6;i++){const a=i*Math.PI/3;box(.055,h*.42,.055,aluminium,[Math.cos(a)*r*.53,h*.05,Math.sin(a)*r*.53]);}
+  }else{
+   const cluster=mammoth?4:twin?2:spider?4:1,bodyR=r*.82;
+   lathe([[0,-h*.12],[bodyR*.78,-h*.12],[bodyR,-h*.05],[bodyR,h*.28],[bodyR*.88,h*.38],[bodyR*.62,h*.4],[0,h*.4]],nuclear?M(0x6f7777,.65,.42):ivory,64);
+   band(bodyR,h*.28,.045,steel);band(bodyR,-h*.06,.045,gold);
+   if(nuclear){lathe([[r*.18,-h*.48],[r*.28,-h*.45],[r*.38,-h*.12],[r*.4,h*.04],[r*.34,h*.08],[r*.22,h*.08]],gold,48);for(let i=0;i<16;i++){const a=i*Math.PI/8;radialPipe(bodyR*1.05,-h*.08,h*.24,a,steel,.035);}band(bodyR*1.04,h*.22,.06,orange);}
+   else if(dart){lathe([[r*.05,-h*.5],[r*.24,-h*.48],[r*.52,-h*.18],[r*.7,-h*.08],[r*.58,h*.12],[r*.35,h*.18],[0,h*.18]],steel,48);band(r*.6,-h*.12,.06,gold);}
+   else{
+    for(let k=0;k<cluster;k++){
+     const a=k*Math.PI*2/cluster,x=cluster===1?0:Math.cos(a)*r*.38,z=cluster===1?0:Math.sin(a)*r*.38,nr=cluster===4?r*.34:cluster===2?r*.42:r*.68;
+     const profile=[[nr*.22,-h*.58],[nr*.3,-h*.55],[nr*.48,-h*.4],[nr*.72,-h*.2],[nr*.92,-h*.06],[nr,-h*.025],[nr*.94,-h*.0],[nr*.82,-h*.04],[nr*.68,-h*.13],[nr*.48,-h*.34],[nr*.3,-h*.52],[nr*.22,-h*.58]];
+     lathe(profile,steel,48,[x,0,z]);
+     const throat=add(new THREE.CircleGeometry(nr*.56,32),black,[x,-h*.565,z],[Math.PI/2,0,0]);
+     const rim=add(new THREE.TorusGeometry(nr*.93,.045,10,40),aluminium,[x,-h*.055,z],[Math.PI/2,0,0]);
+     for(let j=0;j<8;j++){const aa=j*Math.PI/4;bolt(x+Math.cos(aa)*nr*.85,-h*.08,z+Math.sin(aa)*nr*.85,.022,gold);}
+     for(let j=0;j<3;j++){const aa=j*Math.PI*2/3;radialPipe(nr*.86,-h*.08,-h*.36,aa,aluminium,.018);}
+    }
+    if(vector){for(let i=0;i<4;i++){const a=i*Math.PI/2;radialPipe(r*.72,-h*.02,h*.27,a,gold,.04);}}
+    if(poodle){for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(r*.7,-h*.03,h*.24,a,aluminium,.035);}}
+    if(rapier){band(bodyR*1.02,h*.1,.055,orange);for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(bodyR*1.03,-h*.05,h*.27,a,gold,.025);}}
+   }
+   for(let i=0;i<3;i++){const a=i*Math.PI*2/3;const x=Math.cos(a)*bodyR*.75,z=Math.sin(a)*bodyR*.75;tube([[x,h*.2,z],[x*1.1,h*.02,z*1.1],[x*.92,-h*.12,z*.92]],.025,aluminium);}
   }
-  torus(r*.88,.055,gold,-h*.01);
-  const flame=mesh(new THREE.ConeGeometry(r*.42,.9,16),new THREE.MeshBasicMaterial({color:0xff9b37,transparent:true,opacity:.82}),[0,-h*.38,0],[Math.PI,0,0]);flame.name='engine-flame';flame.visible=false;
- }else if(p.type==='wing'||p.type==='tail'||p.type==='control'||p.type==='fin'){
-  const span=r,delta=id.includes('delta'),swept=id.includes('swept')||id.includes('strake'),vertical=p.type==='tail'||id.includes('rudder')||id.includes('winglet');
-  const shape=new THREE.Shape();shape.moveTo(-span*.2,-.25);shape.lineTo(span*(swept?.5:.72),-.12);shape.lineTo(span*(delta?.34:.42),.18);shape.lineTo(-span*.2,.22);shape.closePath();
-  const wing=mesh(new THREE.ExtrudeGeometry(shape,{depth:Math.max(.07,p.height),bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.045,bevelThickness:.025,curveSegments:8}),mat(0xaeb9b7,.68,.36),[0,0,0],vertical?[0,0,0]:[-Math.PI/2,0,0]);
-  if(vertical){wing.rotation.x=0;wing.position.y=p.height*.15;}
-  const stripe=box(span*.55,.025,.035,gold,[span*.18,p.height+.03,.05]);stripe.rotation.y=swept?.12:0;
-  if(p.type==='control'||id.includes('elevon')){const hinge=box(span*.52,.035,.04,dark,[span*.2,p.height+.055,.14]);}
-  if(id.includes('wing-delta')||delta)for(let i=0;i<3;i++)box(.025,.02,.3,alloy,[span*(.05+i*.13),p.height+.04,.1]);
- }else if(p.type==='solar'){
-  const large=id.includes('gigantor')||id.includes('xl')||id.includes('sp10');
-  const count=id.includes('ox4')?2:large?3:2,width=large?1.7:1.05;
-  cyl(.15,.2,.35,alloy,h*.5,16);box(.12,.12,large?1.5:1.15,gold,[0,h*.5,0]);
-  for(let side of [-1,1]){const x=side*(width*.68);box(width,.055,large?1.55:1.05,blue,[x,h*.5,0]);for(let k=1;k<6;k++)box(.022,.018,large?1.5:1.0,mat(0x8bb5cf,.55,.3),[x-width/2+width*k/6,h*.5+.035,0]);box(width,.025,.035,alloy,[x,h*.5+.04,.53]);}
-  if(count===3)box(.08,.08,2.5,alloy,[0,h*.5,0]);
- }else if(p.type==='chute'){
-  cyl(r*.78,r*.78,h*.7,white,h*.38,24);torus(r*.78,.06,gold,h*.73);cyl(r*.56,r*.56,.12,orange,h*.78,20);
+ };
+ const makePod=()=>{
+  const inline=id.includes('inline'),lander=id.includes('lander'),cupola=id.includes('cupola'),mk2=id.includes('mk2'),mk3=id.includes('mk3'),mk13=id.includes('mk13'),seat=id==='seat',aircraft=id.includes('aircraft');
+  if(seat){lathe([[0,-h*.22],[r*.58,-h*.22],[r*.7,-h*.1],[r*.7,h*.12],[r*.58,h*.22],[0,h*.22]],steel,32);const back=box(r*1.25,h*.82,.12,ivory,[0,h*.5,-r*.28]);back.rotation.x=-.14;for(let x of [-1,1])tube([[x*r*.38,h*.55,-r*.2],[x*r*.32,h*.2,r*.35],[x*r*.22,-h*.12,r*.3]],.035,gold);return;}
+  const rr=mk3?r*.78:mk2||mk13?r*.84:r*.7;
+  if(lander){lathe([[0,-h*.5],[rr*.75,-h*.5],[rr,-h*.38],[rr,h*.12],[rr*.86,h*.24],[rr*.62,h*.43],[0,h*.48]],M(0xc5c6bd,.4,.5),72);band(rr,h*.1,.05,gold);}
+  else if(cupola){lathe([[0,-h*.5],[rr*.7,-h*.5],[rr,-h*.36],[rr,h*.12],[rr*.95,h*.25],[rr*.8,h*.42],[rr*.52,h*.5],[0,h*.5]],ivory,72);sphere(rr*.98,ivory,[0,h*.38,0],[1,.45,1]);}
+  else if(aircraft){lathe([[0,-h*.5],[rr*.8,-h*.5],[rr,-h*.4],[rr*.95,h*.2],[rr*.72,h*.42],[rr*.5,h*.5],[0,h*.5]],ivory,64);const canopy=add(new THREE.SphereGeometry(rr*.68,32,20,0,Math.PI*2,0,Math.PI/2),glass,[0,h*.36,0]);canopy.scale.set(1,.85,1);}
+  else{lathe([[0,-h*.5],[rr*.76,-h*.5],[rr*.96,-h*.38],[rr,h*.14],[rr*.88,h*.3],[rr*.58,h*.47],[0,h*.5]],ivory,72);lathe([[0,h*.25],[rr*.86,h*.25],[rr*.78,h*.34],[rr*.48,h*.47],[0,h*.5]],paint,64);}
+  band(rr*.98,-h*.38,.04,steel);band(rr*.98,h*.23,.045,gold);
+  // Distinctive forward-facing portholes with raised bezels and deep blue glass.
+  const windows=cupola?8:mk13?5:mk2?4:3;
+  for(let i=0;i<windows;i++){
+   const a=(i-(windows-1)/2)*.46,ang=a+(inline?Math.PI/2:0),x=Math.sin(ang)*rr*.73,z=Math.cos(ang)*rr*.73,y=h*(aircraft?.37:.06);
+   const bezel=sphere(rr*.205,steel,[x,y,z],[1,.82,.2]);sphere(rr*.16,glass,[x,y,z+rr*.035],[1,.78,.2]); 
+   const glint=add(new THREE.SphereGeometry(rr*.045,12,8),M(0x9ec7d8,.2,.18,{emissive:0x18394a,emissiveIntensity:.3}),[x-rr*.045,y+rr*.035,z+rr*.07],[0,0,0],[1,.55,.18]);
+  }
+  if(!cupola&&!aircraft){for(let i=0;i<4;i++){const a=i*Math.PI/2;radialPipe(rr*1.02,-h*.24,h*.06,a,steel,.035);}}
+  for(let i=0;i<12;i++){const a=i*Math.PI/6;bolt(rr*.98*Math.cos(a),-h*.38,rr*.98*Math.sin(a),.018,gold);}
+  if(lander){cyl(rr*.86,rr*.95,.12,dark,-h*.48);for(let i=0;i<4;i++){const a=i*Math.PI/2;const x=Math.cos(a)*rr*1.38,z=Math.sin(a)*rr*1.38;tube([[Math.cos(a)*rr*.8,-h*.3,Math.sin(a)*rr*.8],[x,-h*.1,z],[x,-h*.45,z]],.045,aluminium);}}
+  else if(cupola){for(let i=0;i<8;i++){const a=i*Math.PI/4;const x=Math.cos(a)*rr*.9,z=Math.sin(a)*rr*.9;radialPipe(rr*.9,h*.16,h*.38,a,steel,.025);}}
+  else{cyl(rr*.75,rr*.82,.1,steel,-h*.49);band(rr*.82,-h*.47,.045,orange);}
+  const hatch=add(new THREE.TorusGeometry(rr*.18,.035,8,32),gold,[0,-h*.2,rr*.96]);hatch.rotation.y=0;
+ };
+ const makeProbe=()=>{
+  const oct=id.includes('okto')||id.includes('hecs'),flat=id.includes('stayputnik'),qbe=id.includes('qbe'),rover=id.includes('rovemate'),rcl=id.includes('rcl');
+  if(flat){lathe([[0,-h*.18],[r*.78,-h*.18],[r*.95,-h*.08],[r*.95,h*.08],[r*.78,h*.18],[0,h*.18]],ivory,48);band(r*.94,h*.12,.04,gold);for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(r*.9,-h*.12,h*.12,a,steel,.025);}}
+  else if(oct||qbe||rover){const n=oct?8:4,shape=new THREE.CylinderGeometry(r*.92,r*.92,h*.75,n,1,false);add(shape,oct?M(0xb8b9b0,.42,.55):ivory,[0,0,0]);band(r*.9,h*.38,.045,gold);band(r*.9,-h*.38,.045,steel);for(let i=0;i<n;i++){const a=i*Math.PI*2/n;const x=Math.cos(a)*r*.66,z=Math.sin(a)*r*.66;bolt(x,h*.28,z,.035,gold);}}
+  else{lathe([[0,-h*.5],[r*.78,-h*.5],[r,h*.36],[r*.78,h*.5],[0,h*.5]],ivory,8);band(r*.98,h*.38,.04,gold);}
+  const domeR=r*.26;sphere(domeR,gold,[0,h*.46,0]);for(let i=0;i<3;i++){const a=i*Math.PI*2/3;radialPipe(r*.62,h*.2,h*.72,a,aluminium,.025);}
+  if(rcl){for(let i=0;i<4;i++){const a=i*Math.PI/2;const x=Math.cos(a)*r*1.25,z=Math.sin(a)*r*1.25;box(r*.48,.055,r*.36,blue,[x,h*.12,z]);}}
+  if(rover){for(let i=0;i<4;i++){const x=i%2?1:-1,z=i<2?1:-1;const leg=box(.08,h*.65,.08,steel,[x*r*.78,-h*.4,z*r*.78]);leg.rotation.z=x*.3;}}
+  radialLabel(r*.94,0,r*.65,h*.2,labelMat);
+ };
+ const makeWing=()=>{
+  const vertical=type==='tail'||id.includes('rudder')||id.includes('winglet'),delta=id.includes('delta'),swept=id.includes('swept')||id.includes('strake'),small=id.includes('small')||id.includes('struct-d');
+  const span=r*(small?.82:1.15),chord=vertical?h*.85:h*1.15,root=chord*(delta?1.5:1),tip=chord*(delta?.2:swept?.48:.62);
+  const shape=new THREE.Shape();shape.moveTo(-root*.5,0);shape.lineTo(root*.5,0);shape.lineTo(span,tip*.5);shape.lineTo(span*.86,-tip*.5);shape.lineTo(-root*.5,-root*.5);shape.closePath();
+  const geo=new THREE.ExtrudeGeometry(shape,{depth:.09,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.035,bevelThickness:.025,curveSegments:8});
+  const wing=add(geo,M(0xb6bfbd,.55,.42),[0,0,0],vertical?[0,0,0]:[-Math.PI/2,0,0]);
+  if(vertical)wing.position.y=h*.12;
+  const leading=add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(-root*.5,0,.04),new THREE.Vector3(span*.5,tip*.2,.04),new THREE.Vector3(span,0,.04)]),32,.025,8,false),steel,[0,0,0],vertical?[0,0,0]:[-Math.PI/2,0,0]);
+  for(let i=0;i<4;i++){const x=span*(.15+i*.16);const line=box(.018,.015,.075,gold,[x,.1,.02]);if(!vertical)line.rotation.x=-Math.PI/2;}
+  if(type==='control'||id.includes('elevon')||id.includes('rudder')){const hinge=box(span*.52,.055,.12,dark,[span*.43,.04,.1]);if(!vertical)hinge.rotation.x=-Math.PI/2;for(let i=0;i<5;i++)bolt(span*(.2+i*.12),.09,.16,.018);}
+ };
+ const makeSolar=()=>{
+  const large=id.includes('xl')||id.includes('sp10')||id.includes('gigantor'),fixed=id.includes('ox-stat'),count=id.includes('ox4')?2:large?4:2,w=large?1.45:fixed?.92:1.05;
+  cyl(.16,.2,.32,aluminium,h*.18,24);band(.18,h*.18,.035,gold);
+  for(let side of [-1,1]){
+   const x=side*(w*.65);const panelMat=M(0x173d65,.62,.28,{emissive:0x071a28,emissiveIntensity:.12});
+   const panel=box(w,.045,large?1.35:1.0,panelMat,[x,h*.18,0]);
+   for(let i=0;i<8;i++)box(.012,.012,large?1.3:.95,M(0x8db8d1,.48,.32),[x-w*.5+w*(i+1)/9,h*.208,0]);
+   for(let j=0;j<6;j++)box(w*.96,.012,.012,M(0x8db8d1,.45,.34),[x,h*.21,-.45+j*.18]);
+   for(let z of [-.52,.52])box(w*.98,.035,.025,aluminium,[x,h*.23,z]);
+   const hinge=add(new THREE.CylinderGeometry(.055,.055,w*.16,16),gold,[side*w*.13,h*.18,0],[0,0,Math.PI/2]);
+  }
+  if(fixed){const frame=box(.08,.07,1.1,steel,[0,h*.18,0]);}
+  else{for(let side of [-1,1])tube([[0,h*.18,0],[side*w*.4,h*.18,.1],[side*w*.72,h*.18,.12]],.035,aluminium);}
+ };
+ const makeParachute=()=>{
+  const rad=r*.76;lathe([[0,-h*.5],[rad*.75,-h*.5],[rad,-h*.36],[rad,h*.25],[rad*.86,h*.5],[0,h*.5]],ivory,48);
+  band(rad,h*.34,.045,gold);cyl(rad*.56,rad*.56,.1,orange,h*.49,32);
   const rig=new THREE.Group();rig.name='parachute-rig';rig.visible=false;
-  const canopy=new THREE.Group();canopy.name='parachute-canopy';canopy.position.y=h*1.28;canopy.scale.setScalar(.04);
-  for(let i=0;i<12;i++){const a=i*Math.PI/6;const panel=new THREE.Mesh(new THREE.SphereGeometry(r*.78,18,12,0,Math.PI/6,0,Math.PI/2),i%2?white:orange);panel.position.set(Math.cos(a)*r*.12,0,Math.sin(a)*r*.12);panel.scale.set(1,.32,1);panel.rotation.y=-a;panel.castShadow=true;canopy.add(panel);}
+  const canopy=new THREE.Group();canopy.name='parachute-canopy';canopy.position.y=h*1.35;canopy.scale.setScalar(.04);
+  const canopyR=r*2.1,canopyH=r*.72;
+  const geo=new THREE.SphereGeometry(canopyR,64,24,0,Math.PI*2,0,Math.PI/2);
+  const clothA=M(0xd6d2c2,.05,.88,{side:THREE.DoubleSide}),clothB=M(0xc86b3b,.04,.86,{side:THREE.DoubleSide});
+  for(let i=0;i<16;i++){const a=i*Math.PI/8;const panel=new THREE.Mesh(new THREE.SphereGeometry(canopyR,16,12,a,Math.PI/8,0,Math.PI/2),i%2?clothA:clothB);panel.scale.set(1,canopyH/canopyR,1);panel.castShadow=true;canopy.add(panel);}
   rig.add(canopy);
-  for(let i=0;i<8;i++){const a=i*Math.PI/4,start=new THREE.Vector3(Math.cos(a)*r*.2,h*.72,Math.sin(a)*r*.2),end=new THREE.Vector3(Math.cos(a)*r*.62,h*1.25,Math.sin(a)*r*.62),dir=end.clone().sub(start),line=new THREE.Mesh(new THREE.CylinderGeometry(.009,.009,dir.length(),6),gold);line.position.copy(start).add(end).multiplyScalar(.5);line.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());rig.add(line);}
+  for(let i=0;i<12;i++){const a=i*Math.PI/6,start=new THREE.Vector3(Math.cos(a)*r*.18,h*.62,Math.sin(a)*r*.18),end=new THREE.Vector3(Math.cos(a)*canopyR*.92,h*1.35,Math.sin(a)*canopyR*.92),dir=end.clone().sub(start),line=add(new THREE.CylinderGeometry(.008,.008,dir.length(),6),gold,[0,0,0]);line.position.copy(start).add(end).multiplyScalar(.5);line.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());rig.add(line);}
   g.add(rig);
- }else if(p.type==='battery'){
-  const fuelCell=id.includes('fuelcell'),wheel=id.includes('wheel');box(r*1.65,h*.72,r*1.4,fuelCell?mat(0x687f70,.65,.4):white,[0,h*.45,0]);box(r*1.5,.08,r*1.25,dark,[0,h*.84,0]);for(let x of [-1,1])for(let z of [-1,1])box(.07,.12,.07,gold,[x*r*.65,h*.9,z*r*.55]);
-  if(wheel){torus(r*.52,.09,gold,h*.48);cyl(r*.35,r*.35,.14,dark,h*.48,20);}
- }else if(p.type==='comm'){
-  cyl(r*.18,r*.22,h*.5,alloy,h*.25,12);cyl(r*.08,r*.08,h*.85,dark,h*.8,10);
-  if(id.includes('dts')||id.includes('dish')){mesh(new THREE.SphereGeometry(r*.78,24,12,0,Math.PI*2,0,Math.PI/2),white,[0,h*1.15,0]);torus(r*.78,.04,gold,h*1.15);}
-  else{sphere(r*.2,gold,[0,h*1.25,0]);for(let i=0;i<4;i++){const a=i*Math.PI/2;box(.025,h*.35,.025,alloy,[Math.cos(a)*r*.4,h*1.02,Math.sin(a)*r*.4]);}}
- }else if(p.type==='science'){
-  const nm=p.name||'';cyl(r*.75,r*.75,h*.65,white,h*.34,24);bodyBand(r*.78,h*.1,gold);bodyBand(r*.78,h*.62,dark);
-  if(/scan arm|スキャンアーム/i.test(nm)){for(let i=0;i<3;i++){const y=h*(.65+i*.22);cyl(.055,.055,h*.28,alloy,y,8);sphere(.12,gold,[0,y+h*.13,0]);}box(.14,.12,h*.55,dark,[0,h*.85,0]);}
-  else if(/telescope|望遠鏡/i.test(nm)){cyl(r*.3,r*.42,h*1.25,dark,h*.8,24);torus(r*.32,.06,gold,h*1.42);sphere(r*.24,glass,[0,h*1.44,0],[1,.25,1]);}
-  else if(/goo|グー/.test(nm)){sphere(r*.5,mat(0x9da78d,.1,.25),[0,h*.82,0]);}
-  else if(/material|サイエンスJr|実験装置/.test(nm)){box(r*1.65,h*.55,r*1.65,dark,[0,h*.5,0]);for(let i=0;i<3;i++)box(.08,.6,.08,gold,[(i-1)*r*.4,h*.7,0]);}
-  else if(/thermo|barometer|温度計|気圧計/.test(nm)){cyl(r*.22,r*.22,h*.7,dark,h*.9,12);sphere(r*.25,orange,[0,h*1.3,0]);}
-  else{cyl(r*.12,r*.12,h*.65,alloy,h*1.05,10);mesh(new THREE.SphereGeometry(r*.55,18,10,0,Math.PI*2,0,Math.PI/2),alloy,[0,h*1.38,0]);}
- }else if(p.type==='decoupler'||p.type==='structural'){
-  const tri=id.includes('tri'),quad=id.includes('quad'),bi=id.includes('bi'),strut=id.includes('strut')||id.includes('hardpoint'),adapter=id.includes('adapter');
-  if(/grip|グリップ/.test(p.name||'')){box(r*1.8,.12,h*.75,dark);for(let z=-h*.32;z<=h*.32;z+=.09)box(r*1.72,.045,.025,alloy,[0,.085,z]);}
-  else if(strut){box(r*1.6,.16,r*.42,alloy);box(.16,.16,r*1.6,alloy);for(let x of [-1,1])for(let z of [-1,1])sphere(.09,gold,[x*r*.7,0,z*r*.7]);}
-  else{cyl(r,r*.82,h*.55,dark,h*.45,32);torus(r*.98,.07,alloy,h*.72);torus(r*.8,.055,gold,h*.15);boltRing(r*.88,h*.45,16);
-   if(adapter){mesh(new THREE.CylinderGeometry(r*.48,r*.9,h*.65,32),white,[0,h*.55,0]);}
-   if(tri||quad||bi){const count=tri?3:quad?4:2;for(let i=0;i<count;i++){const a=i*Math.PI*2/count;const x=Math.cos(a)*r*.9,z=Math.sin(a)*r*.9;cyl(r*.26,r*.26,h*.35,alloy,h*.48,16).position.set(x,h*.48,z);}}
-  }
- }else if(p.type==='docking'){
-  if(/膨張式|inflatable|airlock/i.test(p.name||'')){cyl(r*.72,r*.72,h*.78,white,h*.42,32);for(let y=.12;y<h*.9;y+=h*.16)bodyBand(r*.74,y,gold);box(r*.8,h*.42,.08,dark,[0,h*.42,r*.7]);torus(r*.7,.07,alloy,h*.82);}
-  else{cyl(r*.86,r*.72,h*.52,alloy,h*.38,40);torus(r*.82,.12,gold,h*.68);torus(r*.58,.07,dark,h*.72);cyl(r*.46,r*.46,.12,black,h*.73,32);boltRing(r*.72,h*.4,16);for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.08,.22,.08,dark,[Math.cos(a)*r*.92,h*.35,Math.sin(a)*r*.92]);}}
- }else if(p.type==='robotics'){
-  const nm=(p.name||'').toLowerCase(),isPiston=/cylinder|油圧/.test(nm),isRotor=/rotor|ローター/.test(nm),isController=/kal|controller|コントローラー/.test(nm);
-  if(isPiston){cyl(r*.22,r*.22,h*.82,alloy,h*.42,20);cyl(r*.13,r*.13,h*.62,gold,h*.95,16);cyl(r*.38,r*.38,.12,dark,h*.08,20);cyl(r*.38,r*.38,.12,dark,h*.83,20);torus(r*.3,.04,orange,h*.82);}
-  else if(isRotor){cyl(r*.52,r*.52,h*.34,dark,h*.3,32);torus(r*.48,.08,gold,h*.5);for(let i=0;i<6;i++){const a=i*Math.PI/3;box(.11,h*.16,r*1.45,alloy,[Math.cos(a)*r*.78,h*.56,Math.sin(a)*r*.78],[0,-a,0]);}cyl(r*.16,r*.16,h*.65,gold,h*.92,16);}
-  else if(/servo|サーボ/.test(nm)){cyl(r*.62,r*.62,h*.5,dark,h*.35,24);torus(r*.55,.08,gold,h*.65);box(r*1.15,.14,.18,alloy,[r*.72,h*.68,0]);sphere(.14,orange,[r*1.28,h*.68,0]);}
-  else if(/hinge|ヒンジ/.test(nm)){box(r*1.35,h*.65,r*.8,dark,[0,h*.35,0]);cyl(r*.34,r*.34,h*.9,gold,h*.55,16);for(let x of [-1,1])box(.12,h*.48,.12,alloy,[x*r*.58,h*.48,0]);}
-  else if(isController){box(r*1.5,h*.68,r*1.25,white,[0,h*.38,0]);for(let i=0;i<4;i++){const a=i*Math.PI/2;sphere(.08,i%2?orange:blue,[Math.cos(a)*r*.48,h*.78,Math.sin(a)*r*.4]);}box(r*1.25,.08,r*.85,dark,[0,h*.76,0]);}
-  else{cyl(r*.62,r*.62,h*.3,dark,h*.25,24);torus(r*.56,.1,gold,h*.48);const arm=box(r*1.5,.14,.18,alloy,[r*.7,h*.48,0]);arm.rotation.z=-.18;box(.16,h*.3,.16,dark,[r*1.42,h*.34,0]);sphere(.18,gold,[r*1.42,h*.15,0]);}
- }else if(p.type==='rotor-blade'){
-  cyl(r*.2,r*.2,h*.32,dark,h*.18,20);cyl(r*.1,r*.1,h*.9,gold,h*.72,16);
-  const bladeCount=/type s|タイプs/i.test(p.name||'')?3:2;
-  for(let i=0;i<bladeCount;i++){const a=i*Math.PI*2/bladeCount;const blade=box(r*2.4,.07,Math.max(.16,h*.28),white,[Math.cos(a)*r*1.15,h*.78,Math.sin(a)*r*1.15],[0,-a,0]);blade.rotation.z=.025;box(r*1.9,.018,.025,gold,[Math.cos(a)*r*1.15,h*.83,Math.sin(a)*r*1.15],[0,-a,0]);}
- }else if(p.type==='payload'){
-  const fam=(p.partFamily||p.name||'').toLowerCase();
-  if(/fairing|防護シェル|フェアリング/.test(fam)){cyl(r*.94,r*.94,.16,dark,h*.08,32);mesh(new THREE.ConeGeometry(r*.94,h*.82,32,1,true),white,[0,h*.5,0]);torus(r*.94,.06,gold,h*.12);for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.035,h*.62,.035,alloy,[Math.cos(a)*r*.9,h*.48,Math.sin(a)*r*.9]);}}
-  else if(/service bay|サービスベイ/.test(fam)){box(r*1.55,h*.8,r*1.25,dark,[0,h*.42,0]);for(let x of [-1,1]){box(.06,h*.68,.06,gold,[x*r*.7,h*.42,0]);box(.12,h*.7,.05,white,[x*r*.78,h*.42,r*.62]);}for(let y=.18;y<h*.8;y+=.2)box(r*1.1,.035,.08,alloy,[0,y,0]);}
-  else if(/cargo bay|カーゴベイ|cargo ramp|ランプ/.test(fam)){cyl(r,r,h*.82,dark,h*.42,32);for(let y of [h*.08,h*.82])bodyBand(r,y,alloy);box(r*1.72,h*.58,.08,white,[0,h*.44,r*.93]);for(let i=0;i<6;i++)box(.025,h*.45,.04,gold,[(i-2.5)*r*.22,h*.44,r*.98]);if(/ramp|ランプ/.test(fam))box(r*1.6,.1,r*1.4,alloy,[0,.02,r*.65],[.25,0,0]);}
-  else if(/container|storage|コンテナ|保管/.test(fam)){box(r*1.5,h*.8,r*1.3,white,[0,h*.42,0]);for(let y=.12;y<h*.85;y+=.18)box(r*1.56,.035,r*1.36,gold,[0,y,0]);box(r*1.25,h*.55,.04,dark,[0,h*.45,r*.66]);}
-  else{cyl(r,r,h*.8,dark,h*.42,32);for(let y of [h*.08,h*.82])bodyBand(r,y,alloy);box(r*1.72,h*.58,.08,white,[0,h*.44,r*.93]);for(let i=0;i<6;i++)box(.025,h*.45,.04,gold,[(i-2.5)*r*.22,h*.44,r*.98]);}
- }else if(p.type==='thermal'){
-  if(/radiator|ラジエータ|熱制御/.test(p.name||'')){box(r*1.45,.12,h*.65,dark,[0,h*.25,0]);for(let i=0;i<9;i++){const z=-h*.3+i*h*.075;box(r*1.35,.045,.035,alloy,[0,h*.38,z]);}for(let x of [-r*.55,r*.55])box(.12,h*.45,.12,gold,[x,h*.18,0]);torus(r*.22,.055,gold,h*.62);}
-  else{cyl(r,r*.78,h*.34,mat(0x5c4638,.2,.9),h*.2,40);torus(r*.9,.08,gold,h*.42);for(let i=0;i<12;i++){const a=i*Math.PI/6;box(.05,.08,.18,dark,[Math.cos(a)*r*.8,h*.3,Math.sin(a)*r*.8]);}}
- }else if(p.type==='intake'){
-  cyl(r*.8,r,h*.68,alloy,h*.42,32);torus(r*.8,.1,gold,h*.77);cyl(r*.57,r*.57,.07,black,h*.79,32);for(let i=0;i<12;i++){const a=i*Math.PI/6;box(.04,.04,r*.55,alloy,[Math.cos(a)*r*.4,h*.79,Math.sin(a)*r*.4]);}
- }else if(p.type==='gear'||p.type==='ground'){
-  if(/landing leg|着陸脚/.test(p.name||'')){for(let x of [-r*.48,r*.48]){box(.12,h*.7,.12,alloy,[x,h*.42,0],[0,0,x<0?-.18:.18]);cyl(.07,.07,h*.22,gold,h*.22,10).position.x=x;}box(r*1.35,.12,r*.9,dark,[0,.04,0]);for(let x of [-r*.48,r*.48])box(.18,.06,.25,alloy,[x,.08,0]);}
-  else{const wheelR=r*.56;box(.14,h*.72,.14,alloy,[0,h*.43,0],[0,0,-.22]);box(.12,.1,.42,dark,[0,h*.08,0]);mesh(new THREE.CylinderGeometry(wheelR,wheelR,.2,28),rubber,[r*.55,.02,0],[0,0,Math.PI/2]);mesh(new THREE.CylinderGeometry(wheelR*.5,wheelR*.5,.22,20),alloy,[r*.55,.02,0],[0,0,Math.PI/2]);torus(wheelR*.7,.035,gold,.02).rotation.z=Math.PI/2;}
- }else if(p.type==='airbrake'){
-  box(r*1.65,.12,r*.55,dark);box(r*1.5,h*.8,.08,white,[0,h*.45,0]);for(let i=0;i<4;i++)box(.035,h*.68,.025,gold,[(i-1.5)*r*.3,h*.45,.06]);
- }else if(p.type==='utility'){
-  const nm=p.name||'';
-  if(/illuminator|light|照明|ライト/i.test(nm)){cyl(r*.3,r*.38,h*.42,dark,h*.25,16);cyl(r*.62,r*.62,.12,alloy,h*.52,24);sphere(r*.48,mat(0xf2e3ad,.1,.2),[0,h*.65,0],[1,.28,1]);for(let i=0;i<4;i++){const a=i*Math.PI/2;box(.045,h*.28,.045,alloy,[Math.cos(a)*r*.72,h*.2,Math.sin(a)*r*.72]);}}
-  else if(/flag|フラッグ/.test(nm)){cyl(.035,.035,h,alloy,h*.5,8);const flagShape=new THREE.Shape();flagShape.moveTo(0,0);flagShape.lineTo(r*1.25,h*.25);flagShape.lineTo(0,h*.48);flagShape.closePath();mesh(new THREE.ShapeGeometry(flagShape),mat(0x9b4c3f,.1,.8),[.02,h*.42,0]);}
-  else if(/launch escape|脱出システム/.test(nm)){for(let i=0;i<4;i++){const a=i*Math.PI/2;box(.1,h*.82,.1,alloy,[Math.cos(a)*r*.55,h*.5,Math.sin(a)*r*.55]);}mesh(new THREE.ConeGeometry(r*.38,h*.34,16),orange,[0,h*.98,0]);cyl(r*.24,r*.24,h*.22,dark,-h*.02,16);}
-  else if(/drill|採掘/.test(nm)){cyl(r*.6,r*.75,h*.5,white,h*.45,20);cyl(r*.18,r*.18,h*.45,dark,h*.12,12);mesh(new THREE.ConeGeometry(r*.3,h*.4,8),alloy,[0,-h*.22,0],[Math.PI,0,0]);for(let x of [-r*.55,r*.55])box(.1,h*.6,.1,gold,[x,h*.4,0]);}
-  else if(/isru|コンバート/.test(nm)){box(r*1.4,h*.72,r*1.2,white,[0,h*.42,0]);for(let x of [-r*.45,r*.45]){cyl(r*.22,r*.22,h*.55,alloy,h*.5,16).position.x=x;torus(r*.2,.035,gold,h*.78).position.x=x;}box(r*1.65,.1,.12,dark,[0,h*.8,0]);}
-  else if(/firework|スターショット/.test(nm)){for(let i=0;i<5;i++){const a=i*Math.PI*2/5;const x=Math.cos(a)*r*.5,z=Math.sin(a)*r*.5;cyl(.12,.12,h*.7,orange,h*.45,12).position.set(x,h*.45,z);}}
-  else{for(let x of [-r*.35,r*.35])cyl(.035,.035,h,alloy,h*.5,8).position.x=x;for(let y=.1;y<h;y+=.16)box(r*.9,.045,.07,dark,[0,y,0]);}
- }else{
-  cyl(r*.85,r*.85,h*.65,alloy,h*.35,20);bodyBand(r*.86,h*.12,gold);
+ };
+ const makeBattery=()=>{
+  const wheel=id.includes('wheel'),fuelcell=id.includes('fuelcell'),rad=r*.82;
+  lathe([[0,-h*.42],[rad*.72,-h*.42],[rad,-h*.32],[rad,h*.32],[rad*.72,h*.42],[0,h*.42]],fuelcell?M(0x788879,.5,.55):ivory,48);
+  band(rad,h*.3,.035,steel);band(rad,-h*.3,.035,gold);
+  for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(rad*.99,-h*.25,h*.25,a,aluminium,.018);}
+  if(wheel){const rr=rad*.55;band(rr,0,.09,gold);cyl(rr*.55,rr*.55,.12,steel,0,32);for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(rr*.8,-h*.15,h*.15,a,aluminium,.02);}}
+  radialLabel(rad*1.01,0,rad*.7,h*.24,labelMat);
+ };
+ const makeScience=()=>{
+  const nm=name.toLowerCase();
+  if(/goo|グー/.test(nm)){lathe([[0,-h*.35],[r*.68,-h*.35],[r*.78,-h*.2],[r*.78,h*.24],[r*.55,h*.38],[0,h*.38]],ivory,48);sphere(r*.42,M(0x879b75,.08,.24),[0,h*.35,0],[1,.8,1]);band(r*.78,-h*.2,.035,gold);}
+  else if(/thermo|barometer|温度計|気圧計/.test(nm)){lathe([[0,-h*.4],[r*.6,-h*.4],[r*.72,-h*.3],[r*.72,h*.25],[r*.55,h*.4],[0,h*.4]],steel,40);sphere(r*.22,orange,[0,h*.52,0]);for(let i=0;i<5;i++)box(r*.55,.018,.018,ivory,[0,h*(.1+i*.07),r*.7]);}
+  else if(/scan|スキャン|gravioli|加速度|地震/.test(nm)){lathe([[0,-h*.35],[r*.7,-h*.35],[r*.85,-h*.2],[r*.85,h*.22],[r*.7,h*.35],[0,h*.35]],ivory,40);for(let i=0;i<3;i++){const a=i*Math.PI*2/3;tube([[Math.cos(a)*r*.55,h*.15,Math.sin(a)*r*.55],[Math.cos(a)*r*.95,h*.6,Math.sin(a)*r*.95],[Math.cos(a)*r*.75,h*.82,Math.sin(a)*r*.75]],.035,aluminium);}sphere(r*.16,gold,[0,h*.82,0]);}
+  else if(/telescope|望遠鏡/.test(nm)){lathe([[0,-h*.35],[r*.34,-h*.35],[r*.4,-h*.2],[r*.3,h*.65],[r*.42,h*.8],[r*.28,h*.9],[0,h*.9]],steel,40);band(r*.4,h*.7,.04,gold);sphere(r*.26,glass,[0,h*.9,0],[1,.3,1]);}
+  else{lathe([[0,-h*.45],[r*.72,-h*.45],[r*.85,-h*.3],[r*.85,h*.35],[r*.7,h*.45],[0,h*.45]],ivory,48);band(r*.85,h*.32,.035,gold);for(let i=0;i<4;i++){const a=i*Math.PI/2;const x=Math.cos(a)*r*.58,z=Math.sin(a)*r*.58;box(r*.18,h*.62,.08,steel,[x,h*.15,z]);}radialLabel(r*.86,0,r*.68,h*.22,labelMat);}
+ };
+ const makeDecoupler=()=>{
+  const adapter=id.includes('adapter'),tri=id.includes('tri'),quad=id.includes('quad'),bi=id.includes('bi'),strut=id.includes('strut')||id.includes('hardpoint')||id.includes('pylon'),hub=id.includes('hubmax');
+  if(strut){if(id.includes('cubic')){const shape=new THREE.OctahedronGeometry(r*.7,0);add(shape,aluminium);}else{const beam=box(r*1.7,.12,r*.5,steel);box(.12,r*1.7,r*.5,aluminium);for(let x of [-1,1])for(let z of [-1,1])bolt(x*r*.72,0,z*r*.3,.05,gold);}return;}
+  if(hub){cyl(r*.9,r*.9,h*.65,steel);for(let i=0;i<6;i++){const a=i*Math.PI/3;const x=Math.cos(a)*r*.86,z=Math.sin(a)*r*.86;const p=lathe([[0,-h*.18],[r*.18,-h*.18],[r*.2,h*.18],[0,h*.18]],aluminium,24,[x,0,z]);}band(r*.9,h*.32,.05,gold);return;}
+  lathe([[0,-h*.5],[r*.76,-h*.5],[r*.96,-h*.4],[r,-h*.25],[r,h*.25],[r*.94,h*.4],[r*.75,h*.5],[0,h*.5]],steel,64);
+  band(r*.98,h*.42,.045,aluminium);band(r*.98,-h*.42,.045,gold);band(r*.78,0,.035,dark);detailRivets(r*.92,-h*.22,16);detailRivets(r*.92,h*.22,16,.1);
+  if(adapter){lathe([[0,h*.12],[r*.5,h*.12],[r*.55,h*.22],[r*.85,h*.48],[r*.95,h*.5],[0,h*.5]],ivory,64);band(r*.55,h*.22,.035,gold);}
+  if(tri||quad||bi){const n=tri?3:quad?4:2;for(let i=0;i<n;i++){const a=i*Math.PI*2/n,x=Math.cos(a)*r*.58,z=Math.sin(a)*r*.58;lathe([[0,h*.12],[r*.22,h*.12],[r*.24,h*.48],[0,h*.48]],aluminium,32,[x,0,z]);band(r*.23,h*.46,.025,gold).position.set(x,h*.46,z);}}
+ };
+ const makeGear=()=>{
+  const large=id.includes('large'),legR=large?.09:.06,spread=r*.72;
+  lathe([[0,-h*.42],[r*.42,-h*.42],[r*.52,-h*.25],[r*.42,h*.38],[r*.3,h*.44],[0,h*.44]],steel,32);
+  for(let side of [-1,1]){const x=side*spread; tube([[side*r*.25,h*.2,0],[x,h*.02,0],[side*r*.9,-h*.35,0]],legR,aluminium);tube([[side*r*.2,h*.12,0],[x*1.25,-h*.18,0],[x*1.25,-h*.43,0]],legR*.55,gold);const foot=box(large?.42:.28,.08,.22,rubber,[side*r*.9,-h*.4,0]);foot.rotation.z=side*.08;}
+  band(r*.5,h*.34,.04,gold);
+ };
+ const makeIntake=()=>{
+  const shock=id.includes('shock'),circular=id.includes('circular'),ram=id.includes('ram'),rad=r*.82;
+  lathe([[0,-h*.48],[rad*.62,-h*.48],[rad*.94,-h*.3],[rad,h*.22],[rad*.82,h*.48],[rad*.48,h*.5],[0,h*.5]],aluminium,64);
+  const inlet=add(new THREE.TorusGeometry(rad*.76,.075,14,48),steel,[0,0,h*.48],[Math.PI/2,0,0]);add(new THREE.CircleGeometry(rad*.67,48),black,[0,0,h*.482],[Math.PI/2,0,0]);
+  if(shock){const cone=add(new THREE.ConeGeometry(rad*.34,h*.62,32),steel,[0,0,h*.25],[Math.PI/2,0,0]);}
+  else if(ram){for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.025,.025,rad*1.1,[0,0,0],[Math.cos(a)*rad*.5,Math.sin(a)*rad*.5,h*.35],[0,0,a]);}}
+  else if(circular){band(rad*.98,h*.42,.055,gold);}
+ };
+ const makeComm=()=>{
+  if(id.includes('dish')||id.includes('dts')){const dish=add(new THREE.SphereGeometry(r*.8,48,24,0,Math.PI*2,0,Math.PI/2),ivory,[0,h*.45,0]);dish.rotation.x=Math.PI;band(r*.78,h*.45,.035,gold);tube([[0,h*.1,0],[0,h*.42,0],[0,h*.7,0]],.025,steel);sphere(.1,black,[0,h*.72,0]);}
+  else{lathe([[0,-h*.4],[r*.35,-h*.4],[r*.42,-h*.25],[r*.3,h*.15],[r*.18,h*.2],[0,h*.2]],steel,32);tube([[0,h*.1,0],[0,h*.6,0],[0,h*1.1,0]],.025,aluminium);sphere(.07,gold,[0,h*1.1,0]);for(let i=0;i<4;i++){const a=i*Math.PI/2;const x=Math.cos(a)*r*.3,z=Math.sin(a)*r*.3;tube([[0,h*.35,0],[x,h*.85,z]],.015,gold);}}
+ };
+ const makeDock=()=>{
+  lathe([[0,-h*.5],[r*.52,-h*.5],[r*.8,-h*.35],[r*.92,-h*.1],[r*.92,h*.18],[r*.82,h*.38],[r*.62,h*.5],[0,h*.5]],aluminium,64);
+  band(r*.84,h*.32,.08,gold);band(r*.62,h*.42,.045,steel);cyl(r*.48,r*.48,.08,black,h*.43,48);detailRivets(r*.77,-h*.2,20);
+  for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(r*.88,-h*.25,h*.2,a,steel,.035);}
+ };
+ const makePayload=()=>{
+  const nm=name.toLowerCase();
+  if(/fairing|フェアリング|防護シェル/.test(nm)){lathe([[0,-h*.5],[r*.9,-h*.5],[r,-h*.38],[r*.98,h*.12],[r*.72,h*.35],[r*.36,h*.48],[0,h*.5]],ivory,64);band(r*.98,-h*.38,.05,gold);for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(r*.98,-h*.32,h*.28,a,steel,.018);}}
+  else if(/service bay|サービスベイ/.test(nm)){lathe([[0,-h*.5],[r*.88,-h*.5],[r,-h*.4],[r,h*.4],[r*.88,h*.5],[0,h*.5]],steel,64);for(let y of [-h*.38,h*.38])band(r,y,.045,gold);const hatch=box(r*1.55,h*.68,.08,ivory,[0,0,r*.84]);for(let i=0;i<8;i++)bolt((i-3.5)*r*.18,0,r*.9,.025);}
+  else{lathe([[0,-h*.5],[r*.8,-h*.5],[r,-h*.38],[r,h*.38],[r*.8,h*.5],[0,h*.5]],ivory,64);for(let y of [-h*.4,h*.4])band(r,y,.035,gold);radialLabel(r*1.01,0,r*.72,h*.22,labelMat);}
+ };
+ const makeThermal=()=>{
+  lathe([[0,-h*.5],[r*.72,-h*.5],[r,-h*.34],[r*.94,h*.25],[r*.7,h*.5],[0,h*.5]],M(0x62534a,.22,.92),64);
+  band(r*.96,h*.28,.06,gold);for(let i=0;i<16;i++){const a=i*Math.PI/8;radialPipe(r*.95,-h*.28,h*.24,a,steel,.025);}
+ };
+ const makeUtility=()=>{
+  if(/launch escape|脱出システム/i.test(name)){for(let i=0;i<4;i++){const a=i*Math.PI/2;const x=Math.cos(a)*r*.58,z=Math.sin(a)*r*.58;tube([[x,-h*.35,z],[x*1.15,h*.25,z*1.15],[x*.9,h*.5,z*.9]],.045,aluminium);}lathe([[0,h*.25],[r*.28,h*.25],[r*.36,h*.5],[r*.2,h*.92],[0,h]],orange,32);}
+  else if(/light|illuminator|照明|ライト/i.test(name)){cyl(r*.38,r*.45,h*.4,steel);band(r*.62,h*.2,.06,gold);sphere(r*.5,glass,[0,h*.3,0],[1,.35,1]);}
+  else if(/drill|採掘/.test(name)){lathe([[0,-h*.5],[r*.65,-h*.5],[r*.7,h*.1],[r*.38,h*.35],[r*.12,h*.5],[0,h*.5]],aluminium,40);for(let i=0;i<4;i++){const a=i*Math.PI/2;radialPipe(r*.7,-h*.3,h*.28,a,gold,.035);}}
+  else{lathe([[0,-h*.5],[r*.75,-h*.5],[r*.85,-h*.3],[r*.85,h*.35],[r*.7,h*.5],[0,h*.5]],ivory,40);band(r*.84,h*.32,.04,gold);radialLabel(r*.86,0,r*.7,h*.2,labelMat);}
+ };
+ // Select a dedicated construction family; no one-size-fits-all primitive stand-in.
+ if(type==='tank'||type==='resource')makeTank();
+ else if(type==='engine'||type==='jet'||type==='booster')makeEngine();
+ else if(type==='pod'||type==='cockpit')makePod();
+ else if(type==='probe')makeProbe();
+ else if(type==='fin'||type==='wing'||type==='tail'||type==='control')makeWing();
+ else if(type==='solar')makeSolar();
+ else if(type==='chute')makeParachute();
+ else if(type==='battery')makeBattery();
+ else if(type==='science')makeScience();
+ else if(type==='decoupler'||type==='structural')makeDecoupler();
+ else if(type==='gear'||type==='ground')makeGear();
+ else if(type==='intake')makeIntake();
+ else if(type==='comm')makeComm();
+ else if(type==='docking')makeDock();
+ else if(type==='payload')makePayload();
+ else if(type==='thermal')makeThermal();
+ else if(type==='utility')makeUtility();
+ else if(type==='robotics'||type==='rotor-blade'){
+  const rotor=type==='rotor-blade'||id.includes('rotor'),servo=/servo|サーボ/i.test(name),hinge=/hinge|ヒンジ/i.test(name);
+  if(rotor){cyl(r*.28,r*.28,h*.3,steel);cyl(r*.12,r*.12,h*.8,gold,h*.5);for(let i=0;i<3;i++){const a=i*Math.PI*2/3;const blade=box(r*2.1,.06,Math.max(.14,h*.3),ivory,[Math.cos(a)*r,h*.68,Math.sin(a)*r],[0,-a,0]);blade.rotation.z=.025;}}
+  else if(servo){lathe([[0,-h*.4],[r*.6,-h*.4],[r*.7,h*.35],[r*.5,h*.4],[0,h*.4]],steel,32);tube([[r*.5,h*.2,0],[r*1.15,h*.35,0],[r*1.3,h*.68,0]],.055,aluminium);sphere(.12,gold,[r*1.3,h*.68,0]);}
+  else if(hinge){cyl(r*.62,r*.62,h*.5,steel);cyl(r*.3,r*.3,h*.95,gold,h*.1);for(let x of [-1,1])box(.12,h*.45,.12,aluminium,[x*r*.58,h*.35,0]);}
+  else{lathe([[0,-h*.4],[r*.72,-h*.4],[r*.8,h*.35],[r*.62,h*.4],[0,h*.4]],ivory,32);band(r*.75,h*.3,.04,gold);for(let i=0;i<4;i++){const a=i*Math.PI/2;bolt(Math.cos(a)*r*.7,h*.2,Math.sin(a)*r*.7,.05);}}
  }
- // Part-specific surface hardware: welded tank seams, service panels and engine feed plumbing.
- if(p.type==='tank'||p.type==='resource'){
-  const tankRadius=Math.max(.12,r*.96),tankHeight=Math.max(.18,h*.92);
-  const seamMat=mat(0x879397,.72,.38),panelMat=mat(0x46535a,.58,.52);
-  for(const yy of [-tankHeight*.34,tankHeight*.34]){
-   const weld=new THREE.Mesh(new THREE.TorusGeometry(tankRadius,.018,8,64),seamMat);weld.position.y=yy;g.add(weld);
-  }
-  const service=new THREE.Mesh(new THREE.BoxGeometry(tankRadius*.62,tankHeight*.16,.035),panelMat);service.position.set(0,tankHeight*.02,tankRadius*.965);g.add(service);
-  for(let x of [-1,1])for(let y of [-1,1]){const rivet=new THREE.Mesh(new THREE.SphereGeometry(.022,10,8),gold);rivet.position.set(x*tankRadius*.24,y*tankHeight*.045,tankRadius*.99);g.add(rivet);}
-  const topCollar=new THREE.Mesh(new THREE.CylinderGeometry(tankRadius*.78,tankRadius*.78,.055,48),alloy);topCollar.position.y=tankHeight*.49;g.add(topCollar);
-  const bottomCollar=new THREE.Mesh(new THREE.CylinderGeometry(tankRadius*.78,tankRadius*.78,.055,48),dark);bottomCollar.position.y=-tankHeight*.49;g.add(bottomCollar);
+ else{
+  lathe([[0,-h*.5],[r*.72,-h*.5],[r*.9,-h*.35],[r*.9,h*.35],[r*.72,h*.5],[0,h*.5]],ivory,48);band(r*.9,h*.36,.035,gold);radialLabel(r*.91,0,r*.7,h*.2,labelMat);
  }
- if(p.type==='engine'||p.type==='booster'||p.type==='jet'){
-  const engineRadius=Math.max(.12,r*.88),engineHeight=Math.max(.18,h);
-  const hotMetal=mat(0x514b45,.88,.3),pipeMat=mat(0x9ba6a8,.82,.3);
-  for(let i=0;i<3;i++){
-   const a=i*Math.PI*2/3,rad=engineRadius*.72;
-   const points=[new THREE.Vector3(Math.cos(a)*rad,engineHeight*.34,Math.sin(a)*rad),new THREE.Vector3(Math.cos(a)*rad*1.12,engineHeight*.12,Math.sin(a)*rad*1.12),new THREE.Vector3(Math.cos(a)*rad*.9,-engineHeight*.04,Math.sin(a)*rad*.9)];
-   const curve=new THREE.CatmullRomCurve3(points);
-   const pipe=new THREE.Mesh(new THREE.TubeGeometry(curve,12,.018,7,false),pipeMat);g.add(pipe);
-  }
-  const mount=new THREE.Mesh(new THREE.CylinderGeometry(engineRadius*.94,engineRadius*.94,.075,48),hotMetal);mount.position.y=-engineHeight*.08;g.add(mount);
-  for(let i=0;i<12;i++){const a=i*Math.PI/6,bolt=new THREE.Mesh(new THREE.SphereGeometry(.025,8,6),alloy);bolt.position.set(Math.cos(a)*engineRadius*.91,-engineHeight*.045,Math.sin(a)*engineRadius*.91);g.add(bolt);}
+ // Functional visual hooks used by the flight simulation.
+ if(type==='engine'||type==='jet'||type==='booster'){
+  const plume=add(new THREE.ConeGeometry(r*.38,.9,24),new THREE.MeshBasicMaterial({color:0xffa34d,transparent:true,opacity:.82,depthWrite:false}),[0,-h*.62,0],[Math.PI,0,0]);plume.name='engine-flame';plume.visible=false;
  }
- g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});return g;
+ g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
+ return g;
 }
