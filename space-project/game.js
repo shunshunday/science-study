@@ -8,84 +8,74 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],toa
 const scene=new THREE.Scene();
 const crewStage=new THREE.Group();crewStage.visible=false;scene.add(crewStage);
 function makeCrewFigure(member,index){
- const mat=(color,roughness=.62,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
+ const mat=(color,roughness=.68,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
  const root=new THREE.Group(),legParts=[],armParts=[];
- const skin=mat(0x8eae43,.84),eyeWhite=mat(0xf5f4e9,.18),pupilMat=mat(0x18251d,.2),suit=mat(0xe6e5d9,.76),suitShade=mat(0xb9c1bc,.72),orange=mat(0xd87932,.62),bootMat=mat(0x4b5558,.78),rubber=mat(0x252d30,.9),badgeMat=mat(index%3===0?0x3f7190:index%3===1?0x9b563e:0x5d7850,.7);
- const sphere=(parent,r,material,x,y,z,scale)=>{const mesh=new THREE.Mesh(new THREE.SphereGeometry(r,40,28),material);mesh.position.set(x,y,z);if(scale)mesh.scale.set(...scale);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
- const box=(parent,w,h,d,material,x,y,z)=>{const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
- const segment=(parent,length,radius,material)=>{const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius*.9,radius,length,28),material);mesh.position.y=-length/2;mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
- // Short, sturdy suit silhouette with separate hip, knee and ankle pivots.
+ const skin=mat(0x8eae43,.82),eyeWhite=mat(0xf5f4e9,.2),pupilMat=mat(0x18251d,.2),suit=mat(0xe6e5d9,.74),suitShade=mat(0xb9c1bc,.72),orange=mat(0xd87932,.58),bootMat=mat(0x4b5558,.78),rubber=mat(0x252d30,.9),badgeMat=mat(index%3===0?0x3f7190:index%3===1?0x9b563e:0x5d7850,.7);
+ const add=(parent,geo,material,pos=[0,0,0],rot=[0,0,0])=>{const m=new THREE.Mesh(geo,material);m.position.set(...pos);m.rotation.set(...rot);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;};
+ const lathe=(parent,profile,material,segments=32)=>add(parent,new THREE.LatheGeometry(profile.map(([r,y])=>new THREE.Vector2(r,y)),segments),material);
+ const tapered=(parent,length,radius,material,topScale=1)=>lathe(parent,[[0,-length],[radius*.72,-length],[radius*.9,-length*.88],[radius,-length*.55],[radius*topScale,-.12],[radius*topScale*.82,0],[0,0]],material,24);
  const pelvis=new THREE.Group();pelvis.position.y=.92;root.add(pelvis);
- sphere(pelvis,.31,suit,0,0,0,[1.18,.72,.92]);
+ lathe(pelvis,[[0,-.22],[.18,-.21],[.27,-.15],[.31,-.03],[.29,.12],[.2,.2],[0,.22]],suit,36);
  for(const side of [-1,1]){
   const hip=new THREE.Group();hip.position.set(side*.235,-.08,0);pelvis.add(hip);
-  sphere(hip,.17,suit,0,-.04,0,[1,1.12,.96]);
-  segment(hip,.38,.145,suit);
+  tapered(hip,.39,.15,suit,.9);
   const knee=new THREE.Group();knee.position.y=-.38;hip.add(knee);
-  sphere(knee,.145,suitShade,0,0,0,[1,.9,.92]);
-  segment(knee,.37,.128,suit);
+  lathe(knee,[[0,-.075],[.105,-.075],[.14,-.025],[.14,.045],[.105,.09],[0,.09]],suitShade,24);
+  tapered(knee,.37,.13,suit,.92);
   const ankle=new THREE.Group();ankle.position.set(0,-.36,.015);knee.add(ankle);
-  const cuff=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.09,28),orange);cuff.rotation.x=Math.PI/2;cuff.position.set(0,.015,.005);ankle.add(cuff);
+  lathe(ankle,[[0,-.045],[.11,-.045],[.14,-.015],[.14,.045],[.11,.075],[0,.075]],orange,24);
   const boot=new THREE.Group();boot.position.set(0,-.075,.095);ankle.add(boot);
-  box(boot,.275,.19,.36,bootMat,0,-.015,.045);
-  box(boot,.28,.055,.32,rubber,0,-.112,.045);
-  sphere(boot,.14,suitShade,0,.025,.19,[1,.62,.75]);
+  const bootShape=new THREE.Shape();bootShape.moveTo(-.13,-.09);bootShape.lineTo(.13,-.09);bootShape.lineTo(.145,.035);bootShape.lineTo(.105,.12);bootShape.lineTo(-.105,.12);bootShape.lineTo(-.145,.035);bootShape.closePath();
+  add(boot,new THREE.ExtrudeGeometry(bootShape,{depth:.3,bevelEnabled:true,bevelSegments:4,bevelSize:.035,bevelThickness:.025}),bootMat,[0,0,-.12]);
+  add(boot,new THREE.BoxGeometry(.27,.045,.29),rubber,[0,-.105,.025]);
   legParts.push({hip,knee,ankle,side});
  }
- // Suit torso, panel, webbing, seams and compact life-support pack.
  const torso=new THREE.Group();torso.position.y=1.42;root.add(torso);
- const torsoMesh=new THREE.Mesh(new THREE.CapsuleGeometry(.37,.48,7,20),suit);torsoMesh.scale.set(1.08,1,.84);torsoMesh.castShadow=true;torsoMesh.receiveShadow=true;torso.add(torsoMesh);
- box(torso,.43,.34,.075,suitShade,0,-.035,.325);
- box(torso,.22,.105,.025,badgeMat,0,.045,.372);
- box(torso,.12,.07,.03,orange,0,-.17,.375);
- // Shoulder-to-waist suit seams and harness strips.
+ lathe(torso,[[0,-.46],[.23,-.45],[.31,-.36],[.35,-.16],[.4,.12],[.39,.3],[.31,.43],[.2,.47],[0,.47]],suit,48);
+ // Tailored pressure-suit chest panel, webbing and service pack.
+ const chestShape=new THREE.Shape();chestShape.moveTo(-.2,-.2);chestShape.lineTo(.2,-.2);chestShape.lineTo(.18,.19);chestShape.lineTo(-.18,.19);chestShape.closePath();
+ add(torso,new THREE.ExtrudeGeometry(chestShape,{depth:.035,bevelEnabled:true,bevelSegments:3,bevelSize:.018,bevelThickness:.012}),suitShade,[0,-.06,.342]);
+ add(torso,new THREE.BoxGeometry(.22,.075,.025),badgeMat,[0,.13,.385]);
+ add(torso,new THREE.BoxGeometry(.12,.055,.028),orange,[0,-.17,.38]);
  for(const side of [-1,1]){
-  const strap=box(torso,.055,.62,.035,suitShade,side*.255,.02,.315);strap.rotation.z=side*.12;
-  box(torso,.07,.12,.045,orange,side*.29,.24,.31);
+  const strap=add(torso,new THREE.BoxGeometry(.055,.62,.035),suitShade,[side*.255,.015,.31]);strap.rotation.z=side*.12;
+  add(torso,new THREE.BoxGeometry(.075,.11,.04),orange,[side*.29,.24,.31]);
  }
  const pack=new THREE.Group();pack.position.set(0,.015,-.34);torso.add(pack);
- box(pack,.55,.72,.34,suitShade,0,0,0);
- box(pack,.42,.13,.36,orange,0,.32,0);
- box(pack,.42,.12,.035,bootMat,0,-.22,.18);
- for(const side of [-1,1])box(pack,.1,.42,.37,bootMat,side*.25,-.02,0);
- const collar=new THREE.Mesh(new THREE.TorusGeometry(.32,.085,10,28),orange);collar.position.set(0,.43,0);collar.rotation.x=Math.PI/2;collar.castShadow=true;torso.add(collar);
- // Fully articulated arms: shoulder -> elbow -> wrist -> glove.
+ const packShape=new THREE.Shape();packShape.moveTo(-.25,-.32);packShape.lineTo(.25,-.32);packShape.lineTo(.27,.27);packShape.lineTo(.18,.36);packShape.lineTo(-.18,.36);packShape.lineTo(-.27,.27);packShape.closePath();
+ add(pack,new THREE.ExtrudeGeometry(packShape,{depth:.3,bevelEnabled:true,bevelSegments:4,bevelSize:.035,bevelThickness:.025}),suitShade,[0,0,-.15]);
+ add(pack,new THREE.BoxGeometry(.4,.11,.32),orange,[0,.32,0]);
+ for(const side of [-1,1])add(pack,new THREE.BoxGeometry(.09,.4,.32),bootMat,[side*.25,-.02,0]);
+ const collar=add(torso,new THREE.TorusGeometry(.29,.065,10,32),orange,[0,.43,0],[Math.PI/2,0,0]);
  for(const side of [-1,1]){
-  sphere(root,.19,suit,side*.49,1.67,0,[1,.95,.95]);
   const shoulder=new THREE.Group();shoulder.position.set(side*.51,1.66,0);root.add(shoulder);
-  segment(shoulder,.39,.145,suit);
+  tapered(shoulder,.39,.145,suit,.9);
   const elbow=new THREE.Group();elbow.position.set(0,-.39,.025);shoulder.add(elbow);
-  sphere(elbow,.135,suitShade,0,0,0,[1,.92,.92]);
-  segment(elbow,.34,.125,suit);
+  lathe(elbow,[[0,-.065],[.11,-.065],[.14,-.02],[.14,.045],[.1,.08],[0,.08]],suitShade,24);
+  tapered(elbow,.34,.125,suit,.9);
   const wrist=new THREE.Group();wrist.position.set(0,-.33,.025);elbow.add(wrist);
-  const wristRing=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.075,28),orange);wristRing.rotation.x=Math.PI/2;wrist.add(wristRing);
-  sphere(wrist,.145,suitShade,0,-.09,.035,[.94,.9,.9]);
-  box(wrist,.17,.19,.19,suitShade,0,-.17,.08);
+  lathe(wrist,[[0,-.04],[.105,-.04],[.13,0],[.13,.045],[.1,.075],[0,.075]],orange,24);
+  const gloveShape=new THREE.Shape();gloveShape.moveTo(-.09,-.12);gloveShape.lineTo(.09,-.12);gloveShape.lineTo(.11,.05);gloveShape.lineTo(.07,.13);gloveShape.lineTo(-.07,.13);gloveShape.lineTo(-.11,.05);gloveShape.closePath();
+  add(wrist,new THREE.ExtrudeGeometry(gloveShape,{depth:.15,bevelEnabled:true,bevelSegments:3,bevelSize:.02,bevelThickness:.015}),suitShade,[0,-.17,.02]);
   armParts.push({shoulder,elbow,wrist,side});
  }
- // Capsule-like head volume: no cheek pads, no human-style cheek protrusions.
  const headPivot=new THREE.Group();headPivot.position.set(0,2.72,0);root.add(headPivot);
- const head=sphere(headPivot,.62,skin,0,.015,0,[.91,1.13,.88]);
- // A restrained short military-style hair cap, kept behind the face.
- const hairColors=[0x211b18,0x17191d,0x493020,0x30231d,0x9a733c,0x51413a];
- const hairMat=mat(hairColors[Math.abs(index)%hairColors.length],.9);
- sphere(headPivot,.565,hairMat,0,.53,-.055,[1.02,.30,.94]);
- const hairline=sphere(headPivot,.49,hairMat,0,.42,.27,[1.02,.13,.35]);
- hairline.rotation.x=-.08;
- // Unequal, protruding eyes are part of the head rig and therefore bob with it.
+ lathe(headPivot,[[0,-.61],[.28,-.59],[.46,-.46],[.55,-.2],[.57,.08],[.53,.35],[.39,.55],[.18,.62],[0,.63]],skin,56);
+ // Custom helmet-like hair cap silhouette rather than a sphere attached to the head.
+ const hairColors=[0x211b18,0x17191d,0x493020,0x30231d,0x9a733c,0x51413a],hairMat=mat(hairColors[Math.abs(index)%hairColors.length],.9);
+ const capProfile=[[0,.64],[.28,.62],[.46,.55],[.55,.42],[.56,.29],[.48,.31],[.32,.4],[0,.43]];
+ lathe(headPivot,capProfile,hairMat,40);
  const eyes=[];
  for(const side of [-1,1]){
-  const eyeGroup=new THREE.Group();eyeGroup.position.set(side*.255,.095,.455);headPivot.add(eyeGroup);
-  const size=side===-1?.255:.235;
-  sphere(eyeGroup,size,eyeWhite,0,0,.035,[.94,1.05,.92]);
-  sphere(eyeGroup,size*.39,pupilMat,side*.035,-.012,.245,[.95,1,.78]);
-  sphere(eyeGroup,size*.12,mat(0xffffff,.12),side*.012,.075,.285);
+  const eyeGroup=new THREE.Group();eyeGroup.position.set(side*.245,.075,.465);headPivot.add(eyeGroup);
+  add(eyeGroup,new THREE.SphereGeometry(.205,24,16),eyeWhite,[0,0,.02],[0,0,0]);
+  add(eyeGroup,new THREE.SphereGeometry(.078,18,12),pupilMat,[side*.025,-.012,.198]);
+  add(eyeGroup,new THREE.SphereGeometry(.025,12,8),mat(0xffffff,.1),[side*.012,.065,.225]);
   eyes.push(eyeGroup);
  }
- const mouthGroup=new THREE.Group();mouthGroup.position.set(0,-.39,.535);headPivot.add(mouthGroup);
- const mouthDark=mat(0x30120f,.76);
- const cavity=sphere(mouthGroup,.105,mouthDark,0,0,.02,[1.45,.48,.34]);
- const mouthLine=new THREE.Mesh(new THREE.TorusGeometry(.13,.018,6,20,Math.PI),mat(0x42632c,.82));mouthLine.position.set(0,-.025,.045);mouthLine.rotation.z=Math.PI;mouthGroup.add(mouthLine);
+ const mouthGroup=new THREE.Group();mouthGroup.position.set(0,-.37,.51);headPivot.add(mouthGroup);
+ const mouthDark=mat(0x30120f,.76),cavity=add(mouthGroup,new THREE.SphereGeometry(.105,18,12),mouthDark,[0,0,.015],[1.45,.48,.34]);
+ const mouthLine=add(mouthGroup,new THREE.TorusGeometry(.13,.018,6,20,Math.PI),mat(0x42632c,.82),[0,-.025,.045],[0,0,Math.PI]);
  root.scale.setScalar(.88);
  root.userData.walkParts={legs:legParts,arms:armParts,head:headPivot,eyes,mouth:{cavity,smile:mouthLine}};
  return root;
