@@ -5,6 +5,7 @@ export function createPartModel(p,THREE){
  const root=new THREE.Group(),r=Math.max(.06,Number(p.radius)||.5),h=Math.max(.12,Number(p.height)||.5),id=String(p.id||''),name=String(p.name||'');
  const mat=(color,metalness=.18,roughness=.68)=>new THREE.MeshStandardMaterial({color,metalness,roughness});
  const paint=(base,accent,kind='tank')=>{
+  const cacheKey=base+'|'+accent+'|'+kind;if(textureCache.has(cacheKey))return textureCache.get(cacheKey);
   const c=document.createElement('canvas');c.width=512;c.height=1024;const x=c.getContext('2d');
   x.fillStyle=base;x.fillRect(0,0,512,1024);
   const grad=x.createLinearGradient(0,0,512,0);grad.addColorStop(0,'rgba(0,0,0,.18)');grad.addColorStop(.18,'rgba(255,255,255,.09)');grad.addColorStop(.5,'rgba(255,255,255,.02)');grad.addColorStop(.82,'rgba(0,0,0,.08)');grad.addColorStop(1,'rgba(0,0,0,.2)');x.fillStyle=grad;x.fillRect(0,0,512,1024);
@@ -20,7 +21,7 @@ export function createPartModel(p,THREE){
   }
   x.fillStyle='rgba(20,28,32,.55)';x.fillRect(12,490,488,34);
   x.fillStyle='rgba(255,255,255,.55)';x.font='bold 20px sans-serif';x.fillText(kind==='engine'?'PROPULSION':kind==='pod'?'CREW MODULE':'FLIGHT HARDWARE',28,482);
-  const texture=new THREE.CanvasTexture(c);texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=8;texture.wrapS=THREE.RepeatWrapping;texture.wrapT=THREE.ClampToEdgeWrapping;return texture;
+  const texture=new THREE.CanvasTexture(c);texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=8;texture.wrapS=THREE.RepeatWrapping;texture.wrapT=THREE.ClampToEdgeWrapping;textureCache.set(cacheKey,texture);return texture;
  };
  const shell=(base,accent,kind='tank',metalness=.12,roughness=.72)=>new THREE.MeshStandardMaterial({map:paint(base,accent,kind),metalness,roughness});
  const white=shell('#d5d6d0','#9caaad','tank',.16,.62),cream=shell('#c4c7c0','#d9b56e','pod',.12,.7),dark=mat(0x283238,.55,.42),steel=mat(0x89969a,.78,.34),gold=mat(0xb18a48,.68,.36),black=mat(0x121a1f,.22,.84),glass=mat(0x183c4b,.62,.2),orange=mat(0xb66d32,.18,.64),blue=mat(0x315d78,.48,.42);
@@ -89,9 +90,9 @@ export function createPartModel(p,THREE){
    const profile=lander?[[0,-h*.5],[rr*.82,-h*.5],[rr,-h*.34],[rr,h*.25],[rr*.78,h*.4],[rr*.48,h*.5],[0,h*.5]]:cupola?[[0,-h*.5],[rr*.9,-h*.5],[rr,-h*.28],[rr*.95,h*.12],[rr*.82,h*.36],[rr*.5,h*.48],[0,h*.5]]:[[0,-h*.5],[rr*.8,-h*.5],[rr,-h*.4],[rr,h*.18],[rr*.9,h*.32],[rr*.72,h*.4],[rr*.5,h*.48],[0,h*.5]];
    lathe(profile,cream,64);
    ring(rr*.96,-h*.38,.035,steel);ring(rr*.96,h*.22,.03,gold);
-   if(!cupola){for(let i=0;i<(inline?2:mk3?5:mk2?4:3);i++){const a=(i-((inline?2:mk3?5:mk2?4:3)-1)/2)*.42;const z=Math.cos(a)*rr*.88,x=Math.sin(a)*rr*.88;add(new THREE.SphereGeometry(rr*.17,24,16),glass,[x,h*.04,z],[0,0,0]);add(new THREE.TorusGeometry(rr*.18,.018,8,32),steel,[x,h*.04,z],[Math.PI/2,0,0]);}}
+   if(!cupola){for(let i=0;i<(inline?2:mk3?5:mk2?4:3);i++){const a=(i-((inline?2:mk3?5:mk2?4:3)-1)/2)*.42;const z=Math.cos(a)*rr*.88,x=Math.sin(a)*rr*.88;add(new THREE.SphereGeometry(rr*.17,24,16),glass,[x,h*.04,z],[0,0,0]);add(new THREE.TorusGeometry(rr*.18,.018,8,32),steel,[x,h*.04,z],[0,0,0]);}}
    if(cupola){for(let i=0;i<6;i++){const a=i*Math.PI/3;add(new THREE.SphereGeometry(rr*.18,18,12),glass,[Math.cos(a)*rr*.58,h*.24,Math.sin(a)*rr*.58],[0,0,0],[1,.75,.2]);}}
-   if(lander){for(let i=0;i<4;i++){const a=i*Math.PI/2;const leg=add(new THREE.BufferGeometry(),steel,[Math.cos(a)*rr*.92,-h*.2,Math.sin(a)*rr*.92]);}}
+   if(lander){for(let i=0;i<4;i++){const a=i*Math.PI/2;const legShape=new THREE.Shape();legShape.moveTo(-.035,0);legShape.lineTo(.035,0);legShape.lineTo(.09,-h*.42);legShape.lineTo(-.09,-h*.42);legShape.closePath();add(new THREE.ExtrudeGeometry(legShape,{depth:.08,bevelEnabled:true,bevelSegments:2,bevelSize:.012,bevelThickness:.01}),steel,[Math.cos(a)*rr*.85,-h*.12,Math.sin(a)*rr*.85],[0,-a,0]);}}
    for(let i=0;i<4;i++){const a=i*Math.PI/2;add(new THREE.BoxGeometry(.055,h*.18,.055),dark,[Math.cos(a)*rr*.98,-h*.12,Math.sin(a)*rr*.98]);}
   }
  }else if(p.type==='nosecone'||p.type==='payload'){
