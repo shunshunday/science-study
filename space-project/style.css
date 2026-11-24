@@ -492,3 +492,58 @@ body.crew-roster-mode .crew-recruit button:hover{background:#355f82!important;ba
 .build-stage-category-marks{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;align-items:center!important;gap:2px!important;min-height:0!important;padding:3px 1px 1px!important;background:#202c33!important;border-bottom:1px solid #68757b66!important}
 .build-stage-category-marks span{display:grid!important;place-items:center!important;min-width:17px!important;height:17px!important;padding:0 1px!important;color:#f4f6f6!important;font-size:13px!important;line-height:1!important;white-space:nowrap!important}
 @media(max-width:700px){.build-stage-category-marks{gap:1px!important;padding:2px 0 1px!important}.build-stage-category-marks span{min-width:15px!important;height:15px!important;font-size:12px!important}}
+
+
+/* KSP1-inspired visual language: clean painted metal, warm instrumentation and restrained contrast. */
+:root{
+ color-scheme:dark;
+ --ksp-panel:#46535d;
+ --ksp-panel-deep:#303c45;
+ --ksp-panel-light:#687680;
+ --ksp-edge:#87949b;
+ --ksp-text:#edf1ed;
+ --ksp-muted:#c0c9ca;
+ --ksp-orange:#b87932;
+ --ksp-orange-light:#d79a4d;
+ --ksp-gold:#d6bd83;
+}
+html,body{background:#202b33;color:var(--ksp-text)}
+button{
+ background:linear-gradient(180deg,#697780,#485660);
+ border:1px solid #aeb8b8;
+ border-radius:2px;
+ color:#f4f2e9;
+ box-shadow:inset 0 1px #ffffff26,0 1px 2px #0005;
+ text-shadow:0 1px 1px #18232a;
+}
+button:hover{background:linear-gradient(180deg,#829099,#596973);border-color:#d2d8d4}
+button.active{background:linear-gradient(180deg,#d79a4d,#9e6328);border-color:#f0c27d}
+.tabs{background:linear-gradient(180deg,#65737c,#3e4b54);border:1px solid #aab5b9;border-radius:2px;box-shadow:0 2px 8px #0008}
+.tabs button{background:#394852;border:1px solid #87969c;border-radius:2px;color:#f1f0e9}
+.tabs button.active{background:linear-gradient(180deg,#d18b3c,#995c24);border-color:#efc27b}
+.parts{background:#3b4851;border-right:2px solid #9ba8ae;box-shadow:5px 0 18px #0008}
+.parts-head,.career-head{background:linear-gradient(180deg,#78858c,#4d5a63);color:#fff;border-bottom:1px solid #aeb8ba}
+.part-search,.catalog-tools select{background:#26343d;border:1px solid #89969b;color:#f1f2ed;border-radius:2px}
+.part-category{background:#596a74;color:#f2f3ee;border:1px solid #89969b}
+.part-category.active{background:#d49a4d;color:#202b32;box-shadow:inset 0 0 0 1px #f5d49a}
+.part,.part:hover,.part:disabled{background:linear-gradient(180deg,#71808a,#4c5a64)!important;border:1px solid #a6b1b5!important;border-radius:2px}
+.part-icon,.part-preview-canvas{background:#85949a!important}
+.vab-tools,.flight-left,.flight-right,.stage-stack,.build-staging{
+ background:linear-gradient(180deg,#4a5861f2,#303c45f2)!important;
+ border:1px solid #9aa7ac!important;
+ border-radius:2px!important;
+ box-shadow:0 3px 12px #0008!important;
+}
+.vab-tools .primary,#stage-next,.career-item button,#stage-add-side{
+ background:linear-gradient(180deg,#d59645,#9f642b)!important;
+ border:1px solid #efc17a!important;
+ color:#fff!important;
+}
+.vab-tools span,.flight-left span,.flight-right span,.career-item p{color:#d2d9d8}
+.career-panel{background:#35434c!important;border:1px solid #9ba8ad!important;border-radius:2px!important}
+.crew-card,.career-item{background:linear-gradient(135deg,#596770,#3e4c55)!important;border:1px solid #a5b0b2!important;border-radius:2px!important;box-shadow:inset 0 1px #ffffff18}
+.crew-info h3,.career-item h3,.stage-stack>b{color:#f0d39c!important}
+.crew-avatar{border:1px solid #c0c9c8!important;border-radius:2px!important;background:#71818a!important}
+.navball{border:4px solid #aab4b5;box-shadow:0 2px 10px #0009}
+#toast{background:#46545d;border:1px solid #aeb9bb;border-radius:2px}
+#viewport canvas{background:transparent}
