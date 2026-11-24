@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {createPartModel} from './parts-models.js?v=20261124-99-authored-meshes-v2';
-import {createVABEnvironment} from './vab-environment.js?v=20261124-116-vab-instanced-trusses';
+import {createVABEnvironment} from './vab-environment.js?v=20261124-117-vab-support-towers';
 import {additionalParts} from './parts-inventory.js?v=20261122-7-twinboar-caveat';
 import {BODY,G0,gravityAcceleration,atmosphericDensity,orbitalElements,rk4Step,deltaV,rocketMassKg} from './physics/orbital.js';
 import {aerodynamicAcceleration} from './physics/aerodynamics.js';
