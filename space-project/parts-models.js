@@ -163,5 +163,29 @@ export function createPartModel(p,THREE){
  }else{
   cyl(r*.85,r*.85,h*.65,alloy,h*.35,20);bodyBand(r*.86,h*.12,gold);
  }
+ // Part-specific surface hardware: welded tank seams, service panels and engine feed plumbing.
+ if(p.type==='tank'||p.type==='resource'){
+  const tankRadius=Math.max(.12,r*.96),tankHeight=Math.max(.18,h*.92);
+  const seamMat=mat(0x879397,.72,.38),panelMat=mat(0x46535a,.58,.52);
+  for(const yy of [-tankHeight*.34,tankHeight*.34]){
+   const weld=new THREE.Mesh(new THREE.TorusGeometry(tankRadius,.018,8,64),seamMat);weld.position.y=yy;g.add(weld);
+  }
+  const service=new THREE.Mesh(new THREE.BoxGeometry(tankRadius*.62,tankHeight*.16,.035),panelMat);service.position.set(0,tankHeight*.02,tankRadius*.965);g.add(service);
+  for(let x of [-1,1])for(let y of [-1,1]){const rivet=new THREE.Mesh(new THREE.SphereGeometry(.022,10,8),gold);rivet.position.set(x*tankRadius*.24,y*tankHeight*.045,tankRadius*.99);g.add(rivet);}
+  const topCollar=new THREE.Mesh(new THREE.CylinderGeometry(tankRadius*.78,tankRadius*.78,.055,48),alloy);topCollar.position.y=tankHeight*.49;g.add(topCollar);
+  const bottomCollar=new THREE.Mesh(new THREE.CylinderGeometry(tankRadius*.78,tankRadius*.78,.055,48),dark);bottomCollar.position.y=-tankHeight*.49;g.add(bottomCollar);
+ }
+ if(p.type==='engine'||p.type==='booster'||p.type==='jet'){
+  const engineRadius=Math.max(.12,r*.88),engineHeight=Math.max(.18,h);
+  const hotMetal=mat(0x514b45,.88,.3),pipeMat=mat(0x9ba6a8,.82,.3);
+  for(let i=0;i<3;i++){
+   const a=i*Math.PI*2/3,rad=engineRadius*.72;
+   const points=[new THREE.Vector3(Math.cos(a)*rad,engineHeight*.34,Math.sin(a)*rad),new THREE.Vector3(Math.cos(a)*rad*1.12,engineHeight*.12,Math.sin(a)*rad*1.12),new THREE.Vector3(Math.cos(a)*rad*.9,-engineHeight*.04,Math.sin(a)*rad*.9)];
+   const curve=new THREE.CatmullRomCurve3(points);
+   const pipe=new THREE.Mesh(new THREE.TubeGeometry(curve,12,.018,7,false),pipeMat);g.add(pipe);
+  }
+  const mount=new THREE.Mesh(new THREE.CylinderGeometry(engineRadius*.94,engineRadius*.94,.075,48),hotMetal);mount.position.y=-engineHeight*.08;g.add(mount);
+  for(let i=0;i<12;i++){const a=i*Math.PI/6,bolt=new THREE.Mesh(new THREE.SphereGeometry(.025,8,6),alloy);bolt.position.set(Math.cos(a)*engineRadius*.91,-engineHeight*.045,Math.sin(a)*engineRadius*.91);g.add(bolt);}
+ }
  g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});return g;
 }
