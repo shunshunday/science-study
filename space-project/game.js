@@ -530,7 +530,7 @@ function rebuildHangarCrew(){
  crewMembers.forEach((member,index)=>{
   const figure=makeCrewFigure(member,index),point=randomPoint();
   figure.position.copy(point);figure.rotation.y=Math.random()*Math.PI*2;
-  figure.userData.hangarWalk={target:randomPoint(),mode:'think',wait:Math.random()*3.5,phase:Math.random()*Math.PI*2,pauseIn:5+Math.random()*13,index};
+  const startWalking=Math.random()<.7;figure.userData.hangarWalk={target:randomPoint(),mode:startWalking?'walk':'think',wait:Math.random()*2.5,phase:Math.random()*Math.PI*2,pauseIn:4+Math.random()*14,index};
   hangarCrewGroup.add(figure);
  });
 }
