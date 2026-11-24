@@ -94,6 +94,18 @@ export function createVABEnvironment(THREE){
    for(let i=0;i<10;i++)box(5,.22,1.2,x,20+i*1.25,z-6+i*1.35,steel);
   }
  }
+ // Four adjustable rocket support towers with red service heads around the build axis.
+ const supportRed=mat(0x9d4035,.48,.58),supportDark=mat(0x4b3430,.55,.62);
+ for(const x of [-5.5,5.5])for(const z of [-5.5,5.5]){
+  box(2.8,1.4,2.8,x,.5,z,yellowDark);
+  box(1.1,17,1.1,x,9,z,steel);
+  beam([x,1,z],[x,16,z],.82,edgeSteel);
+  beam([x-.8,2,z],[x+.8,7,z],.32,yellow);
+  beam([x+.8,2,z],[x-.8,7,z],.32,yellow);
+  box(2.4,1.5,2.4,x,17.2,z,supportRed);
+  box(2.8,.35,2.8,x,18.1,z,supportDark);
+  beam([x,16,z],[x*.58,14, z*.58],.42,supportRed);
+ }
  // Overhead gantry crane and suspended hoist.
  const craneY=119;
  beam([-95,craneY,-54],[95,craneY,-54],2.2,yellow);
