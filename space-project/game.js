@@ -10,9 +10,9 @@ function makeCrewFigure(member,index){
  const mat=(color,roughness=.62,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
  const root=new THREE.Group(),legParts=[],armParts=[];
  const skin=mat(0x8eae43,.84),eyeWhite=mat(0xf5f4e9,.18),pupilMat=mat(0x18251d,.2),suit=mat(0xe6e5d9,.76),suitShade=mat(0xb9c1bc,.72),orange=mat(0xd87932,.62),bootMat=mat(0x4b5558,.78),rubber=mat(0x252d30,.9),badgeMat=mat(index%3===0?0x3f7190:index%3===1?0x9b563e:0x5d7850,.7);
- const sphere=(parent,r,material,x,y,z,scale)=>{const mesh=new THREE.Mesh(new THREE.SphereGeometry(r,24,18),material);mesh.position.set(x,y,z);if(scale)mesh.scale.set(...scale);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
+ const sphere=(parent,r,material,x,y,z,scale)=>{const mesh=new THREE.Mesh(new THREE.SphereGeometry(r,40,28),material);mesh.position.set(x,y,z);if(scale)mesh.scale.set(...scale);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
  const box=(parent,w,h,d,material,x,y,z)=>{const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
- const segment=(parent,length,radius,material)=>{const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius*.9,radius,length,18),material);mesh.position.y=-length/2;mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
+ const segment=(parent,length,radius,material)=>{const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius*.9,radius,length,28),material);mesh.position.y=-length/2;mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
  // Short, sturdy suit silhouette with separate hip, knee and ankle pivots.
  const pelvis=new THREE.Group();pelvis.position.y=.92;root.add(pelvis);
  sphere(pelvis,.31,suit,0,0,0,[1.18,.72,.92]);
@@ -24,7 +24,7 @@ function makeCrewFigure(member,index){
   sphere(knee,.145,suitShade,0,0,0,[1,.9,.92]);
   segment(knee,.37,.128,suit);
   const ankle=new THREE.Group();ankle.position.set(0,-.36,.015);knee.add(ankle);
-  const cuff=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.09,18),orange);cuff.rotation.x=Math.PI/2;cuff.position.set(0,.015,.005);ankle.add(cuff);
+  const cuff=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.09,28),orange);cuff.rotation.x=Math.PI/2;cuff.position.set(0,.015,.005);ankle.add(cuff);
   const boot=new THREE.Group();boot.position.set(0,-.075,.095);ankle.add(boot);
   box(boot,.275,.19,.36,bootMat,0,-.015,.045);
   box(boot,.28,.055,.32,rubber,0,-.112,.045);
@@ -57,7 +57,7 @@ function makeCrewFigure(member,index){
   sphere(elbow,.135,suitShade,0,0,0,[1,.92,.92]);
   segment(elbow,.34,.125,suit);
   const wrist=new THREE.Group();wrist.position.set(0,-.33,.025);elbow.add(wrist);
-  const wristRing=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.075,18),orange);wristRing.rotation.x=Math.PI/2;wrist.add(wristRing);
+  const wristRing=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.075,28),orange);wristRing.rotation.x=Math.PI/2;wrist.add(wristRing);
   sphere(wrist,.145,suitShade,0,-.09,.035,[.94,.9,.9]);
   box(wrist,.17,.19,.19,suitShade,0,-.17,.08);
   armParts.push({shoulder,elbow,wrist,side});
@@ -94,8 +94,9 @@ scene.background=new THREE.Color(0x8298a6);scene.fog=new THREE.Fog(0x8298a6,180,
 const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.0001,20000);camera.position.set(24,18,34);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);
 function renderCrewPortraits(){
- const canvases=$$('.crew-avatar');if(!canvases.length)return;
- const target=new THREE.WebGLRenderTarget(96,128,{depthBuffer:true,stencilBuffer:false});
+ const canvases=$('.crew-avatar');if(!canvases.length)return;
+ const portraitWidth=288,portraitHeight=384;
+ const target=new THREE.WebGLRenderTarget(portraitWidth,portraitHeight,{depthBuffer:true,stencilBuffer:false});
  const portraitScene=new THREE.Scene();portraitScene.background=new THREE.Color(0x52616a);
  portraitScene.add(new THREE.HemisphereLight(0xeaf4ff,0x45505a,2.0));
  const key=new THREE.DirectionalLight(0xffffff,2.5);key.position.set(-3,6,7);portraitScene.add(key);
@@ -106,9 +107,10 @@ function renderCrewPortraits(){
   const member=crewMembers[Number(canvas.dataset.crewIndex)];if(!member)continue;
   const figure=makeCrewFigure(member,Number(canvas.dataset.crewIndex)||0);portraitScene.add(figure);
   renderer.setRenderTarget(target);renderer.clear();renderer.render(portraitScene,portraitCamera);
-  const pixels=new Uint8Array(96*128*4);renderer.readRenderTargetPixels(target,0,0,96,128,pixels);
-  const ctx=canvas.getContext('2d'),img=ctx.createImageData(96,128);
-  for(let y=0;y<128;y++)for(let x=0;x<96;x++){const src=((127-y)*96+x)*4,dst=(y*96+x)*4;img.data[dst]=pixels[src];img.data[dst+1]=pixels[src+1];img.data[dst+2]=pixels[src+2];img.data[dst+3]=pixels[src+3];}
+  const pixels=new Uint8Array(portraitWidth*portraitHeight*4);renderer.readRenderTargetPixels(target,0,0,portraitWidth,portraitHeight,pixels);
+  canvas.width=portraitWidth;canvas.height=portraitHeight;
+  const ctx=canvas.getContext('2d'),img=ctx.createImageData(portraitWidth,portraitHeight);
+  for(let y=0;y<portraitHeight;y++)for(let x=0;x<portraitWidth;x++){const src=((portraitHeight-1-y)*portraitWidth+x)*4,dst=(y*portraitWidth+x)*4;img.data[dst]=pixels[src];img.data[dst+1]=pixels[src+1];img.data[dst+2]=pixels[src+2];img.data[dst+3]=pixels[src+3];}
   ctx.putImageData(img,0,0);portraitScene.remove(figure);
  }
  renderer.setRenderTarget(null);target.dispose();
@@ -632,7 +634,7 @@ function renderCrew(){
  $('#career-content').innerHTML='<div class="crew-intro"><span>CREW ROSTER</span><p>3D乗組員一覧。飛行から帰還すると経験が上がります。</p></div><div class="crew-grid">'+crewMembers.map((k)=>{
   syncCrewAbilities(k);
   const stars=k.stars,bravery=k.bravery,stupidity=k.stupidity;
-  return '<article class="crew-card"><canvas class="crew-avatar" data-crew-index="'+crewMembers.indexOf(k)+'" width="96" height="128" aria-label="'+k.name+' の全身3Dモデル"></canvas><div class="crew-info"><h3>'+k.name+'</h3><span class="crew-role">'+k.role+' ・ 経験 '+('★'.repeat(stars))+('☆'.repeat(5-stars))+'</span><div class="crew-stat"><div><span>バカ度</span><b>'+stupidity+'%</b></div><div class="crew-meter"><i style="width:'+stupidity+'%"></i></div></div><div class="crew-stat"><div><span>勇敢度</span><b>'+bravery+'%</b></div><div class="crew-meter brave"><i style="width:'+bravery+'%"></i></div></div><button class="crew-retire" data-retire-crew="'+crewMembers.indexOf(k)+'" type="button" aria-label="'+k.name+' を退職させる" title="退職させる">×</button></div></article>';
+  return '<article class="crew-card"><canvas class="crew-avatar" data-crew-index="'+crewMembers.indexOf(k)+'" width="288" height="384" aria-label="'+k.name+' の全身3Dモデル"></canvas><div class="crew-info"><h3>'+k.name+'</h3><span class="crew-role">'+k.role+' ・ 経験 '+('★'.repeat(stars))+('☆'.repeat(5-stars))+'</span><div class="crew-stat"><div><span>バカ度</span><b>'+stupidity+'%</b></div><div class="crew-meter"><i style="width:'+stupidity+'%"></i></div></div><div class="crew-stat"><div><span>勇敢度</span><b>'+bravery+'%</b></div><div class="crew-meter brave"><i style="width:'+bravery+'%"></i></div></div><button class="crew-retire" data-retire-crew="'+crewMembers.indexOf(k)+'" type="button" aria-label="'+k.name+' を退職させる" title="退職させる">×</button></div></article>';
  }).join('')+'</div><section class="crew-recruit"><b>乗組員を雇用</b><div><button data-hire-crew="pilot">パイロットを雇用</button><button data-hire-crew="engineer">エンジニアを雇用</button><button data-hire-crew="scientist">科学者を雇用</button></div></section>';
  renderCrewPortraits();
  rebuildHangarCrew();
