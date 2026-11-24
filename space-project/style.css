@@ -485,3 +485,24 @@ body.crew-roster-mode .crew-recruit button:hover{background:#355f82!important;ba
 @media(max-width:700px){
  #stage-add-side{font-size:6px!important;height:18px!important;min-height:18px!important}
 }
+
+/* Bottom-right quick part-category dock */
+.part-category-dock{
+ position:fixed!important;right:58px!important;bottom:9px!important;z-index:40!important;
+ display:grid!important;grid-template-columns:repeat(6,34px)!important;gap:3px!important;
+ padding:5px!important;background:rgba(35,44,51,.94)!important;
+ border:1px solid #7e8a91!important;border-radius:4px!important;
+ box-shadow:0 2px 9px #0008!important
+}
+.dock-category{
+ display:grid!important;place-items:center!important;width:34px!important;height:31px!important;
+ padding:0!important;margin:0!important;background:#46545d!important;color:#f4f5f5!important;
+ border:1px solid #89959b!important;border-radius:2px!important;
+ font-size:19px!important;line-height:1!important;cursor:pointer!important
+}
+.dock-category:hover{background:#65747d!important}
+.dock-category.active{background:#b8752c!important;border-color:#f0bd70!important;box-shadow:inset 0 0 0 1px #f8d39a!important}
+@media(max-width:700px){
+ .part-category-dock{right:49px!important;bottom:6px!important;grid-template-columns:repeat(6,27px)!important;gap:2px!important;padding:3px!important}
+ .dock-category{width:27px!important;height:27px!important;font-size:16px!important}
+}
