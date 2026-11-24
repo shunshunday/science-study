@@ -448,15 +448,10 @@ function renderPartPreviews(items){
  for(const [canvas] of partPreviewRenderers)disposePartPreview(canvas);
  const list=$('#part-list');list.innerHTML=list.innerHTML;
  const buttons=[...list.querySelectorAll('button[data-part]')];
- for(const button of buttons){const p=items.find(x=>x.id===button.dataset.part);const holder=button.querySelector('.part-icon');if(!p||!holder)continue;holder.innerHTML='<canvas class="part-preview-canvas" width="232" height="116" aria-label="'+p.name+' の回転可能な3Dモデル"></canvas>';const canvas=holder.firstElementChild;canvas.dataset.partId=p.id;}
- const scheduleVisible=()=>{const lr=list.getBoundingClientRect();for(const canvas of list.querySelectorAll('.part-preview-canvas')){const cr=canvas.getBoundingClientRect();if(cr.bottom>=lr.top&&cr.top<=lr.bottom){const p=items.find(x=>x.id===canvas.dataset.partId);if(p)queuePartPreview(canvas,p);}}};
- if('IntersectionObserver' in window){
-  partPreviewObserver=new IntersectionObserver(entries=>{for(const e of entries){const canvas=e.target;if(e.isIntersecting){const p=items.find(x=>x.id===canvas.dataset.partId);if(p)queuePartPreview(canvas,p);}else{const queued=partPreviewQueue.findIndex(item=>item.canvas===canvas);if(queued>=0)partPreviewQueue.splice(queued,1);disposePartPreview(canvas);}}},{root:list,rootMargin:'100px'});
-  list.querySelectorAll('.part-preview-canvas').forEach(c=>partPreviewObserver.observe(c));
-  requestAnimationFrame(scheduleVisible);
- }else{
-  requestAnimationFrame(()=>{for(const canvas of list.querySelectorAll('.part-preview-canvas')){const p=items.find(x=>x.id===canvas.dataset.partId);if(p)queuePartPreview(canvas,p);}});
- }
+ const previews=[];
+ for(const button of buttons){const p=items.find(x=>x.id===button.dataset.part);const holder=button.querySelector('.part-icon');if(!p||!holder)continue;holder.innerHTML='<canvas class="part-preview-canvas" width="232" height="116" aria-label="'+p.name+' の回転可能な3Dモデル"></canvas>';const canvas=holder.firstElementChild;canvas.dataset.partId=p.id;previews.push({canvas,p});}
+ // 全プレビューを初回描画でまとめて生成。表示範囲による遅延読み込みは行わない。
+ for(const item of previews)renderOnePartPreview(item.canvas,item.p);
 }
 function partHoverInfo(p){
  const types={
