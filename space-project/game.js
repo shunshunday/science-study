@@ -592,7 +592,7 @@ function updateHangarCrew(dt){
    });
    parts.arms.forEach(arm=>{
     const swing=Math.sin(gait+(arm.side<0?Math.PI:0));
-    arm.shoulder.rotation.x=THREE.MathUtils.damp(arm.shoulder.rotation.x,-swing*.32,10,dt);
+    arm.shoulder.rotation.x=THREE.MathUtils.damp(arm.shoulder.rotation.x,swing*.32,10,dt);
     arm.shoulder.rotation.z=THREE.MathUtils.damp(arm.shoulder.rotation.z,arm.side*.045,8,dt);
     arm.elbow.rotation.x=THREE.MathUtils.damp(arm.elbow.rotation.x,-.12+Math.max(0,swing)*.16,9,dt);
     arm.elbow.rotation.z=THREE.MathUtils.damp(arm.elbow.rotation.z,0,8,dt);
