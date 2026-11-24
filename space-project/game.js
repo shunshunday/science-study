@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import {createPartModel} from './parts-models.js?v=20261122-6-engine-tank-models';
+import {createPartModel} from './parts-models.js?v=20261124-94-authored-meshes';
+import {createVABEnvironment} from './vab-environment.js?v=20261124-95-vab-architecture';
 import {additionalParts} from './parts-inventory.js?v=20261122-7-twinboar-caveat';
 import {BODY,G0,gravityAcceleration,atmosphericDensity,orbitalElements,rk4Step,deltaV,rocketMassKg} from './physics/orbital.js';
 import {aerodynamicAcceleration} from './physics/aerodynamics.js';
@@ -139,102 +140,9 @@ for(let i=0;i<18;i++){const x=-82+(i%9)*20,z=-65+Math.floor(i/9)*145;const trunk
 function makeCrew(){const g=new THREE.Group(),suit=new THREE.MeshStandardMaterial({color:0xd8d6c8,roughness:.75}),visor=new THREE.MeshStandardMaterial({color:0x263e4c,metalness:.55,roughness:.2}),skin=new THREE.MeshStandardMaterial({color:0x83a66b,roughness:.85});const body=new THREE.Mesh(new THREE.CapsuleGeometry(.32,.55,4,8),suit);body.position.y=.85;g.add(body);const head=new THREE.Mesh(new THREE.SphereGeometry(.29,12,10),skin);head.position.y=1.48;g.add(head);const helmet=new THREE.Mesh(new THREE.TorusGeometry(.3,.055,6,16),suit);helmet.position.y=1.48;g.add(helmet);const glass=new THREE.Mesh(new THREE.SphereGeometry(.19,12,8,0,Math.PI*2,0,Math.PI/2),visor);glass.position.set(0,1.49,.17);g.add(glass);for(const side of [-1,1]){const arm=new THREE.Mesh(new THREE.CylinderGeometry(.09,.12,.55,7),suit);arm.position.set(side*.38,.9,0);arm.rotation.z=side*.2;g.add(arm);const leg=new THREE.Mesh(new THREE.CylinderGeometry(.12,.14,.55,7),suit);leg.position.set(side*.16,.28,0);g.add(leg);}g.traverse(o=>{if(o.isMesh)o.castShadow=true;});return g;}
 const crew=makeCrew();crew.position.set(4,0,7);campus.add(crew);
 
-// 大型格納庫：鉄骨トラス、格子床、黄色い格納扉、照明、作業足場を独自モデルで構成
-const hangar=new THREE.Group();hangar.scale.set(.0018,.0022,.0018);scene.add(hangar);
+// Purpose-built VAB architecture (separate authored scene module).
+const hangar=createVABEnvironment(THREE);scene.add(hangar);
 const hangarCrewGroup=new THREE.Group();hangar.add(hangarCrewGroup);
-const hangarMat=(color,metalness=.45,roughness=.72)=>new THREE.MeshStandardMaterial({color,metalness,roughness});
-const steel=hangarMat(0x46525a,.78),steelLight=hangarMat(0x899398,.72),darkSteel=hangarMat(0x202a30,.55),yellow=hangarMat(0xb18a35,.55),floorMat=hangarMat(0x62696b,.2,.92);
-function hBox(w,h,d,x,y,z,mat,parent=hangar){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
-function hBeam(a,b,r=.42,mat=steel){const va=new THREE.Vector3(...a),vb=new THREE.Vector3(...b),d=vb.clone().sub(va),m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,d.length(),6),mat);m.position.copy(va.add(vb).multiplyScalar(.5));m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());m.castShadow=true;hangar.add(m);}
-hBox(230,.8,270,0,-.65,0,floorMat);
-for(let x=-110;x<=110;x+=22)hBox(.45,.025,265,x,-.21,0,hangarMat(0x9b9b8d,.1,.95));
-for(let z=-125;z<=125;z+=22)hBox(225,.025,.45,0,-.2,z,hangarMat(0x9b9b8d,.1,.95));
-for(let x of [-105,-75,-45,45,75,105]){
- hBox(3,150,3,x,74,-95,steel);hBox(3,150,3,x,74,95,steel);
- hBeam([x,1,-95],[x,148,-95],.72,steelLight);hBeam([x,1,95],[x,148,95],.72,steelLight);
-}
-for(let y of [18,48,78,108,138,150]){
- hBeam([-112,y,-95],[112,y,-95],.9,steelLight);
- hBeam([-112,y,95],[112,y,95],.9,steelLight);
-}
-/* Tall roof trusses and cross-bracing keep the assembly hall enclosed overhead. */
-for(let z=-88;z<=66;z+=22){
- hBeam([-112,148,z],[0,164,z],.72,steelLight);hBeam([0,164,z],[112,148,z],.72,steelLight);
- hBeam([-112,148,z],[0,148,z],.48,steel);hBeam([0,148,z],[112,148,z],.48,steel);
- hBeam([-112,148,z],[0,164,z+22],.32,steel);hBeam([112,148,z],[0,164,z+22],.32,steel);
-}
-for(let x=-105;x<105;x+=21){
- hBeam([x,12,-95],[x+21,34,-95],.55,steel);hBeam([x+21,12,-95],[x,34,-95],.55,steel);
- hBeam([x,56,-95],[x+21,78,-95],.55,steel);hBeam([x+21,56,-95],[x,78,-95],.55,steel);
- hBeam([x,12,95],[x+21,34,95],.55,steel);hBeam([x+21,12,95],[x,34,95],.55,steel);
-}
-for(let x of [-95,-65,65,95]){hBox(5,88,5,x,44,0,darkSteel);for(let y=12;y<88;y+=18)hBox(12,1,10,x+(x<0?7:-7),y,0,steelLight);}
-for(let x=-42;x<=42;x+=14){hBox(13,128,1.8,x,65,-94,yellow);for(let y=8;y<128;y+=16)hBox(12,.7,2,x,y,-92,darkSteel);}
-hBox(190,5,5,0,140,-94,darkSteel);hBox(190,4,5,0,3,-94,yellow);
-for(let z=-75;z<=75;z+=25){hBox(1.4,1.4,150,-112,1,z,steel);hBox(1.4,1.4,150,112,1,z,steel);}
-for(let x of [-72,72]){for(let z of [-45,45]){hBox(2,18,2,x,9,z,darkSteel);hBox(10,1,4,x,18,z,steelLight);}}
-for(let x of [-55,55])for(let z of [-30,30]){const lamp=new THREE.Mesh(new THREE.BoxGeometry(8,.8,3),new THREE.MeshBasicMaterial({color:0xffe4b5}));lamp.position.set(x,76,z);hangar.add(lamp);}
-/* Aircraft workshop markings and the runway outside the hangar doors */
-const runwayMat=hangarMat(0x343d42,.15,.95),runwayLine=hangarMat(0xe5dfc7,.05,.85),taxiYellow=hangarMat(0xd2a53c,.2,.8);
-hBox(68,.18,300,0,-.12,-245,runwayMat);
-hBox(2,.025,290,-34,-.015,-245,runwayLine);hBox(2,.025,290,34,-.015,-245,runwayLine);
-for(let z=-115;z>-385;z-=22)hBox(1.3,.03,10,0,-.015,z,runwayLine);
-hBox(74,.025,2,-1,-.015,-105,taxiYellow);hBox(74,.025,2,-1,-.015,-385,taxiYellow);
-/* Yellow aircraft service bay outline on the hangar floor */
-hBox(26,.035,1.1,0,-.19,-13,taxiYellow);hBox(26,.035,1.1,0,-.19,13,taxiYellow);
-hBox(1.1,.035,26,-13,-.19,0,taxiYellow);
-hBox(1.1,.035,26,13,-.19,0,taxiYellow);
-
-/* Industrial gantry crane, catwalks and maintenance buildings */
-const craneYellow=hangarMat(0xc18d2d,.62,.48),glassMat=hangarMat(0x6d9ba8,.38,.22),serviceMat=hangarMat(0x414d55,.5,.78);
-for(const z of [-54,48]){
- hBeam([-100,82,z],[100,82,z],1.25,craneYellow);
- hBeam([-100,78,z],[100,78,z],.75,darkSteel);
- for(const x of [-98,98]){hBox(3,15,4,x,70,z,craneYellow);hBox(7,2,7,x,62,z,steelLight);}
-}
-hBox(18,3,15,-12,80,48,craneYellow);hBox(10,2,10,-12,77,48,darkSteel);
-hBeam([-12,76,48],[-12,47,48],.28,steelLight);hBox(2,2,2,-12,46,48,craneYellow);
-for(const side of [-1,1]){
- const x=side*83;
- for(const y of [28,53]){
-  hBox(8,1.1,174,x,y,0,steelLight);
-  for(const z of [-87,-62,-37,-12,13,38,63,87]){
-   hBeam([x-4,y+1,z],[x-4,y+5,z],.13,steelLight);hBeam([x+4,y+1,z],[x+4,y+5,z],.13,steelLight);
-   hBeam([x-4,y+5,z],[x+4,y+5,z],.2,craneYellow);
-  }
- }
- for(const z of [-67,-18,31,70]){
-  hBox(18,15,22,side*101,8,z,serviceMat);
-  hBox(18.4,1.2,22.4,side*101,16,z,steelLight);
-  hBox(.25,7,10,side*91.8,8,z,glassMat);
-  hBox(.35,8,8,side*91.65,4,z,craneYellow);
-  hBox(18.5,.45,1,side*101,1,z-11.2,craneYellow);
- }
- for(const z of [-48,0,48]){
-  hBeam([x,29,z],[x,52,z],.2,steelLight);
-  for(let y=31;y<52;y+=3)hBeam([x-.8,y,z],[x+.8,y,z],.13,craneYellow);
- }
-}
-for(let i=0;i<10;i++){
- const x=(i%5)*24-48,z=i<5?68:-72;
- hBox(5,6,5,x,2.7,z,serviceMat);hBox(5.3,.45,5.3,x,5.9,z,steelLight);
- hBox(3.8,2.8,.12,x,2.8,z+2.56,glassMat);
-}
-for(const x of [-64,64])for(const z of [-82,82]){
- hBox(10,2,6,x,1,z,craneYellow);
- for(const wx of [-4,4])for(const wz of [-2,2]){
-  const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.9,.9,.55,12),darkSteel);
-  wheel.rotation.z=Math.PI/2;wheel.position.set(x+wx,.8,z+wz);wheel.castShadow=true;hangar.add(wheel);
- }
- hBox(5,3.2,4,x,3.3,z,glassMat);
-}
-for(const x of [-108,108])for(const z of [-78,-38,2,42,82]){
- hBox(1.5,24,1.5,x,12,z,craneYellow);hBox(5,1,5,x,24,z,steelLight);
-}
-for(const z of [-88,-62,-36,-10,16,42,68,92]){
- hBox(1.2,42,.8,-109,51,z,steelLight);hBox(1.2,42,.8,109,51,z,steelLight);
- hBox(.5,20,15,-107,63,z,glassMat);hBox(.5,20,15,107,63,z,glassMat);
-}
 
 const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);const parts=[];let mode='vab',gameMode='career',aircraftCraft=false,funds=25000,fundsUnlimited=true,science=0,stage=0,assemblyStage=0,stageUiFuelPercent=-1,throttle=0,flight=false,flightPeakAltitude=0,paused=false,sasEnabled=false,rcsEnabled=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
 const catalog=[
