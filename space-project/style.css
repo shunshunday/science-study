@@ -616,3 +616,6 @@ button.active{background:linear-gradient(180deg,#d79a4d,#9e6328);border-color:#f
 .vab-resource-hud .resource-science{color:#9cc6d6}
 .vab-resource-hud button{min-height:24px;padding:3px 7px;background:linear-gradient(#d3a24f,#94632e);border:1px solid #e8c27b;border-radius:2px;color:#fff8e9;font-size:9px}
 @media(max-width:560px){.vab-resource-hud{left:4px;bottom:4px;gap:3px;padding:3px}.vab-resource-hud span{padding:2px 4px}.vab-resource-hud button{font-size:8px}}
+
+.vab-tools{overflow-x:auto!important;overflow-y:hidden!important;flex-wrap:nowrap!important;scrollbar-width:none!important}
+.vab-tools::-webkit-scrollbar{display:none!important}
