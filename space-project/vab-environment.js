@@ -7,12 +7,20 @@ export function createVABEnvironment(THREE){
  const concrete=mat(0x777a77,.08,.94),steel=mat(0x59656c,.72,.46),edgeSteel=mat(0x9aa2a2,.78,.34),darkSteel=mat(0x303a40,.65,.55),yellow=mat(0xc69a3e,.42,.58),yellowDark=mat(0x85652e,.5,.64),glass=mat(0x9ab5bb,.18,.2,{transparent:true,opacity:.34,side:THREE.DoubleSide}),windowDark=mat(0x34464f,.38,.28),white=mat(0xe0dfd4,.12,.82),line=mat(0xe2dfd1,.04,.88),black=mat(0x20282c,.45,.68);
  const add=(geo,ma,pos=[0,0,0],rot=[0,0,0],parent=root)=>{const o=new THREE.Mesh(geo,ma);o.position.set(...pos);o.rotation.set(...rot);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o;};
  const box=(w,h,d,x,y,z,ma,parent=root)=>add(new THREE.BoxGeometry(w,h,d),ma,[x,y,z],[0,0,0],parent);
+ const beamBatches=new Map();
  const beam=(a,b,w=.8,ma=steel,depth=w*.72)=>{
   const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),dir=B.clone().sub(A),len=dir.length();
-  const shape=new THREE.Shape();const flange=w,web=w*.19,thick=w*.17;
-  shape.moveTo(-flange/2,-w/2);shape.lineTo(flange/2,-w/2);shape.lineTo(flange/2,-w/2+thick);shape.lineTo(web/2,-w/2+thick);shape.lineTo(web/2,w/2-thick);shape.lineTo(flange/2,w/2-thick);shape.lineTo(flange/2,w/2);shape.lineTo(-flange/2,w/2);shape.lineTo(-flange/2,w/2-thick);shape.lineTo(-web/2,w/2-thick);shape.lineTo(-web/2,-w/2+thick);shape.lineTo(-flange/2,-w/2+thick);shape.closePath();
-  const geo=new THREE.ExtrudeGeometry(shape,{depth:len,bevelEnabled:true,bevelSegments:1,steps:1,bevelSize:.025,bevelThickness:.018,curveSegments:1});geo.translate(0,0,-len/2);
-  const m=add(geo,ma,A.clone().add(B).multiplyScalar(.5));m.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),dir.normalize());return m;
+  const key=w.toFixed(3)+'|'+ma.uuid;let batch=beamBatches.get(key);
+  if(!batch){
+   const shape=new THREE.Shape(),flange=w,web=w*.19,thick=w*.17;
+   shape.moveTo(-flange/2,-w/2);shape.lineTo(flange/2,-w/2);shape.lineTo(flange/2,-w/2+thick);shape.lineTo(web/2,-w/2+thick);shape.lineTo(web/2,w/2-thick);shape.lineTo(flange/2,w/2-thick);shape.lineTo(flange/2,w/2);shape.lineTo(-flange/2,w/2);shape.lineTo(-flange/2,w/2-thick);shape.lineTo(-web/2,w/2-thick);shape.lineTo(-web/2,-w/2+thick);shape.lineTo(-flange/2,-w/2+thick);shape.closePath();
+   const geo=new THREE.ExtrudeGeometry(shape,{depth:1,bevelEnabled:true,bevelSegments:1,steps:1,bevelSize:.025,bevelThickness:.018,curveSegments:1});geo.translate(0,0,-.5);
+   const mesh=new THREE.InstancedMesh(geo,ma,256);mesh.count=0;mesh.castShadow=true;mesh.receiveShadow=true;mesh.instanceMatrix.setUsage(THREE.StaticDrawUsage);root.add(mesh);batch={mesh,used:0};beamBatches.set(key,batch);
+  }
+  if(batch.used>=batch.mesh.instanceMatrix.count)return;
+  const quaternion=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,0,1),dir.normalize());
+  const matrix=new THREE.Matrix4().compose(A.clone().add(B).multiplyScalar(.5),quaternion,new THREE.Vector3(1,1,len));
+  batch.mesh.setMatrixAt(batch.used++,matrix);batch.mesh.count=batch.used;batch.mesh.instanceMatrix.needsUpdate=true;
  };
  const panel=(w,h,x,y,z,ma=steel)=>box(.65,h,w,x,y,z,ma);
  // Painted, high-resolution concrete apron with wear, seams, safety zones and bay IDs.
@@ -113,6 +121,8 @@ export function createVABEnvironment(THREE){
  for(const x of [-72,-36,0,36,72])for(const z of [-65,-22,22,65]){
   box(10,1.4,4,x,145,z,darkSteel);add(new THREE.PlaneGeometry(8,2.8),lampMat,[x,144.1,z],[Math.PI/2,0,0]);
  }
+ // Finalize static beam batches once; all truss members share a small set of draw calls.
+ for(const batch of beamBatches.values())batch.mesh.computeBoundingSphere();
  // Outside apron / taxiway beyond the large door.
  box(82,.3,230,0,-.25,-218,darkSteel);
  for(const x of [-39,39])box(1.3,.04,220,x,-.07,-218,line);
