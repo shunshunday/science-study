@@ -593,15 +593,27 @@ function focusVABCamera(){
 function addPart(id,place=null,rotation=null){
  const d=catalog.find(x=>x.id===id);if(!d)return;
  if(gameMode!=='sandbox'&&!fundsUnlimited&&funds<d.cost){toast('資金が不足しています');return;}
- if(gameMode!=='sandbox'&&!fundsUnlimited)funds-=d.cost;
- pushUndoSnapshot();saveCareer();
- const radial=!!place&&Math.hypot(place.x,place.z)>.08,count=radial?symmetryMode:1;
+ const radial=!!place&&Math.hypot(place.x,place.z)>.08,count=radial?symmetryMode:1,additions=[],pendingBounds=[];
  for(let i=0;i<count;i++){
   const angle=count>1?i*Math.PI*2/count:0,q=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),angle);
   const item={data:d,fuel:d.fuel||0,stage:assemblyStage};
   if(place){item.manualPosition=true;item.position=place.clone().applyAxisAngle(new THREE.Vector3(0,1,0),angle);if(rotation)item.rotation=q.clone().multiply(rotation);}
-  parts.push(item);
+  additions.push(item);
  }
+ if(place){
+  rocket.updateWorldMatrix(true,true);
+  for(const item of additions){
+   const probe=partMesh(d);probe.position.copy(item.position);if(item.rotation)probe.quaternion.copy(item.rotation);rocket.add(probe);rocket.updateWorldMatrix(true,true);
+   const bounds=new THREE.Box3().setFromObject(probe);
+   const overlap=parts.some(existing=>existing.mesh&&bounds.intersectsBox(new THREE.Box3().setFromObject(existing.mesh)))||pendingBounds.some(other=>bounds.intersectsBox(other));
+   rocket.remove(probe);disposeCraftModel(probe);
+   if(overlap){toast('部品が既存パーツと重なります。接続位置を変えてください');return;}
+   pendingBounds.push(bounds);
+  }
+ }
+ pushUndoSnapshot();
+ if(gameMode!=='sandbox'&&!fundsUnlimited)funds-=d.cost;
+ saveCareer();additions.forEach(item=>parts.push(item));
  layout();toast(d.name+(count>1?' を'+count+'方向に対称配置しました':' を設置しました'));
 }
 function craftSnapshot(){return {assemblyStage,parts:parts.map(p=>({id:p.data.id,stage:p.stage,fuel:p.fuel,manualPosition:!!p.manualPosition,position:p.position?p.position.toArray():null,rotation:p.rotation?p.rotation.toArray():null}))};}
