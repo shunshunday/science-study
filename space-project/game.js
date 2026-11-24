@@ -658,7 +658,9 @@ function placeSelectedPartAt(clientX,clientY){
   if(components[axis]>.62){localNormal.set(axis===0?Math.sign(localNormal.x):0,axis===1?Math.sign(localNormal.y):0,axis===2?Math.sign(localNormal.z):0);}
   rotation=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),localNormal);
   const selectedData=catalog.find(p=>p.id===selectedPartId),sample=partMesh(selectedData);sample.quaternion.copy(rotation);sample.updateMatrixWorld(true);
-  const sampleBounds=new THREE.Box3().setFromObject(sample),attachBounds=new THREE.Box3().setFromObject(attachRoot),gap=.025;
+  const sampleBounds=new THREE.Box3().setFromObject(sample),worldAttachBounds=new THREE.Box3().setFromObject(attachRoot),attachCorners=[];
+  for(const x of [worldAttachBounds.min.x,worldAttachBounds.max.x])for(const y of [worldAttachBounds.min.y,worldAttachBounds.max.y])for(const z of [worldAttachBounds.min.z,worldAttachBounds.max.z])attachCorners.push(rocket.worldToLocal(new THREE.Vector3(x,y,z)));
+  const attachBounds=new THREE.Box3().setFromPoints(attachCorners),gap=.025;
   if(components[axis]>.62){
    const key=axis===0?'x':axis===1?'y':'z',sign=localNormal.getComponent(axis);
    place.setComponent(axis,sign>0?attachBounds.max.getComponent(axis)-sampleBounds.min.getComponent(axis)+gap:attachBounds.min.getComponent(axis)-sampleBounds.max.getComponent(axis)-gap);
