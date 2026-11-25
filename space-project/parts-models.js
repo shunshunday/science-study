@@ -4,6 +4,7 @@
 // Cached family finishes and per-part artwork keep materials consistent without
 // allocating a new high-resolution texture every time a preview is revisited.
 const PART_SKIN_CACHE=new Map();
+const PART_BUMP_CACHE=new WeakMap();
 function getPartSkin(THREE,family){
  if(PART_SKIN_CACHE.has(family))return PART_SKIN_CACHE.get(family);
  const c=document.createElement('canvas');c.width=512;c.height=512;
@@ -169,7 +170,15 @@ function makeThermalTileMaterial(THREE){
 
 export function createPartModel(p,THREE){
  const g=new THREE.Group(),id=String(p.id||''),name=String(p.name||''),type=String(p.type||''),r=Math.max(.055,Number(p.radius)||.5),h=Math.max(.12,Number(p.height)||.5);
- const M=(color,metalness=.35,roughness=.48,extra={})=>new THREE.MeshStandardMaterial({color,metalness,roughness,...extra});
+ const M=(color,metalness=.35,roughness=.48,extra={})=>{
+  const options={...extra};
+  if(options.map&&!options.bumpMap){
+   let relief=PART_BUMP_CACHE.get(options.map);
+   if(!relief){relief=options.map.clone();relief.colorSpace=THREE.NoColorSpace;relief.needsUpdate=true;PART_BUMP_CACHE.set(options.map,relief);}
+   options.bumpMap=relief;options.bumpScale=.006;
+  }
+  return new THREE.MeshStandardMaterial({color,metalness,roughness,...options});
+ };
 
  const painted=(base,accent,word,serial=id.toUpperCase())=>{
   const nm=(id+' '+name+' '+word).toLowerCase();
