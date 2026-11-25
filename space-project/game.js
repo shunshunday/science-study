@@ -493,7 +493,7 @@ function renderOnePartPreview(canvas,p){
   const key=new THREE.DirectionalLight(0xffedcf,3.2);key.position.set(3,5,4);scene.add(key);
   const fill=new THREE.DirectionalLight(0x9fc8e8,1.1);fill.position.set(-4,1,-3);scene.add(fill);
   const model=partMesh(p);scene.add(model);const box=new THREE.Box3().setFromObject(model),center=box.getCenter(new THREE.Vector3()),sphere=box.getBoundingSphere(new THREE.Sphere());model.position.sub(center);
-  const camera=new THREE.PerspectiveCamera(34,2,.01,1000),dist=Math.max(.7,sphere.radius/Math.sin(THREE.MathUtils.degToRad(camera.fov/2))*.8194);camera.position.set(dist*.55,dist*.35,dist*.75);camera.lookAt(0,0,0);camera.far=dist*12;camera.updateProjectionMatrix();
+  const camera=new THREE.PerspectiveCamera(34,2,.01,1000),dist=Math.max(.7,sphere.radius/Math.sin(THREE.MathUtils.degToRad(camera.fov/2))*.54);camera.position.set(dist*.55,dist*.35,dist*.75);camera.lookAt(0,0,0);camera.far=dist*12;camera.updateProjectionMatrix();
   const originalRotation=model.rotation.clone(),snapshot=document.createElement('canvas');snapshot.width=232;snapshot.height=116;
   entry={scene,camera,model,originalRotation,snapshot,canvas:null,hovered:false,raf:0,lastFrame:0};partPreviewModelCache.set(p.id,entry);attachPartPreview(canvas,p,entry);paintPartPreview(entry,canvas);
  }catch(err){canvas.replaceWith(Object.assign(document.createElement('span'),{className:'part-preview-error',textContent:'3D'}));}
@@ -767,13 +767,32 @@ renderCategories();drawPartsCatalogV2();rebuildHangarCrew();
 
 $('#part-categories').addEventListener('click',e=>{const b=e.target.closest('[data-part-category]');if(b){const chosen=b.dataset.partCategory;const panel=$('#parts');if(activePartCategory===chosen&&!panel.classList.contains('categories-collapsed')){panel.classList.add('categories-collapsed');return;}activePartCategory=chosen;panel.classList.remove('categories-collapsed');renderCategories();drawPartsCatalogV2();}});
 $('#part-search').addEventListener('input',drawPartsCatalogV2);$('#part-sort').addEventListener('change',drawPartsCatalogV2);
-$('#part-list').addEventListener('click',e=>{const b=e.target.closest('[data-part]');if(b){toast('部品は3D画面へドラッグして設置してください');}});
-$('#part-list').addEventListener('dragstart',e=>{const b=e.target.closest('button[data-part]');if(!b||b.disabled)return;selectedPartId=b.dataset.part;e.dataTransfer.effectAllowed='copy';e.dataTransfer.setData('application/x-space-part',b.dataset.part);e.dataTransfer.setData('text/plain',b.dataset.part);document.body.classList.add('part-dragging');});
-$('#part-list').addEventListener('dragend',()=>document.body.classList.remove('part-dragging'));
-renderer.domElement.addEventListener('dragover',e=>{if(mode==='vab'&&!flight){e.preventDefault();e.dataTransfer.dropEffect='copy';document.body.classList.add('part-drag-over');}});
-renderer.domElement.addEventListener('dragleave',e=>{if(!renderer.domElement.contains(e.relatedTarget))document.body.classList.remove('part-drag-over');});
-renderer.domElement.addEventListener('drop',e=>{if(mode!=='vab'||flight)return;e.preventDefault();document.body.classList.remove('part-dragging','part-drag-over');const id=e.dataTransfer.getData('application/x-space-part')||e.dataTransfer.getData('text/plain');if(id&&catalog.some(p=>p.id===id)){selectedPartId=null;placePartAtScreen(id,e.clientX,e.clientY);}});
-$('#clear-craft').onclick=()=>{if(flight)return;parts.length=0;assemblyStage=0;layout();toast('機体を空にしました');};
+// Controlled pointer drag: no native browser drag image, so the catalog/sidebar never gets carried.
+ let catalogPointerDrag=null;
+ $('#part-list').addEventListener('dragstart',e=>e.preventDefault());
+ $('#part-list').addEventListener('pointerdown',e=>{
+  const b=e.target.closest('button[data-part]');
+  if(!b||b.disabled||mode!=='vab'||flight||(e.pointerType==='mouse'&&e.button!==0))return;
+  catalogPointerDrag={id:b.dataset.part,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,moved:false};
+ });
+ document.addEventListener('pointermove',e=>{
+  if(!catalogPointerDrag||e.pointerId!==catalogPointerDrag.pointerId)return;
+  if(!catalogPointerDrag.moved&&Math.hypot(e.clientX-catalogPointerDrag.startX,e.clientY-catalogPointerDrag.startY)>6){
+   catalogPointerDrag.moved=true;document.body.classList.add('part-dragging');
+  }
+  if(catalogPointerDrag.moved)e.preventDefault();
+ },{passive:false});
+ document.addEventListener('pointerup',e=>{
+  if(!catalogPointerDrag||e.pointerId!==catalogPointerDrag.pointerId)return;
+  const drag=catalogPointerDrag;catalogPointerDrag=null;document.body.classList.remove('part-dragging','part-drag-over');
+  if(!drag.moved)return;
+  const rect=renderer.domElement.getBoundingClientRect();
+  if(mode==='vab'&&!flight&&e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom)placePartAtScreen(drag.id,e.clientX,e.clientY);
+ });
+ document.addEventListener('pointercancel',()=>{catalogPointerDrag=null;document.body.classList.remove('part-dragging','part-drag-over');});
+ renderer.domElement.addEventListener('pointerenter',()=>{if(catalogPointerDrag?.moved)document.body.classList.add('part-drag-over');});
+ renderer.domElement.addEventListener('pointerleave',()=>document.body.classList.remove('part-drag-over'));
+ $('#clear-craft').onclick=()=>{if(flight)return;parts.length=0;assemblyStage=0;layout();toast('機体を空にしました');};
 $('#new-stage').onclick=()=>{if(flight)return;assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;toast('新しい組立ステージ '+assemblyStage);};
 $('#stage-add-side').onclick=()=>{if(flight)return;assemblyStage++;$('#stage-build-label').textContent='組立ステージ '+assemblyStage;renderStages();toast('新しい組立ステージ '+assemblyStage);};
 $('#build-stage-list').addEventListener('click',e=>{const b=e.target.closest('[data-build-stage]');if(!b||flight)return;assemblyStage=Number(b.dataset.buildStage);$('#stage-build-label').textContent='組立ステージ '+assemblyStage;renderStages();toast('組立ステージ '+assemblyStage+' を選択');});
