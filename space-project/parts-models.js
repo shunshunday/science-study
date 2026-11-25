@@ -284,9 +284,9 @@ export function createPartModel(p,THREE){
   const inline=id.includes('inline'),lander=id.includes('lander'),cupola=id.includes('cupola'),mk2=id.includes('mk2'),mk3=id.includes('mk3'),mk13=id.includes('mk13'),seat=id==='seat',aircraft=id.includes('aircraft');
   if(seat){lathe([[0,-h*.22],[r*.58,-h*.22],[r*.7,-h*.1],[r*.7,h*.12],[r*.58,h*.22],[0,h*.22]],steel,32);const back=box(r*1.25,h*.82,.12,ivory,[0,h*.5,-r*.28]);back.rotation.x=-.14;for(let x of [-1,1])tube([[x*r*.38,h*.55,-r*.2],[x*r*.32,h*.2,r*.35],[x*r*.22,-h*.12,r*.3]],.035,gold);return;}
   const rr=mk3?r*.78:mk2||mk13?r*.84:r*.7;
-  if(lander){lathe([[0,-h*.5],[rr*.75,-h*.5],[rr,-h*.38],[rr,h*.12],[rr*.86,h*.24],[rr*.62,h*.43],[0,h*.48]],M(0xc5c6bd,.4,.5),72);band(rr,h*.1,.05,gold);}
-  else if(cupola){lathe([[0,-h*.5],[rr*.7,-h*.5],[rr,-h*.36],[rr,h*.12],[rr*.95,h*.25],[rr*.8,h*.42],[rr*.52,h*.5],[0,h*.5]],ivory,72);sphere(rr*.98,ivory,[0,h*.38,0],[1,.45,1]);}
-  else if(aircraft){lathe([[0,-h*.5],[rr*.8,-h*.5],[rr,-h*.4],[rr*.95,h*.2],[rr*.72,h*.42],[rr*.5,h*.5],[0,h*.5]],ivory,64);const canopy=add(new THREE.SphereGeometry(rr*.68,32,20,0,Math.PI*2,0,Math.PI/2),glass,[0,h*.36,0]);canopy.scale.set(1,.85,1);}
+  if(lander){lathe([[0,-h*.5],[rr*.75,-h*.5],[rr,-h*.38],[rr,h*.12],[rr*.86,h*.24],[rr*.62,h*.43],[0,h*.48]],painted('#c5c6bd','#b68b4e','LANDER CAN',name),72);band(rr,h*.1,.05,gold);}
+  else if(cupola){lathe([[0,-h*.5],[rr*.7,-h*.5],[rr,h*.36],[rr,h*.12],[rr*.95,h*.25],[rr*.8,h*.42],[rr*.52,h*.5],[0,h*.5]],painted('#d9d9d0','#b68b4e','CUPOLA PRESSURE SHELL',name),72);sphere(rr*.98,ivory,[0,h*.38,0],[1,.45,1]);}
+  else if(aircraft){lathe([[0,-h*.5],[rr*.8,-h*.5],[rr,-h*.4],[rr*.95,h*.2],[rr*.72,h*.42],[rr*.5,h*.5],[0,h*.5]],painted('#d9d9d0','#b68b4e','COCKPIT PRESSURE SHELL',name),64);const canopy=add(new THREE.SphereGeometry(rr*.68,32,20,0,Math.PI*2,0,Math.PI/2),glass,[0,h*.36,0]);canopy.scale.set(1,.85,1);}
   else{lathe([[0,-h*.5],[rr*.76,-h*.5],[rr*.96,-h*.38],[rr,h*.14],[rr*.88,h*.3],[rr*.58,h*.47],[0,h*.5]],painted('#d9d9d0','#b68b4e','CREW MODULE'),72);lathe([[0,h*.25],[rr*.86,h*.25],[rr*.78,h*.34],[rr*.48,h*.47],[0,h*.5]],paint,64);}
   band(rr*.98,-h*.38,.04,steel);band(rr*.98,h*.23,.045,gold);
   // Distinctive forward-facing portholes with raised bezels and deep blue glass.
@@ -338,17 +338,33 @@ export function createPartModel(p,THREE){
   }
  };
  const makeSolar=()=>{
-  const large=id.includes('xl')||id.includes('sp10')||id.includes('gigantor'),fixed=id.includes('ox-stat'),count=id.includes('ox4')?2:large?4:2,w=large?1.45:fixed?.92:1.05;
+  const large=id.includes('xl')||id.includes('sp10')||id.includes('gigantor'),fixed=id.includes('ox-stat'),count=id.includes('ox4')?2:large?4:2,w=large?1.45:fixed?.92:1.05,depth=large?1.35:1.0;
+  const textureKey='solar-cells-ksp1-v1';
+  let cellTexture=PART_SKIN_CACHE.get(textureKey);
+  if(!cellTexture){
+   const c=document.createElement('canvas');c.width=512;c.height=512;const q=c.getContext('2d');
+   const grad=q.createLinearGradient(0,0,512,512);grad.addColorStop(0,'#285b83');grad.addColorStop(.45,'#12395f');grad.addColorStop(1,'#09233f');q.fillStyle=grad;q.fillRect(0,0,512,512);
+   for(let y=0;y<8;y++)for(let x=0;x<8;x++){
+    const px=x*64+3,py=y*64+3;q.fillStyle=(x+y)%2?'#17466f':'#1c527e';q.fillRect(px,py,58,58);
+    q.strokeStyle='rgba(153,198,220,.42)';q.lineWidth=2;q.strokeRect(px+2,py+2,54,54);
+    q.fillStyle='rgba(210,232,239,.22)';q.fillRect(px+7,py+7,2,44);q.fillRect(px+7,py+7,44,2);
+   }
+   q.fillStyle='rgba(206,227,237,.52)';q.fillRect(0,0,512,5);q.fillRect(0,0,5,512);
+   q.fillStyle='rgba(255,255,255,.10)';q.beginPath();q.moveTo(0,0);q.lineTo(512,0);q.lineTo(512,80);q.closePath();q.fill();
+   cellTexture=new THREE.CanvasTexture(c);cellTexture.colorSpace=THREE.SRGBColorSpace;cellTexture.anisotropy=8;PART_SKIN_CACHE.set(textureKey,cellTexture);
+  }
   cyl(.16,.2,.32,aluminium,h*.18,24);band(.18,h*.18,.035,gold);
   for(let side of [-1,1]){
-   const x=side*(w*.65);const panelMat=M(0x173d65,.62,.28,{emissive:0x071a28,emissiveIntensity:.12});
-   const panel=box(w,.045,large?1.35:1.0,panelMat,[x,h*.18,0]);
-   for(let i=0;i<8;i++)box(.012,.012,large?1.3:.95,M(0x8db8d1,.48,.32),[x-w*.5+w*(i+1)/9,h*.208,0]);
-   for(let j=0;j<6;j++)box(w*.96,.012,.012,M(0x8db8d1,.45,.34),[x,h*.21,-.45+j*.18]);
-   for(let z of [-.52,.52])box(w*.98,.035,.025,aluminium,[x,h*.23,z]);
+   const x=side*(w*.65),panelMat=M(0xffffff,.66,.24,{map:cellTexture,emissive:0x061525,emissiveIntensity:.08});
+   box(w,.045,depth,panelMat,[x,h*.18,0]);
+   // Real panel frame, perimeter rails and electrical bus bars.
+   for(let z of [-depth*.5,depth*.5])box(w*1.02,.055,.035,aluminium,[x,h*.18,z]);
+   for(let xx of [-w*.5,w*.5])box(.035,.055,depth,aluminium,[x+xx,h*.18,0]);
+   for(let j=1;j<4;j++)box(w*.94,.014,.018,M(0x8db8d1,.55,.28),[x,h*.207,-depth*.5+depth*j/4]);
    const hinge=add(new THREE.CylinderGeometry(.055,.055,w*.16,16),gold,[side*w*.13,h*.18,0],[0,0,Math.PI/2]);
+   for(let z of [-depth*.36,depth*.36])bolt(x,h*.22,z,.018,steel);
   }
-  if(fixed){const frame=box(.08,.07,1.1,steel,[0,h*.18,0]);}
+  if(fixed){box(.08,.07,depth*1.08,steel,[0,h*.18,0]);}
   else{for(let side of [-1,1])tube([[0,h*.18,0],[side*w*.4,h*.18,.1],[side*w*.72,h*.18,.12]],.035,aluminium);}
  };
  const makeParachute=()=>{
