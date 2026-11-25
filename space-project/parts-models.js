@@ -209,8 +209,26 @@ export function createPartModel(p,THREE){
    q.fillStyle='#f0f0e8';q.font='14px Arial';q.fillText('CAUTION  •  INSPECT BEFORE FLIGHT',54,490);
    for(let i=0;i<1500;i++){const x=(i*73)%1024,y=(i*139)%512;q.fillStyle=i%3?'rgba(255,255,255,.025)':'rgba(0,0,0,.04)';q.fillRect(x,y,1,1);}
    tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.wrapS=THREE.RepeatWrapping;tex.wrapT=THREE.ClampToEdgeWrapping;tex.anisotropy=16;PART_SKIN_CACHE.set(key,tex);
+   // A separate height texture gives panel joints, rivets, woven fabric and tile edges
+   // actual grazing-light relief instead of relying on painted color alone.
+   const bumpKey=key+':micro-height';let bumpTex=PART_SKIN_CACHE.get(bumpKey);
+   if(!bumpTex){
+    const b=document.createElement('canvas');b.width=1024;b.height=512;const z=b.getContext('2d');
+    z.fillStyle='#808080';z.fillRect(0,0,1024,512);
+    z.strokeStyle='#5e5e5e';z.lineWidth=3;
+    for(let x=18;x<1024;x+=128){z.beginPath();z.moveTo(x,10);z.lineTo(x,502);z.stroke();}
+    for(const y of [22,42,466,488]){z.beginPath();z.moveTo(0,y);z.lineTo(1024,y);z.stroke();}
+    z.strokeStyle='#b0b0b0';z.lineWidth=2;
+    for(let x=28;x<1024;x+=64)for(const y of [34,478]){z.beginPath();z.arc(x,y,3,0,Math.PI*2);z.stroke();}
+    if(family==='fabric'){z.strokeStyle='#929292';z.lineWidth=1;for(let x=0;x<1024;x+=7){z.beginPath();z.moveTo(x,0);z.lineTo(x,512);z.stroke();}for(let y=0;y<512;y+=7){z.beginPath();z.moveTo(0,y);z.lineTo(1024,y);z.stroke();}}
+    if(family==='thermal'){z.strokeStyle='#a0a0a0';z.lineWidth=3;for(let y=64;y<468;y+=46)for(let x=64;x<980;x+=58)z.strokeRect(x,y,52,40);}
+    z.fillStyle='#a8a8a8';z.fillRect(42,130,434,192);z.fillStyle='#686868';z.fillRect(48,136,422,180);
+    for(let x=52;x<958;x+=34){z.fillStyle='#b0b0b0';z.fillRect(x,394,18,34);}
+    bumpTex=new THREE.CanvasTexture(b);bumpTex.wrapS=THREE.RepeatWrapping;bumpTex.wrapT=THREE.ClampToEdgeWrapping;bumpTex.anisotropy=8;PART_SKIN_CACHE.set(bumpKey,bumpTex);
+   }
   }
-  return M(0xffffff,.48,.56,{map:tex});
+  const bumpTex=PART_SKIN_CACHE.get(key+':micro-height');
+  return M(0xffffff,.48,.56,{map:tex,bumpMap:bumpTex,bumpScale:.012,roughness:.62});
  };
  const ivory=M(0xd9d9d0,.42,.52),paint=M(0xe7e6dc,.28,.6),aluminium=M(0xaeb9bd,.82,.28),steel=M(0x59666d,.82,.34),dark=M(0x252f35,.68,.38),rubber=M(0x171b1e,.04,.91),gold=M(0xb68b4e,.72,.32),orange=M(0xc56b31,.35,.58),blue=M(0x28547c,.58,.3),green=M(0x4c9b65,.3,.4),glass=M(0x173f5c,.62,.14,{emissive:0x071a2c,emissiveIntensity:.22}),black=M(0x111a20,.45,.25);
  const add=(geo,mat,pos=[0,0,0],rot=[0,0,0],scale)=>{const o=new THREE.Mesh(geo,mat);o.position.set(...pos);o.rotation.set(...rot);if(scale)o.scale.set(...scale);o.castShadow=true;o.receiveShadow=true;g.add(o);return o;};
