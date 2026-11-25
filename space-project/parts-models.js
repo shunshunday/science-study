@@ -2355,15 +2355,31 @@ export function createPartModel(p,THREE){
    const shell=painted(mk3?'#d5d8d5':'#d8d9d2','#b68b4e',mk3?'MK3 CARGO BAY':'MK2 CARGO BAY',name);
    // Rounded Mk2/Mk3 fuselage cross-section with a hollow payload cavity, not a rectangular crate.
    const outer=new THREE.Shape(),rad=Math.min(width,thick)*.18;
-   outer.moveTo(-width*.5+rad,-thick*.5);outer.lineTo(width*.5-rad,-thick*.5);outer.quadraticCurveTo(width*.5,-thick*.5,width*.5,-thick*.5+rad);
-   outer.lineTo(width*.5,thick*.5-rad);outer.quadraticCurveTo(width*.5,thick*.5,width*.5-rad,thick*.5);
-   outer.lineTo(-width*.5+rad,thick*.5);outer.quadraticCurveTo(-width*.5,thick*.5,-width*.5,thick*.5-rad);
-   outer.lineTo(-width*.5,-thick*.5+rad);outer.quadraticCurveTo(-width*.5,-thick*.5,-width*.5+rad,-thick*.5);
+   if(mk2){
+    // Mk2 cargo bay follows the flat-belly D-section of the stock Mk2 fuselage.
+    outer.moveTo(-width*.5,-thick*.34);outer.lineTo(width*.5,-thick*.34);
+    outer.quadraticCurveTo(width*.54,-thick*.05,width*.42,thick*.22);
+    outer.quadraticCurveTo(width*.3,thick*.53,0,thick*.56);
+    outer.quadraticCurveTo(-width*.3,thick*.53,-width*.42,thick*.22);
+    outer.quadraticCurveTo(-width*.54,-thick*.05,-width*.5,-thick*.34);
+   }else{
+    outer.moveTo(-width*.5+rad,-thick*.5);outer.lineTo(width*.5-rad,-thick*.5);outer.quadraticCurveTo(width*.5,-thick*.5,width*.5,-thick*.5+rad);
+    outer.lineTo(width*.5,thick*.5-rad);outer.quadraticCurveTo(width*.5,thick*.5,width*.5-rad,thick*.5);
+    outer.lineTo(-width*.5+rad,thick*.5);outer.quadraticCurveTo(-width*.5,thick*.5,-width*.5,thick*.5-rad);
+    outer.lineTo(-width*.5,-thick*.5+rad);outer.quadraticCurveTo(-width*.5,-thick*.5,-width*.5+rad,-thick*.5);
+   }
    const cavity=new THREE.Path(),iw=width*.72,ih=thick*.52,ir=Math.min(iw,ih)*.16;
-   cavity.moveTo(-iw*.5+ir,-ih*.5);cavity.lineTo(-iw*.5,-ih*.5+ir);cavity.quadraticCurveTo(-iw*.5,ih*.5,-iw*.5+ir,ih*.5);
-   cavity.lineTo(iw*.5-ir,ih*.5);cavity.quadraticCurveTo(iw*.5,ih*.5,iw*.5,ih*.5-ir);
-   cavity.lineTo(iw*.5,-ih*.5+ir);cavity.quadraticCurveTo(iw*.5,-ih*.5,iw*.5-ir,-ih*.5);
-   cavity.lineTo(-iw*.5+ir,-ih*.5);
+   if(mk2){
+    cavity.moveTo(-iw*.5,-ih*.34);cavity.quadraticCurveTo(-iw*.54,-ih*.05,-iw*.42,ih*.22);
+    cavity.quadraticCurveTo(-iw*.3,ih*.53,0,ih*.56);
+    cavity.quadraticCurveTo(iw*.3,ih*.53,iw*.42,ih*.22);
+    cavity.quadraticCurveTo(iw*.54,-ih*.05,iw*.5,-ih*.34);cavity.lineTo(-iw*.5,-ih*.34);
+   }else{
+    cavity.moveTo(-iw*.5+ir,-ih*.5);cavity.lineTo(-iw*.5,-ih*.5+ir);cavity.quadraticCurveTo(-iw*.5,ih*.5,-iw*.5+ir,ih*.5);
+    cavity.lineTo(iw*.5-ir,ih*.5);cavity.quadraticCurveTo(iw*.5,ih*.5,iw*.5,ih*.5-ir);
+    cavity.lineTo(iw*.5,-ih*.5+ir);cavity.quadraticCurveTo(iw*.5,-ih*.5,iw*.5-ir,-ih*.5);
+    cavity.lineTo(-iw*.5+ir,-ih*.5);
+   }
    outer.holes.push(cavity);
    add(new THREE.ExtrudeGeometry(outer,{depth:length,bevelEnabled:true,bevelSegments:3,bevelSize:.025,bevelThickness:.025}),shell,[0,0,-length*.5]);
    box(width*.82,thick*.1,length*.94,dark,[0,-thick*.22,0]);
