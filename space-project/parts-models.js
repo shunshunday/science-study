@@ -150,6 +150,23 @@ function makeTankArtwork(THREE,id,name,kind){
  PART_SKIN_CACHE.set(key,tex);return tex;
 }
 
+
+function makeThermalTileMaterial(THREE){
+ const key='ksp1-thermal-tile-map';
+ if(PART_SKIN_CACHE.has(key))return PART_SKIN_CACHE.get(key);
+ const c=document.createElement('canvas');c.width=512;c.height=512;const q=c.getContext('2d');
+ q.fillStyle='#493d35';q.fillRect(0,0,512,512);
+ for(let y=0;y<512;y+=32)for(let x=0;x<512;x+=32){
+  const ox=(Math.floor(y/32)%2)*16,px=x+ox;
+  const shade=34+((x*7+y*11)%23);
+  q.fillStyle='rgb('+shade+','+(shade-5)+','+(shade-9)+')';q.fillRect(px+2,y+2,28,28);
+  q.strokeStyle='rgba(9,12,14,.8)';q.lineWidth=3;q.strokeRect(px+2,y+2,28,28);
+  q.strokeStyle='rgba(191,174,151,.18)';q.lineWidth=1;q.beginPath();q.moveTo(px+5,y+5);q.lineTo(px+24,y+5);q.stroke();
+ }
+ const grad=q.createLinearGradient(0,0,512,512);grad.addColorStop(0,'rgba(255,255,255,.08)');grad.addColorStop(1,'rgba(0,0,0,.18)');q.fillStyle=grad;q.fillRect(0,0,512,512);
+ const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.wrapS=THREE.RepeatWrapping;tex.wrapT=THREE.RepeatWrapping;tex.anisotropy=8;PART_SKIN_CACHE.set(key,tex);return tex;
+}
+
 export function createPartModel(p,THREE){
  const g=new THREE.Group(),id=String(p.id||''),name=String(p.name||''),type=String(p.type||''),r=Math.max(.055,Number(p.radius)||.5),h=Math.max(.12,Number(p.height)||.5);
  const M=(color,metalness=.35,roughness=.48,extra={})=>new THREE.MeshStandardMaterial({color,metalness,roughness,...extra});
@@ -285,9 +302,9 @@ export function createPartModel(p,THREE){
   if(seat){lathe([[0,-h*.22],[r*.58,-h*.22],[r*.7,-h*.1],[r*.7,h*.12],[r*.58,h*.22],[0,h*.22]],steel,32);const back=box(r*1.25,h*.82,.12,ivory,[0,h*.5,-r*.28]);back.rotation.x=-.14;for(let x of [-1,1])tube([[x*r*.38,h*.55,-r*.2],[x*r*.32,h*.2,r*.35],[x*r*.22,-h*.12,r*.3]],.035,gold);return;}
   const rr=mk3?r*.78:mk2||mk13?r*.84:r*.7;
   if(lander){lathe([[0,-h*.5],[rr*.75,-h*.5],[rr,-h*.38],[rr,h*.12],[rr*.86,h*.24],[rr*.62,h*.43],[0,h*.48]],painted('#c5c6bd','#b68b4e','LANDER CAN',name),72);band(rr,h*.1,.05,gold);}
-  else if(cupola){lathe([[0,-h*.5],[rr*.7,-h*.5],[rr,h*.36],[rr,h*.12],[rr*.95,h*.25],[rr*.8,h*.42],[rr*.52,h*.5],[0,h*.5]],painted('#d9d9d0','#b68b4e','CUPOLA PRESSURE SHELL',name),72);sphere(rr*.98,ivory,[0,h*.38,0],[1,.45,1]);}
+  else if(cupola){lathe([[0,-h*.5],[rr*.7,-h*.5],[rr,-h*.36],[rr,h*.12],[rr*.95,h*.25],[rr*.8,h*.42],[rr*.52,h*.5],[0,h*.5]],painted('#d9d9d0','#b68b4e','CUPOLA PRESSURE SHELL',name),72);sphere(rr*.98,ivory,[0,h*.38,0],[1,.45,1]);}
   else if(aircraft){lathe([[0,-h*.5],[rr*.8,-h*.5],[rr,-h*.4],[rr*.95,h*.2],[rr*.72,h*.42],[rr*.5,h*.5],[0,h*.5]],painted('#d9d9d0','#b68b4e','COCKPIT PRESSURE SHELL',name),64);const canopy=add(new THREE.SphereGeometry(rr*.68,32,20,0,Math.PI*2,0,Math.PI/2),glass,[0,h*.36,0]);canopy.scale.set(1,.85,1);}
-  else{lathe([[0,-h*.5],[rr*.76,-h*.5],[rr*.96,-h*.38],[rr,h*.14],[rr*.88,h*.3],[rr*.58,h*.47],[0,h*.5]],painted('#d9d9d0','#b68b4e','CREW MODULE'),72);lathe([[0,h*.25],[rr*.86,h*.25],[rr*.78,h*.34],[rr*.48,h*.47],[0,h*.5]],paint,64);}
+  else{lathe([[0,-h*.5],[rr*.76,-h*.5],[rr*.96,-h*.38],[rr,h*.14],[rr*.88,h*.3],[rr*.58,h*.47],[0,h*.5]],painted('#d9d9d0','#b68b4e','CREW MODULE',name),72);lathe([[0,h*.25],[rr*.86,h*.25],[rr*.78,h*.34],[rr*.48,h*.47],[0,h*.5]],paint,64);}
   band(rr*.98,-h*.38,.04,steel);band(rr*.98,h*.23,.045,gold);
   // Distinctive forward-facing portholes with raised bezels and deep blue glass.
   const windows=cupola?8:mk13?5:mk2?4:3;
@@ -539,8 +556,11 @@ export function createPartModel(p,THREE){
   else{lathe([[0,-h*.5],[r*.8,-h*.5],[r,-h*.38],[r,h*.38],[r*.8,h*.5],[0,h*.5]],ivory,64);for(let y of [-h*.4,h*.4])band(r,y,.035,gold);radialLabel(r*1.01,0,r*.72,h*.22,getLabelMaterial());}
  };
  const makeThermal=()=>{
-  lathe([[0,-h*.5],[r*.72,-h*.5],[r,-h*.34],[r*.94,h*.25],[r*.7,h*.5],[0,h*.5]],M(0x62534a,.22,.92),64);
-  band(r*.96,h*.28,.06,gold);for(let i=0;i<16;i++){const a=i*Math.PI/8;radialPipe(r*.95,-h*.28,h*.24,a,steel,.025);}
+  const tileMat=M(0xffffff,.08,.96,{map:makeThermalTileMaterial(THREE)});
+  lathe([[0,-h*.5],[r*.72,-h*.5],[r,-h*.34],[r*.94,h*.25],[r*.7,h*.5],[0,h*.5]],tileMat,96);
+  band(r*.96,h*.28,.06,gold);band(r*.94,-h*.32,.035,steel);
+  for(let i=0;i<24;i++){const a=i*Math.PI/12;radialPipe(r*.95,-h*.28,h*.24,a,steel,.018);}
+  for(let i=0;i<12;i++){const a=i*Math.PI/6;bolt(Math.cos(a)*r*.96,h*.2,Math.sin(a)*r*.96,.022,aluminium);}
  };
  const makeUtility=()=>{
   if(/launch escape|脱出システム/i.test(name)){for(let i=0;i<4;i++){const a=i*Math.PI/2;const x=Math.cos(a)*r*.58,z=Math.sin(a)*r*.58;tube([[x,-h*.35,z],[x*1.15,h*.25,z*1.15],[x*.9,h*.5,z*.9]],.045,aluminium);}lathe([[0,h*.25],[r*.28,h*.25],[r*.36,h*.5],[r*.2,h*.92],[0,h]],orange,32);}
