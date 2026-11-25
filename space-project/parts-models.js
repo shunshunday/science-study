@@ -569,11 +569,10 @@ export function createPartModel(p,THREE){
    const bladeCount=goliath?24:16;
    for(let i=0;i<bladeCount;i++){
     const a=i*Math.PI*2/bladeCount;
-    const blade=box(.035,.035,shellR*.62,aluminium,[Math.cos(a)*shellR*.34,Math.sin(a)*shellR*.34,h*.44],[0,0,a]);
-    blade.rotation.z=a;
+    box(shellR*.62,.045,.025,aluminium,[Math.cos(a)*shellR*.3,Math.sin(a)*shellR*.3,h*.44],[0,0,a]);
    }
    add(new THREE.TorusGeometry(shellR*.42,.035,10,48),gold,[0,0,h*.45]);
-   cyl(shellR*.18,shellR*.18,.08,steel,0,24).position.z=h*.46;
+   const fanHub=cyl(shellR*.18,shellR*.18,.08,steel,0,24);fanHub.position.z=h*.46;fanHub.rotation.x=Math.PI/2;
    // Longitudinal external pipes and compressor casing seams follow the Z-axis.
    for(let i=0;i<8;i++){
     const a=i*Math.PI/4,x=Math.cos(a)*shellR*1.02,y=Math.sin(a)*shellR*1.02;
