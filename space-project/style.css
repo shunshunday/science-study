@@ -572,3 +572,41 @@ button.active{background:linear-gradient(180deg,#d79a4d,#9e6328);border-color:#f
 #part-list .part[draggable="true"]:active{cursor:grabbing;}
 body.part-drag-over #viewport{outline:2px solid #d9b56d;outline-offset:-3px;}
 body.part-drag-over #viewport canvas{cursor:copy!important;}
+
+
+/* KSP1-inspired VAB layout: keep the assembly viewport clear. */
+.vab-craft-name{
+ position:fixed;z-index:5;top:12px;left:50%;transform:translateX(-50%);
+ min-width:180px;text-align:center;padding:5px 18px;
+ color:#f1eee2;font-size:15px;font-weight:600;letter-spacing:1.2px;
+ text-shadow:0 2px 4px #000b;pointer-events:none;
+ background:linear-gradient(180deg,#35434bd9,#202c34b8);
+ border:1px solid #aab5b34d;border-radius:2px;
+}
+.vab-actions{
+ position:fixed;z-index:8;top:58px;right:220px;
+ display:flex;align-items:center;gap:5px;padding:5px;
+ background:linear-gradient(180deg,#4a5861ed,#303c45ed);
+ border:1px solid #9aa7ac;border-radius:2px;box-shadow:0 3px 12px #0008;
+}
+.vab-actions button{white-space:nowrap;padding:7px 10px;font-size:11px}
+.vab-actions #launch{font-weight:700;background:linear-gradient(180deg,#d59645,#9f642b);border-color:#efc17a}
+.vab-actions #clear-craft{background:#59636a}
+.build-staging{width:210px}
+.build-staging-head{display:flex;align-items:center;justify-content:space-between;gap:6px}
+#stage-build-label{font-size:10px;letter-spacing:0;color:#d2d9d8;white-space:nowrap}
+.craft-stats{
+ margin:9px 2px 12px;padding:8px 9px;
+ color:#d2d9d8;font-size:11px;line-height:1.8;
+ background:#17232c88;border:1px solid #ffffff20;
+}
+#new-stage{display:none!important}
+@media(max-width:900px){
+ .vab-craft-name{top:7px;left:340px;transform:none;min-width:130px;font-size:12px}
+ .vab-actions{top:48px;left:330px;right:216px;overflow-x:auto;justify-content:flex-start}
+ .vab-actions button{padding:6px 8px;font-size:10px}
+}
+@media(max-width:600px){
+ .vab-craft-name{left:250px;top:5px}
+ .vab-actions{left:245px;right:205px;top:42px}
+}
