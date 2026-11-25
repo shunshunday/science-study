@@ -2124,9 +2124,24 @@ export function createPartModel(p,THREE){
    const mk3=/mk3/.test(nm),length=/100/.test(nm)?r*4:/50/.test(nm)?r*2:/25/.test(nm)?r*1.25:/08/.test(nm)?r*2.9:r*1.45;
    const width=mk3?r*1.18:r*1.04,thick=mk3?r*.58:r*.52;
    const shell=painted(mk3?'#d5d8d5':'#d8d9d2','#b68b4e',mk3?'MK3 CARGO BAY':'MK2 CARGO BAY',name);
-   // Upper pressure shell and two structural side rails leave a recessed cargo well.
-   box(width,thick*.18,length,shell,[0,thick*.38,0]);
-   box(width*.94,thick*.12,length*.96,dark,[0,-thick*.18,0]);
+   // Rounded Mk2/Mk3 fuselage cross-section with a hollow payload cavity, not a rectangular crate.
+   const outer=new THREE.Shape(),rad=Math.min(width,thick)*.18;
+   outer.moveTo(-width*.5+rad,-thick*.5);outer.lineTo(width*.5-rad,-thick*.5);outer.quadraticCurveTo(width*.5,-thick*.5,width*.5,-thick*.5+rad);
+   outer.lineTo(width*.5,thick*.5-rad);outer.quadraticCurveTo(width*.5,thick*.5,width*.5-rad,thick*.5);
+   outer.lineTo(-width*.5+rad,thick*.5);outer.quadraticCurveTo(-width*.5,thick*.5,-width*.5,thick*.5-rad);
+   outer.lineTo(-width*.5,-thick*.5+rad);outer.quadraticCurveTo(-width*.5,-thick*.5,-width*.5+rad,-thick*.5);
+   const cavity=new THREE.Path(),iw=width*.72,ih=thick*.52,ir=Math.min(iw,ih)*.16;
+   cavity.moveTo(-iw*.5+ir,-ih*.5);cavity.lineTo(iw*.5-ir,-ih*.5);cavity.quadraticCurveTo(iw*.5,-ih*.5,iw*.5,-ih*.5+ir);
+   cavity.lineTo(iw*.5,ih*.5-ir);cavity.quadraticCurveTo(iw*.5,ih*.5,iw*.5-ir,ih*.5);
+   cavity.lineTo(-iw*.5+ir,ih*.5);cavity.quadraticCurveTo(-iw*.5,ih*.5,-iw*.5,ih*.5-ir);
+   cavity.lineTo(-iw*.5,-ih*.5+ir);cavity.quadraticCurveTo(-iw*.5,-ih*.5,-iw*.5+ir,-ih*.5);
+   outer.holes.push(cavity);
+   add(new THREE.ExtrudeGeometry(outer,{depth:length,bevelEnabled:true,bevelSegments:3,bevelSize:.025,bevelThickness:.025}),shell,[0,0,-length*.5]);
+   box(width*.82,thick*.1,length*.94,dark,[0,-thick*.22,0]);
+   for(let rib=0;rib<Math.max(4,Math.floor(length*.9));rib++){
+    const z=-length*.42+rib*(length*.84/Math.max(3,Math.floor(length*.9)-1));
+    box(width*.78,.035,.045,steel,[0,thick*.24,z]);
+   }
    for(let side of [-1,1]){
     box(width*.12,thick*.56,length,steel,[side*width*.44,0,0]);
     box(width*.1,thick*.34,length*.92,shell,[side*width*.39,-thick*.02,0]);
@@ -2291,10 +2306,36 @@ export function createPartModel(p,THREE){
    sphere(.09,blue,[0,h*.22,r*.35]);
   }
   else if(serviceModule){
-   lathe([[0,-h*.5],[r*.76,-h*.5],[r*.92,-h*.38],[r*.92,h*.38],[r*.76,h*.5],[0,h*.5]],painted('#bfc6c5','#c56b31','SERVICE MODULE',name),72);
-   for(let i=0;i<12;i++){const ang=i*Math.PI/6;radialPipe(r*.93,-h*.35,h*.35,ang,steel,.02);}
-   for(let y of [-h*.38,h*.38])band(r*.93,y,.045,gold);
-   for(let i=0;i<4;i++){const ang=i*Math.PI/2;const x=Math.cos(ang)*r*.9,z=Math.sin(ang)*r*.9;box(r*.16,h*.32,.08,orange,[x,0,z]);}
+   // SM-6A/18/25: service-module shell, pressurized equipment bay, RCS pods and aft engine interface.
+   const sm6=/sm-6a/.test(nm),sm25=/sm-25/.test(nm),rr=r*(sm6?.72:sm25?1.12:.92),hh=h*(sm6?.78:sm25?1.18:1);
+   const skin=painted('#bfc6c5','#c56b31','SERVICE MODULE',name);
+   lathe([[0,-hh*.5],[rr*.68,-hh*.5],[rr*.88,-hh*.43],[rr,-hh*.3],[rr,hh*.3],[rr*.92,hh*.42],[rr*.72,hh*.5],[0,hh*.5]],skin,96);
+   for(let i=0;i<16;i++){const ang=i*Math.PI/8,x=Math.cos(ang)*rr*.99,z=Math.sin(ang)*rr*.99;radialPipe(rr*.99,-hh*.34,hh*.34,ang,steel,.022);bolt(x,-hh*.36,z,.02,gold);}
+   for(let y of [-hh*.43,-hh*.3,hh*.3,hh*.43])band(rr*.99,y,.045,y<0?steel:gold);
+   // Four recessed avionics/service panels with latches and cooling louvers.
+   for(let i=0;i<4;i++){
+    const ang=i*Math.PI/2,x=Math.sin(ang)*rr*.9,z=Math.cos(ang)*rr*.9;
+    box(rr*.52,hh*.44,.055,ivory,[x,0,z],[0,ang,0]);
+    box(rr*.4,hh*.31,.025,dark,[x,0,z+.035],[0,ang,0]);
+    for(let j=0;j<5;j++)box(rr*.32,.022,.02,aluminium,[x,(j-2)*hh*.055,z+.055],[0,ang,0]);
+    for(let j=0;j<4;j++)bolt(x+(j-1.5)*rr*.1,hh*.24,z+.06,.018,gold);
+   }
+   // RCS thruster pods and visible feed plumbing.
+   for(let i=0;i<4;i++){
+    const ang=i*Math.PI/2,x=Math.sin(ang)*rr*.98,z=Math.cos(ang)*rr*.98;
+    box(rr*.28,hh*.2,rr*.22,steel,[x,hh*.32,z],[0,ang,0]);
+    for(let side of [-1,1]){
+     const a=ang+side*.28,xx=Math.sin(a)*rr*1.08,zz=Math.cos(a)*rr*1.08;
+     const nozzle=lathe([[0,-hh*.12],[rr*.06,-hh*.12],[rr*.09,-hh*.04],[rr*.08,hh*.08],[0,hh*.08]],aluminium,20,[xx,hh*.32,zz]);
+     nozzle.rotation.x=Math.PI/2;
+     add(new THREE.TorusGeometry(rr*.085,.018,8,24),gold,[xx,hh*.2,zz]);
+    }
+    tube([[x,hh*.25,z],[x*1.06,hh*.08,z*1.06],[x, -hh*.18,z]],.022,orange);
+   }
+   cyl(rr*.64,rr*.64,.12,steel,hh*.54,64);
+   cyl(rr*.72,rr*.72,.14,dark,-hh*.54,64);
+   add(new THREE.TorusGeometry(rr*.68,.04,10,56),gold,[0,-hh*.54,0],[Math.PI/2,0,0]);
+   for(let i=0;i<8;i++){const ang=i*Math.PI/4;bolt(rr*.68*Math.cos(ang),-hh*.55,rr*.68*Math.sin(ang),.022,aluminium);}
   }
   else{
    lathe([[0,-h*.45],[r*.72,-h*.45],[r*.85,-h*.3],[r*.85,h*.35],[r*.7,h*.45],[0,h*.45]],painted('#d9d9d0','#b68b4e','PAYLOAD EQUIPMENT',name),48);
