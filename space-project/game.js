@@ -774,6 +774,7 @@ $('#part-search').addEventListener('input',drawPartsCatalogV2);$('#part-sort').a
   const b=e.target.closest('button[data-part]');
   if(!b||b.disabled||mode!=='vab'||flight||(e.pointerType==='mouse'&&e.button!==0))return;
   catalogPointerDrag={id:b.dataset.part,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,moved:false};
+  try{b.setPointerCapture(e.pointerId);}catch(_){}
  });
  document.addEventListener('pointermove',e=>{
   if(!catalogPointerDrag||e.pointerId!==catalogPointerDrag.pointerId)return;
@@ -787,7 +788,8 @@ $('#part-search').addEventListener('input',drawPartsCatalogV2);$('#part-sort').a
   const drag=catalogPointerDrag;catalogPointerDrag=null;document.body.classList.remove('part-dragging','part-drag-over');
   if(!drag.moved)return;
   const rect=renderer.domElement.getBoundingClientRect();
-  if(mode==='vab'&&!flight&&e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom)placePartAtScreen(drag.id,e.clientX,e.clientY);
+  const inside=e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom;
+  if(mode==='vab'&&!flight&&inside)placePartAtScreen(drag.id,e.clientX,e.clientY);
  });
  document.addEventListener('pointercancel',()=>{catalogPointerDrag=null;document.body.classList.remove('part-dragging','part-drag-over');});
  renderer.domElement.addEventListener('pointerenter',()=>{if(catalogPointerDrag?.moved)document.body.classList.add('part-drag-over');});
