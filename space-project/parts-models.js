@@ -261,16 +261,67 @@ export function createPartModel(p,THREE){
  };
  const makeRollingWheel=(radius,width,at=[0,0,0],variant='rover')=>{
   const wheel=new THREE.Group();wheel.name='wheel-spin';wheel.position.set(...at);wheel.userData.rollRadius=radius;wheel.userData.rollAxis='x';g.add(wheel);
-  const tireMat=M(0x171a1d,.02,.96),sideMat=M(0x252a2e,.08,.86),rimMat=M(variant==='aircraft'?0x9ca6aa:0xb9c0bd,.82,.28),hubMat=M(0x46535a,.78,.34),markMat=M(0xe0bd69,.62,.34),grooveMat=M(0x090d10,.02,.98);
-  const tire=new THREE.Mesh(new THREE.TorusGeometry(radius*.79,radius*.21,20,64),tireMat);tire.rotation.y=Math.PI/2;tire.castShadow=true;tire.receiveShadow=true;wheel.add(tire);
+  const tireMat=M(0x17191b,.015,.99),sideMat=M(0x24282a,.04,.92),rimMat=M(0x9ca6a8,.84,.27),rimDark=M(0x343d42,.72,.38),hubMat=M(0x68747a,.82,.3),boltMat=M(0xb6bfbd,.88,.24),rubberInset=M(0x101416,.02,.98);
+  const wheelId=(id+' '+name).toLowerCase(),rugged=/tr-2l|xl3|rugged|large/.test(wheelId),small=/s2|small|tiny/.test(wheelId),aircraft=variant==='aircraft';
+  const section=aircraft?.17:rugged?.235:.205;
+  // Rounded pneumatic tyre carcass with a broad, continuous shoulder.
+  const carcass=new THREE.Mesh(new THREE.TorusGeometry(radius*(1-section),radius*section,32,96),tireMat);
+  carcass.rotation.y=Math.PI/2;carcass.castShadow=true;carcass.receiveShadow=true;wheel.add(carcass);
+  // Sidewall shoulders and concentric moulded rings.
   for(const side of [-1,1]){
-   const face=new THREE.Mesh(new THREE.TorusGeometry(radius*.77,radius*.035,8,64),sideMat);face.rotation.y=Math.PI/2;face.position.x=side*width*.38;wheel.add(face);
-   const rim=new THREE.Mesh(new THREE.CylinderGeometry(radius*.47,radius*.47,width*.86,48),rimMat);rim.rotation.z=Math.PI/2;wheel.add(rim);
-   const hub=new THREE.Mesh(new THREE.CylinderGeometry(radius*.2,radius*.2,width*.96,32),hubMat);hub.rotation.z=Math.PI/2;wheel.add(hub);
-   const stripe=new THREE.Mesh(new THREE.BoxGeometry(width*.08,radius*.72,radius*.075),markMat);stripe.position.set(side*width*.48,radius*.36,0);wheel.add(stripe);
-   for(let i=0;i<8;i++){const a=i*Math.PI/4,bolt=new THREE.Mesh(new THREE.SphereGeometry(radius*.035,10,8),markMat);bolt.position.set(side*width*.49,Math.cos(a)*radius*.31,Math.sin(a)*radius*.31);wheel.add(bolt);}
+   const faceX=side*width*.34;
+   const shoulder=new THREE.Mesh(new THREE.TorusGeometry(radius*.77,radius*.035,12,80),sideMat);
+   shoulder.rotation.y=Math.PI/2;shoulder.position.x=faceX;wheel.add(shoulder);
+   for(const rr of [.55,.64,.72]){
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(radius*rr,radius*.012,8,64),sideMat);
+    ring.rotation.y=Math.PI/2;ring.position.x=side*width*.405;wheel.add(ring);
+   }
+   // Recessed metal wheel dish and inset dark well.
+   const dish=new THREE.Mesh(new THREE.CylinderGeometry(radius*.57,radius*.57,width*.19,64),rimDark);
+   dish.rotation.z=Math.PI/2;dish.position.x=side*width*.34;wheel.add(dish);
+   const rim=new THREE.Mesh(new THREE.CylinderGeometry(radius*.49,radius*.49,width*.205,64),rimMat);
+   rim.rotation.z=Math.PI/2;rim.position.x=side*width*.405;wheel.add(rim);
+   const inset=new THREE.Mesh(new THREE.CylinderGeometry(radius*.39,radius*.39,width*.214,64),rimDark);
+   inset.rotation.z=Math.PI/2;inset.position.x=side*width*.42;wheel.add(inset);
+   const hub=new THREE.Mesh(new THREE.CylinderGeometry(radius*.22,radius*.22,width*.24,48),hubMat);
+   hub.rotation.z=Math.PI/2;hub.position.x=side*width*.47;wheel.add(hub);
+   const cap=new THREE.Mesh(new THREE.CylinderGeometry(radius*.115,radius*.115,width*.25,40),rimMat);
+   cap.rotation.z=Math.PI/2;cap.position.x=side*width*.49;wheel.add(cap);
+   // Evenly spaced recessed lug nuts around the hub.
+   for(let i=0;i<10;i++){
+    const a=i*Math.PI/5,y=Math.cos(a)*radius*.34,z=Math.sin(a)*radius*.34;
+    const nut=new THREE.Mesh(new THREE.CylinderGeometry(radius*.027,radius*.027,width*.035,8),boltMat);
+    nut.rotation.set(Math.PI/2,0,Math.PI/2);nut.position.set(side*width*.49,y,z);wheel.add(nut);
+   }
+   // Tiny moulded sidewall lettering/size marks.
+   const mark=new THREE.Mesh(new THREE.BoxGeometry(width*.012,radius*.19,radius*.035),rubberInset);
+   mark.position.set(side*width*.445,-radius*.69, radius*.12);mark.rotation.x=-.2;wheel.add(mark);
   }
-  for(let i=0;i<28;i++){const a=i*Math.PI*2/28;const tread=new THREE.Mesh(new THREE.BoxGeometry(width*.92,radius*.085,radius*.12),i%2?grooveMat:sideMat);tread.position.set(0,Math.cos(a)*radius*.96,Math.sin(a)*radius*.96);tread.rotation.x=a;wheel.add(tread);}
+  // Tread blocks are individually modelled and follow the tyre curvature.
+  const count=small?32:rugged?40:36;
+  for(let i=0;i<count;i++){
+   const a=i*Math.PI*2/count;
+   if(rugged){
+    for(const side of [-1,1]){
+     const lug=new THREE.Mesh(new THREE.BoxGeometry(width*.48,radius*.092,radius*.17),i%2?sideMat:tireMat);
+     lug.position.set(side*width*.235,Math.cos(a)*radius*.965,Math.sin(a)*radius*.965);
+     lug.rotation.x=a;lug.rotation.z=side*.24*(i%2?1:-1);lug.castShadow=true;wheel.add(lug);
+    }
+   }else if(/m1|rover/.test(wheelId)){
+    const lug=new THREE.Mesh(new THREE.BoxGeometry(width*.88,radius*.09,radius*.145),sideMat);
+    lug.position.set(0,Math.cos(a)*radius*.96,Math.sin(a)*radius*.96);
+    lug.rotation.x=a;lug.castShadow=true;wheel.add(lug);
+   }else{
+    const lug=new THREE.Mesh(new THREE.BoxGeometry(width*.9,radius*.075,radius*.12),sideMat);
+    lug.position.set(0,Math.cos(a)*radius*.96,Math.sin(a)*radius*.96);
+    lug.rotation.x=a;lug.castShadow=true;wheel.add(lug);
+   }
+  }
+  // Sidewall bead and inner bead seat.
+  for(const side of [-1,1]){
+   const bead=new THREE.Mesh(new THREE.TorusGeometry(radius*.79,radius*.018,8,80),rubberInset);
+   bead.rotation.y=Math.PI/2;bead.position.x=side*width*.43;wheel.add(bead);
+  }
   return wheel;
  };
  const makeRoverWheel=()=>{
@@ -278,7 +329,7 @@ export function createPartModel(p,THREE){
   const mount=new THREE.Mesh(new THREE.CylinderGeometry(rr*.17,rr*.17,h*.62,20),steel);mount.position.set(0,h*.32,0);g.add(mount);
   const arm=new THREE.Mesh(new THREE.BoxGeometry(rr*.2,h*.18,rr*.22),aluminium);arm.position.set(0,h*.05,0);g.add(arm);
   makeRollingWheel(rr,width,[0,-h*.08,0],'rover');
-  const badge=new THREE.Mesh(new THREE.CylinderGeometry(rr*.24,rr*.24,width*.12,32),gold);badge.rotation.z=Math.PI/2;badge.position.set(width*.48,-h*.08,0);g.add(badge);
+
  };
  const makeGear=()=>{
   const large=id.includes('large'),legR=large?.09:.06,spread=r*.72;
