@@ -1420,12 +1420,24 @@ export function createPartModel(p,THREE){
  };
  const makeComm=()=>{
   const nm=(id+' '+name).toLowerCase();
-  const dish=/dts|hg-5|hg-55|88-88|ra-|relay|dish|中継|ハイゲイン/.test(nm);
+  const ground=/hg-48|ground/.test(nm),dish=/dts|hg-5|hg-55|88-88|ra-|relay|dish|中継|ハイゲイン/.test(nm);
   const large=/ra-100|88-88/.test(nm),medium=/ra-15|hg-55|dts/.test(nm),small=/ra-2|hg-5/.test(nm);
   const fixed=/16-s|communotron 16-s|固定/.test(nm),flat=/dts/.test(nm);
   const baseR=r*(large?1.05:medium?.86:small?.62:.38);
   lathe([[0,-h*.42],[baseR*.68,-h*.42],[baseR,-h*.25],[baseR,h*.12],[baseR*.78,h*.22],[0,h*.22]],painted('#aeb6b6','#b68b4e','COMMUNICATION HARDWARE',name),48);
   band(baseR,h*.14,.035,gold);band(baseR*.82,-h*.3,.025,steel);
+  if(ground){
+   // HG-48 ground antenna: tripod mast with a directional cross-element array.
+   box(r*.72,.12,r*.72,steel,[0,-h*.34,0]);
+   tube([[0,-h*.3,0],[0,h*.62,0]],.045,aluminium);
+   for(let i=0;i<7;i++){
+    const y=h*(.12+i*.075),span=r*(.82-i*.055);
+    tube([[-span,y,0],[span,y,0]],.018,steel);
+    for(let side of [-1,1])sphere(.025,gold,[side*span,y,0]);
+   }
+   for(let side of [-1,1])tube([[0,-h*.28,0],[side*r*.55,-h*.05,r*.45],[0,h*.4,0]],.022,gold);
+   sphere(.06,blue,[0,h*.68,0]);return;
+  }
   if(dish){
    const dishR=r*(large?1.18:medium?.92:small?.7:.72),dishY=h*(flat?.48:.58);
    if(flat){
@@ -1509,7 +1521,9 @@ export function createPartModel(p,THREE){
  };
  const makePayload=()=>{
   const nm=(id+' '+name).toLowerCase();
+  const groundLight=/ground-light|作業用照明/.test(nm),groundAnchor=/ground-anchor|グラウンドアンカー/.test(nm);
   const fairing=/fairing|防護シェル/.test(nm),cargoBay=/cargo bay|カーゴベイ/.test(nm),ramp=/cargo ramp|カーゴドア/.test(nm),service=/service bay|サービスベイ/.test(nm),storage=/seq-|seq\d|保管ユニット|コンテナ/.test(nm),eva=/eva|ジェットパック|修理キット|実験キット|燃料シリンダー|個人用パラシュート/.test(nm),lab=/science lab|移動研究室/.test(nm),scienceStore=/science storage|実験用記憶装置/.test(nm),serviceModule=/sm-\d|サービスモジュール/.test(nm);
+  if(groundLight||groundAnchor){makeUtility();return;}
   if(fairing){
    // Aerodynamic fairings: tapered shell, structural base, split clamshell seam and latch hardware.
    const shellMat=painted('#d7d8d1','#b68b4e','AIRSTREAM PROTECTIVE SHELL',name);
