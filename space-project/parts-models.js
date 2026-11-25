@@ -604,30 +604,74 @@ export function createPartModel(p,THREE){
   }
  };
  const makeWing=()=>{
-  const vertical=type==='tail'||id.includes('rudder')||id.includes('winglet'),delta=id.includes('delta'),swept=id.includes('swept')||id.includes('strake'),small=id.includes('small')||id.includes('struct-d');
-  const span=r*(small?.82:1.15),chord=vertical?h*.85:h*1.15,root=chord*(delta?1.5:1),tip=chord*(delta?.2:swept?.48:.62);
-  const shape=new THREE.Shape();shape.moveTo(-root*.5,0);shape.lineTo(root*.5,0);shape.lineTo(span,tip*.5);shape.lineTo(span*.86,-tip*.5);shape.lineTo(-root*.5,-root*.5);shape.closePath();
-  const geo=new THREE.ExtrudeGeometry(shape,{depth:.09,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.035,bevelThickness:.025,curveSegments:8});
-  const wing=add(geo,painted('#c9ceca','#c56b31',vertical?'VERTICAL STABILIZER':'AERO SURFACE'),[0,0,0],vertical?[0,0,0]:[-Math.PI/2,0,0]);
-  if(vertical)wing.position.y=h*.12;
-  const leading=add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(-root*.5,0,.04),new THREE.Vector3(span*.5,tip*.2,.04),new THREE.Vector3(span,0,.04)]),32,.025,8,false),steel,[0,0,0],vertical?[0,0,0]:[-Math.PI/2,0,0]);
-  // Flush inspection panels, spanwise ribs and raised hinge hardware.
-  for(let i=0;i<5;i++){
-   const x=span*(.12+i*.15);
-   const rib=box(.012,Math.max(.018,tip*.62),.018,aluminium,[x,.105,.025]);
+  const nm=(id+' '+name).toLowerCase();
+  const vertical=type==='tail'||/rudder|winglet|tail fin|垂直尾翼|ウィングレット|テールフィン/.test(nm);
+  const delta=/delta|デルタ/.test(nm),swept=/swept|後退翼/.test(nm),strake=/strake|ストレーキ/.test(nm);
+  const connector=/wing connector|ウィングコネクター/.test(nm),control=type==='control'||/elevon|control surface|canard|エレボン|カナード/.test(nm);
+  const big=/big-s|fat-455|fat455|large/.test(nm),small=/small|basic fin|structural wing type d/.test(nm);
+  const winglet=/winglet|ウィングレット/.test(nm),canard=/canard|カナード/.test(nm);
+  const span=r*(small?.78:big?1.32:1.12),chord=vertical?h*.86:h*(delta?1.55:big?1.35:1.12);
+  const root=chord*(delta?1.48:connector?1.05:1),tip=chord*(delta?.12:swept?.34:vertical?.42:small?.48:.62);
+  const sweep=connector?span*.08:delta?span*.88:swept?span*.58:strake?span*.72:canard?span*.28:span*.18;
+  const trailSweep=connector?span*.06:delta?span*.42:swept?span*.2:strake?span*.3:span*.1;
+  const thickness=big?.16:small?.055:.09;
+  const shape=new THREE.Shape();
+  shape.moveTo(-root*.5,-root*.48);
+  shape.lineTo(root*.5,-root*.48);
+  shape.lineTo(span-sweep,tip*.5);
+  shape.lineTo(span-trailSweep,-tip*.5);
+  shape.lineTo(-root*.5,root*.48);
+  shape.closePath();
+  const skin=painted(vertical?'#c6cbc8':'#d5d8d4',control?'#c56b31':'#b68b4e',vertical?'VERTICAL STABILIZER':control?'FLIGHT CONTROL SURFACE':'AERODYNAMIC WING',name);
+  const geo=new THREE.ExtrudeGeometry(shape,{depth:thickness,bevelEnabled:true,bevelSegments:4,steps:1,bevelSize:Math.min(.045,thickness*.42),bevelThickness:thickness*.32,curveSegments:10});
+  const wing=add(geo,skin,[0,0,0],vertical?[0,0,0]:[-Math.PI/2,0,0]);
+  if(vertical)wing.position.y=h*.1;
+  // Separate leading-edge cap, dark trailing-edge strip and inset skin panel seams.
+  const leadingPts=[[-root*.5,-root*.48,thickness*.55],[span*.34-sweep*.34,root*.12,thickness*.55],[span-sweep,tip*.5,thickness*.55]];
+  const leadCurve=new THREE.CatmullRomCurve3(leadingPts.map(v=>new THREE.Vector3(...v)));
+  add(new THREE.TubeGeometry(leadCurve,36,thickness*.22,10,false),aluminium,[0,0,0],vertical?[0,0,0]:[-Math.PI/2,0,0]);
+  const trailPts=[[root*.5,-root*.48,thickness*.55],[span*.58-trailSweep*.55,-tip*.05,thickness*.55],[span-trailSweep,-tip*.5,thickness*.55]];
+  const trailCurve=new THREE.CatmullRomCurve3(trailPts.map(v=>new THREE.Vector3(...v)));
+  add(new THREE.TubeGeometry(trailCurve,32,thickness*.12,8,false),dark,[0,0,0],vertical?[0,0,0]:[-Math.PI/2,0,0]);
+  // Spanwise ribs and access panels follow each wing's individual planform.
+  for(let i=0;i<6;i++){
+   const t=.12+i*.135,x=t*span;
+   const yTop=(root*.48)*(1-t)+tip*.34*t;
+   const rib=box(thickness*.18,Math.max(.025,yTop*1.45),thickness*.2,aluminium,[x,yTop*.08,thickness*.56]);
    if(!vertical)rib.rotation.x=-Math.PI/2;
-   for(const side of [-1,1])bolt(x,side*tip*.18,.075,.012,gold);
+   for(let side of [-1,1])bolt(x,side*yTop*.34,thickness*.95,.012,gold);
   }
-  const rootCap=box(root*.94,.025,.12,steel,[0,.025,.045]);if(!vertical)rootCap.rotation.x=-Math.PI/2;
-  const tipCap=box(.04,tip*.94,.08,aluminium,[span*.96,.02,.04]);if(!vertical)tipCap.rotation.x=-Math.PI/2;
-  for(let i=0;i<4;i++){const x=span*(.15+i*.16);const line=box(.018,.015,.075,gold,[x,.1,.02]);if(!vertical)line.rotation.x=-Math.PI/2;}
-  if(type==='control'||id.includes('elevon')||id.includes('rudder')){
-   const hinge=box(span*.52,.055,.12,dark,[span*.43,.04,.1]);if(!vertical)hinge.rotation.x=-Math.PI/2;
-   for(let i=0;i<5;i++){bolt(span*(.2+i*.12),.09,.16,.018);}
-   for(let i=0;i<4;i++){const x=span*(.24+i*.13);const actuator=tube([[x,.06,.08],[x+span*.04,.14,.16],[x+span*.08,.08,.2]],.014,gold);}
+  for(let i=0;i<3;i++){
+   const t=.2+i*.25,x=t*span,y=(root*.22)*(1-t)+(tip*.18)*t;
+   const panel=box(span*.12,.018,thickness*.12,ivory,[x,y,thickness*.58]);
+   if(!vertical)panel.rotation.x=-Math.PI/2;
   }
- };
- const makeSolar=()=>{
+  // Root attachment spar and tip caps are different pieces, not a single flat polygon.
+  const rootCap=box(root*.92,.045,thickness*1.18,steel,[0,0,thickness*.45]);if(!vertical)rootCap.rotation.x=-Math.PI/2;
+  const tipCap=box(thickness*.6,tip*.9,thickness*.9,aluminium,[span-sweep*.55,.01,thickness*.45]);if(!vertical)tipCap.rotation.x=-Math.PI/2;
+  if(control){
+   // Hinged elevon/canard panel with a continuous hinge line, hinge barrels and servo links.
+   const flapRoot=root*.48,flapTip=tip*.84,flapSpan=span*.47;
+   const flapShape=new THREE.Shape();flapShape.moveTo(-flapRoot*.5,0);flapShape.lineTo(flapRoot*.5,0);flapShape.lineTo(flapSpan,flapTip*.5);flapShape.lineTo(flapSpan*.94,-flapTip*.5);flapShape.lineTo(-flapRoot*.5,-flapRoot*.34);flapShape.closePath();
+   const flap=add(new THREE.ExtrudeGeometry(flapShape,{depth:thickness*.72,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.025,bevelThickness:.018}),painted('#c9cfcc','#c56b31','MOVABLE CONTROL SURFACE',name),[span*.48,-root*.22,thickness*.62],vertical?[0,0,0]:[-Math.PI/2,0,0]);
+   const hinge=add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(span*.46,-root*.2,thickness*.7),new THREE.Vector3(span*.68,-root*.12,thickness*.7),new THREE.Vector3(span*.92,-root*.05,thickness*.7)]),24,.025,8,false),dark,[0,0,0],vertical?[0,0,0]:[-Math.PI/2,0,0]);
+   for(let i=0;i<5;i++){
+    const t=.15+i*.17,x=span*(.49+t*.43),y=-root*.18+t*root*.08;
+    const hingePin=add(new THREE.CylinderGeometry(.025,.025,thickness*1.25,12),gold,[x,y,thickness*.72],[0,0,Math.PI/2]);
+    tube([[x,y,thickness*.78],[x+span*.035,y+thickness*.55,thickness*.92],[x+span*.07,y,thickness*.8]],.014,aluminium);
+   }
+  }
+  if(winglet){
+   const tipFin=box(thickness*.7,tip*.55,span*.2,ivory,[span-sweep*.45,tip*.2,0]);
+   tipFin.rotation.z=.18;
+   for(let side of [-1,1])box(thickness*.5,tip*.4,span*.12,steel,[span-sweep*.45,tip*.18,side*span*.1]);
+  }
+  if(strake){for(let i=0;i<4;i++){const t=.18+i*.16;box(span*.22,.025,thickness*.18,aluminium,[span*t,root*.18*(1-t),thickness*.58]);}}
+  // Red/green navigation lenses and small fasteners at the tips.
+  sphere(.035, M(0xc94b3e,.18,.2,{emissive:0x42100b,emissiveIntensity:.15}),[span-sweep*.9,tip*.32,thickness*.72]);
+  sphere(.035, M(0x4c9b68,.18,.2,{emissive:0x10351d,emissiveIntensity:.15}),[span-sweep*.9,-tip*.32,thickness*.72]);
+  for(let i=0;i<8;i++){const x=span*(.12+i*.1);bolt(x,0,thickness*.78,.012,gold);}
+ }; const makeSolar=()=>{
   const large=id.includes('xl')||id.includes('sp10')||id.includes('gigantor'),fixed=id.includes('ox-stat'),count=id.includes('ox4')?2:large?4:2,w=large?1.45:fixed?.92:1.05,depth=large?1.35:1.0;
   const textureKey='solar-cells-ksp1-v1';
   let cellTexture=PART_SKIN_CACHE.get(textureKey);
