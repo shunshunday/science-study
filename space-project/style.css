@@ -610,3 +610,14 @@ body.part-drag-over #viewport canvas{cursor:copy!important;}
  .vab-craft-name{left:250px;top:5px}
  .vab-actions{left:245px;right:205px;top:42px}
 }
+
+/* Editable craft name in the VAB header. */
+.vab-craft-name{
+ width:min(300px,34vw);height:34px;
+ font:600 14px/1.2 "Segoe UI",Meiryo,sans-serif;
+ color:#f1eee2;background:#26343edb;
+ border:1px solid #aab5b36b;border-radius:2px;
+ outline:none;pointer-events:auto;cursor:text;
+}
+.vab-craft-name:focus{border-color:#e0b56e;box-shadow:0 0 0 2px #d69a4540;background:#1d2b34}
+.vab-craft-name::placeholder{color:#bdc7c8}
