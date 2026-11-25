@@ -297,13 +297,15 @@ export function createPartModel(p,THREE){
    for(let side of [-1,1])for(let zside of [-1,1])bolt(side*bodyW*.38,bodyH*.38,zside*bodyW*.34,.022,gold);
    const nozzle=(pos,rot,scale=1)=>{
     const nr=bodyW*(small?.12:.18)*scale,nh=bodyH*(small?.28:.34)*scale;
-    const mesh=lathe([[0,-nh*.5],[nr*.55,-nh*.5],[nr,-nh*.24],[nr*.92,nh*.18],[nr*.62,nh*.5],[0,nh*.5]],steel,32,pos);
-    mesh.rotation.set(rot[0],rot[1],rot[2]);
-    const lip=add(new THREE.TorusGeometry(nr*.88,.025*scale,8,32),aluminium,pos,rot);
-    const aperture=add(new THREE.CircleGeometry(nr*.68,32),black,pos,rot);
-    const normal=new THREE.Vector3(0,1,0);const axis=new THREE.Vector3(0,1,0);
-    aperture.position.set(pos[0],pos[1],pos[2]);
-    return mesh;
+    const mesh=lathe([[0,-nh*.5],[nr*.55,-nh*.5],[nr,-nh*.24],[nr*.92,nh*.18],[nr*.62,nh*.5],[0,nh*.5]],steel,32);
+    g.remove(mesh);
+    const assembly=new THREE.Group();assembly.add(mesh);
+    const lip=new THREE.Mesh(new THREE.TorusGeometry(nr*.88,.025*scale,8,32),aluminium);
+    lip.position.y=nh*.5;lip.rotation.x=-Math.PI/2;assembly.add(lip);
+    const aperture=new THREE.Mesh(new THREE.CircleGeometry(nr*.68,32),black);
+    aperture.position.y=nh*.505;aperture.rotation.x=-Math.PI/2;assembly.add(aperture);
+    assembly.position.set(pos[0],pos[1],pos[2]);assembly.rotation.set(rot[0],rot[1],rot[2]);g.add(assembly);
+    return assembly;
    };
    if(block){
     const dirs=[
