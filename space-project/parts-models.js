@@ -687,15 +687,107 @@ export function createPartModel(p,THREE){
   else{lathe([[0,-h*.45],[r*.72,-h*.45],[r*.85,-h*.3],[r*.85,h*.35],[r*.7,h*.45],[0,h*.45]],painted('#d9d9d0','#b68b4e','SCIENCE INSTRUMENT'),48);band(r*.85,h*.32,.035,gold);for(let i=0;i<4;i++){const a=i*Math.PI/2;const x=Math.cos(a)*r*.58,z=Math.sin(a)*r*.58;box(r*.18,h*.62,.08,steel,[x,h*.15,z]);}radialLabel(r*.86,0,r*.68,h*.22,getLabelMaterial());}
  };
  const makeDecoupler=()=>{
-  const adapter=id.includes('adapter'),tri=id.includes('tri'),quad=id.includes('quad'),bi=id.includes('bi'),strut=id.includes('strut')||id.includes('hardpoint')||id.includes('pylon'),hub=id.includes('hubmax');
-  if(strut){if(id.includes('cubic')){const shape=new THREE.OctahedronGeometry(r*.7,0);add(shape,aluminium);}else{const beam=box(r*1.7,.12,r*.5,steel);box(.12,r*1.7,r*.5,aluminium);for(let x of [-1,1])for(let z of [-1,1])bolt(x*r*.72,0,z*r*.3,.05,gold);}return;}
-  if(hub){cyl(r*.9,r*.9,h*.65,steel);for(let i=0;i<6;i++){const a=i*Math.PI/3;const x=Math.cos(a)*r*.86,z=Math.sin(a)*r*.86;const p=lathe([[0,-h*.18],[r*.18,-h*.18],[r*.2,h*.18],[0,h*.18]],aluminium,24,[x,0,z]);}band(r*.9,h*.32,.05,gold);return;}
-  lathe([[0,-h*.5],[r*.76,-h*.5],[r*.96,-h*.4],[r,-h*.25],[r,h*.25],[r*.94,h*.4],[r*.75,h*.5],[0,h*.5]],steel,64);
-  band(r*.98,h*.42,.045,aluminium);band(r*.98,-h*.42,.045,gold);band(r*.78,0,.035,dark);detailRivets(r*.92,-h*.22,16);detailRivets(r*.92,h*.22,16,.1);
-  if(adapter){lathe([[0,h*.12],[r*.5,h*.12],[r*.55,h*.22],[r*.85,h*.48],[r*.95,h*.5],[0,h*.5]],ivory,64);band(r*.55,h*.22,.035,gold);}
-  if(tri||quad||bi){const n=tri?3:quad?4:2;for(let i=0;i<n;i++){const a=i*Math.PI*2/n,x=Math.cos(a)*r*.58,z=Math.sin(a)*r*.58;lathe([[0,h*.12],[r*.22,h*.12],[r*.24,h*.48],[0,h*.48]],aluminium,32,[x,0,z]);band(r*.23,h*.46,.025,gold).position.set(x,h*.46,z);}}
- };
- const makeM1TireTexture=()=>{
+  const nm=(id+' '+name).toLowerCase();
+  const adapter=/adapter|アダプター/.test(nm),tri=/tri.?coupler|トライ/.test(nm),quad=/quad.?coupler|クアッド/.test(nm),bi=/bi.?coupler|バイカプラー/.test(nm),hub=/hubmax/.test(nm);
+  const radial=/radial|tt-?38|tt-?70|hydraulic|hdm|ラジアル|油圧式/.test(nm);
+  const separator=/separator|セパレーター/.test(nm);
+  const enginePlate=/engine plate|エンジンプレート/.test(nm);
+  const grip=/grip.?strip|grip.?pad|グリップ/.test(nm);
+  const beam=/i-beam|girder|beam|panel|mobility enhancer|パネル|ビーム|桁/.test(nm);
+  const strut=/strut|hardpoint|pylon|ストラット|ハードポイント|パイロン/.test(nm);
+  if(radial){
+   // TT-38K family: narrow side-mounted release rail, twin guide cheeks and a sprung ejector.
+   const bodyW=Math.max(.12,r*.34),bodyH=Math.max(.42,h*.9);
+   box(bodyW,bodyH,r*.22,steel);
+   box(bodyW*.42,bodyH*.82,r*.25,dark,[0,0,r*.16]);
+   for(let side of [-1,1]){
+    box(bodyW*.18,bodyH*.9,r*.18,aluminium,[side*bodyW*.43,0,r*.18]);
+    for(let j=0;j<5;j++)box(bodyW*.13,bodyH*.055,.018,(j%2?dark:gold),[side*bodyW*.43,(j-2)*bodyH*.17,r*.28]);
+    for(let j=0;j<3;j++)bolt(side*bodyW*.45,(j-1)*bodyH*.31,r*.29,.018,gold);
+   }
+   box(bodyW*.28,bodyH*.34,.06,steel,[0,0,r*.31]);
+   box(bodyW*.12,bodyH*.2,.045,orange,[0,0,r*.35]);
+   for(let y of [-bodyH*.46,bodyH*.46])box(bodyW*.95,.055,r*.3,aluminium,[0,y,r*.05]);
+   for(let side of [-1,1])tube([[side*bodyW*.45,-bodyH*.3,r*.3],[side*bodyW*.55,0,r*.38],[side*bodyW*.45,bodyH*.3,r*.3]],.018,gold);
+   return;
+  }
+  if(grip){
+   const w=r*1.55,len=h*.92,depth=Math.max(.045,r*.12);
+   box(w,len,depth,steel);
+   const padMat=M(0x252a2c,.02,.98);
+   if(/strip/.test(nm)){
+    for(let i=0;i<7;i++)box(w*.88,.045,depth*.8,padMat,[0,(i-3)*len*.13,depth*.56]);
+   }else{
+    const n=id.includes('156')||id.includes('gp156')?5:id.includes('036')?3:2;
+    for(let x=0;x<n;x++)for(let y=0;y<n;y++)box(w*.12,len*.1,depth*.8,padMat,[(x-(n-1)/2)*w*.18,(y-(n-1)/2)*len*.17,depth*.58]);
+   }
+   for(let x of [-1,1])for(let y of [-1,1])bolt(x*w*.43,y*len*.43,depth*.62,.025,gold);
+   return;
+  }
+  if(enginePlate){
+   const count=id.includes('ep50')?8:id.includes('ep37')?6:id.includes('ep25')?4:3;
+   lathe([[r*.42,-h*.12],[r*.9,-h*.12],[r,-h*.06],[r,h*.08],[r*.9,h*.14],[r*.42,h*.14]],steel,80);
+   band(r*.98,h*.08,.04,gold);band(r*.98,-h*.07,.04,aluminium);
+   for(let i=0;i<count;i++){
+    const ang=i*Math.PI*2/count,x=Math.cos(ang)*r*.64,z=Math.sin(ang)*r*.64;
+    const mount=new THREE.Mesh(new THREE.CylinderGeometry(r*.2,r*.2,h*.18,48),dark);mount.position.set(x,h*.02,z);g.add(mount);
+    band(r*.2,h*.11,.018,gold).position.set(x,h*.11,z);
+    for(let j=0;j<6;j++){const aa=j*Math.PI/3;bolt(x+Math.cos(aa)*r*.16,h*.12,z+Math.sin(aa)*r*.16,.015,aluminium);}
+   }
+   return;
+  }
+  if(strut||beam){
+   if(id.includes('cubic')||/octagonal strut|octagonal connector/.test(nm)){
+    const shape=new THREE.OctahedronGeometry(r*.7,0);add(shape,aluminium);
+    for(let i=0;i<8;i++){const a=i*Math.PI/4;const x=Math.cos(a)*r*.62,z=Math.sin(a)*r*.62;bolt(x,0,z,.035,gold);}
+   }else if(beam){
+    const long=h>r*1.4;
+    const length=long?h:r*1.7,width=long?r*.2:r*.16,depth=r*.18;
+    box(width,length,depth,steel);
+    box(width*.28,length*.92,depth*1.08,aluminium,[0,0,depth*.08]);
+    for(let y=-length*.42;y<=length*.43;y+=length*.14){
+     box(width*.96,.035,depth*.95,aluminium,[0,y,0]);
+     for(let side of [-1,1])bolt(side*width*.38,y,depth*.52,.018,gold);
+    }
+    if(/panel/.test(nm)){
+     box(r*1.65,h*.82,.06,ivory);
+     for(let x=-2;x<=2;x++)box(.018,h*.72,.018,steel,[x*r*.28,0,.045]);
+     for(let y=-2;y<=2;y++)box(r*1.5,.018,.018,steel,[0,y*h*.16,.05]);
+    }
+   }else{
+    box(r*1.7,.12,r*.5,steel);box(.12,r*1.7,r*.5,aluminium);
+    for(let x of [-1,1])for(let z of [-1,1])bolt(x*r*.72,0,z*r*.3,.05,gold);
+   }
+   return;
+  }
+  if(hub){
+   cyl(r*.9,r*.9,h*.65,steel);
+   for(let i=0;i<6;i++){const a=i*Math.PI/3,x=Math.cos(a)*r*.86,z=Math.sin(a)*r*.86;lathe([[0,-h*.18],[r*.18,-h*.18],[r*.2,h*.18],[0,h*.18]],aluminium,24,[x,0,z]);}
+   band(r*.9,h*.32,.05,gold);return;
+  }
+  // Axial stack couplers have a thin split collar and machined top/bottom flanges.
+  const hh=separator?h*.34:h*.28;
+  lathe([[0,-hh*.5],[r*.72,-hh*.5],[r*.92,-hh*.42],[r,-hh*.28],[r,-hh*.16],[r*.84,-hh*.08],[r*.84,hh*.08],[r,hh*.16],[r,hh*.28],[r*.92,hh*.42],[r*.72,hh*.5],[0,hh*.5]],steel,80);
+  band(r*.99,hh*.42,.045,aluminium);band(r*.99,-hh*.42,.045,gold);
+  band(r*.86,0,.045,dark);band(r*.9,separator?hh*.16:-hh*.12,.025,orange);
+  detailRivets(r*.93,-hh*.3,16);detailRivets(r*.93,hh*.3,16,.1);
+  // Small black/yellow caution blocks around the separation seam.
+  for(let i=0;i<12;i++){const ang=i*Math.PI/6,x=Math.cos(ang)*r*.995,z=Math.sin(ang)*r*.995;box(r*.09,.035,.025,i%2?dark:gold,[x,0,z],[0,-ang,0]);}
+  if(adapter){
+   lathe([[0,hh*.12],[r*.5,hh*.12],[r*.55,hh*.22],[r*.85,hh*.48],[r*.95,hh*.5],[0,hh*.5]],ivory,64);
+   band(r*.55,hh*.22,.035,gold);
+  }
+  if(tri||quad||bi){
+   const n=tri?3:quad?4:2;
+   for(let i=0;i<n;i++){const ang=i*Math.PI*2/n,x=Math.cos(ang)*r*.58,z=Math.sin(ang)*r*.58;lathe([[0,hh*.12],[r*.22,hh*.12],[r*.24,hh*.48],[0,hh*.48]],aluminium,32,[x,0,z]);band(r*.23,hh*.46,.025,gold).position.set(x,hh*.46,z);}
+  }
+  // Direction arrow on one-way decouplers; separators receive symmetric release lips.
+  if(!separator){
+   const arrow=new THREE.Mesh(new THREE.ConeGeometry(r*.13,h*.18,3),orange);arrow.position.set(0,hh*.54,r*.84);arrow.rotation.x=Math.PI/2;g.add(arrow);
+  }else{
+   band(r*.97,hh*.5,.025,orange);band(r*.97,-hh*.5,.025,orange);
+  }
+ }; const makeM1TireTexture=()=>{
   if(PART_SKIN_CACHE.has('rovemax-m1-tire'))return PART_SKIN_CACHE.get('rovemax-m1-tire');
   const c=document.createElement('canvas');c.width=512;c.height=256;const q=c.getContext('2d');
   q.fillStyle='#b9ad8c';q.fillRect(0,0,512,256);
@@ -818,11 +910,71 @@ export function createPartModel(p,THREE){
   else{lathe([[0,-h*.4],[r*.35,-h*.4],[r*.42,-h*.25],[r*.3,h*.15],[r*.18,h*.2],[0,h*.2]],steel,32);tube([[0,h*.1,0],[0,h*.6,0],[0,h*1.1,0]],.025,aluminium);sphere(.07,gold,[0,h*1.1,0]);for(let i=0;i<4;i++){const a=i*Math.PI/2;const x=Math.cos(a)*r*.3,z=Math.sin(a)*r*.3;tube([[0,h*.35,0],[x,h*.85,z]],.015,gold);}}
  };
  const makeDock=()=>{
-  lathe([[0,-h*.5],[r*.52,-h*.5],[r*.8,-h*.35],[r*.92,-h*.1],[r*.92,h*.18],[r*.82,h*.38],[r*.62,h*.5],[0,h*.5]],aluminium,64);
-  band(r*.84,h*.32,.08,gold);band(r*.62,h*.42,.045,steel);cyl(r*.48,r*.48,.08,black,h*.43,48);detailRivets(r*.77,-h*.2,20);
-  for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(r*.88,-h*.25,h*.2,a,steel,.035);}
- };
- const makePayload=()=>{
+  const nm=(id+' '+name).toLowerCase();
+  const shielded=/shield|シールド/.test(nm),inline=/inline|インライン/.test(nm),grabbing=/grabbing|グラビング/.test(nm),inflatable=/inflatable|膨張式/.test(nm),mk2=/mk2/.test(nm),sr=/\bsr\b|senior|sr\./.test(nm);
+  const faceY=h*.48,bodyMat=painted('#bfc5c3','#c6a04c','CLAMP-O-TRON DOCKING SYSTEM',name);
+  if(grabbing){
+   lathe([[0,-h*.5],[r*.58,-h*.5],[r*.82,-h*.3],[r*.9,h*.15],[r*.78,h*.4],[r*.58,h*.5],[0,h*.5]],steel,64);
+   band(r*.82,h*.34,.055,gold);cyl(r*.54,r*.54,.08,dark,faceY,48);
+   for(let i=0;i<3;i++){
+    const a=i*Math.PI*2/3,x=Math.cos(a)*r*.5,z=Math.sin(a)*r*.5;
+    tube([[x,h*.25,z],[x*1.18,h*.5,z*1.18],[x*1.35,h*.72,z*1.35]],.055,aluminium);
+    tube([[x*1.35,h*.72,z*1.35],[x*1.12,h*.84,z*1.12],[x*.82,h*.72,z*.82]],.04,gold);
+    sphere(.075,steel,[x,h*.25,z]);
+   }
+   sphere(r*.22,glass,[0,h*.54,0],[1,.3,1]);return;
+  }
+  if(inflatable){
+   cyl(r*.44,r*.44,h*.28,steel);
+   const torus=add(new THREE.TorusGeometry(r*.72,r*.22,24,80),painted('#c5c8c1','#b68b4e','INFLATABLE AIRLOCK'),[0,h*.2,0]);
+   torus.scale.set(1,1,.86);
+   band(r*.5,h*.34,.045,gold);cyl(r*.46,r*.46,.07,dark,h*.36,48);
+   for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(r*.86,-h*.05,h*.35,a,steel,.025);}
+   return;
+  }
+  // Standard Clamp-O-Tron: deep machined socket, concentric capture rings and magnetic contacts.
+  const baseR=mk2?r*.92:sr?r*.98:r*.9;
+  lathe([[0,-h*.5],[baseR*.58,-h*.5],[baseR*.82,-h*.38],[baseR*.94,-h*.12],[baseR*.94,h*.16],[baseR*.82,h*.34],[baseR*.62,h*.5],[0,h*.5]],bodyMat,80);
+  for(const y of [-h*.38,-h*.18,h*.28,h*.4])band(baseR*(y>0?.92:.98),y,.035,y<0?steel:aluminium);
+  band(baseR*.88,h*.42,.055,gold);band(baseR*.7,h*.47,.035,ivory);
+  cyl(baseR*.58,baseR*.58,.09,dark,faceY,64);
+  cyl(baseR*.4,baseR*.4,.045,steel,faceY+.045,64);
+  add(new THREE.CircleGeometry(baseR*.34,64),black,[0,faceY+.07,0],[-Math.PI/2,0,0]);
+  add(new THREE.TorusGeometry(baseR*.34,.035,10,64),gold,[0,faceY+.075,0]);
+  add(new THREE.CircleGeometry(baseR*.12,48),blue,[0,faceY+.078,0],[-Math.PI/2,0,0]);
+  for(let i=0;i<12;i++){
+   const a=i*Math.PI/6,x=Math.cos(a)*baseR*.79,z=Math.sin(a)*baseR*.79;
+   bolt(x,faceY+.045,z,.028,aluminium);
+   const contact=box(baseR*.08,.025,.035,i%2?steel:gold,[Math.cos(a)*baseR*.52,faceY+.08,Math.sin(a)*baseR*.52],[0,-a,0]);
+  }
+  // Black/yellow warning segments on the outer capture skirt.
+  for(let i=0;i<16;i++){
+   const a=i*Math.PI/8,x=Math.cos(a)*baseR*.96,z=Math.sin(a)*baseR*.96;
+   box(baseR*.12,.07,.035,i%2?dark:gold,[x,-h*.22,z],[0,-a,0]);
+  }
+  for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(baseR*.9,-h*.28,h*.22,a,steel,.025);}
+  if(shielded){
+   // Three folded protective petals with hinge blocks and hydraulic linkages.
+   for(let i=0;i<3;i++){
+    const a=i*Math.PI*2/3,x=Math.cos(a)*baseR*.9,z=Math.sin(a)*baseR*.9;
+    const petal=box(baseR*.72,h*.16,.055,ivory,[x,faceY+.06,z],[0,-a,0]);
+    petal.rotation.z=Math.sin(a)*.18;
+    box(baseR*.2,.12,.12,steel,[x*.78,faceY+.02,z*.78],[0,-a,0]);
+    tube([[x*.55,faceY-.02,z*.55],[x*1.05,faceY+.2,z*1.05],[x*1.25,faceY+.12,z*1.25]],.025,gold);
+   }
+   band(baseR*.7,faceY+.13,.035,orange);
+  }
+  if(inline){
+   // Inline variant has a longer cylindrical fairing and a recessed forward capture face.
+   lathe([[0,-h*.5],[baseR*.76,-h*.5],[baseR*.86,-h*.35],[baseR*.86,h*.48],[baseR*.7,h*.5],[0,h*.5]],steel,72);
+   band(baseR*.86,h*.43,.045,gold);
+  }
+  if(mk2){
+   box(baseR*1.9,h*.66,baseR*1.15,steel,[0,-h*.05,0]);
+   for(let side of [-1,1])box(baseR*.08,h*.55,baseR*.95,gold,[side*baseR*.9,-h*.05,0]);
+  }
+  for(let i=0;i<16;i++){const a=i*Math.PI/8;bolt(baseR*.94*Math.cos(a),-h*.38,baseR*.94*Math.sin(a),.018,gold);}
+ }; const makePayload=()=>{
   const nm=name.toLowerCase();
   if(/fairing|フェアリング|防護シェル/.test(nm)){lathe([[0,-h*.5],[r*.9,-h*.5],[r,-h*.38],[r*.98,h*.12],[r*.72,h*.35],[r*.36,h*.48],[0,h*.5]],ivory,64);band(r*.98,-h*.38,.05,gold);for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(r*.98,-h*.32,h*.28,a,steel,.018);}}
   else if(/service bay|サービスベイ/.test(nm)){lathe([[0,-h*.5],[r*.88,-h*.5],[r,-h*.4],[r,h*.4],[r*.88,h*.5],[0,h*.5]],steel,64);for(let y of [-h*.38,h*.38])band(r,y,.045,gold);const hatch=box(r*1.55,h*.68,.08,ivory,[0,0,r*.84]);for(let i=0;i<8;i++)bolt((i-3.5)*r*.18,0,r*.9,.025);}
