@@ -2335,7 +2335,7 @@ export function createPartModel(p,THREE){
  const makePayload=()=>{
   const nm=(id+' '+name).toLowerCase();
   const groundLight=/ground-light|作業用照明/.test(nm),groundAnchor=/ground-anchor|グラウンドアンカー/.test(nm);
-  const fairing=/fairing|防護シェル/.test(nm),cargoBay=/cargo bay|カーゴベイ|cargo ramp|カーゴドア/.test(nm),ramp=/cargo ramp|カーゴドア/.test(nm),service=/service bay|サービスベイ/.test(nm),storage=/seq-|seq\d|保管ユニット|コンテナ/.test(nm),eva=/eva|ジェットパック|修理キット|実験キット|燃料シリンダー|個人用パラシュート/.test(nm),lab=/science lab|移動研究室/.test(nm),scienceStore=/science storage|実験用記憶装置/.test(nm),serviceModule=/sm-\d|サービスモジュール/.test(nm);
+  const fairing=/fairing|防護シェル/.test(nm),cargoBay=/cargo bay|カーゴベイ|cargo ramp|カーゴドア/.test(nm),ramp=/cargo ramp|カーゴドア/.test(nm),service=/service bay|サービスベイ/.test(nm),storage=/seq-|seq\d|保管ユニット|コンテナ/.test(nm),eva=/eva|ジェットパック|修理キット|実験キット|燃料シリンダー|個人用パラシュート/.test(nm),lab=/science lab|移動研究室/.test(nm),scienceStore=/science storage|実験用記憶装置/.test(nm),serviceModule=/sm-?\d|service module|サービスモジュール/.test(nm);
   if(groundLight||groundAnchor){makeUtility();return;}
   if(fairing){
    // Stock fairings are two separate clamshell halves around an internal payload truss.
@@ -2570,7 +2570,7 @@ export function createPartModel(p,THREE){
   }
   else if(serviceModule){
    // SM-6A/18/25: service-module shell, pressurized equipment bay, RCS pods and aft engine interface.
-   const sm6=/sm-6a/.test(nm),sm25=/sm-25/.test(nm),rr=r*(sm6?.72:sm25?1.12:.92),hh=h*(sm6?.78:sm25?1.18:1);
+   const sm6=/sm-?6a/.test(nm),sm25=/sm-?25/.test(nm),rr=r*(sm6?.72:sm25?1.12:.92),hh=h*(sm6?.78:sm25?1.18:1);
    const skin=painted('#bfc6c5','#c56b31','SERVICE MODULE',name);
    lathe([[0,-hh*.5],[rr*.68,-hh*.5],[rr*.88,-hh*.43],[rr,-hh*.3],[rr,hh*.3],[rr*.92,hh*.42],[rr*.72,hh*.5],[0,hh*.5]],skin,96);
    for(let i=0;i<16;i++){const ang=i*Math.PI/8,x=Math.cos(ang)*rr*.99,z=Math.sin(ang)*rr*.99;radialPipe(rr*.99,-hh*.34,hh*.34,ang,steel,.022);bolt(x,-hh*.36,z,.02,gold);}
