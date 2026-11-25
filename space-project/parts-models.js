@@ -1000,7 +1000,7 @@ export function createPartModel(p,THREE){
     radialPipe(rr*.985,-h*.32,h*.25,ang,i%3===0?ivory:steel,i%3===0?.025:.012);
     if(i%3===0)radialPipe(rr*1.002,-h*.28,h*.2,ang,aluminium,.008);
    }
-   const windows=mk13?3:1;
+   const windows=mk13||command?3:1;
    for(let i=0;i<windows;i++){
     const ang=(i-(windows-1)/2)*.54,x=Math.sin(ang)*rr*.77,z=Math.cos(ang)*rr*.77,y=h*.08;
     sphere(rr*.18,steel,[x,y,z],[1,.9,.24]);sphere(rr*.135,glass,[x,y,z+rr*.035],[1,.9,.22]);
