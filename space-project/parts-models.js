@@ -2002,7 +2002,7 @@ export function createPartModel(p,THREE){
   const nm=(id+' '+name).toLowerCase();
   const ground=/hg-48|ground/.test(nm),dish=/dts|hg-5|hg-55|88-88|ra-|relay|dish|中継|ハイゲイン/.test(nm);
   const large=/ra-100|88-88/.test(nm),medium=/ra-15|hg-55|dts/.test(nm),small=/ra-2|hg-5/.test(nm);
-  const fixed=/16-s|communotron 16-s|固定/.test(nm),flat=/dts/.test(nm),folding=/hg-55|88-88/.test(nm);
+  const fixed=/16-s|communotron 16-s|固定/.test(nm),flat=/dts/.test(nm),folding=/hg-5|hg-55|88-88|ra-2|ra-15|ra-100/.test(nm),whip=/communotron 16|コミュノトロン 16/.test(nm)&&!/16-s/.test(nm);
   const baseR=r*(large?1.05:medium?.86:small?.62:.38);
   lathe([[0,-h*.42],[baseR*.68,-h*.42],[baseR,-h*.25],[baseR,h*.12],[baseR*.78,h*.22],[0,h*.22]],painted('#aeb6b6','#b68b4e','COMMUNICATION HARDWARE',name),48);
   band(baseR,h*.14,.035,gold);band(baseR*.82,-h*.3,.025,steel);
@@ -2018,10 +2018,32 @@ export function createPartModel(p,THREE){
    for(let side of [-1,1])tube([[0,-h*.28,0],[side*r*.55,-h*.05,r*.45],[0,h*.4,0]],.022,gold);
    sphere(.06,blue,[0,h*.68,0]);return;
   }
+  if(fixed){
+   // Communotron 16-S: rigid, permanently extended whip with a fixed mounting foot.
+   const baseR=r*.18,mastH=h*.92;
+   cyl(baseR,baseR,.12,steel,-h*.35,24);
+   box(r*.72,.1,r*.5,aluminium,[0,-h*.42,0]);
+   for(let y of [-h*.3,-h*.12,h*.08,h*.28])band(baseR,y,.018,gold);
+   tube([[0,-h*.28,0],[0,h*.18,0],[0,h*.28+mastH,0]],.018,steel);
+   for(let i=0;i<5;i++)sphere(.018,aluminium,[0,h*(.28+i*.12),0]);
+   sphere(.035,gold,[0,h*.28+mastH,0]);
+   return;
+  }
+  if(whip){
+   // Communotron 16: spring whip stored along its compact base in the editor.
+   const baseR=r*.28,baseH=h*.3;
+   lathe([[0,-baseH*.5],[baseR*.7,-baseH*.5],[baseR,-baseH*.3],[baseR,baseH*.3],[baseR*.72,baseH*.5],[0,baseH*.5]],painted('#c5cbc7','#b68b4e','FOLDING WHIP ANTENNA',name),40);
+   band(baseR,-baseH*.34,.025,steel);band(baseR,baseH*.34,.025,gold);
+   const coilPts=[];for(let i=0;i<=60;i++){const t=i/60,a=t*Math.PI*10;coilPts.push([Math.cos(a)*baseR*.8,-baseH*.35+t*baseH*.7,Math.sin(a)*baseR*.8]);}
+   tube(coilPts,.012,aluminium);
+   tube([[baseR*.8,-baseH*.28,0],[baseR*1.15,-baseH*.2,0],[baseR*1.15,baseH*.25,0]],.02,steel);
+   box(baseR*.55,.08,.08,orange,[baseR*.78,0,0]);
+   return;
+  }
   if(dish){
    const dishR=r*(large?1.18:medium?.92:small?.7:.72),dishY=h*(flat?.48:.58);
    if(folding){
-    // HG-55 and 88-88 are shown in their VAB stowed configuration, not as an already deployed dish.
+    // Deployable HG-5/HG-55/88-88/RA relay dishes are shown folded for launch.
     const canR=r*(large?.46:.34),canH=h*(large?.9:.72),petals=large?8:6;
     lathe([[0,-canH*.5],[canR*.76,-canH*.5],[canR,-canH*.34],[canR,canH*.32],[canR*.78,canH*.5],[0,canH*.5]],painted('#b8c1bf','#b68b4e','FOLDING HIGH GAIN ANTENNA',name),48);
     for(let y of [-canH*.38,canH*.36])band(canR,y,.035,y<0?steel:gold);
@@ -2039,10 +2061,15 @@ export function createPartModel(p,THREE){
     return;
    }
    if(flat){
-    box(dishR*1.75,dishR*.16,dishR*.58,aluminium,[0,dishY,0]);
-    box(dishR*1.58,dishR*.08,dishR*.48,ivory,[0,dishY+.1,0]);
-    for(let i=0;i<7;i++)box(.025,dishR*.06,dishR*.42,steel,[(i-3)*dishR*.22,dishY+.15,0]);
-    for(let side of [-1,1])tube([[side*dishR*.7,h*.2,0],[side*dishR*.86,dishY,0],[side*dishR*.72,dishY+.18,0]],.025,gold);
+    // DTS-M1 flat-panel antenna is packed into a narrow hinged cassette for launch.
+    box(dishR*1.05,dishR*.55,.12,steel,[0,dishY*.35,0]);
+    box(dishR*.94,dishR*.46,.045,dark,[0,dishY*.35,.075]);
+    for(let side of [-1,1]){
+     box(dishR*.42,dishR*.48,.035,painted('#526c79','#b68b4e','DTS-M1 FLAT ANTENNA',name),[side*dishR*.24,dishY*.35,.11],[0,0,side*.1]);
+     for(let j=0;j<6;j++)box(dishR*.38,.014,.018,aluminium,[side*dishR*.24,(j-2.5)*dishR*.07+dishY*.35,.14],[0,0,side*.1]);
+     tube([[side*dishR*.38,dishY*.05,.06],[side*dishR*.52,dishY*.35,.1],[side*dishR*.38,dishY*.65,.06]],.02,gold);
+    }
+    for(let side of [-1,1])bolt(side*dishR*.42,dishY*.35,.16,.02,gold);
    }else{
     lathe([[0,dishY],[dishR*.22,dishY+.025],[dishR*.48,dishY+.07],[dishR*.74,dishY+.15],[dishR,dishY+.24],[dishR*.96,dishY+.27],[dishR*.9,dishY+.22],[0,dishY+.02]],painted('#cbd0cd','#b68b4e','PARABOLIC REFLECTOR',name),80);
     add(new THREE.TorusGeometry(dishR*.98,.045,12,72),aluminium,[0,dishY+.24,0],[Math.PI/2,0,0]);
