@@ -989,12 +989,90 @@ export function createPartModel(p,THREE){
   }
  };
  const makeIntake=()=>{
-  const shock=id.includes('shock'),circular=id.includes('circular'),ram=id.includes('ram'),rad=r*.82;
-  lathe([[0,-h*.48],[rad*.62,-h*.48],[rad*.94,-h*.3],[rad,h*.22],[rad*.82,h*.48],[rad*.48,h*.5],[0,h*.5]],aluminium,64);
-  const inlet=add(new THREE.TorusGeometry(rad*.76,.075,14,48),steel,[0,0,h*.48],[Math.PI/2,0,0]);add(new THREE.CircleGeometry(rad*.67,48),black,[0,0,h*.482],[Math.PI/2,0,0]);
-  if(shock){const cone=add(new THREE.ConeGeometry(rad*.34,h*.62,32),steel,[0,0,h*.25],[Math.PI/2,0,0]);}
-  else if(ram){for(let i=0;i<8;i++){const a=i*Math.PI/4;box(.025,.025,rad*1.1,[0,0,0],[Math.cos(a)*rad*.5,Math.sin(a)*rad*.5,h*.35],[0,0,a]);}}
-  else if(circular){band(rad*.98,h*.42,.055,gold);}
+  const nm=(id+' '+name).toLowerCase();
+  const shock=/shock|ショック/.test(nm),circular=/circular|サーキュラー/.test(nm),ram=/ram|ramp|可変インテーク|可変型/.test(nm),radial=/radial|ラジアル/.test(nm),nacelle=/nacelle|ナセル/.test(nm),precool=/precool|プリクーラー/.test(nm),dsi=/diverterless|supersonic|ダイバータレス/.test(nm);
+  const shell=painted('#cbd0cd','#b68b4e','AIR INDUCTION SYSTEM',name);
+  if(nacelle||precool){
+   const long=nacelle?h*1.1:h*.88,rr=r*.82;
+   const duct=add(new THREE.CylinderGeometry(rr,rr,long,64,1,false),shell,[0,0,0],[Math.PI/2,0,0]);
+   for(let z of [-long*.48,long*.48]){const ring=add(new THREE.TorusGeometry(rr,.055,12,64),gold,[0,0,z],[0,0,0]);}
+   // Forward intake lip and deep internal compressor throat.
+   add(new THREE.TorusGeometry(rr*.84,.07,14,64),aluminium,[0,0,long*.5],[0,0,0]);
+   add(new THREE.CircleGeometry(rr*.72,48),black,[0,0,long*.505]);
+   for(let i=0;i<14;i++){const ang=i*Math.PI*2/14,x=Math.cos(ang)*rr*.5,y=Math.sin(ang)*rr*.5;const blade=box(.025,.12,rr*.5,steel,[x,y,long*.43],[0,0,ang]);}
+   if(precool){
+    for(let i=0;i<12;i++){const z=(i-5.5)*long*.07;const fin=add(new THREE.TorusGeometry(rr*1.02,.018,8,64),aluminium,[0,0,z],[0,0,0]);}
+    for(let side of [-1,1]){box(rr*.18,long*.55,.1,dark,[side*rr*.94,0,0]);for(let j=0;j<5;j++)box(rr*.16,.025,.03,orange,[side*rr*.99,(j-2)*long*.1,0]);}
+   }else{
+    for(let side of [-1,1]){const p=box(rr*.3,long*.5,.07,ivory,[side*rr*.78,0,0]);p.rotation.z=side*.12;for(let j=0;j<4;j++)bolt(side*rr*.85,(j-1.5)*long*.1,.05,.018,gold);}
+   }
+   return;
+  }
+  if(dsi){
+   // Mk1 DSI inlet: flattened rectangular mouth, curved compression bump and side fences.
+   const width=r*1.75,depth=h*.72,thick=r*.54;
+   box(width,thick,depth,shell);
+   box(width*.86,thick*.5,depth*.88,dark,[0,thick*.05,depth*.08]);
+   box(width*.72,thick*.36,depth*.7,black,[0,thick*.12,depth*.12]);
+   const bump=add(new THREE.SphereGeometry(width*.24,32,20),aluminium,[0,thick*.42,depth*.12],[0,0,0],[1,.3,1.25]);
+   for(let side of [-1,1]){
+    box(width*.08,thick*.7,depth*.92,steel,[side*width*.47,0,0]);
+    tube([[side*width*.38,thick*.2,-depth*.35],[side*width*.32,thick*.32,0],[side*width*.38,thick*.2,depth*.35]],.025,gold);
+   }
+   for(let i=0;i<6;i++)box(width*.07,.025,.04,aluminium,[(i-2.5)*width*.12,thick*.35,depth*.42]);
+   return;
+  }
+  if(radial){
+   // XM-G50 / variable radial intake: side-mounted oval duct with an offset mounting shoe.
+   const rr=r*.78,bodyH=h*.72;
+   lathe([[0,-bodyH*.5],[rr*.72,-bodyH*.5],[rr,-bodyH*.34],[rr,h*.2],[rr*.82,h*.44],[rr*.5,h*.5],[0,h*.5]],shell,64);
+   const lip=add(new THREE.TorusGeometry(rr*.78,.07,14,56),aluminium,[0,0,h*.48],[Math.PI/2,0,0]);
+   add(new THREE.CircleGeometry(rr*.67,48),black,[0,0,h*.485],[Math.PI/2,0,0]);
+   box(r*1.2,h*.28,.1,steel,[0,-h*.28,-r*.3]);
+   for(let i=0;i<8;i++){const ang=i*Math.PI/4;radialPipe(rr*.96,-h*.28,h*.28,ang,aluminium,.018);}
+   for(let i=0;i<4;i++)box(.04,.04,r*.42,steel,[(i-1.5)*r*.2,h*.02,h*.36]);
+   if(ram){
+    const ramp=box(rr*.9,.055,h*.34,gold,[0,-h*.1,h*.28],[.3,0,0]);
+    for(let side of [-1,1])tube([[side*rr*.48,-h*.2,h*.25],[side*rr*.3,h*.05,h*.42],[side*rr*.22,h*.25,h*.46]],.022,steel);
+   }
+   return;
+  }
+  if(shock){
+   // Shock cone: long pointed centrebody suspended inside a wide annular inlet.
+   const shellR=r*.88;
+   lathe([[0,-h*.48],[shellR*.55,-h*.48],[shellR*.92,-h*.32],[shellR,h*.2],[shellR*.82,h*.42],[shellR*.5,h*.5],[0,h*.5]],shell,72);
+   add(new THREE.TorusGeometry(shellR*.78,.075,16,64),aluminium,[0,0,h*.46],[Math.PI/2,0,0]);
+   add(new THREE.CircleGeometry(shellR*.66,48),black,[0,0,h*.47],[Math.PI/2,0,0]);
+   const spike=add(new THREE.ConeGeometry(shellR*.34,h*.82,48),steel,[0,0,h*.12],[Math.PI/2,0,0]);
+   spike.rotation.x=Math.PI/2;
+   const support=add(new THREE.TorusGeometry(shellR*.48,.035,10,48),gold,[0,0,h*.2],[Math.PI/2,0,0]);
+   for(let i=0;i<8;i++){const ang=i*Math.PI/4;radialPipe(shellR*.9,-h*.3,h*.28,ang,steel,.025);}
+   band(shellR,h*.22,.045,gold);
+   return;
+  }
+  if(ram){
+   // Adjustable ramp intake: rectangular duct with a hinged internal compression ramp.
+   const width=r*1.5,length=h*.86,thick=r*.54;
+   box(width,thick,length,shell);
+   box(width*.86,thick*.64,length*.84,dark,[0,0,length*.05]);
+   box(width*.7,thick*.42,length*.7,black,[0,thick*.02,length*.06]);
+   const ramp=box(width*.62,.07,length*.48,aluminium,[0,-thick*.18,length*.2],[.36,0,0]);
+   for(let side of [-1,1]){
+    box(width*.08,thick*.82,length*.9,steel,[side*width*.46,0,0]);
+    tube([[side*width*.28,-thick*.18,length*.1],[side*width*.28,thick*.16,length*.34],[side*width*.28,thick*.12,length*.42]],.025,gold);
+    for(let j=0;j<5;j++)bolt(side*width*.46,(j-2)*thick*.14,length*.42,.018,aluminium);
+   }
+   band(width*.48,length*.47,.025,gold);
+   return;
+  }
+  // Circular intake family: short duct, rolled lip, inner diffuser and stator vanes.
+  const shellR=r*.82;
+  lathe([[0,-h*.48],[shellR*.62,-h*.48],[shellR*.92,-h*.3],[shellR,h*.22],[shellR*.82,h*.46],[shellR*.48,h*.5],[0,h*.5]],shell,64);
+  add(new THREE.TorusGeometry(shellR*.78,.07,14,56),aluminium,[0,0,h*.48],[Math.PI/2,0,0]);
+  add(new THREE.CircleGeometry(shellR*.66,48),black,[0,0,h*.485],[Math.PI/2,0,0]);
+  for(let i=0;i<12;i++){const ang=i*Math.PI/6;const x=Math.cos(ang)*shellR*.43,y=Math.sin(ang)*shellR*.43;box(.025,.035,shellR*.48,steel,[x,y,h*.25],[0,0,ang]);}
+  for(let i=0;i<8;i++){const ang=i*Math.PI/4;radialPipe(shellR*.98,-h*.25,h*.28,ang,steel,.018);}
+  band(shellR,h*.22,.04,gold);band(shellR*.9,-h*.38,.025,aluminium);
  };
  const makeComm=()=>{
   if(id.includes('dish')||id.includes('dts')){const dish=add(new THREE.SphereGeometry(r*.8,48,24,0,Math.PI*2,0,Math.PI/2),ivory,[0,h*.45,0]);dish.rotation.x=Math.PI;band(r*.78,h*.45,.035,gold);tube([[0,h*.1,0],[0,h*.42,0],[0,h*.7,0]],.025,steel);sphere(.1,black,[0,h*.72,0]);}
@@ -1211,13 +1289,46 @@ export function createPartModel(p,THREE){
   else{lathe([[0,-h*.5],[r*.75,-h*.5],[r*.85,-h*.3],[r*.85,h*.35],[r*.7,h*.5],[0,h*.5]],ivory,40);band(r*.84,h*.32,.04,gold);radialLabel(r*.86,0,r*.7,h*.2,getLabelMaterial());}
  };
  const makeNosecone=()=>{
-  const heat=id.includes('heat')||/heat shield|耐熱/.test(name.toLowerCase()),small=id.includes('small')||id.includes('tiny'),mk=id.includes('mk7')||id.includes('mk12')||id.includes('mk16');
-  const tip=small?.018:r*.035,base=r*.92;
-  const profile=heat?[[0,-h*.5],[base*.78,-h*.5],[base,-h*.36],[base*.98,-h*.2],[base*.72,-h*.12],[base*.18,-h*.08],[0,-h*.08]]:mk?[[0,h*.5],[tip,h*.48],[base*.12,h*.38],[base*.42,h*.12],[base*.78,-h*.22],[base,-h*.42],[base*.98,-h*.5],[0,-h*.5]]:[[0,h*.5],[tip,h*.48],[base*.16,h*.35],[base*.46,h*.08],[base*.78,-h*.25],[base,-h*.44],[base*.98,-h*.5],[0,-h*.5]];
-  lathe(profile,heat?painted('#6c6258','#c56b31','THERMAL SHIELD'):painted('#d9d9d0','#b68b4e','NOSE ASSEMBLY'),64);
-  band(base*.99,-h*.43,.045,steel);band(base*.92,-h*.34,.025,gold);
-  if(heat){for(let i=0;i<16;i++){const a=i*Math.PI/8;radialPipe(base*.98,-h*.4,-h*.2,a,dark,.018);}cyl(base*.72,base*.72,.06,dark,-h*.48,64);}
-  else{for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(base*.94,-h*.38,h*.22,a,aluminium,.012);}sphere(tip*1.6,gold,[0,h*.47,0]);}
+  const nm=(id+' '+name).toLowerCase();
+  const heat=/heat shield|耐熱シールド|heatshield/.test(nm),protective=/protective|保護用/.test(nm),advanced=/advanced|先進的/.test(nm),slanted=/type b|タイプb|slanted|斜め/.test(nm),tiny=/tiny|極小型/.test(nm),small=/small|小型/.test(nm),mk7=/mk7|mk5a/.test(nm),mk12=/mk12/.test(nm),mk16=/mk16/.test(nm);
+  const base=r*.92,tip=tiny?.012:small?r*.025:r*.035;
+  const shell=painted(heat?'#625e55':protective?'#c6c9c3':'#d8dad4',heat?'#c56b31':'#b68b4e',heat?'THERMAL PROTECTION':'AERODYNAMIC NOSE ASSEMBLY',name);
+  let profile;
+  if(heat)profile=[[0,-h*.5],[base*.78,-h*.5],[base,-h*.38],[base*.98,-h*.18],[base*.72,-h*.1],[base*.18,-h*.08],[0,-h*.08]];
+  else if(protective){
+   const shoulder=mk16?1.08:mk12?1.02:.92;
+   profile=[[0,-h*.5],[base*.78,-h*.5],[base*shoulder,-h*.38],[base*shoulder,-h*.18],[base*.92,h*.08],[base*.76,h*.28],[base*.48,h*.42],[base*.2,h*.49],[0,h*.5]];
+  }else if(advanced&&slanted){
+   profile=[[0,h*.5],[tip,h*.48],[base*.16,h*.38],[base*.42,h*.2],[base*.74,-h*.12],[base,-h*.42],[base*.98,-h*.5],[0,-h*.5]];
+  }else if(advanced){
+   profile=[[0,h*.5],[tip,h*.48],[base*.1,h*.4],[base*.3,h*.25],[base*.62,-h*.08],[base*.9,-h*.36],[base,-h*.46],[base*.98,-h*.5],[0,-h*.5]];
+  }else{
+   profile=[[0,h*.5],[tip,h*.48],[base*.12,h*.4],[base*.34,h*.25],[base*.62,-h*.05],[base*.88,-h*.32],[base,-h*.44],[base*.98,-h*.5],[0,-h*.5]];
+  }
+  lathe(profile,shell,96);
+  // Machined mounting collar and part-specific ring geometry.
+  band(base*.99,-h*.44,.05,steel);band(base*.94,-h*.35,.025,gold);
+  if(protective){
+   // Protective nose caps have a rounded, serviceable crown and a removable lower skirt.
+   sphere(base*.78,ivory,[0,h*.32,0],[1,.48,1]);
+   band(base*.96,h*.08,.045,orange);band(base*.82,h*.28,.025,aluminium);
+   for(let i=0;i<16;i++){const ang=i*Math.PI/8;radialPipe(base*.98,-h*.32,h*.22,ang,steel,.018);bolt(base*.96*Math.cos(ang),-h*.36,base*.96*Math.sin(ang),.018,gold);}
+   // Access hatch and the inner parachute/service cavity lip.
+   box(base*.42,h*.18,.035,dark,[0,-h*.12,base*.88]);
+   for(let i=0;i<4;i++)bolt((i-1.5)*base*.12,-h*.12,base*.91,.018,aluminium);
+   cyl(base*.56,base*.56,.08,black,-h*.49,64);
+  }else if(heat){
+   for(let i=0;i<24;i++){const ang=i*Math.PI/12;radialPipe(base*.98,-h*.4,-h*.12,ang,dark,.018);}
+   for(let y of [-h*.32,-h*.24,-h*.16])band(base*.98,y,.025,steel);
+   cyl(base*.72,base*.72,.08,dark,-h*.48,64);
+  }else{
+   for(let i=0;i<12;i++){const ang=i*Math.PI/6;radialPipe(base*.96,-h*.36,h*.32,ang,aluminium,.014);bolt(base*.96*Math.cos(ang),-h*.34,base*.96*Math.sin(ang),.018,gold);}
+   band(base*.98,h*.28,.025,steel);
+   if(advanced){for(let side of [-1,1])tube([[side*base*.3,h*.22,base*.68],[side*base*.55,h*.02,base*.75],[side*base*.7,-h*.2,base*.68]],.018,gold);}
+  }
+  // Tip cap and subtle panel seams.
+  sphere(tip*1.5,protective?steel:aluminium,[0,h*.48,0],[1,.65,1]);
+  for(let side of [-1,1])box(base*.12,h*.08,.025,orange,[side*base*.62,-h*.2,base*.72]);
  };
  const makeFuselage=()=>{
   const mk0=id.includes('mk0'),mk2=id.includes('mk2'),mk3=id.includes('mk3'),w=r*(mk3?1.2:mk2?1.05:mk0?.72:.9),height=r*(mk3?.9:mk2?.78:.82);
