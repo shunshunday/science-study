@@ -954,7 +954,7 @@ export function createPartModel(p,THREE){
    tube([[side*bayW*.34,h*.32,r*.26],[side*bayW*.34,h*.02,r*.3],[side*bayW*.28,-h*.12,r*.28]],.025,aluminium);
    for(let j=0;j<4;j++)bolt(side*bayW*.32,(j-1.5)*bayH*.18,r*.3,.018,gold);
   }
-  const pivot=new THREE.Group();pivot.name='landing-gear-pivot';pivot.userData.side=1;pivot.position.set(0,-h*.12,0);g.add(pivot);
+  const pivot=new THREE.Group();pivot.name=fixed?'landing-gear-fixed':'landing-gear-pivot';pivot.userData.side=1;pivot.position.set(0,-h*.12,0);g.add(pivot);
   const strutPath=new THREE.CatmullRomCurve3([new THREE.Vector3(0,h*.22,0),new THREE.Vector3(0,h*.02,r*.08),new THREE.Vector3(0,-h*.2,r*.22),new THREE.Vector3(0,-h*.43,r*.32)]);
   const strut=new THREE.Mesh(new THREE.TubeGeometry(strutPath,28,Math.max(.035,r*.075),12,false),aluminium);strut.castShadow=true;pivot.add(strut);
   const oleo=new THREE.Mesh(new THREE.CylinderGeometry(r*.09,r*.12,h*.28,20),steel);oleo.position.set(0,-h*.12,r*.16);oleo.rotation.x=.18;pivot.add(oleo);
