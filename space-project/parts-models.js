@@ -1735,16 +1735,33 @@ export function createPartModel(p,THREE){
    return;
   }
   const z100=/z-?100/.test(nm),z200=/z-?200/.test(nm),z400=/z-?400/.test(nm),z1k=/z-?1k|z-?1000/.test(nm),z4k=/z-?4k|z-?4000/.test(nm);
-  const height=z4k?h*1.15:z1k?h*.95:z200?h*.72:h*.62,width=z4k?r*1.3:z1k?r*1.05:z200?r*.88:r*.72;
+  const height=z4k?h*1.15:z1k?h*.95:z200?h*.72:z400?h*.86:h*.62,width=z4k?r*1.3:z1k?r*1.05:z200?r*.88:z400?r*.98:r*.72;
   const mat=painted(z100?'#c6c9c3':'#b8c0c0','#b68b4e','RECHARGEABLE POWER BANK',name);
   if(z200||z1k||z4k){
    lathe([[0,-height*.5],[width*.72,-height*.5],[width*.92,-height*.4],[width,height*.38],[width*.78,height*.5],[0,height*.5]],mat,64);
    for(let y of [-height*.4,-height*.28,height*.34,height*.44])band(width*.98,y,.028,y<0?steel:gold);
    for(let i=0;i<12;i++){const ang=i*Math.PI/6;radialPipe(width*.98,-height*.32,height*.3,ang,aluminium,.014);}
+  }else if(z400){
+   // Z-400 is the larger side-mounted flat battery with separate cell bays and cooling ribs.
+   box(width*1.3,height,width*.62,mat);
+   box(width*1.12,height*.82,.045,dark,[0,0,width*.33]);
+   for(let i=0;i<4;i++){
+    const x=(i-1.5)*width*.27;
+    box(width*.22,height*.7,.035,ivory,[x,0,width*.36]);
+    box(width*.16,height*.55,.025,steel,[x,0,width*.39]);
+    for(let j=0;j<5;j++)box(width*.13,.018,.018,aluminium,[x,(j-2)*height*.11,width*.41]);
+   }
+   for(let side of [-1,1]){
+    box(.06,height*.9,width*.68,steel,[side*width*.64,0,0]);
+    for(let j=0;j<4;j++)bolt(side*width*.65,(j-1.5)*height*.22,width*.34,.022,gold);
+   }
+   box(width*.42,.1,.08,orange,[0,height*.46,0]);
   }else{
+   // Z-100 is the thin single-bank pack intended to sit flush against a vessel side.
    box(width*1.25,height,width*.55,mat);
+   box(width*.92,height*.78,.035,dark,[0,0,width*.29]);
+   for(let i=0;i<7;i++)box(width*.9,.018,.018,aluminium,[0,(i-3)*height*.11,width*.32]);
    for(let side of [-1,1])box(width*.08,height*.82,.035,steel,[side*width*.62,0,width*.29]);
-   for(let i=0;i<7;i++)box(width*.9,.018,.018,aluminium,[0,(i-3)*height*.11,width*.29]);
   }
   box(width*.58,height*.16,.045,dark,[0,height*.22,width*.32]);
   for(let i=0;i<5;i++)sphere(.035,i<2?green:i===2?orange:blue,[(i-2)*width*.1,height*.22,width*.35],[1,.7,.3]);
