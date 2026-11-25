@@ -557,7 +557,7 @@ export function createPartModel(p,THREE){
      const x=side*bodyR*.78,z=bodyR*.2;
      const pumpR=bodyR*(skiff?.24:kodiak?.2:.18);
      lathe([[0,-h*.22],[pumpR*.68,-h*.22],[pumpR,-h*.12],[pumpR,h*.12],[pumpR*.7,h*.22],[0,h*.22]],painted('#7b8587','#b68b4e','TURBOPUMP ASSEMBLY',name),40,[x,h*.02,z]);
-     band(pumpR,h*.14,.025,gold).position.x=x;
+     band(pumpR,h*.14,.025,gold).position.set(x,h*.14,z);
      tube([[x,h*.18,z],[side*bodyR*.95,h*.26,bodyR*.34],[side*bodyR*.88,-h*.12,bodyR*.48],[side*bodyR*.52,-h*.34,bodyR*.42]],.028,orange);
      for(let j=0;j<4;j++)bolt(x,(j-1.5)*h*.1,z+ pumpR*.8,.018,aluminium);
     }
