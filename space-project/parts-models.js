@@ -298,27 +298,170 @@ export function createPartModel(p,THREE){
   }
  };
  const makePod=()=>{
-  const inline=id.includes('inline'),lander=id.includes('lander'),cupola=id.includes('cupola'),mk2=id.includes('mk2'),mk3=id.includes('mk3'),mk13=id.includes('mk13'),seat=id==='seat',aircraft=id.includes('aircraft');
-  if(seat){lathe([[0,-h*.22],[r*.58,-h*.22],[r*.7,-h*.1],[r*.7,h*.12],[r*.58,h*.22],[0,h*.22]],steel,32);const back=box(r*1.25,h*.82,.12,ivory,[0,h*.5,-r*.28]);back.rotation.x=-.14;for(let x of [-1,1])tube([[x*r*.38,h*.55,-r*.2],[x*r*.32,h*.2,r*.35],[x*r*.22,-h*.12,r*.3]],.035,gold);return;}
-  const rr=mk3?r*.78:mk2||mk13?r*.84:r*.7;
-  if(lander){lathe([[0,-h*.5],[rr*.75,-h*.5],[rr,-h*.38],[rr,h*.12],[rr*.86,h*.24],[rr*.62,h*.43],[0,h*.48]],painted('#c5c6bd','#b68b4e','LANDER CAN',name),72);band(rr,h*.1,.05,gold);}
-  else if(cupola){lathe([[0,-h*.5],[rr*.7,-h*.5],[rr,-h*.36],[rr,h*.12],[rr*.95,h*.25],[rr*.8,h*.42],[rr*.52,h*.5],[0,h*.5]],painted('#d9d9d0','#b68b4e','CUPOLA PRESSURE SHELL',name),72);sphere(rr*.98,ivory,[0,h*.38,0],[1,.45,1]);}
-  else if(aircraft){lathe([[0,-h*.5],[rr*.8,-h*.5],[rr,-h*.4],[rr*.95,h*.2],[rr*.72,h*.42],[rr*.5,h*.5],[0,h*.5]],painted('#d9d9d0','#b68b4e','COCKPIT PRESSURE SHELL',name),64);const canopy=add(new THREE.SphereGeometry(rr*.68,32,20,0,Math.PI*2,0,Math.PI/2),glass,[0,h*.36,0]);canopy.scale.set(1,.85,1);}
-  else{lathe([[0,-h*.5],[rr*.76,-h*.5],[rr*.96,-h*.38],[rr,h*.14],[rr*.88,h*.3],[rr*.58,h*.47],[0,h*.5]],painted('#d9d9d0','#b68b4e','CREW MODULE',name),72);lathe([[0,h*.25],[rr*.86,h*.25],[rr*.78,h*.34],[rr*.48,h*.47],[0,h*.5]],paint,64);}
-  band(rr*.98,-h*.38,.04,steel);band(rr*.98,h*.23,.045,gold);
-  // Distinctive forward-facing portholes with raised bezels and deep blue glass.
-  const windows=cupola?8:mk13?5:mk2?4:3;
-  for(let i=0;i<windows;i++){
-   const a=(i-(windows-1)/2)*.46,ang=a+(inline?Math.PI/2:0),x=Math.sin(ang)*rr*.73,z=Math.cos(ang)*rr*.73,y=h*(aircraft?.37:.06);
-   const bezel=sphere(rr*.205,steel,[x,y,z],[1,.82,.2]);sphere(rr*.16,glass,[x,y,z+rr*.035],[1,.78,.2]); 
-   const glint=add(new THREE.SphereGeometry(rr*.045,12,8),M(0x9ec7d8,.2,.18,{emissive:0x18394a,emissiveIntensity:.3}),[x-rr*.045,y+rr*.035,z+rr*.07],[0,0,0],[1,.55,.18]);
+  const inline=id.includes('inline'),lander=id.includes('lander'),cupola=id.includes('cupola'),mk2=id.includes('mk2'),mk3=id.includes('mk3'),mk13=id.includes('mk13')||/mk1-3|mk1 3/.test((id+' '+name).toLowerCase()),seat=id==='seat',aircraft=id.includes('aircraft');
+  const crewCabin=/^crew-|crew cabin|crew container|乗員収容|客室/.test(id+' '+name.toLowerCase());
+  const kv=/mh-kv[123]|onion|pomegranate|ピー/.test(id+' '+name.toLowerCase());
+  const mem=/munar|mem/.test(id+' '+name.toLowerCase());
+  const command=/command|コマンドポッド|mk1 pod/.test(id+' '+name.toLowerCase())||mk13;
+  const wideCrew=crewCabin&&(mk2||mk3||id.includes('ppd10'));
+  const rr=mk3?r*.78:mk2||mk13||mem?r*.84:r*.7;
+  if(seat){
+   lathe([[0,-h*.22],[r*.58,-h*.22],[r*.7,-h*.1],[r*.7,h*.12],[r*.58,h*.22],[0,h*.22]],steel,32);
+   const back=box(r*1.25,h*.82,.12,ivory,[0,h*.5,-r*.28]);back.rotation.x=-.14;
+   for(let x of [-1,1])tube([[x*r*.38,h*.55,-r*.2],[x*r*.32,h*.2,r*.35],[x*r*.22,-h*.12,r*.3]],.035,gold);
+   for(let y=0;y<4;y++)box(r*.7,.025,.035,orange,[0,h*(.15+y*.12),-r*.34]);
+   return;
   }
-  if(!cupola&&!aircraft){for(let i=0;i<4;i++){const a=i*Math.PI/2;radialPipe(rr*1.02,-h*.24,h*.06,a,steel,.035);}}
-  for(let i=0;i<12;i++){const a=i*Math.PI/6;bolt(rr*.98*Math.cos(a),-h*.38,rr*.98*Math.sin(a),.018,gold);}
-  if(lander){cyl(rr*.86,rr*.95,.12,dark,-h*.48);for(let i=0;i<4;i++){const a=i*Math.PI/2;const x=Math.cos(a)*rr*1.38,z=Math.sin(a)*rr*1.38;tube([[Math.cos(a)*rr*.8,-h*.3,Math.sin(a)*rr*.8],[x,-h*.1,z],[x,-h*.45,z]],.045,aluminium);}}
-  else if(cupola){for(let i=0;i<8;i++){const a=i*Math.PI/4;const x=Math.cos(a)*rr*.9,z=Math.sin(a)*rr*.9;radialPipe(rr*.9,h*.16,h*.38,a,steel,.025);}}
-  else{cyl(rr*.75,rr*.82,.1,steel,-h*.49);band(rr*.82,-h*.47,.045,orange);}
-  const hatch=add(new THREE.TorusGeometry(rr*.18,.035,8,32),gold,[0,-h*.2,rr*.96]);hatch.rotation.y=0;
+  if(crewCabin){
+   const cabinR=mk3?r*.9:mk2?r*.92:r*.88;
+   const profile=mk3?
+    [[0,-h*.5],[cabinR*.86,-h*.5],[cabinR,-h*.44],[cabinR,h*.44],[cabinR*.86,h*.5],[0,h*.5]]:
+    [[0,-h*.5],[cabinR*.82,-h*.5],[cabinR,-h*.4],[cabinR,h*.4],[cabinR*.82,h*.5],[0,h*.5]];
+   lathe(profile,painted(mk3?'#d5d8d5':'#d9d9d0','#b68b4e',mk3?'MK3 CREW HABITAT':'CREW PRESSURE CABIN',name),72);
+   for(const y of [-h*.44,-h*.32,h*.32,h*.44])band(cabinR*.99,y,.035,y<0?steel:gold);
+   // Recessed longitudinal shell panels and structural stringers.
+   for(let i=0;i<12;i++){
+    const ang=i*Math.PI/6;
+    radialPipe(cabinR*.99,-h*.36,h*.36,ang,i%3===0?aluminium:steel,i%3===0?.022:.012);
+   }
+   const rows=mk3?3:2,cols=mk3?6:4;
+   for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
+    const ang=(col-(cols-1)/2)*.34,radAng=ang+(inline?Math.PI/2:0);
+    const x=Math.sin(radAng)*cabinR*.91,z=Math.cos(radAng)*cabinR*.91,y=(row-(rows-1)/2)*h*.22;
+    sphere(cabinR*.105,steel,[x,y,z],[1,1,.24]);
+    sphere(cabinR*.078,glass,[x,y,z+cabinR*.025],[1,1,.22]);
+   }
+   // Full-height side hatch, recessed handle and ladder rails.
+   const hatchZ=-cabinR*.91;
+   box(cabinR*.38,h*.42,.035,dark,[0,-h*.03,hatchZ]);
+   box(cabinR*.32,h*.36,.025,ivory,[0,-h*.03,hatchZ-.018]);
+   for(const x of [-1,1]){
+    tube([[x*cabinR*.2,-h*.3,hatchZ-.04],[x*cabinR*.2,h*.28,hatchZ-.04]],.018,steel);
+    for(let j=0;j<5;j++)tube([[-cabinR*.18,-h*.23+j*h*.105,hatchZ-.055],[cabinR*.18,-h*.23+j*h*.105,hatchZ-.055]],.018,gold);
+   }
+   for(let i=0;i<16;i++){const ang=i*Math.PI/8;bolt(cabinR*.99*Math.cos(ang),-h*.43,cabinR*.99*Math.sin(ang),.018,gold);}
+   box(cabinR*.55,.08,.05,steel,[0,h*.48,0]);
+   radialLabel(cabinR*1.002,0,cabinR*.56,h*.14,getLabelMaterial());
+   return;
+  }
+  if(kv){
+   const tier=/kv1|onion/.test(id+' '+name.toLowerCase())?1:/kv2|ピー/.test(id+' '+name.toLowerCase())?2:3;
+   const shell=painted('#c9cbc4','#b68b4e','ATMOSPHERIC RETURN CAPSULE',name);
+   const profile=tier===1?
+    [[0,-h*.5],[rr*.72,-h*.5],[rr*.94,-h*.38],[rr,h*.04],[rr*.82,h*.24],[rr*.55,h*.4],[rr*.25,h*.47],[0,h*.48]]:
+    tier===2?
+    [[0,-h*.5],[rr*.76,-h*.5],[rr*.98,-h*.4],[rr,h*.08],[rr*.91,h*.28],[rr*.68,h*.43],[rr*.32,h*.49],[0,h*.5]]:
+    [[0,-h*.5],[rr*.8,-h*.5],[rr,h*.42],[rr*.82,h*.49],[rr*.35,h*.5],[0,h*.5]];
+   lathe(profile,shell,64);
+   band(rr*.99,-h*.43,.055,gold);band(rr*.96,-h*.32,.025,steel);
+   for(let i=0;i<12;i++){const ang=i*Math.PI/6;radialPipe(rr*.99,-h*.28,h*.3,ang,steel,.018);}
+   const winCount=tier;
+   for(let i=0;i<winCount;i++){
+    const ang=(i-(winCount-1)/2)*.72,x=Math.sin(ang)*rr*.72,z=Math.cos(ang)*rr*.72,y=h*.08;
+    sphere(rr*.19,steel,[x,y,z],[1,.88,.24]);sphere(rr*.145,glass,[x,y,z+rr*.035],[1,.88,.22]);
+   }
+   // Ablative lower skirt, service access, and top attachment collar.
+   lathe([[0,-h*.5],[rr*.82,-h*.5],[rr*.86,-h*.42],[rr*.8,-h*.34],[0,-h*.34]],M(0x4b4b46,.12,.94),64);
+   for(let i=0;i<8;i++){const ang=i*Math.PI/4;bolt(rr*.84*Math.cos(ang),-h*.39,rr*.84*Math.sin(ang),.025,gold);}
+   band(rr*.38,h*.47,.045,aluminium);
+   radialLabel(rr*1.002,-h*.12,rr*.6,h*.13,getLabelMaterial());
+   return;
+  }
+  if(mem){
+   lathe([[0,-h*.5],[rr*.7,-h*.5],[rr*.94,-h*.38],[rr,h*.12],[rr*.88,h*.28],[rr*.62,h*.43],[rr*.3,h*.49],[0,h*.5]],painted('#d6d8d1','#b68b4e','MUNAR EXCURSION MODULE',name),72);
+   band(rr*.98,-h*.42,.05,gold);band(rr*.94,h*.3,.035,steel);
+   for(let i=0;i<2;i++){
+    const ang=(i-.5)*.7,x=Math.sin(ang)*rr*.8,z=Math.cos(ang)*rr*.8;
+    sphere(rr*.2,steel,[x,h*.04,z],[1,.9,.25]);sphere(rr*.15,glass,[x,h*.04,z+rr*.035],[1,.9,.22]);
+   }
+   for(let i=0;i<12;i++){const ang=i*Math.PI/6;radialPipe(rr*.96,-h*.34,h*.25,ang,aluminium,.016);}
+   lathe([[0,h*.36],[rr*.32,h*.36],[rr*.38,h*.44],[rr*.24,h*.5],[0,h*.5]],steel,48);
+   for(let i=0;i<8;i++){const ang=i*Math.PI/4;bolt(rr*.94*Math.cos(ang),-h*.4,rr*.94*Math.sin(ang),.02,gold);}
+   return;
+  }
+  if(lander){
+   // Mk1/Mk2 lander cans are faceted, boxy pressure vessels rather than smooth cones.
+   const sides=8,body=new THREE.Mesh(new THREE.CylinderGeometry(rr*.91,rr, h*.68,sides,1,false),painted('#c5c6bd','#b68b4e','LANDER CAN',name));
+   body.position.y=-h*.02;body.castShadow=true;body.receiveShadow=true;g.add(body);
+   const cap=add(new THREE.CylinderGeometry(rr*.72,rr*.91,h*.18,sides,1,false),ivory,[0,h*.41,0]);
+   band(rr*.99,-h*.37,.05,gold);band(rr*.93,h*.32,.035,steel);
+   for(let i=0;i<sides;i++){
+    const ang=i*Math.PI*2/sides;
+    radialPipe(rr*.99,-h*.3,h*.25,ang,i%2?aluminium:steel,.022);
+   }
+   for(let i=0;i<4;i++){
+    const ang=(i-.5)*.58,x=Math.sin(ang)*rr*.79,z=Math.cos(ang)*rr*.79;
+    sphere(rr*.18,steel,[x,h*.08,z],[1,.9,.22]);sphere(rr*.135,glass,[x,h*.08,z+rr*.03],[1,.9,.2]);
+   }
+   const hatchZ=-rr*.99;
+   box(rr*.42,h*.38,.045,dark,[0,-h*.02,hatchZ]);
+   box(rr*.35,h*.31,.025,ivory,[0,-h*.02,hatchZ-.025]);
+   for(let j=0;j<5;j++)tube([[-rr*.18,-h*.25+j*h*.09,hatchZ-.05],[rr*.18,-h*.25+j*h*.09,hatchZ-.05]],.018,gold);
+   for(let i=0;i<8;i++){const ang=i*Math.PI/4;const x=Math.cos(ang)*rr*1.28,z=Math.sin(ang)*rr*1.28;tube([[Math.cos(ang)*rr*.8,-h*.2,Math.sin(ang)*rr*.8],[x,-h*.08,z],[x,-h*.47,z]],.035,aluminium);}
+  }
+  else if(cupola){
+   lathe([[0,-h*.5],[rr*.7,-h*.5],[rr,-h*.36],[rr,h*.12],[rr*.95,h*.25],[rr*.8,h*.42],[rr*.52,h*.5],[0,h*.5]],painted('#d9d9d0','#b68b4e','CUPOLA PRESSURE SHELL',name),72);
+   // The Cupola's unmistakable hemispherical crown and ring of radial windows.
+   sphere(rr*.98,ivory,[0,h*.38,0],[1,.45,1]);
+   for(let i=0;i<8;i++){
+    const ang=i*Math.PI/4,x=Math.sin(ang)*rr*.74,z=Math.cos(ang)*rr*.74;
+    sphere(rr*.205,steel,[x,h*.17,z],[1,.88,.22]);sphere(rr*.16,glass,[x,h*.17,z+rr*.035],[1,.86,.2]);
+    radialPipe(rr*.91,h*.1,h*.4,ang,aluminium,.022);
+   }
+   band(rr*.98,h*.1,.045,gold);
+  }
+  else if(aircraft){
+   lathe([[0,-h*.5],[rr*.8,-h*.5],[rr,-h*.4],[rr*.95,h*.2],[rr*.72,h*.42],[rr*.5,h*.5],[0,h*.5]],painted('#d9d9d0','#b68b4e','COCKPIT PRESSURE SHELL',name),64);
+   const canopy=add(new THREE.SphereGeometry(rr*.68,32,20,0,Math.PI*2,0,Math.PI/2),glass,[0,h*.36,0]);canopy.scale.set(1,.85,1);
+   for(let side of [-1,1])tube([[side*rr*.56,h*.18,0],[side*rr*.42,h*.42,0],[0,h*.5,0]],.025,aluminium);
+  }
+  else{
+   // Standard Mk1 and multi-seat command capsules: tapered alloy shell, segmented heat skirt.
+   const profile=mk13?
+    [[0,-h*.5],[rr*.78,-h*.5],[rr*.96,-h*.4],[rr,h*.08],[rr*.9,h*.25],[rr*.65,h*.42],[rr*.32,h*.49],[0,h*.5]]:
+    [[0,-h*.5],[rr*.72,-h*.5],[rr*.94,-h*.4],[rr,h*.12],[rr*.86,h*.31],[rr*.56,h*.46],[rr*.26,h*.5],[0,h*.5]];
+   lathe(profile,painted('#cfd1cb','#b68b4e','COMMAND MODULE',name),96);
+   // Deep lower heat shield, machined retaining rings and a raised docking collar.
+   lathe([[0,-h*.5],[rr*.9,-h*.5],[rr*.96,-h*.43],[rr*.88,-h*.34],[0,-h*.34]],M(0x55534e,.18,.93),72);
+   band(rr*.98,-h*.4,.055,gold);band(rr*.96,h*.2,.035,steel);band(rr*.34,h*.48,.035,aluminium);
+   // Alternating bright shell panels and dark recessed longitudinal seams.
+   const ribCount=mk13?12:10;
+   for(let i=0;i<ribCount;i++){
+    const ang=i*Math.PI*2/ribCount;
+    radialPipe(rr*.985,-h*.32,h*.25,ang,i%3===0?ivory:steel,i%3===0?.025:.012);
+    if(i%3===0)radialPipe(rr*1.002,-h*.28,h*.2,ang,aluminium,.008);
+   }
+   const windows=mk13?5:3;
+   for(let i=0;i<windows;i++){
+    const ang=(i-(windows-1)/2)*.54,x=Math.sin(ang)*rr*.77,z=Math.cos(ang)*rr*.77,y=h*.08;
+    sphere(rr*.18,steel,[x,y,z],[1,.9,.24]);sphere(rr*.135,glass,[x,y,z+rr*.035],[1,.9,.22]);
+    add(new THREE.SphereGeometry(rr*.035,12,8),M(0xb7d7e0,.18,.16,{emissive:0x25495a,emissiveIntensity:.3}),[x-rr*.04,y+rr*.035,z+rr*.065]);
+   }
+   // Offset side hatch with hinge barrels, grab handles and a short external ladder.
+   const hatchX=rr*.42,hatchZ=-rr*.86;
+   box(rr*.38,h*.34,.035,dark,[hatchX,-h*.03,hatchZ]);
+   box(rr*.31,h*.28,.025,ivory,[hatchX,-h*.03,hatchZ-.02]);
+   for(let side of [-1,1]){
+    tube([[hatchX+side*rr*.2,-h*.22,hatchZ-.045],[hatchX+side*rr*.2,h*.16,hatchZ-.045]],.018,steel);
+    for(let j=0;j<4;j++)tube([[hatchX-rr*.16,-h*.18+j*h*.1,hatchZ-.055],[hatchX+rr*.16,-h*.18+j*h*.1,hatchZ-.055]],.016,gold);
+   }
+   for(let i=0;i<12;i++){const ang=i*Math.PI/6;bolt(rr*.96*Math.cos(ang),-h*.39,rr*.96*Math.sin(ang),.02,gold);}
+  }
+  if(!cupola&&!aircraft&&!crewCabin){
+   // Lower connection flange with a visible stack interface and fastening bolts.
+   cyl(rr*.78,rr*.84,.11,steel,-h*.49,64);band(rr*.84,-h*.47,.045,orange);
+   for(let i=0;i<12;i++){const ang=i*Math.PI/6;bolt(rr*.8*Math.cos(ang),-h*.47,rr*.8*Math.sin(ang),.018,aluminium);}
+  }
+  // Shared inspection plates and small service fittings, kept off the main windows.
+  const plateZ=rr*.98;
+  box(rr*.3,h*.12,.025,dark,[-rr*.48,-h*.27,plateZ]);
+  box(rr*.24,h*.025,.012,orange,[-rr*.48,-h*.23,plateZ+.016]);
+  for(let i=0;i<4;i++)bolt(-rr*.6+i*rr*.08,-h*.31,plateZ+.018,.012,aluminium);
+  if(!cupola&&!aircraft&&!crewCabin){
+   for(let side of [-1,1]){
+    tube([[side*rr*.72,-h*.28,plateZ*.82],[side*rr*.72,-h*.05,plateZ*.9],[side*rr*.72,h*.18,plateZ*.82]],.018,gold);
+   }
+  }
  };
  const makeProbe=()=>{
   const oct=id.includes('okto')||id.includes('hecs'),flat=id.includes('stayputnik'),qbe=id.includes('qbe'),rover=id.includes('rovemate'),rcl=id.includes('rcl');
