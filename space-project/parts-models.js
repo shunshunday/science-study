@@ -224,7 +224,19 @@ export function createPartModel(p,THREE){
  const detailRivets=(rad,y,count=16,offset=0)=>{for(let i=0;i<count;i++){const a=i*Math.PI*2/count+offset;bolt(Math.cos(a)*rad,y,Math.sin(a)*rad,.018);}};
  const radialPipe=(rad,y0,y1,a,mat=aluminium,thick=.018)=>tube([[Math.cos(a)*rad,y0,Math.sin(a)*rad],[Math.cos(a*1.02)*rad*1.025,(y0+y1)/2,Math.sin(a*1.02)*rad*1.025],[Math.cos(a)*rad,y1,Math.sin(a)*rad]],thick,mat); 
  const makeTank=()=>{
-  const isRcs=id.startsWith('rcs-'),xenon=id.includes('xenon'),oscar=id.includes('oscar'),donut=id.includes('donut')||id.includes('r12'),baguette=id.includes('baguette')||id.includes('r11'),rock=/rockomax|x200|jumbo/i.test(id+' '+name),kerb=id.includes('s3-'),mk2=id.includes('mk2-lf'),mk3=id.includes('mk3-lf'),mk0=id.includes('mk0-lf');
+  const isRcs=id.startsWith('rcs-'),xenon=id.includes('xenon'),ore=id.startsWith('ore-')||/ore storage|鉱石/.test(name),oscar=id.includes('oscar'),donut=id.includes('donut')||id.includes('r12'),baguette=id.includes('baguette')||id.includes('r11'),rock=/rockomax|x200|jumbo/i.test(id+' '+name),kerb=id.includes('s3-'),mk2=id.includes('mk2-lf'),mk3=id.includes('mk3-lf'),mk0=id.includes('mk0-lf');
+  if(ore){
+   const large=/large|大型/.test(id+' '+name),rr=r*(large?1.02:.82),hh=h*(large?1.08:.78),radial=id.includes('radial');
+   const skin=painted('#858f8d','#d29b3c','ORE STORAGE VESSEL',name);
+   lathe([[0,-hh*.5],[rr*.72,-hh*.5],[rr*.94,-hh*.4],[rr, -hh*.28],[rr,hh*.28],[rr*.94,hh*.4],[rr*.72,hh*.5],[0,hh*.5]],skin,80);
+   for(let y of [-hh*.42,-hh*.28,hh*.28,hh*.42])band(rr*.98,y,.04,y<0?steel:gold);
+   for(let i=0;i<12;i++){const ang=i*Math.PI/6;radialPipe(rr*.99,-hh*.32,hh*.32,ang,aluminium,.02);bolt(rr*.98*Math.cos(ang),-hh*.39,rr*.98*Math.sin(ang),.02,gold);}
+   box(rr*.62,hh*.22,.045,dark,[0,0,rr*.91]);
+   for(let i=0;i<5;i++)box(rr*.48,.018,.02,i%2?orange:aluminium,[0,(i-2)*hh*.035,rr*.94]);
+   cyl(rr*.42,rr*.42,.12,steel,hh*.52,48);cyl(rr*.38,rr*.38,.1,dark,-hh*.52,48);
+   if(radial){box(rr*1.42,hh*.74,.1,steel,[0,0,-rr*.82]);for(let side of [-1,1])box(rr*.12,hh*.82,.12,gold,[side*rr*.58,0,-rr*.84]);}
+   return;
+  }
   if(donut){const ring=add(new THREE.TorusGeometry(r*.76,r*.27,24,72),M(0xd6d7cf,.42,.5));ring.scale.set(1,.82,1);band(r*.98,.04,.035,steel);band(r*.98,-.04,.035,gold);cyl(r*.22,r*.22,.12,dark,0,32);detailRivets(r*.96,0,20);}
   else if(baguette){lathe([[0,-h*.48],[r*.45,-h*.48],[r*.68,-h*.42],[r*.72,-h*.32],[r*.72,h*.32],[r*.65,h*.44],[r*.42,h*.48],[0,h*.48]],ivory,64);band(r*.71,-h*.38,.025,gold);band(r*.71,h*.38,.025,steel);for(let y of [-h*.25,h*.25])band(r*.72,y,.012,aluminium);}
   else{
@@ -751,6 +763,20 @@ export function createPartModel(p,THREE){
   const nm=(id+' '+name).toLowerCase();
   const adapter=/adapter|アダプター/.test(nm),tri=/tri.?coupler|トライ/.test(nm),quad=/quad.?coupler|クアッド/.test(nm),bi=/bi.?coupler|バイカプラー/.test(nm),hub=/hubmax/.test(nm);
   const radial=/radial|tt-?38|tt-?70|hydraulic|hdm|ラジアル|油圧式/.test(nm);
+  const fuelLine=/fuel.?line|fuel-line|燃料ダクト/.test(nm);
+  if(fuelLine){
+   // FTX-2 external fuel duct: twin flexible transfer hoses with end couplings and clamp saddles.
+   const length=h*1.08,sep=r*.22,thick=Math.max(.018,r*.045);
+   for(let side of [-1,1]){
+    const path=new THREE.CatmullRomCurve3([[side*sep,-length*.5,0],[side*sep*1.15,-length*.22,r*.12],[side*sep*.85,length*.18,r*.12],[side*sep,length*.5,0]].map(v=>new THREE.Vector3(...v)));
+    add(new THREE.TubeGeometry(path,40,thick,10,false),orange);
+    for(let y of [-length*.48,length*.48]){const ring=add(new THREE.TorusGeometry(thick*1.8,thick*.55,8,24),steel,[side*sep,y,0],[Math.PI/2,0,0]);}
+    for(let y of [-length*.33,0,length*.33])box(thick*3,.07,thick*2,aluminium,[side*sep,y,r*.1]);
+   }
+   for(let side of [-1,1]){cyl(r*.12,r*.12,.12,steel,-length*.5,20).rotation.z=Math.PI/2;cyl(r*.12,r*.12,.12,steel,length*.5,20).rotation.z=Math.PI/2;}
+   return;
+  }
+
   const separator=/separator|セパレーター/.test(nm);
   const enginePlate=/engine plate|エンジンプレート/.test(nm);
   const grip=/grip.?strip|grip.?pad|グリップ/.test(nm);
@@ -1718,7 +1744,8 @@ export function createPartModel(p,THREE){
  else if(type==='science')makeScience();
  else if(type==='decoupler'||type==='structural')makeDecoupler();
  else if(/rover-wheel|rover.*wheel|wheel.*rover/i.test(id)||(/wheel/i.test(name)&&/rover|rovermax|ローブマックス/i.test(name)))makeRoverWheel();
- else if(type==='gear'||type==='ground')makeGear();
+ else if(type==='ground')makeUtility();
+ else if(type==='gear')makeGear();
  else if(type==='intake')makeIntake();
  else if(type==='comm')makeComm();
  else if(type==='docking')makeDock();
