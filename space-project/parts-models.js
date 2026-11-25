@@ -2657,12 +2657,20 @@ export function createPartModel(p,THREE){
   const shell=painted(mk0?'#9da8a9':'#d9d9d0','#b68b4e',mk3?'MK3 ROCKET FUSELAGE':mk2?'MK2 AIRCRAFT FUSELAGE':mk1?'MK1 FUEL FUSELAGE':'MK0 FUEL FUSELAGE',name);
   if(mk2||mk3){
    // Mk2 is a flattened D-section; Mk3 is a wider rounded-rectangle fuselage section.
-   const shape=new THREE.Shape(),corner=Math.min(width,depth)*(mk2?.18:.16);
-   shape.moveTo(-width*.5+corner,-depth*.5);
-   shape.lineTo(width*.5-corner,-depth*.5);shape.quadraticCurveTo(width*.5,-depth*.5,width*.5,-depth*.5+corner);
-   shape.lineTo(width*.5,depth*.5-corner);shape.quadraticCurveTo(width*.5,depth*.5,width*.5-corner,depth*.5);
-   shape.lineTo(-width*.5+corner,depth*.5);shape.quadraticCurveTo(-width*.5,depth*.5,-width*.5,depth*.5-corner);
-   shape.lineTo(-width*.5,-depth*.5+corner);shape.quadraticCurveTo(-width*.5,-depth*.5,-width*.5+corner,-depth*.5);
+   const shape=new THREE.Shape(),corner=Math.min(width,depth)*.16;
+   if(mk2){
+    shape.moveTo(-width*.5,-depth*.34);shape.lineTo(width*.5,-depth*.34);
+    shape.quadraticCurveTo(width*.54,-depth*.05,width*.42,depth*.22);
+    shape.quadraticCurveTo(width*.3,depth*.53,0,depth*.56);
+    shape.quadraticCurveTo(-width*.3,depth*.53,-width*.42,depth*.22);
+    shape.quadraticCurveTo(-width*.54,-depth*.05,-width*.5,-depth*.34);
+   }else{
+    shape.moveTo(-width*.5+corner,-depth*.5);
+    shape.lineTo(width*.5-corner,-depth*.5);shape.quadraticCurveTo(width*.5,-depth*.5,width*.5,-depth*.5+corner);
+    shape.lineTo(width*.5,depth*.5-corner);shape.quadraticCurveTo(width*.5,depth*.5,width*.5-corner,depth*.5);
+    shape.lineTo(-width*.5+corner,depth*.5);shape.quadraticCurveTo(-width*.5,depth*.5,-width*.5,depth*.5-corner);
+    shape.lineTo(-width*.5,-depth*.5+corner);shape.quadraticCurveTo(-width*.5,-depth*.5,-width*.5+corner,-depth*.5);
+   }
    add(new THREE.ExtrudeGeometry(shape,{depth:length,bevelEnabled:true,bevelSegments:5,bevelSize:.035,bevelThickness:.035}),shell,[0,0,-length*.5]);
    // Reinforced end frames trace the non-circular stock cross-section.
    for(const z of [-length*.49,length*.49]){
