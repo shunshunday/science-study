@@ -710,7 +710,7 @@ export function createPartModel(p,THREE){
    // Radial chute canister: horizontal pressure capsule, flat attachment shoe and release latches.
    const can=lathe([[0,-bodyH*.5],[rad*.58,-bodyH*.5],[rad*.82,-bodyH*.38],[rad*.82,bodyH*.38],[rad*.58,bodyH*.5],[0,bodyH*.5]],canisterMat,64);
    can.rotation.z=Math.PI/2;
-   for(let y of [-bodyH*.36,bodyH*.36]){const ring=band(rad*.82,y,.035,gold);ring.rotation.z=Math.PI/2;}
+   for(let side of [-1,1])add(new THREE.TorusGeometry(rad*.82,.035,8,64),gold,[side*bodyH*.36,0,0],[0,Math.PI/2,0]);
    const plate=box(rad*1.1,bodyH*.92,.08,steel,[0,0,-rad*.78]);
    box(rad*.84,bodyH*.68,.04,dark,[0,0,-rad*.83]);
    for(let side of [-1,1]){box(rad*.12,bodyH*.84,.12,aluminium,[side*rad*.48,0,-rad*.84]);for(let j=0;j<4;j++)bolt(side*rad*.48,(j-1.5)*bodyH*.18,-rad*.91,.02,gold);}
