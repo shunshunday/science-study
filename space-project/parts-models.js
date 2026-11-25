@@ -155,34 +155,33 @@ export function createPartModel(p,THREE){
  const M=(color,metalness=.35,roughness=.48,extra={})=>new THREE.MeshStandardMaterial({color,metalness,roughness,...extra});
 
  const painted=(base,accent,word,serial=id.toUpperCase())=>{
-  const family=/rockomax|x200|mainsail|skipper/i.test(id+' '+name)?'rockomax':/kerbodyne|s3-|mammoth/i.test(id+' '+name)?'kerbodyne':/mk2|mk3/i.test(id+' '+name)?'mk-series':/nerv|nuclear/i.test(id+' '+name)?'nuclear':type;
-  const key='painted:'+family+':'+base+':'+accent+':'+word;
+  const brand=/rockomax|x200|mainsail|skipper|poodle/i.test(id+' '+name)?'ROCKOMAX':/kerbodyne|s3-|mammoth|nerv/i.test(id+' '+name)?'KERBODYNE':/mk2|mk3|c7/i.test(id+' '+name)?'C7 AEROSPACE':/probe|okto|hecs|qbe|stayputnik|probodobodyne/i.test(id+' '+name)?'PROBODOBODYNE':/engine|lv-|terrier|swivel|reliant|spark/i.test(id+' '+name)?'JEBEDIAH KERMAN\'S JUNKYARD':'SQUAD FLIGHT SYSTEMS';
+  const key='part-art:'+id+':'+base+':'+accent;
   let tex=PART_SKIN_CACHE.get(key);
   if(!tex){
-   const c=document.createElement('canvas');c.width=1024;c.height=512;const q=c.getContext('2d');
-   q.fillStyle=base;q.fillRect(0,0,1024,512);
-   const shade=q.createLinearGradient(0,0,0,512);shade.addColorStop(0,'rgba(255,255,255,.24)');shade.addColorStop(.45,'rgba(255,255,255,.015)');shade.addColorStop(1,'rgba(0,0,0,.25)');q.fillStyle=shade;q.fillRect(0,0,1024,512);
-   q.strokeStyle='rgba(32,43,48,.34)';q.lineWidth=3;
-   for(let x=28;x<1024;x+=128){q.beginPath();q.moveTo(x,18);q.lineTo(x,494);q.stroke();}
-   for(const y of [38,76,436,474]){q.beginPath();q.moveTo(0,y);q.lineTo(1024,y);q.stroke();}
-   for(let x=22;x<1024;x+=64){q.fillStyle='#c4cbc7';q.beginPath();q.arc(x,56,4,0,Math.PI*2);q.fill();q.fillStyle='#39464b';q.beginPath();q.arc(x,56,1.8,0,Math.PI*2);q.fill();}
-   q.fillStyle=accent;q.fillRect(0,94,1024,18);q.fillRect(0,402,1024,13);
-   q.fillStyle='#202b30';q.fillRect(78,148,430,158);q.strokeStyle=accent;q.lineWidth=8;q.strokeRect(78,148,430,158);
-   q.fillStyle='#f3f0e7';q.font='bold 54px Arial';q.fillText(word,104,218,380);
-   q.font='bold 25px Arial';q.fillText(family==='rockomax'?'ROCKOMAX INDUSTRIES':family==='kerbodyne'?'KERBODYNE':'KSP FLIGHT HARDWARE',104,260,380);
-   q.font='16px Arial';q.fillText('SERIES 01  /  FLIGHT READY',104,286,380);
-   q.fillStyle='#f2f0e8';q.font='bold 20px Arial';q.fillText('PRESSURE VESSEL  •  SERVICE PANEL',550,190);
-   q.font='18px Arial';q.fillText('INSPECT  /  LOCK  /  FLIGHT',550,226);
-   q.fillStyle='#202b30';q.fillRect(550,252,328,56);q.fillStyle=accent;
-   for(let i=0;i<18;i++)q.fillRect(560+i*17,262,10,36);
-   q.fillStyle='#202b30';q.font='bold 22px Arial';q.fillText('CAUTION',892,288);
-   q.save();q.translate(946,0);for(let y=120;y<392;y+=30){q.fillStyle=y%60? '#202b30':accent;q.fillRect(0,y,42,18);}q.restore();
-   for(let i=0;i<130;i++){const x=(i*137)%1024,y=(i*71)%512;q.fillStyle='rgba(20,30,35,.10)';q.fillRect(x,y,2,2);}
+   const c=document.createElement('canvas');c.width=512;c.height=256;const q=c.getContext('2d');
+   q.fillStyle=base;q.fillRect(0,0,512,256);
+   const grad=q.createLinearGradient(0,0,512,0);grad.addColorStop(0,'rgba(0,0,0,.24)');grad.addColorStop(.18,'rgba(255,255,255,.15)');grad.addColorStop(.52,'rgba(255,255,255,.02)');grad.addColorStop(.84,'rgba(0,0,0,.08)');grad.addColorStop(1,'rgba(0,0,0,.24)');q.fillStyle=grad;q.fillRect(0,0,512,256);
+   q.strokeStyle='rgba(25,36,41,.36)';q.lineWidth=2;
+   for(let x=18;x<512;x+=64){q.beginPath();q.moveTo(x,12);q.lineTo(x,244);q.stroke();}
+   for(const y of [18,34,220,238]){q.beginPath();q.moveTo(0,y);q.lineTo(512,y);q.stroke();}
+   for(let x=20;x<512;x+=32){for(const y of [26,230]){q.fillStyle='#d4d8d3';q.beginPath();q.arc(x,y,2,0,Math.PI*2);q.fill();}}
+   q.fillStyle=accent;q.fillRect(0,48,512,7);q.fillRect(0,202,512,7);
+   // Recessed equipment identification plate, manufacturer and part-specific marking.
+   q.fillStyle='#202a30';q.fillRect(28,78,270,92);q.strokeStyle=accent;q.lineWidth=3;q.strokeRect(28,78,270,92);
+   q.fillStyle='#f1f0e8';q.font='bold 16px Arial';q.fillText(brand,40,101,246);
+   q.font='bold 14px Arial';q.fillText(String(name).toUpperCase().slice(0,30),40,126,246);
+   q.fillStyle='#c7cfca';q.font='10px Arial';q.fillText(String(serial).toUpperCase().slice(0,34),40,146,246);
+   q.fillText('INSPECT  /  SERVICE PANEL',40,160,246);
+   // Stamped caution area, service hatches and fastener shadows.
+   q.fillStyle='#29343a';q.fillRect(326,82,150,76);q.strokeStyle='#c5ccc7';q.lineWidth=2;q.strokeRect(326,82,150,76);
+   q.fillStyle='#dce0d9';q.fillRect(338,94,116,5);q.fillRect(338,108,82,4);q.fillRect(338,121,102,4);
+   q.fillStyle=accent;for(let i=0;i<8;i++){q.beginPath();q.moveTo(338+i*15,137);q.lineTo(348+i*15,137);q.lineTo(338+i*15,153);q.lineTo(328+i*15,153);q.fill();}
+   for(let i=0;i<650;i++){const x=(i*73)%512,y=(i*139)%256;q.fillStyle=i%2?'rgba(255,255,255,.025)':'rgba(0,0,0,.035)';q.fillRect(x,y,1,1);}
    tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.wrapS=THREE.RepeatWrapping;tex.wrapT=THREE.ClampToEdgeWrapping;tex.anisotropy=8;PART_SKIN_CACHE.set(key,tex);
   }
   return M(0xffffff,.48,.58,{map:tex});
  };
-
  const ivory=M(0xd9d9d0,.42,.52),paint=M(0xe7e6dc,.28,.6),aluminium=M(0xaeb9bd,.82,.28),steel=M(0x59666d,.82,.34),dark=M(0x252f35,.68,.38),rubber=M(0x171b1e,.04,.91),gold=M(0xb68b4e,.72,.32),orange=M(0xc56b31,.35,.58),blue=M(0x28547c,.58,.3),glass=M(0x173f5c,.62,.14,{emissive:0x071a2c,emissiveIntensity:.22}),black=M(0x111a20,.45,.25);
  const add=(geo,mat,pos=[0,0,0],rot=[0,0,0],scale)=>{const o=new THREE.Mesh(geo,mat);o.position.set(...pos);o.rotation.set(...rot);if(scale)o.scale.set(...scale);o.castShadow=true;o.receiveShadow=true;g.add(o);return o;};
  const lathe=(profile,mat,segments=64,pos=[0,0,0])=>add(new THREE.LatheGeometry(profile.map(v=>new THREE.Vector2(v[0],v[1])),segments),mat,pos);
