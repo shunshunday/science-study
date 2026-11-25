@@ -347,10 +347,27 @@ export function createPartModel(p,THREE){
 
  };
  const makeGear=()=>{
-  const large=id.includes('large'),legR=large?.09:.06,spread=r*.72;
-  lathe([[0,-h*.42],[r*.42,-h*.42],[r*.52,-h*.25],[r*.42,h*.38],[r*.3,h*.44],[0,h*.44]],steel,32);
-  for(let side of [-1,1]){const x=side*spread; tube([[side*r*.25,h*.2,0],[x,h*.02,0],[side*r*.9,-h*.35,0]],legR,aluminium);tube([[side*r*.2,h*.12,0],[x*1.25,-h*.18,0],[x*1.25,-h*.43,0]],legR*.55,gold);makeRollingWheel(large?r*.42:r*.34,large?.2:.15,[side*r*.9,-h*.4,0],'aircraft');}
-  band(r*.5,h*.34,.04,gold);
+  const large=id.includes('large'),legR=large?.075:.052,spread=r*.72;
+  // Compact oleo strut housing with a reinforced mounting collar.
+  lathe([[0,-h*.42],[r*.34,-h*.42],[r*.48,-h*.28],[r*.48,h*.28],[r*.34,h*.42],[0,h*.42]],steel,40);
+  band(r*.49,h*.27,.035,gold);band(r*.49,-h*.27,.025,aluminium);
+  for(const side of [-1,1]){
+   const pivot=new THREE.Group();pivot.name='landing-gear-pivot';pivot.userData.side=side;pivot.position.set(side*spread*.28,-h*.02,0);g.add(pivot);
+   const strutPath=new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0,0,0),new THREE.Vector3(side*spread*.22,-h*.16,0),
+    new THREE.Vector3(side*spread*.55,-h*.40,0),new THREE.Vector3(side*spread*.70,-h*.61,0)
+   ]);
+   const main=new THREE.Mesh(new THREE.TubeGeometry(strutPath,24,legR,10,false),aluminium);main.castShadow=true;main.receiveShadow=true;pivot.add(main);
+   const bracePath=new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0,-h*.04,0),new THREE.Vector3(side*spread*.35,-h*.18,r*.16),
+    new THREE.Vector3(side*spread*.67,-h*.48,r*.16)
+   ]);
+   const brace=new THREE.Mesh(new THREE.TubeGeometry(bracePath,18,legR*.48,8,false),gold);brace.castShadow=true;pivot.add(brace);
+   const oleo=new THREE.Mesh(new THREE.CylinderGeometry(legR*.38,legR*.38,h*.25,16),steel);oleo.position.set(side*spread*.39,-h*.28,r*.025);oleo.rotation.z=-side*.62;pivot.add(oleo);
+   const wheel=makeRollingWheel(large?r*.34:r*.27,large?.17:.13,[side*spread*.70,-h*.61,0],'aircraft');
+   g.remove(wheel);pivot.add(wheel);
+   const fork=new THREE.Mesh(new THREE.TorusGeometry(large?r*.35:r*.28,legR*.42,8,48),gold);fork.rotation.y=Math.PI/2;fork.position.set(side*spread*.70,-h*.61,0);pivot.add(fork);
+  }
  };
  const makeIntake=()=>{
   const shock=id.includes('shock'),circular=id.includes('circular'),ram=id.includes('ram'),rad=r*.82;
