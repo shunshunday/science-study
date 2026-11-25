@@ -695,7 +695,7 @@ export function createPartModel(p,THREE){
   for(let i=0;i<8;i++){const x=span*(.12+i*.1);bolt(x,0,thickness*.78,.012,gold);}
  }; const makeSolar=()=>{
   const nm=(id+' '+name).toLowerCase();
-  const fixed=/ox-?/.test(nm)||/oxstat/.test(nm),circular=/10c/.test(nm),long=/1x6|1x5|4l|10l|sp-l/.test(nm),wide=/3x2|4w|sp-w/.test(nm);
+  const fixed=/\box-?\b|oxstat/.test(nm),circular=/10c/.test(nm),long=/1x6|1x5|4l|10l|sp-l/.test(nm),wide=/3x2|4w|sp-w/.test(nm);
   const gigantor=/gigantor|sp-xl/.test(nm),colossus=/colossus|sp-xxl/.test(nm),stat=/ox-?stat/.test(nm);
   const textureKey='solar-cells-ksp1-v1';
   let cellTexture=PART_SKIN_CACHE.get(textureKey);
