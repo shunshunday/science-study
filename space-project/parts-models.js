@@ -408,13 +408,14 @@ export function createPartModel(p,THREE){
   // A deprecated Mk2 lander can is catalogued as an engine for legacy compatibility;
   // keep its original capsule silhouette instead of drawing an engine nozzle.
   if(id==='legacy-mk2-lander'){makePod();return;}
-  const solid=type==='booster'||/solid booster|sepratron|bacc|rt-10|rt-5|thumper|hammer/.test(nm);
+  const solid=type==='booster'||/solid booster|sepratron|bacc|rt-10|rt-5|thumper|hammer|pollux/.test(nm);
+  const radialSolid=/mite|shrimp|sepratron/.test(nm),gimballedSolid=/thoroughbred|clydesdale/.test(nm),pollux=/pollux/.test(nm);
   const rcs=/rcs|place-anywhere|vernor|vernier|puff|rv-1|cub|カブ|バーニア/.test(nm),puff=/puff|o-10/.test(nm),cub=/rv-1|cub|カブ|バーニア/.test(nm),turboshaft=/r121|r7000|turboshaft|ターボシャフト/.test(nm);
   const jet=type==='jet'||id.startsWith('jet-'),ion=id.includes('ion')||id.includes('dawn'),nuclear=id.includes('nerv'),dart=id.includes('dart')||/aerospike/.test(nm),vector=id.includes('vector'),mammoth=id.includes('mammoth'),twin=id.includes('twinboar'),spider=id.includes('spider'),thud=id.includes('thud'),poodle=id.includes('poodle'),rapier=id.includes('rapier'),terrier=/terrier|lv-909/.test(nm),swivel=/swivel|lv-t45/.test(nm),reliant=/reliant|lv-t30/.test(nm),wolfhound=/wolfhound/.test(nm),cheetah=/cheetah/.test(nm),skiff=/skiff/.test(nm),mainsail=/mainsail/.test(nm),juno=/juno/.test(nm),wheesley=/wheesley/.test(nm),panther=/panther/.test(nm),goliath=/goliath/.test(nm),mastodon=/mastodon/.test(nm),rhino=/rhino/.test(nm),bobcat=/bobcat/.test(nm),kodiak=/kodiak/.test(nm),skipper=/skipper/.test(nm),ant=/\bant\b/.test(nm),spark=/spark/.test(nm),twitch=/twitch/.test(nm);
   if(solid){
    // Solid boosters: long pressure casing, domed head, hazard band, aft nozzle and radial mounting shoes.
    const canvas=document.createElement('canvas');canvas.width=512;canvas.height=256;const q=canvas.getContext('2d');
-   q.fillStyle='#d4d5cf';q.fillRect(0,0,512,256);
+   q.fillStyle=pollux?'#aeb8b6':gimballedSolid?'#c8ceca':'#d4d5cf';q.fillRect(0,0,512,256);
    const grad=q.createLinearGradient(0,0,512,0);grad.addColorStop(0,'rgba(0,0,0,.2)');grad.addColorStop(.25,'rgba(255,255,255,.14)');grad.addColorStop(.7,'rgba(255,255,255,.02)');grad.addColorStop(1,'rgba(0,0,0,.2)');q.fillStyle=grad;q.fillRect(0,0,512,256);
    q.fillStyle='#252c30';q.fillRect(0,196,512,60);
    for(let x=-48;x<560;x+=64){q.save();q.translate(x,0);q.rotate(-.48);q.fillStyle='#e2b64b';q.fillRect(0,184,28,100);q.restore();}
@@ -430,7 +431,38 @@ export function createPartModel(p,THREE){
    add(new THREE.TorusGeometry(r*.38,.035,10,48),gold,[0,-h*.58,0],[Math.PI/2,0,0]);
    add(new THREE.CircleGeometry(r*.27,40),black,[0,-h*.675,0],[Math.PI/2,0,0]);
    for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(r*.99,-h*.31,h*.27,a,steel,.018);bolt(Math.cos(a)*r*.99,-h*.4,Math.sin(a)*r*.99,.02,gold);}
-   for(let i=0;i<4;i++){const a=i*Math.PI/2,x=Math.cos(a)*r*.98,z=Math.sin(a)*r*.98;box(r*.34,h*.16,r*.22,aluminium,[x,-h*.1,z],[0,-a,0]);bolt(x,-h*.1,z,.035,gold);}
+   if(radialSolid){
+    // Mite, Shrimp and Sepratron are radial-mounted motors with side shoes, not stack-only SRBs.
+    const mounts=/sepratron/.test(nm)?1:2;
+    for(let i=0;i<mounts;i++){
+     const side=mounts===1?1:(i===0?-1:1),x=side*r*.98,z=r*.18;
+     box(r*.34,h*.22,r*.2,aluminium,[x,-h*.08,z],[0,0,side*.08]);
+     box(r*.42,.12,r*.24,steel,[x,-h*.32,z]);
+     for(let j=0;j<3;j++)bolt(x,(j-1)*h*.18,z+r*.12,.02,gold);
+     tube([[side*r*.84,-h*.34,z],[side*r*1.14,-h*.18,z],[side*r*.84,h*.28,z]],.025,orange);
+    }
+   }else{
+    // Axial stack-mounted SRBs have reinforced top/bottom attachment collars.
+    for(let y of [-h*.52,h*.52]){
+     add(new THREE.TorusGeometry(r*.72,.055,12,56),aluminium,[0,y,0],[Math.PI/2,0,0]);
+     for(let i=0;i<8;i++){const a=i*Math.PI/4;bolt(r*.72*Math.cos(a),y,r*.72*Math.sin(a),.022,gold);}
+    }
+   }
+   if(gimballedSolid){
+    // S2-17 / S2-33 use a movable nozzle: spherical bearing ring and paired hydraulic actuators.
+    add(new THREE.TorusGeometry(r*.42,.075,14,64),gold,[0,-h*.49,0],[Math.PI/2,0,0]);
+    add(new THREE.TorusGeometry(r*.32,.045,10,56),steel,[0,-h*.53,0],[Math.PI/2,0,0]);
+    for(let side of [-1,1]){
+     tube([[side*r*.5,-h*.34,0],[side*r*.68,-h*.52,r*.18],[side*r*.42,-h*.68,r*.18]],.035,aluminium);
+     tube([[side*r*.42,-h*.32,0],[side*r*.55,-h*.48,-r*.18],[side*r*.34,-h*.66,-r*.18]],.022,gold);
+    }
+   }
+   if(pollux){
+    for(let y of [-h*.3,h*.3])band(r*.99,y,.045,orange);
+    for(let i=0;i<16;i++){const a=i*Math.PI/8;radialPipe(r*.99,-h*.26,h*.26,a,steel,.024);}
+    box(r*.64,h*.18,.05,dark,[0,0,r*.92]);
+    box(r*.48,h*.1,.025,ivory,[0,0,r*.95]);
+   }
   }else if(rcs){
    // RCS units are compact multi-axis nozzle blocks, not liquid rocket engines.
    if(cub){
