@@ -706,7 +706,7 @@ export function createPartModel(p,THREE){
  };
  const makePod=()=>{
   const inline=id.includes('inline'),lander=id.includes('lander'),cupola=id.includes('cupola'),mk2=id.includes('mk2'),mk3=id.includes('mk3'),mk13=id.includes('mk13')||/mk1-3|mk1 3/.test((id+' '+name).toLowerCase()),seat=id==='seat',aircraft=id.includes('aircraft');
-  const crewCabin=/^crew-|crew cabin|crew container|乗員収容|客室/.test(id+' '+name.toLowerCase());
+  const crewCabin=/^crew-|crew cabin|crew container|乗員収容|客室|ppd-?10|hitchhiker|ヒッチハイカー/.test(id+' '+name.toLowerCase());
   const kv=/mh-kv[123]|onion|pomegranate|ピー/.test(id+' '+name.toLowerCase());
   const mem=/munar|mem/.test(id+' '+name.toLowerCase());
   const command=/command|コマンドポッド|mk1 pod/.test(id+' '+name.toLowerCase())||mk13;
