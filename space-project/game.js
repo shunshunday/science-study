@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {createPartModel} from './parts-models.js?v=20261125-stock-jet-routing-reference-pass-30';
+import {createPartModel} from './parts-models.js?v=20261125-mk1-pod-window-reference-pass-31';
 import {additionalParts} from './parts-inventory.js?v=20261124-rollback-01';
 import {BODY,G0,gravityAcceleration,atmosphericDensity,orbitalElements,rk4Step,deltaV,rocketMassKg} from './physics/orbital.js';
 import {aerodynamicAcceleration} from './physics/aerodynamics.js';
