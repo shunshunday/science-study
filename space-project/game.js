@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {createPartModel} from './parts-models.js?v=20261126-smooth-stock-surfaces-04';
+import {createPartModel} from './parts-models.js?v=20261126-all-textured-materials-03';
 import {additionalParts} from './parts-inventory.js?v=20261124-rollback-01';
 import {BODY,G0,gravityAcceleration,atmosphericDensity,orbitalElements,rk4Step,deltaV,rocketMassKg} from './physics/orbital.js';
 import {aerodynamicAcceleration} from './physics/aerodynamics.js';
@@ -589,7 +589,7 @@ function drawPartsCatalogV2(){
  let items=catalog.filter(p=>(activePartCategory==='すべて'||categoryFor(p)===activePartCategory)&&(!query||(p.name+' '+p.id+' '+categoryFor(p)).toLowerCase().includes(query)));
  items.sort((a,b)=>sort==='mass'?a.mass-b.mass:sort==='cost'?a.cost-b.cost:sort==='size'?a.height-b.height:a.name.localeCompare(b.name,'ja'));
  $('#part-result-count').textContent=items.length+' 件';
- $('#part-list').innerHTML=items.map(p=>{const unlocked=gameMode==='sandbox'||unlockedTech.has(p.tech||'basic'),esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const sourceLabel=p.catalogSource==='Making History'?'MAKING HISTORY':p.catalogSource==='Breaking Ground'?'BREAKING GROUND':p.catalogSource==='stock'?'STOCK':'BASE';return '<button class="part" draggable="false" data-part="'+p.id+'" aria-label="'+esc(p.name)+'" '+(unlocked?'':'disabled')+' data-tip="'+esc(partHoverInfo(p))+'"><span class="part-icon"></span></button>';}).join('');renderPartPreviews(items);
+ $('#part-list').innerHTML=items.map(p=>{const unlocked=gameMode==='sandbox'||unlockedTech.has(p.tech||'basic'),esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const sourceLabel=p.catalogSource==='Making History'?'MAKING HISTORY':p.catalogSource==='Breaking Ground'?'BREAKING GROUND':p.catalogSource==='stock'?'STOCK':'BASE';return '<button class="part" draggable="true" data-part="'+p.id+'" aria-label="'+esc(p.name)+'" '+(unlocked?'':'disabled')+' data-tip="'+esc(partHoverInfo(p))+'"><span class="part-icon"></span></button>';}).join('');renderPartPreviews(items);
 }
 
 const techTree=[
@@ -774,7 +774,6 @@ $('#part-search').addEventListener('input',drawPartsCatalogV2);$('#part-sort').a
   const b=e.target.closest('button[data-part]');
   if(!b||b.disabled||mode!=='vab'||flight||(e.pointerType==='mouse'&&e.button!==0))return;
   catalogPointerDrag={id:b.dataset.part,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,moved:false};
-  try{b.setPointerCapture(e.pointerId);}catch(_){}
  });
  document.addEventListener('pointermove',e=>{
   if(!catalogPointerDrag||e.pointerId!==catalogPointerDrag.pointerId)return;
@@ -788,8 +787,7 @@ $('#part-search').addEventListener('input',drawPartsCatalogV2);$('#part-sort').a
   const drag=catalogPointerDrag;catalogPointerDrag=null;document.body.classList.remove('part-dragging','part-drag-over');
   if(!drag.moved)return;
   const rect=renderer.domElement.getBoundingClientRect();
-  const inside=e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom;
-  if(mode==='vab'&&!flight&&inside)placePartAtScreen(drag.id,e.clientX,e.clientY);
+  if(mode==='vab'&&!flight&&e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom)placePartAtScreen(drag.id,e.clientX,e.clientY);
  });
  document.addEventListener('pointercancel',()=>{catalogPointerDrag=null;document.body.classList.remove('part-dragging','part-drag-over');});
  renderer.domElement.addEventListener('pointerenter',()=>{if(catalogPointerDrag?.moved)document.body.classList.add('part-drag-over');});
