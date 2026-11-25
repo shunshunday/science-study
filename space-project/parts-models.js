@@ -323,8 +323,8 @@ export function createPartModel(p,THREE){
     const count=/place-anywhere 7/.test(nm)?7:1;
     const cols=count===7?3:1,rows=count===7?3:1;
     for(let i=0;i<count;i++){
-     const x=count===7?(i%cols-1)*bodyW*.23:0,z=count===7?(Math.floor(i/cols)-1)*bodyW*.22:bodyW*.45;
-     nozzle([x,-bodyH*.35,z],[0,0,0],count===7?.52:1);
+     const x=count===7?(i%cols-1)*bodyW*.23:0,y=count===7?(Math.floor(i/cols)-1)*bodyW*.22:0,z=bodyW*.45;
+     nozzle([x,y,z],[Math.PI/2,0,0],count===7?.52:1);
     }
     box(bodyW*.9,.09,bodyW*.82,aluminium,[0,bodyH*.4,0]);
     for(let side of [-1,1])bolt(side*bodyW*.38,bodyH*.45,bodyW*.3,.02,gold);
