@@ -267,7 +267,7 @@ export function createPartModel(p,THREE){
   const nm=(id+' '+name).toLowerCase();
   const solid=type==='booster'||/solid booster|sepratron|bacc|rt-10|rt-5|thumper|hammer/.test(nm);
   const rcs=/rcs|place-anywhere|vernor|vernier|puff/.test(nm),puff=/puff|o-10/.test(nm),turboshaft=/r121|r7000|turboshaft|ターボシャフト/.test(nm);
-  const jet=type==='jet'||id.startsWith('jet-'),ion=id.includes('ion')||id.includes('dawn'),nuclear=id.includes('nerv'),dart=id.includes('dart')||/aerospike/.test(nm),vector=id.includes('vector'),mammoth=id.includes('mammoth'),twin=id.includes('twinboar'),spider=id.includes('spider'),thud=id.includes('thud'),poodle=id.includes('poodle'),rapier=id.includes('rapier'),terrier=/terrier|lv-909/.test(nm),swivel=/swivel|lv-t45/.test(nm),reliant=/reliant|lv-t30/.test(nm),wolfhound=/wolfhound/.test(nm),cheetah=/cheetah/.test(nm),skiff=/skiff/.test(nm),mainsail=/mainsail/.test(nm),juno=/juno/.test(nm),wheesley=/wheesley/.test(nm),panther=/panther/.test(nm),goliath=/goliath/.test(nm);
+  const jet=type==='jet'||id.startsWith('jet-'),ion=id.includes('ion')||id.includes('dawn'),nuclear=id.includes('nerv'),dart=id.includes('dart')||/aerospike/.test(nm),vector=id.includes('vector'),mammoth=id.includes('mammoth'),twin=id.includes('twinboar'),spider=id.includes('spider'),thud=id.includes('thud'),poodle=id.includes('poodle'),rapier=id.includes('rapier'),terrier=/terrier|lv-909/.test(nm),swivel=/swivel|lv-t45/.test(nm),reliant=/reliant|lv-t30/.test(nm),wolfhound=/wolfhound/.test(nm),cheetah=/cheetah/.test(nm),skiff=/skiff/.test(nm),mainsail=/mainsail/.test(nm),juno=/juno/.test(nm),wheesley=/wheesley/.test(nm),panther=/panther/.test(nm),goliath=/goliath/.test(nm),mastodon=/mastodon/.test(nm),rhino=/rhino/.test(nm),bobcat=/bobcat/.test(nm),kodiak=/kodiak/.test(nm),skipper=/skipper/.test(nm),ant=/\bant\b/.test(nm),spark=/spark/.test(nm),twitch=/twitch/.test(nm);
   if(solid){
    // Solid boosters: long pressure casing, domed head, hazard band, aft nozzle and radial mounting shoes.
    const canvas=document.createElement('canvas');canvas.width=512;canvas.height=256;const q=canvas.getContext('2d');
@@ -414,7 +414,7 @@ export function createPartModel(p,THREE){
    add(new THREE.TorusGeometry(r*.4,.055,12,48),gold,[0,h*.23,0]);add(new THREE.CircleGeometry(r*.36,48),blue,[0,h*.25,0]);
    for(let i=0;i<6;i++){const a=i*Math.PI/3;box(.055,h*.42,.055,aluminium,[Math.cos(a)*r*.53,h*.05,Math.sin(a)*r*.53]);}
   }else{
-   const cluster=mammoth?4:twin?2:spider?4:1,bodyR=r*(mammoth?1.02:twin?.9:wolfhound?.94:cheetah?.72:skiff?.76:.82);
+   const cluster=mammoth?4:twin?2:spider?4:1,bodyR=r*(mammoth?1.02:mastodon?1.1:rhino?1.08:twin?.9:wolfhound?.94:skiff?.88:skipper?.9:mainsail?.95:bobcat?.86:kodiak?.8:cheetah?.72:ant?.5:spark?.56:twitch?.58:.82);
    lathe([[0,-h*.12],[bodyR*.78,-h*.12],[bodyR,-h*.05],[bodyR,h*.28],[bodyR*.88,h*.38],[bodyR*.62,h*.4],[0,h*.4]],painted(nuclear?'#6f7777':'#d9d9d0',nuclear?'#c56b31':'#b68b4e',nuclear?'NUCLEAR PROPULSION':'ROCKET ENGINE'),64);
    band(bodyR,h*.28,.045,steel);band(bodyR,-h*.06,.045,gold);
    if(nuclear){lathe([[r*.18,-h*.48],[r*.28,-h*.45],[r*.38,-h*.12],[r*.4,h*.04],[r*.34,h*.08],[r*.22,h*.08]],gold,48);for(let i=0;i<16;i++){const a=i*Math.PI/8;radialPipe(bodyR*1.05,-h*.08,h*.24,a,steel,.035);}band(bodyR*1.04,h*.22,.06,orange);}
@@ -428,7 +428,7 @@ export function createPartModel(p,THREE){
    }
    else{
     for(let k=0;k<cluster;k++){
-     const a=k*Math.PI*2/cluster,x=cluster===1?0:Math.cos(a)*r*.38,z=cluster===1?0:Math.sin(a)*r*.38,nr=cluster===4?r*.34:cluster===2?r*.42:terrier?r*.72:poodle?r*.82:wolfhound?r*.9:cheetah?r*.56:skiff?r*.62:mainsail?r*.78:r*.68;
+     const a=k*Math.PI*2/cluster,x=cluster===1?0:Math.cos(a)*r*.38,z=cluster===1?0:Math.sin(a)*r*.38,nr=cluster===4?r*.34:cluster===2?r*.42:terrier?r*.72:poodle?r*.82:rhino?r*1.08:mastodon?r*.96:wolfhound?r*.9:skiff?r*.92:skipper?r*.84:mainsail?r*.82:bobcat?r*.78:kodiak?r*.7:cheetah?r*.62:ant?r*.42:spark?r*.48:twitch?r*.5:r*.68;
      const profile=[[nr*.22,-h*.58],[nr*.3,-h*.55],[nr*.48,-h*.4],[nr*.72,-h*.2],[nr*.92,-h*.06],[nr,-h*.025],[nr*.94,-h*.0],[nr*.82,-h*.04],[nr*.68,-h*.13],[nr*.48,-h*.34],[nr*.3,-h*.52],[nr*.22,-h*.58]];
      lathe(profile,steel,48,[x,0,z]);
      const throat=add(new THREE.CircleGeometry(nr*.56,32),black,[x,-h*.565,z],[Math.PI/2,0,0]);
@@ -475,6 +475,34 @@ export function createPartModel(p,THREE){
    }
    if(mainsail){for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(bodyR*1.06,-h*.12,h*.25,a,orange,.03);}}
    if(wolfhound||cheetah||skiff){for(let i=0;i<10;i++){const a=i*Math.PI/5;radialPipe(bodyR*1.02,-h*.1,h*.28,a,aluminium,.018);}}
+   if(mastodon){
+    // KE-1 Mastodon: huge F-1-style single bell, heavy turbopump casing and thick feed lines.
+    for(let y of [-h*.42,-h*.24,h*.16,h*.34])band(bodyR*(y>0?1.02:1.08),y,.055,y<0?steel:gold);
+    for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(bodyR*1.02,-h*.28,h*.26,a,orange,.035);}
+    for(let side of [-1,1])tube([[side*bodyR*.78,h*.24,0],[side*bodyR*.94,-h*.02,bodyR*.2],[side*bodyR*.68,-h*.35,bodyR*.2]],.055,steel);
+   }
+   if(rhino){
+    // KR-2L+ Rhino: deep vacuum bell with an extended cooling skirt and four hydraulic braces.
+    band(nr*1.04,-h*.38,.06,gold);band(nr*.92,-h*.08,.04,steel);
+    for(let i=0;i<16;i++){const a=i*Math.PI/8;radialPipe(nr*.98,-h*.38,h*.28,a,aluminium,.025);}
+    for(let i=0;i<4;i++){const a=i*Math.PI/2,x=Math.cos(a)*bodyR*.86,z=Math.sin(a)*bodyR*.86;tube([[x,h*.28,z],[x*1.1,-h*.02,z*1.1],[x*.7,-h*.42,z*.7]],.05,gold);}
+   }
+   if(bobcat){
+    for(let i=0;i<10;i++){const a=i*Math.PI/5;radialPipe(bodyR*.98,-h*.28,h*.32,a,aluminium,.025);}
+    for(let y of [-h*.34,h*.3])band(bodyR*.98,y,.04,orange);
+   }
+   if(kodiak){
+    for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(bodyR*.94,-h*.22,h*.2,a,steel,.028);}
+    band(bodyR*.98,h*.22,.045,gold);box(bodyR*1.5,.12,bodyR*1.35,steel,[0,h*.38,0]);
+   }
+   if(skipper){
+    for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(bodyR*.98,-h*.32,h*.28,a,aluminium,.022);}
+    band(bodyR*.96,-h*.28,.05,gold);
+   }
+   if(ant||spark||twitch){
+    for(let i=0;i<6;i++){const a=i*Math.PI/3;radialPipe(bodyR*.9,-h*.18,h*.22,a,steel,.016);}
+    band(bodyR*.92,h*.24,.025,gold);
+   }
    if(thud){
     // Thud is a radial engine; rotate the complete assembly to its side mount.
     const sideGroup=new THREE.Group();const children=[...g.children];for(const child of children){g.remove(child);sideGroup.add(child);}sideGroup.rotation.z=Math.PI/2;g.add(sideGroup);
