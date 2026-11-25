@@ -144,14 +144,26 @@ const hangar=new THREE.Group();hangar.scale.set(.0018,.0022,.0018);scene.add(han
 
 const hangarCrewGroup=new THREE.Group();hangar.add(hangarCrewGroup);
 const hangarMat=(color,metalness=.45,roughness=.72)=>new THREE.MeshStandardMaterial({color,metalness,roughness});
-const steel=hangarMat(0x657782,.72,.62),steelLight=hangarMat(0xb1bdc1,.68,.48),darkSteel=hangarMat(0x34434b,.62,.58),yellow=hangarMat(0xc5c9c5,.28,.72),floorMat=hangarMat(0x777f80,.12,.96);
+const steel=hangarMat(0x657782,.72,.62),steelLight=hangarMat(0xb1bdc1,.68,.48),darkSteel=hangarMat(0x34434b,.62,.58),yellow=hangarMat(0xc5c9c5,.28,.72);
+const concreteCanvas=document.createElement('canvas');concreteCanvas.width=256;concreteCanvas.height=256;
+const concreteCtx=concreteCanvas.getContext('2d'),concretePixels=concreteCtx.createImageData(256,256);
+for(let i=0;i<concretePixels.data.length;i+=4){const n=112+Math.floor(Math.random()*30);concretePixels.data[i]=n;concretePixels.data[i+1]=n+2;concretePixels.data[i+2]=n+3;concretePixels.data[i+3]=255;}
+concreteCtx.putImageData(concretePixels,0,0);
+const concreteTexture=new THREE.CanvasTexture(concreteCanvas);concreteTexture.wrapS=concreteTexture.wrapT=THREE.RepeatWrapping;concreteTexture.repeat.set(10,12);concreteTexture.colorSpace=THREE.SRGBColorSpace;
+const floorMat=new THREE.MeshStandardMaterial({color:0xb0b0aa,map:concreteTexture,roughness:.98,metalness:0});
 function hBox(w,h,d,x,y,z,mat,parent=hangar){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
 function hBeam(a,b,r=.42,mat=steel){const va=new THREE.Vector3(...a),vb=new THREE.Vector3(...b),d=vb.clone().sub(va),m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,d.length(),6),mat);m.position.copy(va.add(vb).multiplyScalar(.5));m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());m.castShadow=true;hangar.add(m);}
 hBox(230,.8,270,0,-.65,0,floorMat);
-/* Broad poured-concrete floor: only a few expansion joints, no distracting tile grid. */
-const floorJoint=hangarMat(0x646d70,.04,.98),floorMark=hangarMat(0xc4c8c2,.02,.9);
+/* Concrete floor with restrained joints, painted safety lanes and assembly-bay markings. */
+const floorJoint=hangarMat(0x646d70,.02,.99),floorWhite=hangarMat(0xd9d8ce,.02,.88),floorYellow=hangarMat(0xd1a12e,.08,.82),floorStencil=hangarMat(0x929895,.02,.95);
 hBox(.12,.012,258,0,-.244,0,floorJoint);hBox(220,.012,.12,0,-.244,-64,floorJoint);hBox(220,.012,.12,0,-.244,64,floorJoint);
-hBox(1.1,.018,48,-15,-.232,0,floorMark);hBox(1.1,.018,48,15,-.232,0,floorMark);
+for(const [cx,cz,w,d] of [[0,0,76,104],[-69,37,42,54],[69,-35,42,62]]){
+ hBox(w,.022,1.15,cx,-.224,cz-d/2,floorWhite);hBox(w,.022,1.15,cx,-.224,cz+d/2,floorWhite);
+ hBox(1.15,.022,d,cx-w/2,-.224,cz,floorWhite);hBox(1.15,.022,d,cx+w/2,-.224,cz,floorWhite);
+}
+hBox(7,.025,68,-49,-.218,2,floorYellow);hBox(7,.025,68,49,-.218,-4,floorYellow);
+hBox(30,.025,1.2,0,-.218,-58,floorYellow);hBox(30,.025,1.2,0,-.218,58,floorYellow);
+for(const [x,z] of [[-78,-58],[78,58],[-78,58],[78,-58]])hBox(13,.012,8,x,-.231,z,floorStencil);
 for(let y of [18,48,78,108,138,150]){
  hBeam([-112,y,-95],[112,y,-95],.9,steelLight);
  hBeam([-112,y,95],[112,y,95],.9,steelLight);
@@ -225,31 +237,36 @@ for(const x of [-64,64])for(const z of [-82,82]){
  }
  hBox(5,3.2,4,x,3.3,z,glassMat);
 }
-/* KSP1-inspired continuous VAB cladding. Panels sit flush with the steel frame:
-   solid lower/upper bands, a continuous glazed clerestory, and a clear rear door. */
+/* KSP1-inspired VAB envelope: flush wall skins, X-braced panels and a full-width lift door. */
 const vabGlass=new THREE.MeshStandardMaterial({color:0x7898a6,metalness:.22,roughness:.3,transparent:true,opacity:.48,side:THREE.DoubleSide,depthWrite:false});
-const vabWall=hangarMat(0x59666d,.42,.78),vabDoor=hangarMat(0xb28a36,.38,.62);
-for(const side of [-1,1]){
- // Continuous lower wall and upper wall close the gaps between the structural columns.
- hBox(.9,76,184,side*111.2,39,0,vabWall);
- hBox(.9,35,184,side*111.2,132.5,0,vabWall);
- // One uninterrupted window band; thin mullions are coplanar with the glazing.
- hBox(.55,34,184,side*110.65,94,0,vabGlass);
- for(let z=-92;z<=92;z+=23)hBox(.8,34,.65,side*110.15,94,z,steelLight);
- hBox(.8,1,184,side*110.15,77,0,steelLight);
- hBox(.8,1,184,side*110.15,111,0,steelLight);
+const vabWall=hangarMat(0x59666d,.42,.78),vabDoor=hangarMat(0xb28a36,.38,.62),vabBrace=hangarMat(0x3e4b52,.48,.72),vabSeam=hangarMat(0x77838a,.42,.72);
+function hWallBrace(a,b){
+ const va=new THREE.Vector3(...a),vb=new THREE.Vector3(...b),delta=vb.clone().sub(va),length=delta.length();
+ const brace=new THREE.Mesh(new THREE.BoxGeometry(length,.72,.24),vabBrace);
+ brace.position.copy(va.add(vb).multiplyScalar(.5));brace.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),delta.normalize());
+ brace.castShadow=true;brace.receiveShadow=true;hangar.add(brace);
 }
-// Rear facade: continuous wall around a broad segmented yellow lift door.
-hBox(224,150,1.1,0,75,-96,vabWall);
-hBox(92,132,1.25,0,69,-96,vabDoor);
+for(const side of [-1,1]){
+ const face=side*110.67;
+ hBox(.9,76,184,side*111.2,39,0,vabWall);hBox(.9,35,184,side*111.2,132.5,0,vabWall);
+ hBox(.55,34,184,side*110.65,94,0,vabGlass);
+ for(let z=-92;z<=92;z+=23)hBox(.28,34,.48,side*110.67,94,z,steelLight);
+ hBox(.28,.65,184,side*110.67,77,0,steelLight);hBox(.28,.65,184,side*110.67,111,0,steelLight);
+ for(let z=-80;z<=80;z+=23){
+  hWallBrace([face,5,z-10],[face,72,z+10]);hWallBrace([face,5,z+10],[face,72,z-10]);
+  hBox(.26,.55,19,side*110.67,5,z,vabSeam);
+  hWallBrace([face,116,z-10],[face,148,z+10]);hWallBrace([face,116,z+10],[face,148,z-10]);
+ }
+}
+hBox(224,150,1.1,0,75,-96,vabWall);hBox(92,132,1.25,0,69,-96,vabDoor);
 for(let x=-42;x<=42;x+=14)hBox(1.1,128,1.5,x,69,-95.2,steelLight);
 for(let y=13;y<=125;y+=16)hBox(90,.75,1.5,0,y,-95.2,steelLight);
-// Roof glazing stays level with the roof trusses (no angled panes sticking out).
-for(let z=-77;z<=55;z+=44)for(const side of [-1,1]){
- const pane=new THREE.Mesh(new THREE.BoxGeometry(34,.35,28),vabGlass);
- pane.position.set(side*54,151.2,z);hangar.add(pane);
+for(const side of [-1,1])for(let x=side<0?-108:94;side<0?x<=-48:x<=108;x+=20){
+ hWallBrace([x,8,-95.15],[x+18,68,-95.15]);hWallBrace([x,8,-95.15],[x-2,68,-95.15]);
 }
-
+hBox(224,22,.5,0,137,-95.25,vabGlass);
+for(let x=-105;x<=105;x+=21)hBox(.35,22,.8,x,137,-95.1,steelLight);
+for(let z=-77;z<=55;z+=44)for(const side of [-1,1]){const pane=new THREE.Mesh(new THREE.BoxGeometry(34,.35,28),vabGlass);pane.position.set(side*54,151.2,z);hangar.add(pane);}
 const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);const parts=[],debrisAssemblies=[];let mode='vab',gameMode='career',aircraftCraft=false,funds=25000,fundsUnlimited=true,science=0,stage=0,assemblyStage=0,stageUiFuelPercent=-1,throttle=0,flight=false,flightPeakAltitude=0,paused=false,sasEnabled=false,rcsEnabled=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
 const catalog=[
 {id:'pod',name:'Mk1 コマンドポッド',type:'pod',tech:'basic',mass:0.84,cost:600,crew:1,icon:'◉',height:2,radius:.9},
@@ -579,10 +596,12 @@ function rebuildHangarCrew(){
   }
   occupied.push(point.clone());return point;
  };
- crewMembers.forEach((member,index)=>{
+ const ambientWorkers=Array.from({length:7},(_,i)=>({id:100+i,name:'整備作業員 '+(i+1),role:'整備士',level:1}));
+ [...crewMembers,...ambientWorkers].forEach((member,index)=>{
   const figure=makeCrewFigure(member,index),point=randomPoint();
+  figure.scale.multiplyScalar(index<crewMembers.length?.66:.56);
   figure.position.copy(point);figure.rotation.y=Math.random()*Math.PI*2;
-  const startWalking=Math.random()<.7;figure.userData.hangarWalk={target:randomPoint(),mode:startWalking?'walk':'think',wait:Math.random()*2.5,phase:Math.random()*Math.PI*2,pauseIn:4+Math.random()*14,index};
+  const startWalking=Math.random()<.82;figure.userData.hangarWalk={target:randomPoint(),mode:startWalking?'walk':'think',wait:Math.random()*2.5,phase:Math.random()*Math.PI*2,pauseIn:4+Math.random()*14,index};
   hangarCrewGroup.add(figure);
  });
 }
