@@ -1235,11 +1235,89 @@ export function createPartModel(p,THREE){
  else if(type==='thermal')makeThermal();
  else if(type==='utility')makeUtility();
  else if(type==='robotics'||type==='rotor-blade'){
-  const rotor=type==='rotor-blade'||id.includes('rotor'),servo=/servo|サーボ/i.test(name),hinge=/hinge|ヒンジ/i.test(name);
-  if(rotor){cyl(r*.28,r*.28,h*.3,steel);cyl(r*.12,r*.12,h*.8,gold,h*.5);for(let i=0;i<3;i++){const a=i*Math.PI*2/3;const blade=box(r*2.1,.06,Math.max(.14,h*.3),ivory,[Math.cos(a)*r,h*.68,Math.sin(a)*r],[0,-a,0]);blade.rotation.z=.025;}}
-  else if(servo){lathe([[0,-h*.4],[r*.6,-h*.4],[r*.7,h*.35],[r*.5,h*.4],[0,h*.4]],steel,32);tube([[r*.5,h*.2,0],[r*1.15,h*.35,0],[r*1.3,h*.68,0]],.055,aluminium);sphere(.12,gold,[r*1.3,h*.68,0]);}
-  else if(hinge){cyl(r*.62,r*.62,h*.5,steel);cyl(r*.3,r*.3,h*.95,gold,h*.1);for(let x of [-1,1])box(.12,h*.45,.12,aluminium,[x*r*.58,h*.35,0]);}
-  else{lathe([[0,-h*.4],[r*.72,-h*.4],[r*.8,h*.35],[r*.62,h*.4],[0,h*.4]],ivory,32);band(r*.75,h*.3,.04,gold);for(let i=0;i<4;i++){const a=i*Math.PI/2;bolt(Math.cos(a)*r*.7,h*.2,Math.sin(a)*r*.7,.05);}}
+  const nm=(id+' '+name).toLowerCase();
+  const rotor=type==='rotor-blade'||id.includes('rotor'),servo=/servo|サーボ/.test(nm),hinge=/hinge|ヒンジ/.test(nm),piston=/piston|cylinder|油圧シリンダー/.test(nm),controller=/kal|controller|コントローラー/.test(nm);
+  const nested=/nested|入れ子/.test(nm),alligator=/alligator|アリゲーター/.test(nm),large=/64|25|g32|3p6|large|重量/.test(nm),small=/16s|16|f12|1p2|small|軽量/.test(nm);
+  if(rotor){
+   // Individual KSP rotor/propeller blade: one twisted airfoil blade, not a fake three-blade propeller.
+   const heli=/helicopter|ヘリコプター/.test(nm),slim=/type s|タイプs/.test(nm),broad=/type b|タイプb/.test(nm);
+   const span=r*(heli?2.5:1.85),root=r*(broad?.5:.34),tip=root*(slim?.48:broad?.78:.62),sweep=span*(heli?.2:.12),thick=slim?.055:.085;
+   const shape=new THREE.Shape();
+   shape.moveTo(-root*.5,-root*.48);shape.lineTo(root*.5,-root*.48);
+   shape.lineTo(span-sweep,tip*.5);shape.lineTo(span-sweep*.6,-tip*.5);shape.closePath();
+   const blade=add(new THREE.ExtrudeGeometry(shape,{depth:thick,bevelEnabled:true,bevelSegments:4,bevelSize:.025,bevelThickness:.018}),painted('#c9ceca','#b68b4e',heli?'HELICOPTER ROTOR BLADE':'PROPELLER BLADE',name),[0,0,0],[-Math.PI/2,0,0]);
+   const leading=new THREE.CatmullRomCurve3([new THREE.Vector3(-root*.5,-root*.48,thick*.6),new THREE.Vector3(span*.42-sweep*.35,root*.05,thick*.6),new THREE.Vector3(span-sweep,tip*.5,thick*.6)]);
+   add(new THREE.TubeGeometry(leading,32,thick*.22,8,false),aluminium,[0,0,0],[-Math.PI/2,0,0]);
+   const trailing=box(span*.48,.018,thick*.18,steel,[span*.68,-tip*.05,thick*.62]);trailing.rotation.x=-Math.PI/2;
+   // Root grip, pitch collar and attachment pin.
+   cyl(root*.42,root*.42,thick*1.8,steel,0,24);
+   band(root*.42,0,.025,gold);
+   for(let side of [-1,1])bolt(side*root*.28,-root*.22,thick*.85,.02,aluminium);
+   box(root*.82,root*.28,.12,dark,[root*.12,0,thick*.72]);
+   sphere(.045,gold,[span-sweep*.9,tip*.34,thick*.72]);
+  }
+  else if(piston){
+   // Hydraulic actuators use concentric pressure tubes and a polished moving rod.
+   const stageCount=nested?3:1,baseR=r*(large?.42:.3),bodyH=h*(large?1.05:.9);
+   lathe([[0,-bodyH*.5],[baseR*.78,-bodyH*.5],[baseR,-bodyH*.4],[baseR,bodyH*.18],[baseR*.82,bodyH*.28],[0,bodyH*.28]],painted('#69757a','#b68b4e','HYDRAULIC ACTUATOR',name),48);
+   band(baseR,bodyH*.2,.035,gold);band(baseR,-bodyH*.4,.035,steel);
+   for(let i=0;i<stageCount;i++){
+    const rr=baseR*(nested?(.78-i*.14):.58),start=bodyH*(.2+i*.11),end=bodyH*(.5+i*.13);
+    lathe([[0,start],[rr*.78,start],[rr,end],[rr*.72,end+.04],[0,end+.04]],aluminium,32);
+    band(rr,end,.025,gold);
+   }
+   const rodR=baseR*.22;const rod=new THREE.Mesh(new THREE.CylinderGeometry(rodR,rodR,bodyH*.42,20),steel);rod.position.y=bodyH*.53;g.add(rod);
+   for(let side of [-1,1]){
+    const lug=new THREE.Mesh(new THREE.TorusGeometry(baseR*.32,.055,10,32),aluminium);lug.position.set(side*baseR*.82,-bodyH*.46,0);lug.rotation.y=Math.PI/2;g.add(lug);
+    box(baseR*.36,.1,baseR*.42,steel,[side*baseR*.82,-bodyH*.46,0]);
+   }
+   tube([[-baseR*.6,-bodyH*.28,baseR*.7],[0,-bodyH*.12,baseR*.78],[baseR*.6,bodyH*.1,baseR*.7]],.025,orange);
+  }
+  else if(servo){
+   // Rotation servo: motor can, output bearing, drive shaft and keyed horn.
+   const motorR=r*(large?.74:small?.46:.58),motorH=h*.56;
+   lathe([[0,-motorH*.5],[motorR*.82,-motorH*.5],[motorR,-motorH*.38],[motorR,motorH*.32],[motorR*.8,motorH*.5],[0,motorH*.5]],painted('#69747a','#c56b31','ROTATION SERVO MOTOR',name),64);
+   for(let y of [-motorH*.38,motorH*.34])band(motorR,y,.04,gold);
+   cyl(motorR*.42,motorR*.42,.14,steel,motorH*.56,40);
+   add(new THREE.TorusGeometry(motorR*.43,.045,10,48),aluminium,[0,motorH*.64,0]);
+   const shaftR=motorR*.18;const shaft=new THREE.Mesh(new THREE.CylinderGeometry(shaftR,shaftR,motorH*.36,24),gold);shaft.position.y=motorH*.82;g.add(shaft);
+   box(motorR*1.35,.09,motorR*.25,aluminium,[0,motorH*.98,0]);
+   for(let side of [-1,1])bolt(side*motorR*.5,-motorH*.2,motorR*.78,.025,steel);
+   for(let i=0;i<8;i++){const ang=i*Math.PI/4;radialPipe(motorR*.98,-motorH*.28,motorH*.25,ang,steel,.018);}
+  }
+  else if(hinge){
+   // Hinge assemblies: machined leaves, multiple knuckles, central pin and fasteners.
+   const width=r*(alligator?1.7:large?1.35:1),length=h*(alligator?1.05:.72),barrelR=r*(large?.24:.17);
+   box(width*.92,length*.72,.09,painted('#b8c0bf','#b68b4e','HINGE LEAF',name),[-width*.43,0,0]);
+   box(width*.92,length*.72,.09,steel,[width*.43,0,0]);
+   const knuckles=alligator?5:3;
+   for(let i=0;i<knuckles;i++){
+    const y=(i-(knuckles-1)/2)*length*.18;
+    const barrel=new THREE.Mesh(new THREE.CylinderGeometry(barrelR,barrelR,length*.2,32),aluminium);barrel.rotation.x=Math.PI/2;barrel.position.set(0,y,0);g.add(barrel);
+    band(barrelR,y,.025,gold);
+   }
+   const pin=new THREE.Mesh(new THREE.CylinderGeometry(barrelR*.32,barrelR*.32,length*.94,16),gold);pin.rotation.x=Math.PI/2;g.add(pin);
+   for(let side of [-1,1])for(let i=0;i<4;i++)bolt(side*width*.72,(i-1.5)*length*.16,.06,.022,aluminium);
+   if(alligator)for(let side of [-1,1])tube([[side*width*.2,-length*.4,.12],[side*width*.75,-length*.2,.12],[side*width*.2,length*.4,.12]],.025,steel);
+  }
+  else if(controller){
+   box(r*1.45,h*.72,r*.62,painted('#6e797d','#c56b31','KAL 1000 ROBOTICS CONTROLLER',name));
+   box(r*.92,h*.32,.04,dark,[0,h*.12,r*.33]);
+   box(r*.72,h*.22,.025,blue,[0,h*.14,r*.36]);
+   for(let i=0;i<6;i++){const x=(i-2.5)*r*.18;sphere(.04,i%2?orange:green,[x,-h*.18,r*.35],[1,.7,.3]);}
+   for(let side of [-1,1]){cyl(.08,.08,.1,steel,-h*.1,16).position.x=side*r*.48;box(.16,.12,.08,gold,[side*r*.48,-h*.3,r*.25]);}
+   for(let i=0;i<4;i++)box(r*.12,.035,.025,aluminium,[(i-1.5)*r*.18,-h*.36,r*.35]);
+  }
+  else{
+   const motorR=r*(large?.78:.55),motorH=h*.66;
+   lathe([[0,-motorH*.5],[motorR*.78,-motorH*.5],[motorR,-motorH*.38],[motorR,motorH*.34],[motorR*.78,motorH*.5],[0,motorH*.5]],painted('#68747a','#b68b4e','ELECTRIC ROTOR DRIVE',name),64);
+   for(let i=0;i<16;i++){const ang=i*Math.PI/8;radialPipe(motorR*.99,-motorH*.3,motorH*.3,ang,aluminium,.018);}
+   for(let y of [-motorH*.4,motorH*.4])band(motorR,y,.045,gold);
+   cyl(motorR*.48,motorR*.48,.12,dark,motorH*.55,48);
+   cyl(motorR*.26,motorR*.26,.16,steel,motorH*.7,32);
+   const shaft=new THREE.Mesh(new THREE.CylinderGeometry(motorR*.12,motorR*.12,motorH*.45,20),gold);shaft.position.y=motorH*.96;g.add(shaft);
+   for(let i=0;i<6;i++){const ang=i*Math.PI/3;box(motorR*.18,motorH*.18,.08,steel,[Math.cos(ang)*motorR*.8,0,Math.sin(ang)*motorR*.8],[0,-ang,0]);}
+  }
  }
  else{
   lathe([[0,-h*.5],[r*.72,-h*.5],[r*.9,-h*.35],[r*.9,h*.35],[r*.72,h*.5],[0,h*.5]],ivory,48);band(r*.9,h*.36,.035,gold);radialLabel(r*.91,0,r*.7,h*.2,getLabelMaterial());
