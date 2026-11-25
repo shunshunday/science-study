@@ -1771,18 +1771,32 @@ export function createPartModel(p,THREE){
   const fairing=/fairing|防護シェル/.test(nm),cargoBay=/cargo bay|カーゴベイ|cargo ramp|カーゴドア/.test(nm),ramp=/cargo ramp|カーゴドア/.test(nm),service=/service bay|サービスベイ/.test(nm),storage=/seq-|seq\d|保管ユニット|コンテナ/.test(nm),eva=/eva|ジェットパック|修理キット|実験キット|燃料シリンダー|個人用パラシュート/.test(nm),lab=/science lab|移動研究室/.test(nm),scienceStore=/science storage|実験用記憶装置/.test(nm),serviceModule=/sm-\d|サービスモジュール/.test(nm);
   if(groundLight||groundAnchor){makeUtility();return;}
   if(fairing){
-   // Aerodynamic fairings: tapered shell, structural base, split clamshell seam and latch hardware.
+   // Stock fairings are two separate clamshell halves around an internal payload truss.
    const shellMat=painted('#d7d8d1','#b68b4e','AIRSTREAM PROTECTIVE SHELL',name);
-   lathe([[0,-h*.5],[r*.9,-h*.5],[r,-h*.38],[r*.98,h*.12],[r*.72,h*.35],[r*.36,h*.48],[0,h*.5]],shellMat,96);
+   shellMat.side=THREE.DoubleSide;
+   const fairingProfile=[[0,-h*.5],[r*.9,-h*.5],[r,-h*.38],[r*.98,h*.12],[r*.72,h*.35],[r*.36,h*.48],[0,h*.5]].map(v=>new THREE.Vector2(v[0],v[1]));
+   add(new THREE.LatheGeometry(fairingProfile,64,0,Math.PI),shellMat);
+   add(new THREE.LatheGeometry(fairingProfile,64,Math.PI,Math.PI),shellMat);
    lathe([[0,-h*.5],[r*.96,-h*.5],[r*.96,-h*.42],[r*.82,-h*.36],[0,-h*.36]],steel,72);
    band(r*.98,-h*.4,.045,gold);band(r*.96,-h*.32,.025,dark);
-   // Two longitudinal panel splits and repeated release clamps.
-   for(let side of [-1,1]){
-    const ang=side*Math.PI/2;radialPipe(r*.99,-h*.34,h*.38,ang,steel,.018);
-    for(let j=0;j<5;j++){const y=-h*.25+j*h*.14;bolt(side*r*.99,y,0,.02,gold);}
+   // Long split edges, hinge barrels, clamp shoes and the two removable shell halves.
+   for(const ang of [0,Math.PI]){
+    radialPipe(r*.995,-h*.36,h*.42,ang,steel,.026);
+    for(let j=0;j<7;j++){
+     const y=-h*.29+j*h*.115,x=Math.cos(ang)*r*.995,z=Math.sin(ang)*r*.995;
+     bolt(x,y,z,.022,gold);
+     if(j%2===0)box(r*.1,.07,.055,aluminium,[x,y,z],[0,-ang,0]);
+    }
    }
+   for(const ang of [Math.PI/2,Math.PI*1.5]){
+    radialPipe(r*.82,-h*.31,h*.34,ang,dark,.028);
+    for(let j=0;j<4;j++){const y=-h*.22+j*h*.14;bolt(Math.cos(ang)*r*.82,y,Math.sin(ang)*r*.82,.018,orange);}
+   }
+   // Reinforced nose cap, payload attachment ring and a visible internal mounting spine.
+   sphere(r*.075,gold,[0,h*.475,0],[1,.62,1]);
+   cyl(r*.42,r*.42,.09,steel,-h*.34,48);
+   for(let side of [-1,1])tube([[0,-h*.32,0],[side*r*.3,h*.02,0],[side*r*.18,h*.35,0]],.025,aluminium);
    for(let i=0;i<12;i++){const ang=i*Math.PI/6;const x=Math.cos(ang)*r*.98,z=Math.sin(ang)*r*.98;bolt(x,-h*.43,z,.018,aluminium);}
-   for(let i=0;i<8;i++){const ang=i*Math.PI/4;radialPipe(r*.96,-h*.3,h*.22,ang,aluminium,.012);}
   }
   else if(cargoBay){
    // Mk2/Mk3 payload bays are longitudinal spaceplane shells with a dark cavity,
@@ -1844,19 +1858,46 @@ export function createPartModel(p,THREE){
    for(let i=0;i<8;i++){const ang=i*Math.PI/4;radialPipe(r*.9,-h*.3,h*.3,ang,steel,.018);}
   }
   else if(storage){
-   const large=/seq-?24|seq-?9|seq9/.test(nm),conformal=/seq-?3c/.test(nm);
+   const seq24=/seq-?24|seq24/.test(nm),seq9=/seq-?9|seq9/.test(nm),conformal=/seq-?3c/.test(nm);
    if(conformal){
-    box(r*1.4,h*.55,r*.55,painted('#c6cbc6','#b68b4e','CONFORMAL STORAGE',name));
-    for(let i=0;i<5;i++)box(r*.2,h*.32,.025,steel,[(i-2)*r*.24,0,r*.29]);
+    // SEQ-3C is a shallow conformal locker with a curved mounting shoe and three access lids.
+    box(r*1.48,h*.52,r*.46,painted('#c6cbc6','#b68b4e','CONFORMAL STORAGE',name));
+    const shoe=add(new THREE.CylinderGeometry(r*.68,r*.68,h*.5,48,1,true),steel,[0,0,-r*.16]);shoe.rotation.x=Math.PI/2;
+    for(let i=0;i<5;i++){
+     const x=(i-2)*r*.24;
+     box(r*.18,h*.32,.035,ivory,[x,0,r*.245]);
+     box(r*.12,.045,.025,dark,[x,h*.12,r*.27]);
+     for(let y of [-1,1])bolt(x,y*h*.2,r*.28,.018,gold);
+    }
+    for(let side of [-1,1])tube([[side*r*.66,-h*.22,r*.12],[side*r*.72,0,r*.2],[side*r*.66,h*.22,r*.12]],.025,aluminium);
+   }else if(seq9||seq24){
+    // SEQ-9/24 are cylindrical pressure containers with segmented inventory doors and ring frames.
+    const rr=r*(seq24?.92:.78),hh=h*(seq24?1.02:.88),sections=seq24?8:6;
+    lathe([[0,-hh*.5],[rr*.78,-hh*.5],[rr*.94,-hh*.42],[rr,-hh*.3],[rr,hh*.3],[rr*.94,hh*.42],[rr*.78,hh*.5],[0,hh*.5]],painted('#c9ccc5','#b68b4e','KERBAL CARGO SYSTEM',name),sections);
+    for(let y of [-hh*.44,-hh*.28,hh*.28,hh*.44])band(rr*.99,y,.04,y<0?steel:gold);
+    for(let i=0;i<sections;i++){
+     const a=i*Math.PI*2/sections,x=Math.sin(a)*rr*.99,z=Math.cos(a)*rr*.99;
+     radialPipe(rr*.99,-hh*.34,hh*.34,a,aluminium,.022);
+     box(rr*.42,hh*.5,.035,ivory,[x,0,z],[0,a,0]);
+     box(rr*.3,hh*.32,.02,dark,[x*1.015,0,z*1.015],[0,a,0]);
+     for(let j=0;j<4;j++)bolt(x*1.025,(j-1.5)*hh*.16,z*1.025,.018,gold);
+     box(rr*.12,.09,.06,orange,[x*1.04,hh*.34,z*1.04],[0,a,0]);
+    }
+    cyl(rr*.68,rr*.68,.1,steel,hh*.52,sections);
+    cyl(rr*.62,rr*.62,.08,dark,-hh*.52,sections);
+    for(let i=0;i<12;i++){const a=i*Math.PI/6;bolt(rr*.96*Math.cos(a),-hh*.43,rr*.96*Math.sin(a),.02,gold);}
    }else{
-    const width=large?r*1.15:r*.82,depth=large?r*.9:r*.65;
+    // SEQ-3 is the compact cubic rack with three separate trays and front retaining bars.
+    const width=r*.82,depth=r*.65;
     box(width,h*.82,depth,painted('#c9ccc5','#b68b4e','KERBAL CARGO SYSTEM',name));
     for(let x of [-1,1])for(let z of [-1,1])box(.06,h*.9,.06,steel,[x*width*.46,0,z*depth*.46]);
-    const slots=large?6:3;
-    for(let i=0;i<slots;i++){
-     box(width*.7,.025,depth*.72,aluminium,[0,(i-(slots-1)/2)*h*.12,depth*.52]);
-     for(let j=0;j<4;j++)box(width*.08,.04,.025,j%2?orange:dark,[(j-1.5)*width*.16,(i-(slots-1)/2)*h*.12,depth*.55]);
+    for(let i=0;i<3;i++){
+     const y=(i-1)*h*.25;
+     box(width*.78,.045,depth*.78,aluminium,[0,y,0]);
+     box(width*.66,.035,.035,dark,[0,y,depth*.42]);
+     for(let j=0;j<4;j++)box(width*.08,.045,.025,j%2?orange:dark,[(j-1.5)*width*.16,y,depth*.45]);
     }
+    for(let side of [-1,1])box(.08,h*.65,.1,gold,[side*width*.53,0,0]);
    }
    for(let x of [-1,1])for(let y of [-1,1])bolt(x*r*.62,y*h*.34,r*.5,.022,gold);
   }
