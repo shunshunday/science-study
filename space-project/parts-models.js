@@ -1073,7 +1073,7 @@ export function createPartModel(p,THREE){
   const flag=/flag|フラッグ/.test(nm),firework=/starshot|firework|スターショット/.test(nm),anchor=/ground anchor|グラウンドアンカー/.test(nm);
   if(flag){
    const w=r*(/rfp-3/.test(nm)?2.4:/rfp-2/.test(nm)?1.8:/rfp-1/.test(nm)?1.25:.8),hh=h*(/rfp-3/.test(nm)?1.5:/rfp-2/.test(nm)?1.25:1);
-   const canvas=document.createElement('canvas');canvas.width=512;canvas.height=320;const q=canvas.getContext('2d);
+   const canvas=document.createElement('canvas');canvas.width=512;canvas.height=320;const q=canvas.getContext('2d');
    q.fillStyle='#327c52';q.fillRect(0,0,512,320);q.fillStyle='#e6e9d9';q.beginPath();q.arc(256,160,82,0,Math.PI*2);q.fill();
    q.fillStyle='#2e6d4a';q.font='bold 58px Arial';q.textAlign='center';q.fillText('K',256,180);q.strokeStyle='#d7b85d';q.lineWidth=10;q.strokeRect(18,18,476,284);
    q.fillStyle='#f4f0df';q.font='bold 20px Arial';q.fillText('KERBAL SPACE PROGRAM',256,280);
