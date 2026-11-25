@@ -1,7 +1,7 @@
 // Independently authored high-detail KSP1-inspired procedural part models.
 // Each stock-style part family gets its own silhouette, finish, decals and mechanical detailing.
 
-// One compact, hand-painted surface atlas per part family. Reused by all 454 catalog
+// One compact, hand-painted surface atlas per part family. Reused by all 439 active catalog
 // entries so the finish stays cohesive without allocating hundreds of large textures.
 const PART_SKIN_CACHE=new Map();
 function getPartSkin(THREE,family){
