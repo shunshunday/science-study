@@ -975,12 +975,138 @@ export function createPartModel(p,THREE){
   }
   for(let i=0;i<16;i++){const a=i*Math.PI/8;bolt(baseR*.94*Math.cos(a),-h*.38,baseR*.94*Math.sin(a),.018,gold);}
  }; const makePayload=()=>{
-  const nm=name.toLowerCase();
-  if(/fairing|フェアリング|防護シェル/.test(nm)){lathe([[0,-h*.5],[r*.9,-h*.5],[r,-h*.38],[r*.98,h*.12],[r*.72,h*.35],[r*.36,h*.48],[0,h*.5]],ivory,64);band(r*.98,-h*.38,.05,gold);for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(r*.98,-h*.32,h*.28,a,steel,.018);}}
-  else if(/service bay|サービスベイ/.test(nm)){lathe([[0,-h*.5],[r*.88,-h*.5],[r,-h*.4],[r,h*.4],[r*.88,h*.5],[0,h*.5]],steel,64);for(let y of [-h*.38,h*.38])band(r,y,.045,gold);const hatch=box(r*1.55,h*.68,.08,ivory,[0,0,r*.84]);for(let i=0;i<8;i++)bolt((i-3.5)*r*.18,0,r*.9,.025);}
-  else{lathe([[0,-h*.5],[r*.8,-h*.5],[r,-h*.38],[r,h*.38],[r*.8,h*.5],[0,h*.5]],ivory,64);for(let y of [-h*.4,h*.4])band(r,y,.035,gold);radialLabel(r*1.01,0,r*.72,h*.22,getLabelMaterial());}
- };
- const makeThermal=()=>{
+  const nm=(id+' '+name).toLowerCase();
+  const fairing=/fairing|防護シェル/.test(nm),cargoBay=/cargo bay|カーゴベイ/.test(nm),ramp=/cargo ramp|カーゴドア/.test(nm),service=/service bay|サービスベイ/.test(nm),storage=/seq-|seq\d|保管ユニット|コンテナ/.test(nm),eva=/eva|ジェットパック|修理キット|実験キット|燃料シリンダー|個人用パラシュート/.test(nm),lab=/science lab|移動研究室/.test(nm),scienceStore=/science storage|実験用記憶装置/.test(nm),serviceModule=/sm-\d|サービスモジュール/.test(nm);
+  if(fairing){
+   // Aerodynamic fairings: tapered shell, structural base, split clamshell seam and latch hardware.
+   const shellMat=painted('#d7d8d1','#b68b4e','AIRSTREAM PROTECTIVE SHELL',name);
+   lathe([[0,-h*.5],[r*.9,-h*.5],[r,-h*.38],[r*.98,h*.12],[r*.72,h*.35],[r*.36,h*.48],[0,h*.5]],shellMat,96);
+   lathe([[0,-h*.5],[r*.96,-h*.5],[r*.96,-h*.42],[r*.82,-h*.36],[0,-h*.36]],steel,72);
+   band(r*.98,-h*.4,.045,gold);band(r*.96,-h*.32,.025,dark);
+   // Two longitudinal panel splits and repeated release clamps.
+   for(let side of [-1,1]){
+    const ang=side*Math.PI/2;radialPipe(r*.99,-h*.34,h*.38,ang,steel,.018);
+    for(let j=0;j<5;j++){const y=-h*.25+j*h*.14;bolt(side*r*.99,y,0,.02,gold);}
+   }
+   for(let i=0;i<12;i++){const ang=i*Math.PI/6;const x=Math.cos(ang)*r*.98,z=Math.sin(ang)*r*.98;bolt(x,-h*.43,z,.018,aluminium);}
+   for(let i=0;i<8;i++){const ang=i*Math.PI/4;radialPipe(r*.96,-h*.3,h*.22,ang,aluminium,.012);}
+  }
+  else if(cargoBay){
+   // Mk2/Mk3 payload bays are longitudinal spaceplane shells with a dark cavity,
+   // internal rails, twin clamshell doors and visible hinge hardware.
+   const mk3=/mk3/.test(nm),length=/100/.test(nm)?r*4:/50/.test(nm)?r*2:/25/.test(nm)?r*1.25:/08/.test(nm)?r*2.9:r*1.45;
+   const width=mk3?r*1.18:r*1.04,thick=mk3?r*.58:r*.52;
+   const shell=painted(mk3?'#d5d8d5':'#d8d9d2','#b68b4e',mk3?'MK3 CARGO BAY':'MK2 CARGO BAY',name);
+   // Upper pressure shell and two structural side rails leave a recessed cargo well.
+   box(width,thick*.18,length,shell,[0,thick*.38,0]);
+   box(width*.94,thick*.12,length*.96,dark,[0,-thick*.18,0]);
+   for(let side of [-1,1]){
+    box(width*.12,thick*.56,length,steel,[side*width*.44,0,0]);
+    box(width*.1,thick*.34,length*.92,shell,[side*width*.39,-thick*.02,0]);
+    box(width*.08,thick*.12,length*.9,aluminium,[side*width*.32,thick*.3,0]);
+    // Door skins, hinge barrels and actuator arms.
+    box(width*.34,thick*.08,length*.88,ivory,[side*width*.29,-thick*.31,0]);
+    for(let j=0;j<8;j++)bolt(side*width*.29,-thick*.26,(j-3.5)*length*.105,.018,gold);
+    for(let z of [-length*.43,length*.43]){cyl(thick*.055,thick*.055,width*.38,steel,side*width*.15,16).position.set(side*width*.15,0,z);}
+    for(let z of [-length*.36,length*.36])tube([[side*width*.46,-thick*.15,z],[side*width*.31,-thick*.38,z],[side*width*.16,-thick*.24,z]],.025,gold);
+   }
+   // Payload guide rails, tie-down points and illuminated service sockets.
+   for(let side of [-1,1]){
+    box(.045,.045,length*.82,aluminium,[side*width*.22,-thick*.1,0]);
+    for(let j=0;j<6;j++){const z=(j-2.5)*length*.13;box(.12,.035,.035,gold,[side*width*.22,-thick*.06,z]);}
+   }
+   for(let z of [-length*.48,length*.48])for(let x of [-1,1])box(width*.12,thick*.62,.08,steel,[x*width*.42,0,z]);
+   if(ramp){
+    box(width*.78,thick*.12,length*.48,ivory,[0,-thick*.42,length*.68],[.5,0,0]);
+    for(let side of [-1,1])tube([[side*width*.36,-thick*.3,length*.42],[side*width*.3,-thick*.6,length*.66],[side*width*.18,-thick*.64,length*.88]],.035,steel);
+   }
+  }
+  else if(service){
+   // Service bays are short cylindrical equipment lockers with split access doors.
+   lathe([[0,-h*.5],[r*.82,-h*.5],[r,-h*.38],[r,h*.38],[r*.82,h*.5],[0,h*.5]],painted('#59636a','#c69a4c','SERVICE BAY',name),80);
+   for(let y of [-h*.4,h*.4])band(r*.99,y,.05,gold);
+   band(r*.99,0,.025,aluminium);
+   for(let side of [-1,1]){
+    const door=box(r*.72,h*.62,.06,ivory,[side*r*.42,0,side*r*.72]);
+    box(r*.5,h*.48,.025,dark,[side*r*.42,0,side*r*.75]);
+    for(let j=0;j<6;j++)box(r*.34,.025,.02,aluminium,[side*r*.42,(j-2.5)*h*.065,side*r*.77]);
+    for(let j=0;j<4;j++)bolt(side*r*.72,(j-1.5)*h*.18,side*r*.72,.022,gold);
+   }
+   // Internal avionics racks and wiring visible through the open end.
+   cyl(r*.62,r*.62,.06,dark,-h*.47,48);
+   for(let i=0;i<4;i++){const ang=i*Math.PI/2,x=Math.cos(ang)*r*.52,z=Math.sin(ang)*r*.52;box(r*.18,h*.46,.12,i%2?steel:orange,[x,0,z]);}
+   for(let i=0;i<8;i++){const ang=i*Math.PI/4;radialPipe(r*.9,-h*.3,h*.3,ang,steel,.018);}
+  }
+  else if(storage){
+   const large=/seq-?24|seq-?9|seq9/.test(nm),conformal=/seq-?3c/.test(nm);
+   if(conformal){
+    box(r*1.4,h*.55,r*.55,painted('#c6cbc6','#b68b4e','CONFORMAL STORAGE',name));
+    for(let i=0;i<5;i++)box(r*.2,h*.32,.025,steel,[(i-2)*r*.24,0,r*.29]);
+   }else{
+    const width=large?r*1.15:r*.82,depth=large?r*.9:r*.65;
+    box(width,h*.82,depth,painted('#c9ccc5','#b68b4e','KERBAL CARGO SYSTEM',name));
+    for(let x of [-1,1])for(let z of [-1,1])box(.06,h*.9,.06,steel,[x*width*.46,0,z*depth*.46]);
+    const slots=large?6:3;
+    for(let i=0;i<slots;i++){
+     box(width*.7,.025,depth*.72,aluminium,[0,(i-(slots-1)/2)*h*.12,depth*.52]);
+     for(let j=0;j<4;j++)box(width*.08,.04,.025,j%2?orange:dark,[(j-1.5)*width*.16,(i-(slots-1)/2)*h*.12,depth*.55]);
+    }
+   }
+   for(let x of [-1,1])for(let y of [-1,1])bolt(x*r*.62,y*h*.34,r*.5,.022,gold);
+  }
+  else if(eva){
+   if(/jetpack/.test(nm)){
+    box(r*.78,h*.8,r*.46,painted('#c5c8c0','#c56b31','EVA PROPULSION PACK',name));
+    for(let side of [-1,1]){
+     lathe([[0,-h*.3],[r*.16,-h*.3],[r*.2,h*.3],[r*.12,h*.4],[0,h*.4]],steel,24,[side*r*.42,0,0]);
+     cyl(r*.13,r*.13,.16,orange,0,24).position.set(side*r*.42,-h*.38,0);
+     tube([[side*r*.22,h*.24,0],[side*r*.45,h*.42,0],[side*r*.45,h*.52,0]],.025,gold);
+    }
+    box(r*.52,h*.2,.04,dark,[0,-h*.12,r*.25]);
+   }else if(/repair/.test(nm)){
+    box(r*.9,h*.72,r*.42,painted('#d3d5ce','#d38c36','ENGINEER REPAIR KIT',name));
+    for(let i=0;i<4;i++)box(r*.12,h*.42,.025,steel,[(i-1.5)*r*.18,0,r*.23]);
+    for(let i=0;i<3;i++)sphere(.055,gold,[(i-1)*r*.22,h*.28,r*.25]);
+   }else if(/science/.test(nm)){
+    box(r*.88,h*.72,r*.42,painted('#d6d8d1','#6f9db0','SCIENCE KIT',name));
+    for(let i=0;i<3;i++)box(r*.16,h*.38,.035,blue,[(i-1)*r*.24,0,r*.24]);
+   }else if(/fuel cylinder/.test(nm)){
+    lathe([[0,-h*.5],[r*.4,-h*.5],[r*.48,-h*.4],[r*.48,h*.36],[r*.36,h*.5],[0,h*.5]],painted('#c7cbc5','#c56b31','EVA FUEL CYLINDER',name),48);
+    band(r*.48,-h*.36,.03,gold);band(r*.48,h*.36,.03,steel);
+    cyl(r*.22,r*.22,.08,steel,h*.48,24);
+   }else if(/parachute/.test(nm)){
+    lathe([[0,-h*.4],[r*.55,-h*.4],[r*.62,-h*.2],[r*.62,h*.25],[r*.48,h*.4],[0,h*.4]],painted('#d2d2c8','#c56b31','PERSONAL PARACHUTE',name),48);
+    for(let i=0;i<6;i++){const a=i*Math.PI/3;radialPipe(r*.6,-h*.18,h*.2,a,orange,.018);}
+    for(let i=0;i<4;i++)tube([[Math.cos(i*Math.PI/2)*r*.4,h*.35,Math.sin(i*Math.PI/2)*r*.4],[0,h*.62,0]],.012,steel);
+   }else{
+    lathe([[0,-h*.45],[r*.45,-h*.45],[r*.55,-h*.3],[r*.55,h*.3],[r*.4,h*.45],[0,h*.45]],steel,40);
+    band(r*.55,h*.32,.035,gold);
+   }
+  }
+  else if(lab){
+   lathe([[0,-h*.5],[r*.7,-h*.5],[r*.92,-h*.38],[r*.92,h*.36],[r*.72,h*.5],[0,h*.5]],painted('#d6d8d1','#b68b4e','MOBILE PROCESSING LAB',name),72);
+   for(let i=0;i<8;i++){const ang=i*Math.PI/4;radialPipe(r*.93,-h*.3,h*.28,ang,steel,.025);}
+   for(let i=0;i<4;i++){const ang=i*Math.PI/2,x=Math.cos(ang)*r*.78,z=Math.sin(ang)*r*.78;sphere(r*.13,steel,[x,h*.05,z],[1,1,.28]);sphere(r*.09,glass,[x,h*.05,z+Math.sign(z||1)*r*.03],[1,1,.25]);}
+   box(r*.48,h*.24,.06,dark,[0,-h*.12,r*.84]);
+   for(let i=0;i<4;i++)box(r*.08,.035,.025,orange,[(i-1.5)*r*.1,-h*.12,r*.88]);
+  }
+  else if(scienceStore){
+   box(r*1.15,h*.72,r*.62,painted('#d5d8d1','#b68b4e','SCIENCE DATA ARCHIVE',name));
+   for(let i=0;i<6;i++){box(r*.82,.025,.035,steel,[0,(i-2.5)*h*.1,r*.33]);}
+   for(let x of [-1,1])for(let y of [-1,1])bolt(x*r*.48,y*h*.28,r*.34,.02,gold);
+   sphere(.09,blue,[0,h*.22,r*.35]);
+  }
+  else if(serviceModule){
+   lathe([[0,-h*.5],[r*.76,-h*.5],[r*.92,-h*.38],[r*.92,h*.38],[r*.76,h*.5],[0,h*.5]],painted('#bfc6c5','#c56b31','SERVICE MODULE',name),72);
+   for(let i=0;i<12;i++){const ang=i*Math.PI/6;radialPipe(r*.93,-h*.35,h*.35,ang,steel,.02);}
+   for(let y of [-h*.38,h*.38])band(r*.93,y,.045,gold);
+   for(let i=0;i<4;i++){const ang=i*Math.PI/2;const x=Math.cos(ang)*r*.9,z=Math.sin(ang)*r*.9;box(r*.16,h*.32,.08,orange,[x,0,z]);}
+  }
+  else{
+   lathe([[0,-h*.45],[r*.72,-h*.45],[r*.85,-h*.3],[r*.85,h*.35],[r*.7,h*.45],[0,h*.45]],painted('#d9d9d0','#b68b4e','PAYLOAD EQUIPMENT',name),48);
+   band(r*.85,h*.32,.035,gold);radialLabel(r*.86,0,r*.7,h*.2,getLabelMaterial());
+  }
+ }; const makeThermal=()=>{
   const tileMat=M(0xffffff,.08,.96,{map:makeThermalTileMaterial(THREE)});
   lathe([[0,-h*.5],[r*.72,-h*.5],[r,-h*.34],[r*.94,h*.25],[r*.7,h*.5],[0,h*.5]],tileMat,96);
   band(r*.96,h*.28,.06,gold);band(r*.94,-h*.32,.035,steel);
