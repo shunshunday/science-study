@@ -720,6 +720,63 @@ export function createPartModel(p,THREE){
    return;
   }
   if(crewCabin){
+   const ppd10=/ppd10/.test(id+' '+name.toLowerCase());
+   if(mk2||mk3){
+    // Mk2/Mk3 crew cabins are true inline spaceplane modules with non-circular stock cross-sections.
+    const width=r*(mk3?2.25:2.3),depth=r*(mk3?1.34:.9),length=h*(mk3?1.12:1.02);
+    const shape=new THREE.Shape(),corner=Math.min(width,depth)*.16;
+    if(mk2){
+     shape.moveTo(-width*.5,-depth*.34);shape.lineTo(width*.5,-depth*.34);
+     shape.quadraticCurveTo(width*.54,-depth*.05,width*.42,depth*.22);
+     shape.quadraticCurveTo(width*.3,depth*.53,0,depth*.56);
+     shape.quadraticCurveTo(-width*.3,depth*.53,-width*.42,depth*.22);
+     shape.quadraticCurveTo(-width*.54,-depth*.05,-width*.5,-depth*.34);
+    }else{
+     shape.moveTo(-width*.5+corner,-depth*.5);shape.lineTo(width*.5-corner,-depth*.5);
+     shape.quadraticCurveTo(width*.5,-depth*.5,width*.5,-depth*.5+corner);
+     shape.lineTo(width*.5,depth*.5-corner);shape.quadraticCurveTo(width*.5,depth*.5,width*.5-corner,depth*.5);
+     shape.lineTo(-width*.5+corner,depth*.5);shape.quadraticCurveTo(-width*.5,depth*.5,-width*.5,depth*.5-corner);
+     shape.lineTo(-width*.5,-depth*.5+corner);shape.quadraticCurveTo(-width*.5,-depth*.5,-width*.5+corner,-depth*.5);
+    }
+    const cabinMat=painted('#d5d8d5','#b68b4e',mk3?'MK3 CREW HABITAT':'MK2 CREW CABIN',name);
+    add(new THREE.ExtrudeGeometry(shape,{depth:length,bevelEnabled:true,bevelSegments:5,bevelSize:.035,bevelThickness:.035}),cabinMat,[0,0,-length*.5]);
+    for(const z of [-length*.49,length*.49]){const pts=shape.getPoints(48).map(p=>[p.x,p.y,z]);pts.push(pts[0]);tube(pts,.035,steel);}
+    // Two/three rows of flush oval pressure windows along both fuselage sides.
+    const rows=mk3?3:2,cols=mk3?6:4;
+    for(let side of [-1,1])for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
+     const z=-length*.34+col*length*.68/(cols-1),y=(row-(rows-1)/2)*depth*.23;
+     sphere(width*.045,steel,[side*width*.49,y,z],[.22,1,1.3]);
+     sphere(width*.034,glass,[side*width*.505,y,z],[.18,1,1.22]);
+    }
+    // Recessed crew hatch, handrails, cabin service spine and lower keel.
+    const hatchX=-width*.5;
+    box(.055,depth*.62,length*.22,dark,[hatchX,0,0]);
+    box(.035,depth*.5,length*.18,ivory,[hatchX-.035,0,0]);
+    for(let side of [-1,1]){
+     tube([[hatchX-.07,side*depth*.22,-length*.12],[hatchX-.07,side*depth*.22,length*.12]],.022,steel);
+     for(let j=0;j<5;j++)bolt(hatchX-.075,(j-2)*depth*.1,0,.018,gold);
+     tube([[side*width*.42,depth*.48,-length*.42],[side*width*.42,depth*.48,0],[side*width*.42,depth*.48,length*.42]],.03,aluminium);
+    }
+    box(width*.42,.055,length*.68,dark,[0,depth*.53,0]);
+    for(let i=0;i<8;i++)box(width*.045,.02,length*.52,i%2?orange:aluminium,[(i-3.5)*width*.055,depth*.56,0]);
+    box(width*.56,.07,length*.56,steel,[0,-depth*.48,0]);
+    for(let i=0;i<8;i++){const z=(i-3.5)*length*.09;bolt(width*.4,-depth*.49,z,.018,gold);}
+    return;
+   }
+   if(ppd10){
+    // PPD-10 Hitchhiker is a faceted 10-sided pressure can with four large circular windows.
+    const cabinR=r*.88,cabinH=h*.92;
+    const body=new THREE.Mesh(new THREE.CylinderGeometry(cabinR*.98,cabinR,cabinH,10,1,false),painted('#d7d9d2','#b68b4e','PPD-10 HITCHHIKER MODULE',name));
+    body.castShadow=true;body.receiveShadow=true;g.add(body);
+    for(let y of [-cabinH*.44,-cabinH*.32,cabinH*.32,cabinH*.44])band(cabinR*.99,y,.035,y<0?steel:gold);
+    for(let i=0;i<10;i++){const a=i*Math.PI/5;radialPipe(cabinR*.99,-cabinH*.32,cabinH*.32,a,aluminium,.022);bolt(cabinR*.99*Math.cos(a),cabinH*.24,cabinR*.99*Math.sin(a),.018,gold);}
+    for(let i=0;i<4;i++){const a=i*Math.PI/2,x=Math.sin(a)*cabinR*.78,z=Math.cos(a)*cabinR*.78;sphere(cabinR*.2,steel,[x,cabinH*.04,z],[1,1,.25]);sphere(cabinR*.15,glass,[x,cabinH*.04,z+cabinR*.03],[1,1,.22]);}
+    box(cabinR*.42,cabinH*.34,.035,dark,[0,-cabinH*.04,-cabinR*.96]);
+    box(cabinR*.34,cabinH*.28,.025,ivory,[0,-cabinH*.04,-cabinR*.98]);
+    cyl(cabinR*.64,cabinR*.64,.1,steel,cabinH*.52,48);
+    cyl(cabinR*.62,cabinR*.62,.1,steel,-cabinH*.52,48);
+    return;
+   }
    const cabinR=mk3?r*.9:mk2?r*.92:r*.88;
    const profile=mk3?
     [[0,-h*.5],[cabinR*.86,-h*.5],[cabinR,-h*.44],[cabinR,h*.44],[cabinR*.86,h*.5],[0,h*.5]]:
@@ -790,8 +847,34 @@ export function createPartModel(p,THREE){
    for(let i=0;i<8;i++){const ang=i*Math.PI/4;bolt(rr*.94*Math.cos(ang),-h*.4,rr*.94*Math.sin(ang),.02,gold);}
    return;
   }
+  if(lander&&mk2){
+   // Mk2 Lander Can uses the broad D-shaped Mk2 fuselage section with side glazing and a hatch.
+   const width=r*2.3,depth=r*.92,length=h*1.05,shape=new THREE.Shape();
+   shape.moveTo(-width*.5,-depth*.34);shape.lineTo(width*.5,-depth*.34);
+   shape.quadraticCurveTo(width*.54,-depth*.05,width*.42,depth*.22);
+   shape.quadraticCurveTo(width*.3,depth*.53,0,depth*.56);
+   shape.quadraticCurveTo(-width*.3,depth*.53,-width*.42,depth*.22);
+   shape.quadraticCurveTo(-width*.54,-depth*.05,-width*.5,-depth*.34);
+   add(new THREE.ExtrudeGeometry(shape,{depth:length,bevelEnabled:true,bevelSegments:5,bevelSize:.04,bevelThickness:.04}),painted('#c8ccc6','#b68b4e','MK2 LANDER CAN',name),[0,0,-length*.5]);
+   for(const z of [-length*.48,length*.48]){const pts=shape.getPoints(48).map(p=>[p.x,p.y,z]);pts.push(pts[0]);tube(pts,.04,steel);}
+   for(let side of [-1,1])for(let i=0;i<3;i++){
+    const z=(i-1)*length*.24;
+    sphere(width*.07,steel,[side*width*.49,depth*.16,z],[.2,1,1.15]);
+    sphere(width*.052,glass,[side*width*.505,depth*.16,z],[.16,1,1.1]);
+   }
+   box(.05,depth*.58,length*.24,dark,[-width*.5,0,0]);
+   box(.03,depth*.46,length*.2,ivory,[-width*.54,0,0]);
+   for(let j=0;j<6;j++)bolt(-width*.55,(j-2.5)*depth*.09,0,.02,gold);
+   box(width*.52,.08,length*.62,steel,[0,-depth*.48,0]);
+   for(let side of [-1,1]){
+    tube([[side*width*.38,-depth*.45,-length*.42],[side*width*.48,-depth*.5,0],[side*width*.38,-depth*.45,length*.42]],.045,aluminium);
+    box(width*.16,.08,.12,orange,[side*width*.44,-depth*.5,0]);
+   }
+   cyl(width*.28,width*.28,.1,steel,depth*.56,48);
+   return;
+  }
   if(lander){
-   // Mk1/Mk2 lander cans are faceted, boxy pressure vessels rather than smooth cones.
+   // Mk1 lander can is a faceted, boxy pressure vessel rather than a smooth cone.
    const sides=8,body=new THREE.Mesh(new THREE.CylinderGeometry(rr*.91,rr, h*.68,sides,1,false),painted('#c5c6bd','#b68b4e','LANDER CAN',name));
    body.position.y=-h*.02;body.castShadow=true;body.receiveShadow=true;g.add(body);
    const cap=add(new THREE.CylinderGeometry(rr*.72,rr*.91,h*.18,sides,1,false),ivory,[0,h*.41,0]);
