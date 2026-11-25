@@ -131,7 +131,7 @@ campusBuilding(0,-35,16,6,10,0xc3c4b8,0x59656a);
 campusBuilding(-54,-16,10,24,10,0xb8c0bc,0x4c5962);
 const towerA=new THREE.Mesh(new THREE.CylinderGeometry(2.5,3.5,24,12),new THREE.MeshStandardMaterial({color:0xb9bcb7,roughness:.8}));towerA.position.set(-54,12,-16);campus.add(towerA);
 const towerTop=new THREE.Mesh(new THREE.CylinderGeometry(4,3,4,12),new THREE.MeshStandardMaterial({color:0x657b84,metalness:.2}));towerTop.position.set(-54,26,-16);campus.add(towerTop);
-const pad=new THREE.Mesh(new THREE.CylinderGeometry(15,17,.65,48),new THREE.MeshStandardMaterial({color:0x777d7d,roughness:.95}));pad.position.set(0,.1,0);pad.receiveShadow=true;campus.add(pad);
+// Center circular pad removed; keep the central campus area clear.
 const runway=new THREE.Mesh(new THREE.BoxGeometry(16,.16,180),new THREE.MeshStandardMaterial({color:0x414b50,roughness:.95}));runway.position.set(72,.03,5);campus.add(runway);
 for(let i=0;i<18;i++){const x=-82+(i%9)*20,z=-65+Math.floor(i/9)*145;const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.25,.35,2.5,7),new THREE.MeshStandardMaterial({color:0x69503b}));trunk.position.set(x,1.25,z);campus.add(trunk);const crown=new THREE.Mesh(new THREE.ConeGeometry(1.7,4.5,8),new THREE.MeshStandardMaterial({color:0x355b48}));crown.position.set(x,4.3,z);campus.add(crown);}
 
@@ -234,40 +234,29 @@ for(const x of [-64,64])for(const z of [-82,82]){
 for(const x of [-108,108])for(const z of [-78,-38,2,42,82]){
  hBox(1.5,24,1.5,x,12,z,craneYellow);hBox(5,1,5,x,24,z,steelLight);
 }
-for(const z of [-88,-62,-36,-10,16,42,68,92]){
- hBox(1.2,42,.8,-109,51,z,steelLight);hBox(1.2,42,.8,109,51,z,steelLight);
- hBox(.5,20,15,-107,63,z,glassMat);hBox(.5,20,15,107,63,z,glassMat);
-}
-
-/* KSP1-inspired VAB envelope: tall glazed side bays and a monumental rear facade.
-   Keep the front approach and central rocket workspace clear. */
-const vabGlass=new THREE.MeshStandardMaterial({color:0x7898a6,metalness:.28,roughness:.24,transparent:true,opacity:.34,side:THREE.DoubleSide,depthWrite:false});
-const vabWall=hangarMat(0x46545c,.58,.72),vabDoor=hangarMat(0xb28a36,.52,.58);
+/* KSP1-inspired continuous VAB cladding. Panels sit flush with the steel frame:
+   solid lower/upper bands, a continuous glazed clerestory, and a clear rear door. */
+const vabGlass=new THREE.MeshStandardMaterial({color:0x7898a6,metalness:.22,roughness:.3,transparent:true,opacity:.48,side:THREE.DoubleSide,depthWrite:false});
+const vabWall=hangarMat(0x59666d,.42,.78),vabDoor=hangarMat(0xb28a36,.38,.62);
 for(const side of [-1,1]){
- for(let z=-82;z<=82;z+=28){
-  hBox(.8,24,24,side*110,91,z,vabGlass);
-  hBox(1.5,26,1.2,side*109.3,91,z-12,steelLight);hBox(1.5,26,1.2,side*109.3,91,z+12,steelLight);
-  hBox(1.5,1.2,24,side*109.3,79,z,steelLight);hBox(1.5,1.2,24,side*109.3,103,z,steelLight);
-  hBeam([side*109.2,79,z-12],[side*109.2,103,z+12],.22,steel);
-  hBeam([side*109.2,103,z-12],[side*109.2,79,z+12],.22,steel);
- }
- for(const y of [22,48,74,100,126])hBox(2,1.4,184,side*108.8,y,0,steelLight);
+ // Continuous lower wall and upper wall close the gaps between the structural columns.
+ hBox(.9,76,184,side*111.2,39,0,vabWall);
+ hBox(.9,35,184,side*111.2,132.5,0,vabWall);
+ // One uninterrupted window band; thin mullions are coplanar with the glazing.
+ hBox(.55,34,184,side*110.65,94,0,vabGlass);
+ for(let z=-92;z<=92;z+=23)hBox(.8,34,.65,side*110.15,94,z,steelLight);
+ hBox(.8,1,184,side*110.15,77,0,steelLight);
+ hBox(.8,1,184,side*110.15,111,0,steelLight);
 }
-// High rear windows frame the yellow segmented service doors.
-for(const x of [-94,-70,70,94]){
- hBox(20,92,1.2,x,91,-96,vabGlass);
- hBox(1.2,96,2,x-10,91,-96,steelLight);hBox(1.2,96,2,x+10,91,-96,steelLight);
- for(const y of [45,69,93,117,139])hBox(20,1.2,2,x,y,-96,steelLight);
- hBeam([x-10,46,-97],[x+10,68,-97],.2,steel);hBeam([x+10,46,-97],[x-10,68,-97],.2,steel);
-}
-for(const x of [-48,48]){
- hBox(3,132,3,x,68,-96,vabWall);hBox(2,128,2,x,68,-98,vabDoor);
- for(let y=12;y<130;y+=16)hBox(2.2,.8,2.2,x,y,-99,steelLight);
-}
-// Narrow roof skylights sit above the truss line, away from the craft camera.
+// Rear facade: continuous wall around a broad segmented yellow lift door.
+hBox(224,150,1.1,0,75,-96,vabWall);
+hBox(92,132,1.25,0,69,-96,vabDoor);
+for(let x=-42;x<=42;x+=14)hBox(1.1,128,1.5,x,69,-95.2,steelLight);
+for(let y=13;y<=125;y+=16)hBox(90,.75,1.5,0,y,-95.2,steelLight);
+// Roof glazing stays level with the roof trusses (no angled panes sticking out).
 for(let z=-77;z<=55;z+=44)for(const side of [-1,1]){
- const pane=new THREE.Mesh(new THREE.BoxGeometry(36,.45,30),vabGlass);
- pane.position.set(side*54,153,z);pane.rotation.z=side*.13;hangar.add(pane);
+ const pane=new THREE.Mesh(new THREE.BoxGeometry(34,.35,28),vabGlass);
+ pane.position.set(side*54,151.2,z);hangar.add(pane);
 }
 
 const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);const parts=[],debrisAssemblies=[];let mode='vab',gameMode='career',aircraftCraft=false,funds=25000,fundsUnlimited=true,science=0,stage=0,assemblyStage=0,stageUiFuelPercent=-1,throttle=0,flight=false,flightPeakAltitude=0,paused=false,sasEnabled=false,rcsEnabled=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
