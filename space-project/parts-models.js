@@ -2131,10 +2131,10 @@ export function createPartModel(p,THREE){
    outer.lineTo(-width*.5+rad,thick*.5);outer.quadraticCurveTo(-width*.5,thick*.5,-width*.5,thick*.5-rad);
    outer.lineTo(-width*.5,-thick*.5+rad);outer.quadraticCurveTo(-width*.5,-thick*.5,-width*.5+rad,-thick*.5);
    const cavity=new THREE.Path(),iw=width*.72,ih=thick*.52,ir=Math.min(iw,ih)*.16;
-   cavity.moveTo(-iw*.5+ir,-ih*.5);cavity.lineTo(iw*.5-ir,-ih*.5);cavity.quadraticCurveTo(iw*.5,-ih*.5,iw*.5,-ih*.5+ir);
-   cavity.lineTo(iw*.5,ih*.5-ir);cavity.quadraticCurveTo(iw*.5,ih*.5,iw*.5-ir,ih*.5);
-   cavity.lineTo(-iw*.5+ir,ih*.5);cavity.quadraticCurveTo(-iw*.5,ih*.5,-iw*.5,ih*.5-ir);
-   cavity.lineTo(-iw*.5,-ih*.5+ir);cavity.quadraticCurveTo(-iw*.5,-ih*.5,-iw*.5+ir,-ih*.5);
+   cavity.moveTo(-iw*.5+ir,-ih*.5);cavity.lineTo(-iw*.5,-ih*.5+ir);cavity.quadraticCurveTo(-iw*.5,ih*.5,-iw*.5+ir,ih*.5);
+   cavity.lineTo(iw*.5-ir,ih*.5);cavity.quadraticCurveTo(iw*.5,ih*.5,iw*.5,ih*.5-ir);
+   cavity.lineTo(iw*.5,-ih*.5+ir);cavity.quadraticCurveTo(iw*.5,-ih*.5,iw*.5-ir,-ih*.5);
+   cavity.lineTo(-iw*.5+ir,-ih*.5);
    outer.holes.push(cavity);
    add(new THREE.ExtrudeGeometry(outer,{depth:length,bevelEnabled:true,bevelSegments:3,bevelSize:.025,bevelThickness:.025}),shell,[0,0,-length*.5]);
    box(width*.82,thick*.1,length*.94,dark,[0,-thick*.22,0]);
