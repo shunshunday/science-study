@@ -48,33 +48,77 @@ function getPartSkin(THREE,family){
  PART_SKIN_CACHE.set(family,tex);return tex;
 }
 
+
+function getFinishTexture(THREE,kind){
+ const key='finish:'+kind;
+ if(PART_SKIN_CACHE.has(key))return PART_SKIN_CACHE.get(key);
+ const c=document.createElement('canvas');c.width=512;c.height=512;const q=c.getContext('2d');
+ const palettes={
+  enamel:['#dedfd8','#59636a','#b8b8ae'],paint:['#e8e7df','#414d54','#b66f39'],
+  aluminium:['#aeb8ba','#667277','#e2e5e2'],steel:['#59646a','#202b31','#a5afb0'],
+  rubber:['#202326','#111518','#555b5c']
+ };
+ const [base,ink,accent]=palettes[kind]||palettes.enamel;
+ q.fillStyle=base;q.fillRect(0,0,512,512);
+ const grad=q.createLinearGradient(0,0,512,0);grad.addColorStop(0,'rgba(0,0,0,.18)');grad.addColorStop(.2,'rgba(255,255,255,.17)');grad.addColorStop(.48,'rgba(255,255,255,.025)');grad.addColorStop(.8,'rgba(0,0,0,.045)');grad.addColorStop(1,'rgba(0,0,0,.2)');q.fillStyle=grad;q.fillRect(0,0,512,512);
+ if(kind==='aluminium'||kind==='steel'){
+  q.globalAlpha=.13;q.strokeStyle=kind==='steel'?'#e3e7e5':'#ffffff';q.lineWidth=1;
+  for(let y=0;y<512;y+=4){q.beginPath();q.moveTo(0,y);q.lineTo(512,y);q.stroke();}q.globalAlpha=1;
+ }else if(kind==='rubber'){
+  for(let i=0;i<1800;i++){const x=(i*97)%512,y=(i*193)%512;q.fillStyle=i%2?'rgba(255,255,255,.045)':'rgba(0,0,0,.12)';q.fillRect(x,y,2,2);}
+  q.strokeStyle='rgba(0,0,0,.35)';q.lineWidth=3;for(let y=18;y<512;y+=48){q.beginPath();q.moveTo(0,y);q.lineTo(512,y);q.stroke();}
+ }else{
+  q.strokeStyle='rgba(35,47,52,.27)';q.lineWidth=2;
+  for(let x=32;x<512;x+=96){q.beginPath();q.moveTo(x,0);q.lineTo(x,512);q.stroke();}
+  for(let y=36;y<512;y+=112){q.beginPath();q.moveTo(0,y);q.lineTo(512,y);q.stroke();}
+  for(let y=30;y<512;y+=112)for(let x=26;x<512;x+=48){q.fillStyle='#aab3b1';q.beginPath();q.arc(x,y,2.6,0,Math.PI*2);q.fill();q.fillStyle='rgba(20,29,33,.55)';q.beginPath();q.arc(x,y,1.2,0,Math.PI*2);q.fill();}
+  q.fillStyle=ink;q.fillRect(24,166,190,112);q.strokeStyle=accent;q.lineWidth=4;q.strokeRect(24,166,190,112);
+  q.fillStyle='#f2f0e8';q.font='bold 25px Arial';q.fillText(kind==='paint'?'FLIGHT SYSTEM':'STRUCTURAL',36,204);
+  q.font='bold 17px Arial';q.fillText('KSP / SERIES 01',36,232);q.font='12px Arial';q.fillText('INSPECTED  •  FLIGHT READY',36,254);
+  q.fillStyle=ink;q.fillRect(252,176,236,66);q.fillStyle=accent;
+  for(let i=0;i<14;i++){q.beginPath();q.moveTo(260+i*16,176);q.lineTo(270+i*16,176);q.lineTo(260+i*16,194);q.lineTo(250+i*16,194);q.fill();}
+  q.strokeStyle='rgba(255,255,255,.7)';q.lineWidth=2;q.strokeRect(274,286,178,106);
+  q.fillStyle=ink;q.fillRect(290,306,145,9);q.fillRect(290,330,112,6);q.fillRect(290,348,128,6);
+  q.fillStyle=accent;q.fillRect(24,462,464,9);
+ }
+ const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.wrapS=THREE.RepeatWrapping;tex.wrapT=THREE.RepeatWrapping;tex.anisotropy=8;
+ PART_SKIN_CACHE.set(key,tex);return tex;
+}
+
 export function createPartModel(p,THREE){
  const g=new THREE.Group(),id=String(p.id||''),name=String(p.name||''),type=String(p.type||''),r=Math.max(.055,Number(p.radius)||.5),h=Math.max(.12,Number(p.height)||.5);
  const M=(color,metalness=.35,roughness=.48,extra={})=>new THREE.MeshStandardMaterial({color,metalness,roughness,...extra});
+
  const painted=(base,accent,word,serial=id.toUpperCase())=>{
-  const c=document.createElement('canvas');c.width=1024;c.height=512;const q=c.getContext('2d');
-  q.fillStyle=base;q.fillRect(0,0,1024,512);
-  const shade=q.createLinearGradient(0,0,0,512);shade.addColorStop(0,'rgba(255,255,255,.22)');shade.addColorStop(.48,'rgba(255,255,255,0)');shade.addColorStop(1,'rgba(0,0,0,.24)');q.fillStyle=shade;q.fillRect(0,0,1024,512);
-  q.strokeStyle='rgba(35,48,54,.42)';q.lineWidth=3;
-  for(let x=32;x<1024;x+=128){q.beginPath();q.moveTo(x,18);q.lineTo(x,494);q.stroke();}
-  for(let y of [42,78,432,468]){q.beginPath();q.moveTo(0,y);q.lineTo(1024,y);q.stroke();}
-  q.fillStyle=accent;q.fillRect(0,92,1024,18);q.fillRect(0,402,1024,12);
-  for(let x=18;x<1024;x+=64){q.fillStyle='#d6d8d2';q.beginPath();q.arc(x,58,4,0,Math.PI*2);q.fill();q.fillStyle='#303b40';q.beginPath();q.arc(x,58,2,0,Math.PI*2);q.fill();}
-  q.fillStyle='#1d292f';q.fillRect(86,148,410,150);q.strokeStyle=accent;q.lineWidth=8;q.strokeRect(86,148,410,150);
-  q.fillStyle='#f0eee5';q.font='bold 54px Arial';q.fillText(word,112,218,360);
-  q.font='bold 28px Arial';q.fillText(serial.slice(0,26),112,264,360);
-  q.fillStyle='#f0eee5';q.font='bold 20px Arial';q.fillText('FLIGHT HARDWARE  /  PRESSURE VESSEL',540,190);
-  q.font='18px Arial';q.fillText('INSPECT  •  SERVICE  •  FLIGHT READY',540,226);
-  q.fillStyle='#202b30';q.fillRect(540,252,330,56);q.fillStyle=accent;
-  for(let i=0;i<18;i++)q.fillRect(550+i*17,262,10,36);
-  q.fillStyle='#202b30';q.font='bold 22px Arial';q.fillText('CAUTION',886,288);
-  q.save();q.translate(930,0);for(let y=120;y<392;y+=30){q.fillStyle=y%60?'#202b30':accent;q.fillRect(0,y,42,18);}q.restore();
-  for(let i=0;i<80;i++){const x=(i*137)%1024,y=(i*71)%512;q.fillStyle='rgba(20,30,35,.12)';q.fillRect(x,y,2,2);}
-  const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.wrapS=THREE.RepeatWrapping;tex.wrapT=THREE.ClampToEdgeWrapping;tex.anisotropy=8;
+  const family=/rockomax|x200|mainsail|skipper/i.test(id+' '+name)?'rockomax':/kerbodyne|s3-|mammoth/i.test(id+' '+name)?'kerbodyne':/mk2|mk3/i.test(id+' '+name)?'mk-series':/nerv|nuclear/i.test(id+' '+name)?'nuclear':type;
+  const key='painted:'+family+':'+base+':'+accent+':'+word;
+  let tex=PART_SKIN_CACHE.get(key);
+  if(!tex){
+   const c=document.createElement('canvas');c.width=1024;c.height=512;const q=c.getContext('2d');
+   q.fillStyle=base;q.fillRect(0,0,1024,512);
+   const shade=q.createLinearGradient(0,0,0,512);shade.addColorStop(0,'rgba(255,255,255,.24)');shade.addColorStop(.45,'rgba(255,255,255,.015)');shade.addColorStop(1,'rgba(0,0,0,.25)');q.fillStyle=shade;q.fillRect(0,0,1024,512);
+   q.strokeStyle='rgba(32,43,48,.34)';q.lineWidth=3;
+   for(let x=28;x<1024;x+=128){q.beginPath();q.moveTo(x,18);q.lineTo(x,494);q.stroke();}
+   for(const y of [38,76,436,474]){q.beginPath();q.moveTo(0,y);q.lineTo(1024,y);q.stroke();}
+   for(let x=22;x<1024;x+=64){q.fillStyle='#c4cbc7';q.beginPath();q.arc(x,56,4,0,Math.PI*2);q.fill();q.fillStyle='#39464b';q.beginPath();q.arc(x,56,1.8,0,Math.PI*2);q.fill();}
+   q.fillStyle=accent;q.fillRect(0,94,1024,18);q.fillRect(0,402,1024,13);
+   q.fillStyle='#202b30';q.fillRect(78,148,430,158);q.strokeStyle=accent;q.lineWidth=8;q.strokeRect(78,148,430,158);
+   q.fillStyle='#f3f0e7';q.font='bold 54px Arial';q.fillText(word,104,218,380);
+   q.font='bold 25px Arial';q.fillText(family==='rockomax'?'ROCKOMAX INDUSTRIES':family==='kerbodyne'?'KERBODYNE':'KSP FLIGHT HARDWARE',104,260,380);
+   q.font='16px Arial';q.fillText('SERIES 01  /  FLIGHT READY',104,286,380);
+   q.fillStyle='#f2f0e8';q.font='bold 20px Arial';q.fillText('PRESSURE VESSEL  •  SERVICE PANEL',550,190);
+   q.font='18px Arial';q.fillText('INSPECT  /  LOCK  /  FLIGHT',550,226);
+   q.fillStyle='#202b30';q.fillRect(550,252,328,56);q.fillStyle=accent;
+   for(let i=0;i<18;i++)q.fillRect(560+i*17,262,10,36);
+   q.fillStyle='#202b30';q.font='bold 22px Arial';q.fillText('CAUTION',892,288);
+   q.save();q.translate(946,0);for(let y=120;y<392;y+=30){q.fillStyle=y%60? '#202b30':accent;q.fillRect(0,y,42,18);}q.restore();
+   for(let i=0;i<130;i++){const x=(i*137)%1024,y=(i*71)%512;q.fillStyle='rgba(20,30,35,.10)';q.fillRect(x,y,2,2);}
+   tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.wrapS=THREE.RepeatWrapping;tex.wrapT=THREE.ClampToEdgeWrapping;tex.anisotropy=8;PART_SKIN_CACHE.set(key,tex);
+  }
   return M(0xffffff,.48,.58,{map:tex});
  };
 
- const ivory=M(0xd9d9d0,.42,.52),paint=M(0xe7e6dc,.28,.6),aluminium=M(0xaeb9bd,.82,.28),steel=M(0x59666d,.82,.34),dark=M(0x252f35,.68,.38),rubber=M(0x171b1e,.04,.91),gold=M(0xb68b4e,.72,.32),orange=M(0xc56b31,.35,.58),blue=M(0x28547c,.58,.3),glass=M(0x173f5c,.62,.14,{emissive:0x071a2c,emissiveIntensity:.22}),black=M(0x111a20,.45,.25);
+ const ivory=M(0xd9d9d0,.42,.52,{map:getFinishTexture(THREE,'enamel')}),paint=M(0xe7e6dc,.28,.6,{map:getFinishTexture(THREE,'paint')}),aluminium=M(0xaeb9bd,.82,.28,{map:getFinishTexture(THREE,'aluminium')}),steel=M(0x59666d,.82,.34,{map:getFinishTexture(THREE,'steel')}),dark=M(0x252f35,.68,.38),rubber=M(0x171b1e,.04,.91,{map:getFinishTexture(THREE,'rubber')}),gold=M(0xb68b4e,.72,.32),orange=M(0xc56b31,.35,.58),blue=M(0x28547c,.58,.3),glass=M(0x173f5c,.62,.14,{emissive:0x071a2c,emissiveIntensity:.22}),black=M(0x111a20,.45,.25);
  const add=(geo,mat,pos=[0,0,0],rot=[0,0,0],scale)=>{const o=new THREE.Mesh(geo,mat);o.position.set(...pos);o.rotation.set(...rot);if(scale)o.scale.set(...scale);o.castShadow=true;o.receiveShadow=true;g.add(o);return o;};
  const lathe=(profile,mat,segments=64,pos=[0,0,0])=>add(new THREE.LatheGeometry(profile.map(v=>new THREE.Vector2(v[0],v[1])),segments),mat,pos);
  const band=(radius,y,t=.025,mat=steel)=>add(new THREE.TorusGeometry(radius,t,8,64),mat,[0,y,0],[Math.PI/2,0,0]);
