@@ -152,10 +152,6 @@ hBox(230,.8,270,0,-.65,0,floorMat);
 const floorJoint=hangarMat(0x646d70,.04,.98),floorMark=hangarMat(0xc4c8c2,.02,.9);
 hBox(.12,.012,258,0,-.244,0,floorJoint);hBox(220,.012,.12,0,-.244,-64,floorJoint);hBox(220,.012,.12,0,-.244,64,floorJoint);
 hBox(1.1,.018,48,-15,-.232,0,floorMark);hBox(1.1,.018,48,15,-.232,0,floorMark);
-for(let x of [-105,-75,-45,45,75,105]){
- hBox(3,150,3,x,74,-95,steel);hBox(3,150,3,x,74,95,steel);
- hBeam([x,1,-95],[x,148,-95],.72,steelLight);hBeam([x,1,95],[x,148,95],.72,steelLight);
-}
 for(let y of [18,48,78,108,138,150]){
  hBeam([-112,y,-95],[112,y,-95],.9,steelLight);
  hBeam([-112,y,95],[112,y,95],.9,steelLight);
@@ -171,11 +167,9 @@ for(let x=-105;x<105;x+=21){
  hBeam([x,56,-95],[x+21,78,-95],.55,steel);hBeam([x+21,56,-95],[x,78,-95],.55,steel);
  hBeam([x,12,95],[x+21,34,95],.55,steel);hBeam([x+21,12,95],[x,34,95],.55,steel);
 }
-for(let x of [-95,-65,65,95]){hBox(5,88,5,x,44,0,darkSteel);for(let y=12;y<88;y+=18)hBox(12,1,10,x+(x<0?7:-7),y,0,steelLight);}
 for(let x=-42;x<=42;x+=14){hBox(13,128,1.8,x,65,-94,yellow);for(let y=8;y<128;y+=16)hBox(12,.7,2,x,y,-92,darkSteel);}
 hBox(190,5,5,0,140,-94,darkSteel);hBox(190,4,5,0,3,-94,yellow);
 for(let z=-75;z<=75;z+=25){hBox(1.4,1.4,150,-112,1,z,steel);hBox(1.4,1.4,150,112,1,z,steel);}
-for(let x of [-72,72]){for(let z of [-45,45]){hBox(2,18,2,x,9,z,darkSteel);hBox(10,1,4,x,18,z,steelLight);}}
 for(let x of [-55,55])for(let z of [-30,30]){const lamp=new THREE.Mesh(new THREE.BoxGeometry(8,.8,3),new THREE.MeshBasicMaterial({color:0xffe4b5}));lamp.position.set(x,76,z);hangar.add(lamp);}
 /* Aircraft workshop markings and the runway outside the hangar doors */
 const runwayMat=hangarMat(0x343d42,.15,.95),runwayLine=hangarMat(0xe5dfc7,.05,.85),taxiYellow=hangarMat(0xd2a53c,.2,.8);
@@ -230,9 +224,6 @@ for(const x of [-64,64])for(const z of [-82,82]){
   wheel.rotation.z=Math.PI/2;wheel.position.set(x+wx,.8,z+wz);wheel.castShadow=true;hangar.add(wheel);
  }
  hBox(5,3.2,4,x,3.3,z,glassMat);
-}
-for(const x of [-108,108])for(const z of [-78,-38,2,42,82]){
- hBox(1.5,24,1.5,x,12,z,craneYellow);hBox(5,1,5,x,24,z,steelLight);
 }
 /* KSP1-inspired continuous VAB cladding. Panels sit flush with the steel frame:
    solid lower/upper bands, a continuous glazed clerestory, and a clear rear door. */
