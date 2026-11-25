@@ -464,14 +464,90 @@ export function createPartModel(p,THREE){
   }
  };
  const makeProbe=()=>{
-  const oct=id.includes('okto')||id.includes('hecs'),flat=id.includes('stayputnik'),qbe=id.includes('qbe'),rover=id.includes('rovemate'),rcl=id.includes('rcl');
-  if(flat){lathe([[0,-h*.18],[r*.78,-h*.18],[r*.95,-h*.08],[r*.95,h*.08],[r*.78,h*.18],[0,h*.18]],painted('#d9d9d0','#b68b4e','PROBE CORE'),48);band(r*.94,h*.12,.04,gold);for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(r*.9,-h*.12,h*.12,a,steel,.025);}}
-  else if(oct||qbe||rover){const n=oct?8:4,shape=new THREE.CylinderGeometry(r*.92,r*.92,h*.75,n,1,false);add(shape,oct?M(0xb8b9b0,.42,.55):ivory,[0,0,0]);band(r*.9,h*.38,.045,gold);band(r*.9,-h*.38,.045,steel);for(let i=0;i<n;i++){const a=i*Math.PI*2/n;const x=Math.cos(a)*r*.66,z=Math.sin(a)*r*.66;bolt(x,h*.28,z,.035,gold);}}
-  else{lathe([[0,-h*.5],[r*.78,-h*.5],[r,h*.36],[r*.78,h*.5],[0,h*.5]],ivory,8);band(r*.98,h*.38,.04,gold);}
-  const domeR=r*.26;sphere(domeR,gold,[0,h*.46,0]);for(let i=0;i<3;i++){const a=i*Math.PI*2/3;radialPipe(r*.62,h*.2,h*.72,a,aluminium,.025);}
-  if(rcl){for(let i=0;i<4;i++){const a=i*Math.PI/2;const x=Math.cos(a)*r*1.25,z=Math.sin(a)*r*1.25;box(r*.48,.055,r*.36,blue,[x,h*.12,z]);}}
-  if(rover){for(let i=0;i<4;i++){const x=i%2?1:-1,z=i<2?1:-1;const leg=box(.08,h*.65,.08,steel,[x*r*.78,-h*.4,z*r*.78]);leg.rotation.z=x*.3;}}
-  radialLabel(r*.94,0,r*.65,h*.2,getLabelMaterial());
+  const nm=(id+' '+name).toLowerCase();
+  const oct=/okto/.test(nm),hecs=/hecs/.test(nm),qbe=/qbe/.test(nm),stay=/stayputnik|ステイプートニク/.test(nm),rover=/rovemate|rove.?mate|ローブメイト/.test(nm),rcl=/rc-l01|rcl01|remote guidance unit/.test(nm),rc001=/rc-001s|rc001s/.test(nm),mk2drone=/mk2 drone/.test(nm);
+  const skin=(base,accent,label)=>painted(base,accent,label,name);
+  const shell=skin(oct?'#9da6a6':hecs?'#d7d9d2':qbe?'#b8bebc':stay?'#8b9292':'#d6d8d2','#b68b4e','PROBODOBODYNE AVIONICS');
+  const facePlate=(x,y,z,w,d,material=dark)=>box(w,d,.035,material,[x,y,z]);
+  if(qbe){
+   // QBE: compact rectangular probe core with flat service faces.
+   box(r*1.62,h*.78,r*1.62,shell);
+   for(const side of [-1,1]){
+    facePlate(0,h*.02,side*r*.82,r*.92,h*.42,dark);
+    box(r*.72,h*.28,.025,ivory,[0,h*.02,side*r*.845]);
+    for(let i=0;i<5;i++)box(r*.08,.018,.018,steel,[(i-2)*r*.13,h*.12,side*r*.865]);
+    for(let i=0;i<4;i++)bolt((i%2?1:-1)*r*.58,(i<2?1:-1)*h*.28,side*r*.83,.025,gold);
+   }
+   cyl(r*.34,r*.34,.1,steel,h*.43,32);band(r*.34,h*.49,.025,gold);
+   for(let x of [-1,1])for(let z of [-1,1])box(.09,h*.18,.09,aluminium,[x*r*.72,-h*.36,z*r*.72]);
+  }
+  else if(oct||hecs||mk2drone){
+   const sides=hecs?6:oct?8:8,bodyH=h*.76,bodyR=r*.92;
+   const body=new THREE.Mesh(new THREE.CylinderGeometry(bodyR*.96,bodyR,bodyH,sides,1,false),shell);
+   body.castShadow=true;body.receiveShadow=true;g.add(body);
+   band(bodyR*.99,bodyH*.48,.04,gold);band(bodyR*.99,-bodyH*.48,.035,steel);
+   for(let i=0;i<sides;i++){
+    const ang=(i+.5)*Math.PI*2/sides,x=Math.sin(ang)*bodyR*.91,z=Math.cos(ang)*bodyR*.91;
+    const plate=box(bodyR*.56,bodyH*.55,.035,i%2?ivory:aluminium,[x,0,z],[0,ang,0]);
+    for(let y of [-bodyH*.2,bodyH*.2])bolt(x,y,z+.018,.018,gold);
+    // Individual thermal-blanket seams on HECS faces.
+    if(hecs)for(let j=0;j<3;j++)box(bodyR*.4,.012,.012,steel,[x,(j-1)*bodyH*.13,z+.025],[0,ang,0]);
+   }
+   cyl(bodyR*.46,bodyR*.46,.12,steel,bodyH*.48,48);band(bodyR*.46,bodyH*.55,.025,gold);
+   cyl(bodyR*.35,bodyR*.35,.055,black,-bodyH*.5,48);
+   sphere(bodyR*.15,glass,[0,bodyH*.62,0],[1,.45,1]);
+   for(let i=0;i<sides;i++){const ang=i*Math.PI*2/sides;const x=Math.sin(ang)*bodyR*.75,z=Math.cos(ang)*bodyR*.75;sphere(.035, i%2?orange:blue,[x,bodyH*.5,z],[1,.55,1]);}
+  }
+  else if(stay){
+   // Sputnik-like polished sphere, deliberately lacking an upper stack node.
+   sphere(r*.78,aluminium,[0,0,0],[1,.88,1]);
+   const equator=add(new THREE.TorusGeometry(r*.77,.035,10,64),steel,[0,0,0],[Math.PI/2,0,0]);
+   cyl(r*.38,r*.42,h*.18,steel,-h*.39,48);band(r*.4,-h*.3,.03,gold);
+   for(let i=0;i<4;i++){const ang=i*Math.PI/2;const x=Math.cos(ang)*r*.72,z=Math.sin(ang)*r*.72;tube([[0,h*.1,0],[x,h*.2,z],[x*1.12,h*.3,z*1.12]],.018,gold);}
+   sphere(.055,gold,[0,h*.32,0]);
+  }
+  else if(rover){
+   // RoveMate is a low rectangular rover avionics box, not a cylindrical probe.
+   box(r*1.72,h*.62,r*1.42,skin('#d3d5cd','#b68b4e','ROVER AVIONICS'));
+   box(r*1.5,.055,r*1.18,steel,[0,h*.34,0]);
+   for(let x of [-1,1])for(let z of [-1,1]){
+    box(r*.28,h*.18,r*.28,aluminium,[x*r*.72,-h*.38,z*r*.58]);
+    tube([[x*r*.72,-h*.28,z*r*.58],[x*r*.9,-h*.52,z*r*.72],[x*r*1.1,-h*.52,z*r*.72]],.025,steel);
+   }
+   facePlate(0,h*.02,r*.72,r*.9,h*.3,dark);
+   for(let i=0;i<4;i++)sphere(.055,i%2?orange:blue,[(i-1.5)*r*.18,h*.02,r*.75],[1,.6,.3]);
+   // Stereo navigation cameras and dust-sealed connectors.
+   for(let x of [-1,1]){sphere(r*.14,steel,[x*r*.42,h*.2,r*.74],[1,1,.35]);sphere(r*.09,glass,[x*r*.42,h*.2,r*.78],[1,1,.25]);}
+   for(let i=0;i<6;i++)bolt((i-2.5)*r*.22,-h*.22,r*.72,.018,gold);
+  }
+  else if(rcl||rc001){
+   // Remote guidance cores use a thin circular bus with radial connector ears.
+   cyl(r*.92,r*.92,h*.46,skin('#aeb6b5','#b68b4e','REMOTE GUIDANCE UNIT'),0,64);
+   band(r*.94,h*.2,.05,gold);band(r*.94,-h*.2,.04,steel);
+   for(let i=0;i<4;i++){
+    const ang=i*Math.PI/2,x=Math.sin(ang)*r*1.04,z=Math.cos(ang)*r*1.04;
+    box(r*.42,.1,r*.28,aluminium,[x,0,z],[0,ang,0]);
+    bolt(x,0,z,.045,gold);
+   }
+   const face=box(r*.9,h*.22,.045,dark,[0,h*.03,r*.88]);
+   box(r*.54,.035,.018,ivory,[0,h*.08,r*.91]);
+   for(let i=0;i<5;i++)sphere(.035,i%2?orange:blue,[(i-2)*r*.13,-h*.015,r*.92],[1,.6,.3]);
+   if(rcl)for(let i=0;i<4;i++){const ang=i*Math.PI/2;tube([[Math.sin(ang)*r*.6,h*.18,Math.cos(ang)*r*.6],[Math.sin(ang)*r*.9,h*.48,Math.cos(ang)*r*.9]],.025,gold);}
+  }
+  else if(id.includes('legacy-hecs')){
+   const body=new THREE.Mesh(new THREE.CylinderGeometry(r*.92,r*.92,h*.72,6,1,false),skin('#d6d8d2','#b68b4e','HECS LEGACY'));
+   g.add(body);band(r*.94,h*.36,.04,gold);band(r*.94,-h*.36,.04,steel);
+   for(let i=0;i<6;i++){const ang=i*Math.PI/3;radialPipe(r*.94,-h*.25,h*.25,ang,aluminium,.025);}
+   cyl(r*.34,r*.34,.1,steel,h*.42,6);
+  }
+  else{
+   // Generic compact guidance core, with a clearly defined octagonal casing.
+   const body=new THREE.Mesh(new THREE.CylinderGeometry(r*.92,r*.92,h*.75,8,1,false),shell);g.add(body);
+   band(r*.94,h*.38,.04,gold);band(r*.94,-h*.38,.035,steel);
+   for(let i=0;i<8;i++){const ang=i*Math.PI/4;radialPipe(r*.92,-h*.28,h*.28,ang,aluminium,.018);bolt(Math.cos(ang)*r*.9,h*.25,Math.sin(ang)*r*.9,.02,gold);}
+   cyl(r*.42,r*.42,.09,steel,h*.42,32);sphere(r*.2,glass,[0,h*.5,0]);
+   radialLabel(r*.94,0,r*.64,h*.18,getLabelMaterial());
+  }
  };
  const makeWing=()=>{
   const vertical=type==='tail'||id.includes('rudder')||id.includes('winglet'),delta=id.includes('delta'),swept=id.includes('swept')||id.includes('strake'),small=id.includes('small')||id.includes('struct-d');
