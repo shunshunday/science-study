@@ -238,7 +238,20 @@ export function createPartModel(p,THREE){
    return;
   }
   if(donut){const ring=add(new THREE.TorusGeometry(r*.76,r*.27,24,72),M(0xd6d7cf,.42,.5));ring.scale.set(1,.82,1);band(r*.98,.04,.035,steel);band(r*.98,-.04,.035,gold);cyl(r*.22,r*.22,.12,dark,0,32);detailRivets(r*.96,0,20);}
-  else if(baguette){lathe([[0,-h*.48],[r*.45,-h*.48],[r*.68,-h*.42],[r*.72,-h*.32],[r*.72,h*.32],[r*.65,h*.44],[r*.42,h*.48],[0,h*.48]],ivory,64);band(r*.71,-h*.38,.025,gold);band(r*.71,h*.38,.025,steel);for(let y of [-h*.25,h*.25])band(r*.72,y,.012,aluminium);}
+  else if(baguette){
+   const skin=makeTankArtwork(THREE,id,name,'fl');
+   lathe([[0,-h*.48],[r*.45,-h*.48],[r*.68,-h*.42],[r*.72,-h*.32],[r*.72,h*.32],[r*.65,h*.44],[r*.42,h*.48],[0,h*.48]],M(0xffffff,.48,.56,{map:skin}),72);
+   for(let y of [-h*.42,-h*.34,h*.34,h*.42])band(r*.72,y,.03,y<0?steel:gold);
+   for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(r*.71,-h*.3,h*.3,a,aluminium,.018);bolt(r*.71*Math.cos(a),-h*.28,r*.71*Math.sin(a),.018,gold);}
+   for(let side of [-1,1]){
+    box(r*.16,h*.72,.08,steel,[side*r*.54,0,r*.42]);
+    box(r*.1,.12,.1,orange,[side*r*.54,h*.3,r*.46]);
+    tube([[side*r*.54,-h*.32,r*.46],[side*r*.68,-h*.2,r*.46],[side*r*.68,h*.2,r*.46],[side*r*.54,h*.32,r*.46]],.018,gold);
+   }
+   box(r*.6,.18,.045,dark,[0,0,r*.72]);
+   box(r*.44,.11,.025,ivory,[0,0,r*.75]);
+   cyl(r*.28,r*.28,.12,steel,h*.49,32);cyl(r*.24,r*.24,.1,dark,-h*.49,32);
+  }
   else{
    let rad=r,profile;
    if(mk2||mk3){rad*=mk3?1.05:1;profile=[[0,-h*.5],[rad*.72,-h*.5],[rad*.93,-h*.45],[rad,-h*.35],[rad,h*.35],[rad*.93,h*.45],[rad*.72,h*.5],[0,h*.5]];}
