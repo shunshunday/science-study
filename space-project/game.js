@@ -263,6 +263,19 @@ for(let x=-42;x<=42;x+=14)hBox(1.1,128,1.5,x,69,-95.2,steelLight);
 for(let y=13;y<=125;y+=16)hBox(90,.75,1.5,0,y,-95.2,steelLight);
 hBox(224,28,.5,0,136,-95.45,vabGlass);
 for(let x=-105;x<=105;x+=21)hBox(.35,28,.8,x,136,-95.3,steelLight);
+
+// Front elevation: close the previously open face with flush industrial cladding.
+hBox(66,120,1.1,-79,60,96,vabWall);hBox(66,120,1.1,79,60,96,vabWall);
+hBox(92,1.2,1.1,0,135.6,96,vabWall);
+hBox(92,132,1.25,0,69,96,vabDoor);
+for(let x=-42;x<=42;x+=14)hBox(1.1,128,1.5,x,69,95.2,steelLight);
+for(let y=13;y<=125;y+=16)hBox(90,.75,1.5,0,y,95.2,steelLight);
+hBox(224,28,.5,0,136,95.45,vabGlass);
+for(let x=-105;x<=105;x+=21)hBox(.35,28,.8,x,136,95.3,steelLight);
+for(let x of [-108,-88,-68,-48,48,68,88]){
+ hWallBrace([x,5,95.43],[x+18,115,95.43],[0,0,-1]);
+ hWallBrace([x+18,5,95.43],[x,115,95.43],[0,0,-1]);
+}
 for(let x of [-108,-88,-68,-48,48,68,88]){
  hWallBrace([x,5,-95.43],[x+18,115,-95.43],[0,0,1]);
  hWallBrace([x+18,5,-95.43],[x,115,-95.43],[0,0,1]);
