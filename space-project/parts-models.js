@@ -1308,7 +1308,62 @@ export function createPartModel(p,THREE){
    sphere(.045,gold,[0,h*.28+mastH,0]);
   }
   for(let i=0;i<8;i++){const ang=i*Math.PI/4;bolt(baseR*.9*Math.cos(ang),-h*.3,baseR*.9*Math.sin(ang),.018,gold);}
- }; const makePayload=()=>{
+ }; const makeDock=()=>{
+  const nm=(id+' '+name).toLowerCase();
+  const shielded=/shield|シールド/.test(nm),inline=/inline|インライン/.test(nm),grabbing=/grabbing|グラビング/.test(nm),inflatable=/inflatable|膨張式/.test(nm),mk2=/mk2/.test(nm),sr=/\bsr\b|senior|sr\./.test(nm);
+  const faceY=h*.48,bodyMat=painted('#bfc5c3','#c6a04c','CLAMP-O-TRON DOCKING SYSTEM',name);
+  if(grabbing){
+   lathe([[0,-h*.5],[r*.58,-h*.5],[r*.82,-h*.3],[r*.9,h*.15],[r*.78,h*.4],[r*.58,h*.5],[0,h*.5]],steel,64);
+   band(r*.82,h*.34,.055,gold);cyl(r*.54,r*.54,.08,dark,faceY,48);
+   for(let i=0;i<3;i++){
+    const a=i*Math.PI*2/3,x=Math.cos(a)*r*.5,z=Math.sin(a)*r*.5;
+    tube([[x,h*.25,z],[x*1.18,h*.5,z*1.18],[x*1.35,h*.72,z*1.35]],.055,aluminium);
+    tube([[x*1.35,h*.72,z*1.35],[x*1.12,h*.84,z*1.12],[x*.82,h*.72,z*.82]],.04,gold);
+    sphere(.075,steel,[x,h*.25,z]);
+   }
+   sphere(r*.22,glass,[0,h*.54,0],[1,.3,1]);return;
+  }
+  if(inflatable){
+   cyl(r*.44,r*.44,h*.28,steel);
+   const torus=add(new THREE.TorusGeometry(r*.72,r*.22,24,80),painted('#c5c8c1','#b68b4e','INFLATABLE AIRLOCK'),[0,h*.2,0]);torus.scale.set(1,1,.86);
+   band(r*.5,h*.34,.045,gold);cyl(r*.46,r*.46,.07,dark,h*.36,48);
+   for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(r*.86,-h*.05,h*.35,a,steel,.025);}return;
+  }
+  const baseR=mk2?r*.92:sr?r*.98:r*.9;
+  lathe([[0,-h*.5],[baseR*.58,-h*.5],[baseR*.82,-h*.38],[baseR*.94,-h*.12],[baseR*.94,h*.16],[baseR*.82,h*.34],[baseR*.62,h*.5],[0,h*.5]],bodyMat,80);
+  for(const y of [-h*.38,-h*.18,h*.28,h*.4])band(baseR*(y>0?.92:.98),y,.035,y<0?steel:aluminium);
+  band(baseR*.88,h*.42,.055,gold);band(baseR*.7,h*.47,.035,ivory);
+  cyl(baseR*.58,baseR*.58,.09,dark,faceY,64);cyl(baseR*.4,baseR*.4,.045,steel,faceY+.045,64);
+  add(new THREE.CircleGeometry(baseR*.34,64),black,[0,faceY+.07,0],[-Math.PI/2,0,0]);
+  add(new THREE.TorusGeometry(baseR*.34,.035,10,64),gold,[0,faceY+.075,0]);
+  add(new THREE.CircleGeometry(baseR*.12,48),blue,[0,faceY+.078,0],[-Math.PI/2,0,0]);
+  for(let i=0;i<12;i++){
+   const a=i*Math.PI/6,x=Math.cos(a)*baseR*.79,z=Math.sin(a)*baseR*.79;
+   bolt(x,faceY+.045,z,.028,aluminium);
+   box(baseR*.08,.025,.035,i%2?steel:gold,[Math.cos(a)*baseR*.52,faceY+.08,Math.sin(a)*baseR*.52],[0,-a,0]);
+  }
+  for(let i=0;i<16;i++){const a=i*Math.PI/8,x=Math.cos(a)*baseR*.96,z=Math.sin(a)*baseR*.96;box(baseR*.12,.07,.035,i%2?dark:gold,[x,-h*.22,z],[0,-a,0]);}
+  for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(baseR*.9,-h*.28,h*.22,a,steel,.025);}
+  if(shielded){
+   for(let i=0;i<3;i++){
+    const a=i*Math.PI*2/3,x=Math.cos(a)*baseR*.9,z=Math.sin(a)*baseR*.9;
+    const petal=box(baseR*.72,h*.16,.055,ivory,[x,faceY+.06,z],[0,-a,0]);petal.rotation.z=Math.sin(a)*.18;
+    box(baseR*.2,.12,.12,steel,[x*.78,faceY+.02,z*.78],[0,-a,0]);
+    tube([[x*.55,faceY-.02,z*.55],[x*1.05,faceY+.2,z*1.05],[x*1.25,faceY+.12,z*1.25]],.025,gold);
+   }
+   band(baseR*.7,faceY+.13,.035,orange);
+  }
+  if(inline){
+   lathe([[0,-h*.5],[baseR*.76,-h*.5],[baseR*.86,-h*.35],[baseR*.86,h*.48],[baseR*.7,h*.5],[0,h*.5]],steel,72);
+   band(baseR*.86,h*.43,.045,gold);
+  }
+  if(mk2){
+   box(baseR*1.9,h*.66,baseR*1.15,steel,[0,-h*.05,0]);
+   for(let side of [-1,1])box(baseR*.08,h*.55,baseR*.95,gold,[side*baseR*.9,-h*.05,0]);
+  }
+  for(let i=0;i<16;i++){const a=i*Math.PI/8;bolt(baseR*.94*Math.cos(a),-h*.38,baseR*.94*Math.sin(a),.018,gold);}
+ };
+ const makePayload=()=>{
   const nm=(id+' '+name).toLowerCase();
   const fairing=/fairing|防護シェル/.test(nm),cargoBay=/cargo bay|カーゴベイ/.test(nm),ramp=/cargo ramp|カーゴドア/.test(nm),service=/service bay|サービスベイ/.test(nm),storage=/seq-|seq\d|保管ユニット|コンテナ/.test(nm),eva=/eva|ジェットパック|修理キット|実験キット|燃料シリンダー|個人用パラシュート/.test(nm),lab=/science lab|移動研究室/.test(nm),scienceStore=/science storage|実験用記憶装置/.test(nm),serviceModule=/sm-\d|サービスモジュール/.test(nm);
   if(fairing){
