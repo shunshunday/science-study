@@ -955,8 +955,8 @@ export function createPartModel(p,THREE){
     for(let i=0;i<9;i++)box(w*.9,.035,depth*.8,padMat,[0,(i-4)*len*.105,depth*.56]);
     for(let side of [-1,1])box(.035,len*.94,depth*.8,aluminium,[side*w*.48,0,depth*.56]);
    }else if(round){
-    const rr=Math.min(w,len)*.48;cyl(rr,rr,depth,steel,0,64);
-    for(let ring=1;ring<=4;ring++)add(new THREE.TorusGeometry(rr*ring/5,.018,6,48),dark,[0,depth*.52,0]);
+    const rr=Math.min(w,len)*.48;const roundPad=cyl(rr,rr,depth,steel,0,64);roundPad.rotation.x=Math.PI/2;
+    for(let ring=1;ring<=4;ring++)add(new THREE.TorusGeometry(rr*ring/5,.018,6,48),dark,[0,0,depth*.52]);
     for(let i=0;i<16;i++){const a=i*Math.PI/8,x=Math.cos(a)*rr*.78,z=Math.sin(a)*rr*.78;box(.045,.018,.045,padMat,[x,depth*.55,z]);}
    }else{
     box(w,len,depth,steel);
