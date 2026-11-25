@@ -614,6 +614,37 @@ export function createPartModel(p,THREE){
    for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(r*.46,-h*.2,h*.28,a,gold,.018);}
    add(new THREE.TorusGeometry(r*.4,.055,12,48),gold,[0,h*.23,0]);add(new THREE.CircleGeometry(r*.36,48),blue,[0,h*.25,0]);
    for(let i=0;i<6;i++){const a=i*Math.PI/3;box(.055,h*.42,.055,aluminium,[Math.cos(a)*r*.53,h*.05,Math.sin(a)*r*.53]);}
+  }else if(ant){
+   // LV-1 Ant reference study: the stock part is a compact square engine block
+   // with a single small bell nozzle, diagonal face stiffeners and exposed fasteners.
+   const bw=r*1.42,bh=h*.72,bd=r*1.22;
+   const shell=painted('#747b7b','#b68b4e','LV-1 ANT MICRO ENGINE',name);
+   box(bw,bh,bd,shell,[0,h*.04,0]);
+   // Recessed front service plate with an X-shaped machined reinforcement frame.
+   box(bw*.78,bh*.68,.045,steel,[0,h*.04,bd*.505]);
+   box(bw*.66,bh*.56,.025,dark,[0,h*.04,bd*.53]);
+   for(let side of [-1,1]){
+    tube([[side*bw*.34,h*.04-bh*.29,bd*.55],[0,h*.04,bd*.575],[side*bw*.34,h*.04+bh*.29,bd*.55]],.028,aluminium);
+    tube([[side*bw*.34,h*.04-bh*.29,bd*.555],[0,h*.04,bd*.575],[-side*bw*.34,h*.04+bh*.29,bd*.555]],.018,steel);
+   }
+   // Four corner screws and a small inspection plate on the front face.
+   for(let x of [-1,1])for(let y of [-1,1])bolt(x*bw*.39,h*.04+y*bh*.34,bd*.56,.026,gold);
+   box(bw*.36,bh*.16,.035,ivory,[0,h*.04-bh*.25,bd*.58]);
+   box(bw*.28,.025,.018,orange,[0,h*.04-bh*.25,bd*.605]);
+   // Engine throat, concentric nozzle mount and thin rolled bell lip.
+   lathe([[0,-h*.82],[r*.22,-h*.82],[r*.31,-h*.77],[r*.38,-h*.57],[r*.43,-h*.39],[r*.37,-h*.31],[r*.27,-h*.29],[0,-h*.29]],steel,48,[0,0,0]);
+   add(new THREE.TorusGeometry(r*.39,.035,10,48),aluminium,[0,-h*.39,0],[Math.PI/2,0,0]);
+   add(new THREE.TorusGeometry(r*.28,.022,8,40),gold,[0,-h*.79,0],[Math.PI/2,0,0]);
+   add(new THREE.CircleGeometry(r*.25,40),black,[0,-h*.823,0],[Math.PI/2,0,0]);
+   // Rear attachment boss and side-mounted feed fittings.
+   cyl(r*.42,r*.42,.12,aluminium,h*.42,40);
+   cyl(r*.29,r*.29,.08,dark,h*.49,32);
+   for(let side of [-1,1]){
+    box(.07,bh*.52,.09,steel,[side*bw*.48,h*.04,0]);
+    tube([[side*bw*.42,h*.25,0],[side*bw*.53,h*.12,bd*.12],[side*bw*.42,-h*.18,bd*.12]],.022,gold);
+    for(let j=0;j<3;j++)bolt(side*bw*.48,(j-1)*bh*.24,bd*.2,.018,aluminium);
+   }
+   for(let i=0;i<8;i++){const a=i*Math.PI/4;bolt(r*.55*Math.cos(a),h*.04+bh*.39,r*.55*Math.sin(a),.018,gold);}
   }else{
    // Stock engines with multi-chamber hardware keep their actual nozzle count.
    const cluster=mammoth?4:(twin||poodle||bobcat)?2:(spider||kodiak)?4:1,bodyR=r*(mammoth?1.02:mastodon?1.1:rhino?1.08:twin?.9:wolfhound?.94:skiff?.88:skipper?.9:mainsail?.95:bobcat?.86:kodiak?.8:cheetah?.72:ant?.5:spark?.56:twitch?.58:.82);
