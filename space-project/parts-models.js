@@ -1130,6 +1130,23 @@ export function createPartModel(p,THREE){
  };
  const makeWing=()=>{
   const nm=(id+' '+name).toLowerCase();
+  // Convert a flat extruded planform into a cambered, tapered airfoil section.
+  const applyAirfoil=(geo,chord,thick,span)=>{
+   const pos=geo.attributes.position;
+   for(let i=0;i<pos.count;i++){
+    const x=pos.getX(i),y=pos.getY(i),z=pos.getZ(i);
+    const u=THREE.MathUtils.clamp((y+chord*.48)/(chord*.96),0,1);
+    const v=THREE.MathUtils.clamp(Math.abs(x)/Math.max(span,.001),0,1);
+    const profile=Math.pow(Math.max(0,Math.sin(Math.PI*u)),.55);
+    const localT=thick*(.12+.88*profile)*(1-.22*v);
+    const camber=thick*.14*Math.sin(Math.PI*u)*(1-.25*v);
+    const layer=THREE.MathUtils.clamp(z/Math.max(thick,.001),0,1);
+    const bevel=z<0?z:z>thick?z-thick:0;
+    pos.setZ(i,camber+(layer-.5)*localT+bevel);
+   }
+   pos.needsUpdate=true;geo.computeVertexNormals();
+   return geo;
+  };
   const tailConnector=/tail-connector|テールコネクター/.test(nm);
   if(tailConnector){
    // Tail Connector A/B are tapered fuselage tail cones, not lifting surfaces.
@@ -1151,7 +1168,8 @@ export function createPartModel(p,THREE){
    const root=r*(fat?.78:big?.7:.52),tip=root*(number===1?.58:number===2?.7:number===3?.82:number===4?.56:.9);
    const sweep=span*(fat?.12:big?.1:.16),thickness=fat?.13:big?.105:.075;
    const shape=new THREE.Shape();shape.moveTo(-root*.5,-root*.48);shape.lineTo(root*.5,-root*.48);shape.lineTo(span-sweep,tip*.5);shape.lineTo(span-sweep*.55,-tip*.5);shape.closePath();
-   add(new THREE.ExtrudeGeometry(shape,{depth:thickness,bevelEnabled:true,bevelSegments:4,bevelSize:.025,bevelThickness:.018}),painted('#cbd0cc','#c56b31','HINGED FLIGHT CONTROL PANEL',name),[0,0,0],[-Math.PI/2,0,0]);
+   const controlGeo=applyAirfoil(new THREE.ExtrudeGeometry(shape,{depth:thickness,bevelEnabled:true,bevelSegments:4,bevelSize:.025,bevelThickness:.018}),root,thickness,span);
+   add(controlGeo,painted('#cbd0cc','#c56b31','HINGED FLIGHT CONTROL PANEL',name),[0,0,0],[-Math.PI/2,0,0]);
    // Reinforced hinge beam, separated knuckles, actuator rods and recessed inspection panels.
    tube([[-root*.5,-root*.48,thickness*.5],[root*.5,-root*.48,thickness*.5],[span-sweep*.15,-tip*.38,thickness*.5]],.028,dark);
    for(let i=0;i<5;i++){
@@ -1205,7 +1223,7 @@ export function createPartModel(p,THREE){
   shape.lineTo(-root*.5,root*.48);
   shape.closePath();
   const skin=painted(vertical?'#c6cbc8':'#d5d8d4',canard?'#c56b31':'#b68b4e',vertical?'VERTICAL STABILIZER':canard?'MOVABLE CANARD':'AERODYNAMIC WING',name);
-  const geo=new THREE.ExtrudeGeometry(shape,{depth:thickness,bevelEnabled:true,bevelSegments:4,steps:1,bevelSize:Math.min(.045,thickness*.42),bevelThickness:thickness*.32,curveSegments:10});
+  const geo=applyAirfoil(new THREE.ExtrudeGeometry(shape,{depth:thickness,bevelEnabled:true,bevelSegments:4,steps:1,bevelSize:Math.min(.045,thickness*.42),bevelThickness:thickness*.32,curveSegments:10}),root,thickness,span);
   const wing=add(geo,skin,[0,0,0],vertical?[0,0,0]:[-Math.PI/2,0,0]);
   if(vertical)wing.position.y=h*.1;
   // Metal leading edge, dark trailing cap and separate skin access panels.
@@ -1215,6 +1233,17 @@ export function createPartModel(p,THREE){
   const trailPts=[[root*.5,-root*.48,thickness*.55],[span*.58-trailSweep*.55,-tip*.05,thickness*.55],[span-trailSweep,-tip*.5,thickness*.55]];
   const trailCurve=new THREE.CatmullRomCurve3(trailPts.map(v=>new THREE.Vector3(...v)));
   add(new THREE.TubeGeometry(trailCurve,32,thickness*.12,8,false),dark,[0,0,0],vertical?[0,0,0]:[-Math.PI/2,0,0]);
+  // Internal front/rear spars give the wing a real load-bearing section beneath its skin.
+  for(const chordFrac of [.27,.7]){
+   const y0=-root*.48+root*.96*chordFrac,y1=-tip*.48+tip*.96*chordFrac;
+   const curve=new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0,y0,thickness*.22),
+    new THREE.Vector3(span*.35-sweep*.35,y0*.62+y1*.38,thickness*.22),
+    new THREE.Vector3(span*.72-sweep*.72,y0*.28+y1*.72,thickness*.22),
+    new THREE.Vector3(span-sweep*.82,y1,thickness*.22)
+   ]);
+   add(new THREE.TubeGeometry(curve,40,thickness*.13,8,false),chordFrac<.5?gold:steel,[0,0,0],vertical?[0,0,0]:[-Math.PI/2,0,0]);
+  }
   // Wing skin inspection panels, stringer lines and countersunk fasteners.
   for(let i=0;i<6;i++){
    const t=.12+i*.135,x=t*span,yTop=(root*.48)*(1-t)+tip*.34*t;
