@@ -4,6 +4,7 @@
 // Cached family finishes and per-part artwork keep materials consistent without
 // allocating a new high-resolution texture every time a preview is revisited.
 const PART_SKIN_CACHE=new Map();
+const PART_BUMP_CACHE=new WeakMap();
 function getPartSkin(THREE,family){
  if(PART_SKIN_CACHE.has(family))return PART_SKIN_CACHE.get(family);
  const c=document.createElement('canvas');c.width=512;c.height=512;
@@ -169,7 +170,15 @@ function makeThermalTileMaterial(THREE){
 
 export function createPartModel(p,THREE){
  const g=new THREE.Group(),id=String(p.id||''),name=String(p.name||''),type=String(p.type||''),r=Math.max(.055,Number(p.radius)||.5),h=Math.max(.12,Number(p.height)||.5);
- const M=(color,metalness=.35,roughness=.48,extra={})=>new THREE.MeshStandardMaterial({color,metalness,roughness,...extra});
+ const M=(color,metalness=.35,roughness=.48,extra={})=>{
+  const options={...extra};
+  if(options.map&&!options.bumpMap){
+   let relief=PART_BUMP_CACHE.get(options.map);
+   if(!relief){relief=options.map.clone();relief.colorSpace=THREE.NoColorSpace;relief.needsUpdate=true;PART_BUMP_CACHE.set(options.map,relief);}
+   options.bumpMap=relief;options.bumpScale=.006;
+  }
+  return new THREE.MeshStandardMaterial({color,metalness,roughness,...options});
+ };
 
  const painted=(base,accent,word,serial=id.toUpperCase())=>{
   const nm=(id+' '+name+' '+word).toLowerCase();
@@ -181,34 +190,54 @@ export function createPartModel(p,THREE){
   if(!tex){
    const c=document.createElement('canvas');c.width=1024;c.height=512;const q=c.getContext('2d');
    q.fillStyle=base;q.fillRect(0,0,1024,512);
-   const grad=q.createLinearGradient(0,0,1024,0);grad.addColorStop(0,'rgba(0,0,0,.12)');grad.addColorStop(.2,'rgba(255,255,255,.07)');grad.addColorStop(.5,'rgba(255,255,255,.015)');grad.addColorStop(.8,'rgba(0,0,0,.025)');grad.addColorStop(1,'rgba(0,0,0,.1)');q.fillStyle=grad;q.fillRect(0,0,1024,512);
-   // Smooth stock-style painted metal: details remain mostly flat decals.
-   q.strokeStyle='rgba(22,32,37,.16)';q.lineWidth=1.5;for(let x=32;x<1024;x+=256){q.beginPath();q.moveTo(x,24);q.lineTo(x,488);q.stroke();}
+   const grad=q.createLinearGradient(0,0,1024,0);grad.addColorStop(0,'rgba(0,0,0,.32)');grad.addColorStop(.12,'rgba(255,255,255,.16)');grad.addColorStop(.36,'rgba(255,255,255,.035)');grad.addColorStop(.68,'rgba(0,0,0,.035)');grad.addColorStop(1,'rgba(0,0,0,.28)');q.fillStyle=grad;q.fillRect(0,0,1024,512);
+   q.save();q.globalAlpha=.12;q.strokeStyle='#f4f4ec';q.lineWidth=1;for(let y=0;y<512;y+=5){q.beginPath();q.moveTo(0,y);q.lineTo(1024,y);q.stroke();}q.restore();
+   q.strokeStyle='rgba(22,32,37,.42)';q.lineWidth=2;for(let x=18;x<1024;x+=128){q.beginPath();q.moveTo(x,12);q.lineTo(x,500);q.stroke();}for(const y of [22,42,466,488]){q.beginPath();q.moveTo(0,y);q.lineTo(1024,y);q.stroke();}
    if(family==='aero'){
-    q.strokeStyle='rgba(30,42,47,.18)';q.lineWidth=1.5;for(let x=180;x<1024;x+=260){q.beginPath();q.moveTo(x,96);q.lineTo(x+18,416);q.stroke();}
+    q.strokeStyle='rgba(30,42,47,.36)';q.lineWidth=3;for(let x=80;x<1024;x+=112){q.beginPath();q.moveTo(x,64);q.lineTo(x+28,448);q.stroke();}q.fillStyle=pal[1];q.fillRect(72,76,880,10);q.fillRect(72,426,880,8);
    }else if(family==='electrical'){
-    for(let y=70;y<450;y+=48)for(let x=76;x<980;x+=56){q.fillStyle=(x+y)%3?'#17466a':'#286083';q.fillRect(x,y,48,38);q.strokeStyle='rgba(190,220,232,.35)';q.lineWidth=1;q.strokeRect(x+1,y+1,46,36);}
+    for(let y=70;y<450;y+=48)for(let x=76;x<980;x+=56){q.fillStyle=(x+y)%3?'#17466a':'#286083';q.fillRect(x,y,48,38);q.strokeStyle='rgba(190,220,232,.5)';q.strokeRect(x+2,y+2,44,34);}
    }else if(family==='fabric'){
-    q.strokeStyle='rgba(40,43,39,.10)';q.lineWidth=1;for(let x=0;x<1024;x+=18){q.beginPath();q.moveTo(x,0);q.lineTo(x,512);q.stroke();}
+    q.strokeStyle='rgba(40,43,39,.22)';q.lineWidth=1;for(let x=0;x<1024;x+=8){q.beginPath();q.moveTo(x,0);q.lineTo(x,512);q.stroke();}for(let y=0;y<512;y+=8){q.beginPath();q.moveTo(0,y);q.lineTo(1024,y);q.stroke();}
    }else if(family==='thermal'){
-    for(let y=64;y<468;y+=46)for(let x=64;x<980;x+=58){q.fillStyle=(x+y)%2?'#393d40':'#806057';q.fillRect(x,y,52,40);q.strokeStyle='rgba(230,210,190,.22)';q.lineWidth=1;q.strokeRect(x+1,y+1,50,38);}
+    for(let y=64;y<468;y+=46)for(let x=64;x<980;x+=58){q.fillStyle=(x+y)%2?'#393d40':'#8b6254';q.fillRect(x,y,52,40);q.strokeStyle='rgba(230,210,190,.35)';q.strokeRect(x+2,y+2,48,36);}
    }else if(['robotic','mechanical','interface'].includes(family)){
-    q.strokeStyle='rgba(225,230,224,.18)';q.lineWidth=1;for(let y=150;y<430;y+=140){q.beginPath();q.moveTo(52,y);q.lineTo(972,y);q.stroke();}
+    q.fillStyle=pal[1];for(let x=80;x<980;x+=180){q.fillRect(x,76,8,360);q.fillRect(x+12,76,34,8);q.fillRect(x+12,428,34,8);}q.strokeStyle='rgba(225,230,224,.42)';q.lineWidth=3;for(let y=110;y<430;y+=80){q.beginPath();q.moveTo(52,y);q.lineTo(972,y);q.stroke();}
    }else{
-    q.strokeStyle='rgba(25,36,41,.13)';q.lineWidth=1;for(let y=160;y<460;y+=150){q.beginPath();q.moveTo(0,y);q.lineTo(1024,y);q.stroke();}
+    q.strokeStyle='rgba(25,36,41,.30)';q.lineWidth=2;for(let y=78;y<460;y+=96){q.beginPath();q.moveTo(0,y);q.lineTo(1024,y);q.stroke();}for(let x=42;x<1024;x+=64)for(let y of [66,450]){q.fillStyle='#c6ceca';q.beginPath();q.arc(x,y,3,0,Math.PI*2);q.fill();}
    }
-   q.fillStyle='rgba(25,36,41,.68)';q.fillRect(52,414,230,34);
-   q.fillStyle='#f0f0e8';q.font='bold 16px Arial';q.fillText(brand,62,436,210);
-   q.fillStyle='rgba(25,36,41,.55)';q.font='12px Arial';q.fillText(String(serial).toUpperCase().slice(0,24),62,476,300);
-   q.strokeStyle='rgba(25,36,41,.32)';q.lineWidth=1.5;
-   if(['tank','engine','crew'].includes(family)){q.beginPath();q.moveTo(650,194);q.lineTo(650,278);q.lineTo(680,288);q.lineTo(710,278);q.lineTo(710,194);q.closePath();q.stroke();}
-   else if(family==='aero'){q.beginPath();q.moveTo(620,264);q.quadraticCurveTo(750,196,900,220);q.lineTo(900,242);q.quadraticCurveTo(750,226,620,280);q.stroke();}
-   else{q.beginPath();q.arc(744,240,40,0,Math.PI*2);q.stroke();q.beginPath();q.arc(744,240,18,0,Math.PI*2);q.stroke();}
-   q.fillStyle='rgba(25,36,41,.68)';q.fillRect(44,354,916,7);q.fillStyle=pal[2];q.fillRect(44,354,916,2);
+   q.fillStyle=pal[1];q.fillRect(44,132,430,188);q.strokeStyle=pal[2];q.lineWidth=6;q.strokeRect(44,132,430,188);
+   q.fillStyle='#f2f0e8';q.font='bold 34px Arial';q.fillText(brand,66,180,386);q.font='bold 25px Arial';q.fillText(String(name).toUpperCase().slice(0,30),66,222,386);q.font='17px Arial';q.fillStyle='#cbd2cf';q.fillText(String(serial).toUpperCase().slice(0,38),66,258,386);q.font='15px Arial';q.fillText(family.toUpperCase()+' / FLIGHT HARDWARE',66,290,386);
+   q.fillStyle='#e0e3dc';q.fillRect(540,132,420,188);q.strokeStyle=pal[2];q.lineWidth=5;q.strokeRect(540,132,420,188);q.fillStyle=pal[1];q.font='bold 20px Arial';q.fillText('INSPECTION / SERVICE',560,164);
+   q.strokeStyle=pal[1];q.lineWidth=4;
+   if(['tank','engine','crew'].includes(family)){q.beginPath();q.moveTo(610,192);q.lineTo(610,278);q.lineTo(660,292);q.lineTo(710,278);q.lineTo(710,192);q.closePath();q.stroke();q.beginPath();q.moveTo(624,210);q.lineTo(696,210);q.moveTo(624,260);q.lineTo(696,260);q.stroke();}
+   else if(family==='aero'){q.beginPath();q.moveTo(574,266);q.quadraticCurveTo(730,174,914,210);q.lineTo(914,244);q.quadraticCurveTo(732,222,574,286);q.stroke();}
+   else{q.beginPath();q.arc(744,240,54,0,Math.PI*2);q.stroke();q.beginPath();q.arc(744,240,24,0,Math.PI*2);q.stroke();q.moveTo(690,240);q.lineTo(798,240);q.moveTo(744,186);q.lineTo(744,294);q.stroke();}
+   q.fillStyle=pal[1];q.fillRect(44,354,916,18);q.fillStyle=pal[2];q.fillRect(44,354,916,5);
+   for(let x=52;x<958;x+=34){q.fillStyle=x%2?pal[1]:pal[2];q.fillRect(x,394,18,34);}q.fillStyle=pal[1];for(let x=54;x<960;x+=12)q.fillRect(x,450,x%5===0?3:1,24);
+   q.fillStyle='#f0f0e8';q.font='14px Arial';q.fillText('CAUTION  •  INSPECT BEFORE FLIGHT',54,490);
+   for(let i=0;i<1500;i++){const x=(i*73)%1024,y=(i*139)%512;q.fillStyle=i%3?'rgba(255,255,255,.025)':'rgba(0,0,0,.04)';q.fillRect(x,y,1,1);}
    tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.wrapS=THREE.RepeatWrapping;tex.wrapT=THREE.ClampToEdgeWrapping;tex.anisotropy=16;PART_SKIN_CACHE.set(key,tex);
+   // A separate height texture gives panel joints, rivets, woven fabric and tile edges
+   // actual grazing-light relief instead of relying on painted color alone.
+   const bumpKey=key+':micro-height';let bumpTex=PART_SKIN_CACHE.get(bumpKey);
+   if(!bumpTex){
+    const b=document.createElement('canvas');b.width=1024;b.height=512;const z=b.getContext('2d');
+    z.fillStyle='#808080';z.fillRect(0,0,1024,512);
+    z.strokeStyle='#5e5e5e';z.lineWidth=3;
+    for(let x=18;x<1024;x+=128){z.beginPath();z.moveTo(x,10);z.lineTo(x,502);z.stroke();}
+    for(const y of [22,42,466,488]){z.beginPath();z.moveTo(0,y);z.lineTo(1024,y);z.stroke();}
+    z.strokeStyle='#b0b0b0';z.lineWidth=2;
+    for(let x=28;x<1024;x+=64)for(const y of [34,478]){z.beginPath();z.arc(x,y,3,0,Math.PI*2);z.stroke();}
+    if(family==='fabric'){z.strokeStyle='#929292';z.lineWidth=1;for(let x=0;x<1024;x+=7){z.beginPath();z.moveTo(x,0);z.lineTo(x,512);z.stroke();}for(let y=0;y<512;y+=7){z.beginPath();z.moveTo(0,y);z.lineTo(1024,y);z.stroke();}}
+    if(family==='thermal'){z.strokeStyle='#a0a0a0';z.lineWidth=3;for(let y=64;y<468;y+=46)for(let x=64;x<980;x+=58)z.strokeRect(x,y,52,40);}
+    z.fillStyle='#a8a8a8';z.fillRect(42,130,434,192);z.fillStyle='#686868';z.fillRect(48,136,422,180);
+    for(let x=52;x<958;x+=34){z.fillStyle='#b0b0b0';z.fillRect(x,394,18,34);}
+    bumpTex=new THREE.CanvasTexture(b);bumpTex.wrapS=THREE.RepeatWrapping;bumpTex.wrapT=THREE.ClampToEdgeWrapping;bumpTex.anisotropy=8;PART_SKIN_CACHE.set(bumpKey,bumpTex);
    }
-   // Smooth painted surfaces use material response instead of exaggerated bump relief.
-   return M(0xffffff,.48,.56,{map:tex,roughness:family==='electrical'?.38:family==='thermal'?.72:.62});
+  }
+  const bumpTex=PART_SKIN_CACHE.get(key+':micro-height');
+  return M(0xffffff,.48,.56,{map:tex,bumpMap:bumpTex,bumpScale:.012,roughness:.62});
  };
  const ivory=M(0xd9d9d0,.42,.52),paint=M(0xe7e6dc,.28,.6),aluminium=M(0xaeb9bd,.82,.28),steel=M(0x59666d,.82,.34),dark=M(0x252f35,.68,.38),rubber=M(0x171b1e,.04,.91),gold=M(0xb68b4e,.72,.32),orange=M(0xc56b31,.35,.58),blue=M(0x28547c,.58,.3),green=M(0x4c9b65,.3,.4),glass=M(0x173f5c,.62,.14,{emissive:0x071a2c,emissiveIntensity:.22}),black=M(0x111a20,.45,.25);
  const add=(geo,mat,pos=[0,0,0],rot=[0,0,0],scale)=>{const o=new THREE.Mesh(geo,mat);o.position.set(...pos);o.rotation.set(...rot);if(scale)o.scale.set(...scale);o.castShadow=true;o.receiveShadow=true;g.add(o);return o;};
@@ -218,8 +247,7 @@ export function createPartModel(p,THREE){
  const box=(w,d,depth,mat,pos=[0,0,0],rot=[0,0,0])=>add(new THREE.BoxGeometry(w,d,depth),mat,pos,rot);
  const sphere=(rad,mat,pos=[0,0,0],scale=[1,1,1])=>add(new THREE.SphereGeometry(rad,24,16),mat,pos,[0,0,0],scale);
  const tube=(points,rad,mat)=>{const curve=new THREE.CatmullRomCurve3(points.map(v=>new THREE.Vector3(...v)));return add(new THREE.TubeGeometry(curve,32,rad,8,false),mat);};
- // Hardware fasteners stay shallow and small; avoid the oversized studded look.
-  const bolt=(x,y,z,rad=.018,mat=aluminium)=>sphere(rad*.62,mat,[x,y,z],[1,1,.42]);
+ const bolt=(x,y,z,rad=.018,mat=aluminium)=>sphere(rad,mat,[x,y,z],[1,1,.42]);
  const makeLabel=(accent='#b58b4d',caption='KERBAL SPACE PROGRAM',serial=id.toUpperCase())=>{
   const c=document.createElement('canvas');c.width=512;c.height=256;const q=c.getContext('2d');
   q.fillStyle='#e3e3da';q.fillRect(0,0,512,256);q.fillStyle=accent;q.fillRect(0,0,512,18);q.fillRect(0,228,512,8);
