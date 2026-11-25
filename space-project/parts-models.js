@@ -948,6 +948,12 @@ export function createPartModel(p,THREE){
      lug.position.set(side*width*.235,Math.cos(a)*radius*.965,Math.sin(a)*radius*.965);
      lug.rotation.x=a;lug.rotation.z=side*.24*(i%2?1:-1);lug.castShadow=true;wheel.add(lug);
     }
+   }else if(/s2/.test(wheelId)){
+    for(const side of [-1,1]){
+     const lug=new THREE.Mesh(new THREE.BoxGeometry(width*.42,radius*.075,radius*.12),sideMat);
+     lug.position.set(side*width*.22,Math.cos(a)*radius*.96,Math.sin(a)*radius*.96);
+     lug.rotation.x=a;lug.rotation.z=side*.28*(i%2?1:-1);lug.castShadow=true;wheel.add(lug);
+    }
    }else if(/rover/.test(wheelId)){
     const lug=new THREE.Mesh(new THREE.BoxGeometry(width*.88,radius*.09,radius*.145),sideMat);
     lug.position.set(0,Math.cos(a)*radius*.96,Math.sin(a)*radius*.96);
@@ -966,11 +972,66 @@ export function createPartModel(p,THREE){
   return wheel;
  };
  const makeRoverWheel=()=>{
-  const rr=Math.max(r*.62,.16),width=Math.max(rr*.48,.09);
-  const mount=new THREE.Mesh(new THREE.CylinderGeometry(rr*.17,rr*.17,h*.62,20),steel);mount.position.set(0,h*.32,0);g.add(mount);
-  const arm=new THREE.Mesh(new THREE.BoxGeometry(rr*.2,h*.18,rr*.22),aluminium);arm.position.set(0,h*.05,0);g.add(arm);
-  makeRollingWheel(rr,width,[0,-h*.08,0],'rover');
-
+  const nm=(id+' '+name).toLowerCase();
+  const m1=/m1/.test(nm),s2=/s2/.test(nm),xl3=/xl3/.test(nm),tr2l=/tr-?2l|rugged/.test(nm),foldable=/m1-f|m1f/.test(nm);
+  const rr=Math.max(r*(xl3?.9:tr2l?.82:m1?.68:s2?.48:.62),.16),width=Math.max(rr*(xl3?.58:tr2l?.62:.48),.085);
+  const wheel=makeRollingWheel(rr,width,[0,-h*.18,0],'rover');
+  const topY=h*.48,axleY=-h*.18;
+  if(m1){
+   // M1: grid-pattern tyre, upper clevis and a three-point shock/suspension assembly.
+   box(rr*1.55,.16,rr*.9,steel,[0,topY,0]);
+   box(rr*.92,.12,rr*.58,aluminium,[0,topY+.1,0]);
+   for(let side of [-1,1]){
+    tube([[side*rr*.48,topY,0],[side*rr*.38,h*.16,0],[side*rr*.3,axleY,0]],.055,aluminium);
+    const shock=new THREE.Mesh(new THREE.CylinderGeometry(rr*.09,rr*.12,h*.38,20),steel);
+    shock.position.set(side*rr*.52,h*.12,rr*.12);shock.rotation.z=-side*.42;g.add(shock);
+    const piston=new THREE.Mesh(new THREE.CylinderGeometry(rr*.045,rr*.045,h*.26,16),gold);
+    piston.position.set(side*rr*.43,-h*.02,rr*.13);piston.rotation.z=-side*.42;g.add(piston);
+    tube([[side*rr*.52,h*.28,0],[side*rr*.62,h*.12,rr*.18],[side*rr*.38,axleY,rr*.18]],.035,steel);
+   }
+   const clevis=new THREE.Mesh(new THREE.CylinderGeometry(rr*.16,rr*.16,.18,24),gold);clevis.rotation.z=Math.PI/2;clevis.position.set(0,topY+.02,0);g.add(clevis);
+   for(let i=0;i<8;i++){const a=i*Math.PI/4;bolt(rr*.68*Math.cos(a),topY+.08,rr*.68*Math.sin(a),.025,aluminium);}
+  }else if(s2){
+   // S2: compact vertical post and a clearly triangular swingarm over the small wheel.
+   box(rr*1.1,.12,rr*.72,steel,[0,topY,0]);
+   const post=new THREE.Mesh(new THREE.CylinderGeometry(rr*.13,rr*.16,h*.56,20),aluminium);post.position.set(0,h*.17,0);g.add(post);
+   tube([[-rr*.5,topY,0],[-rr*.42,h*.02,rr*.12],[0,axleY,rr*.12]],.045,steel);
+   tube([[rr*.5,topY,0],[rr*.42,h*.02,rr*.12],[0,axleY,rr*.12]],.045,steel);
+   tube([[-rr*.42,h*.02,rr*.12],[rr*.42,h*.02,rr*.12]],.035,aluminium);
+   const shock=new THREE.Mesh(new THREE.CylinderGeometry(rr*.07,rr*.09,h*.3,16),gold);shock.position.set(0,h*.02,rr*.18);shock.rotation.z=.22;g.add(shock);
+   for(let side of [-1,1])bolt(side*rr*.48,topY,0,.022,gold);
+  }else if(xl3){
+   // XL3: heavy deep-tread wheel, yellow side housing and twin hydraulic struts.
+   box(rr*1.9,.22,rr*1.1,steel,[0,topY,0]);
+   box(rr*1.45,h*.42,.14,painted('#d5b43e','#252c30','XL3 HEAVY ROVER MOUNT',name),[0,h*.12,rr*.58]);
+   for(let side of [-1,1]){
+    tube([[side*rr*.72,topY,0],[side*rr*.8,h*.18,rr*.22],[side*rr*.48,axleY,rr*.3]],.085,steel);
+    const shock=new THREE.Mesh(new THREE.CylinderGeometry(rr*.11,rr*.15,h*.46,24),aluminium);shock.position.set(side*rr*.72,h*.12,rr*.24);shock.rotation.z=-side*.38;g.add(shock);
+    const rod=new THREE.Mesh(new THREE.CylinderGeometry(rr*.05,rr*.05,h*.34,16),gold);rod.position.set(side*rr*.62,-h*.02,rr*.27);rod.rotation.z=-side*.38;g.add(rod);
+    box(rr*.18,.12,rr*.22,orange,[side*rr*.72,topY-.08,0]);
+   }
+   for(let i=0;i<10;i++){const a=i*Math.PI/5;bolt(rr*.76*Math.cos(a),topY+.12,rr*.76*Math.sin(a),.028,gold);}
+  }else if(tr2l){
+   // TR-2L: reinforced rugged tyre with a boxed suspension yoke and thick fork arms.
+   box(rr*1.8,.18,rr*.9,steel,[0,topY,0]);
+   for(let side of [-1,1]){
+    box(rr*.2,h*.58,rr*.22,aluminium,[side*rr*.52,h*.12,0]);
+    tube([[side*rr*.52,topY,0],[side*rr*.64,h*.05,rr*.18],[side*rr*.4,axleY,rr*.2]],.075,steel);
+    tube([[side*rr*.52,topY,0],[side*rr*.32,h*.18,-rr*.12],[side*rr*.4,axleY,-rr*.12]],.045,gold);
+    bolt(side*rr*.52,topY,0,.035,aluminium);
+   }
+  }else{
+   box(rr*1.3,.12,rr*.72,steel,[0,topY,0]);
+   const post=new THREE.Mesh(new THREE.CylinderGeometry(rr*.12,rr*.16,h*.52,20),aluminium);post.position.y=h*.18;g.add(post);
+   tube([[-rr*.45,topY,0],[0,h*.02,rr*.1],[0,axleY,rr*.1]],.045,steel);
+   tube([[rr*.45,topY,0],[0,h*.02,rr*.1],[0,axleY,rr*.1]],.045,steel);
+  }
+  if(foldable){
+   // M1-F folding mount: visible hinge barrel and a locking over-centre brace.
+   const hinge=new THREE.Mesh(new THREE.CylinderGeometry(rr*.16,rr*.16,.22,24),gold);hinge.rotation.z=Math.PI/2;hinge.position.set(0,topY+.08,0);g.add(hinge);
+   tube([[-rr*.48,topY+.05,-rr*.1],[0,h*.24,-rr*.25],[rr*.45,axleY,-rr*.1]],.04,orange);
+   for(let side of [-1,1])bolt(side*rr*.52,topY+.08,0,.03,gold);
+  }
  };
 
  const makeGear=()=>{
@@ -1017,7 +1078,7 @@ export function createPartModel(p,THREE){
   for(let side of [-1,1]){
    const fork=tube([[side*r*.12,-h*.25,r*.2],[side*r*.24,-h*.39,r*.28],[side*r*.25,-h*.52,r*.34]],Math.max(.025,r*.04),steel);pivot.add(fork);
   }
-  const count=large?4:medium?2:1;
+  const count=/ly-?99/.test(nm)?6:large?4:medium?2:1;
   for(let i=0;i<count;i++){
    const z=(i-(count-1)/2)*wheelR*.62;
    const wheel=makeRollingWheel(wheelR,wheelW,[0,-h*.57,z+r*.34],'aircraft');
