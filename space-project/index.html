@@ -7,7 +7,7 @@
 <nav class="tabs"><button data-screen="vab">ロケット組立棟</button><button data-screen="crew">乗組員</button></nav>
 <aside id="parts" class="parts"><div class="parts-head"><b>PARTS CATALOG</b></div><input id="part-search" class="part-search" placeholder="パーツ名を検索..." autocomplete="off"><div class="catalog-tools"><select id="part-sort"><option value="name">名前順</option><option value="mass">質量順</option><option value="cost">価格順</option><option value="size">サイズ順</option></select><span id="part-result-count"></span></div><div class="catalog-body"><nav id="part-categories" class="part-categories"></nav><div class="part-list" id="part-list"></div></div></aside>
 <section id="career-panel" class="career-panel hidden"><div class="career-head"><b id="career-title">乗組員管理</b></div><div id="career-content" class="career-content"></div></section>
-<div id="craft-name" class="vab-craft-name">無題の機体</div>
+<input id="craft-name" class="vab-craft-name" type="text" maxlength="48" value="無題の機体" placeholder="機体名を入力" aria-label="機体名">
 <div class="vab-actions"><button id="aircraft-mode" type="button">🚀 ロケット組立中</button><button id="launch" class="primary">▶ 発射</button><button id="save-craft">保存</button><button id="load-craft">読み込み</button><button id="clear-craft">新規機体</button></div>
 <aside id="build-staging" class="build-staging"><div class="build-staging-head">STAGING <span id="stage-build-label">組立ステージ 0</span></div><div id="craft-stats" class="craft-stats">重量 0.00 t<br>Δv 0 m/s<br>推力 0 kN</div><div id="build-stage-list"></div><button id="stage-add-side">＋ ステージ追加</button></aside>
 <button id="new-stage" class="hidden" type="button" aria-hidden="true" tabindex="-1">＋ ステージ追加</button>
