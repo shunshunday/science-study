@@ -2269,10 +2269,24 @@ export function createPartModel(p,THREE){
    sphere(r*.22,glass,[0,h*.54,0],[1,.3,1]);return;
   }
   if(inflatable){
-   cyl(r*.44,r*.44,h*.28,steel);
-   const torus=add(new THREE.TorusGeometry(r*.72,r*.22,24,80),painted('#c5c8c1','#b68b4e','INFLATABLE AIRLOCK'),[0,h*.2,0]);torus.scale.set(1,1,.86);
-   band(r*.5,h*.34,.045,gold);cyl(r*.46,r*.46,.07,dark,h*.36,48);
-   for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(r*.86,-h*.05,h*.35,a,steel,.025);}return;
+   // Inflatable Airlock is packed for launch: folded fabric bellows, compression straps and sealed hatch.
+   const packR=r*.54,packH=h*.78,cloth=painted('#777e79','#c56b31','STOWED INFLATABLE AIRLOCK',name);
+   lathe([[0,-packH*.5],[packR*.76,-packH*.5],[packR*.94,-packH*.4],[packR, -packH*.24],[packR*.94,-packH*.1],[packR,.06*packH],[packR*.94,packH*.24],[packR*.84,packH*.4],[packR*.68,packH*.5],[0,packH*.5]],cloth,64);
+   for(let y of [-packH*.38,-packH*.2,0,packH*.2,packH*.38])band(packR*(Math.abs(y)>packH*.3?.94:1.01),y,.035,y===0?orange:steel);
+   for(let i=0;i<8;i++){
+    const a=i*Math.PI/4,x=Math.cos(a)*packR*.98,z=Math.sin(a)*packR*.98;
+    box(.07,packH*.88,.08,aluminium,[x,0,z],[0,-a,0]);
+    box(.1,.09,.1,gold,[x,packH*.42,z],[0,-a,0]);
+    bolt(x,-packH*.42,z,.022,steel);
+   }
+   cyl(packR*.72,packR*.72,.12,steel,packH*.54,48);
+   cyl(packR*.58,packR*.58,.06,dark,packH*.6,48);
+   add(new THREE.TorusGeometry(packR*.58,.035,10,48),gold,[0,packH*.62,0]);
+   add(new THREE.CircleGeometry(packR*.46,48),black,[0,packH*.635,0]);
+   box(packR*.42,.08,.08,orange,[0,-packH*.58,0]);
+   for(let side of [-1,1])tube([[side*packR*.72,-packH*.34,0],[side*packR*.88,0,packR*.12],[side*packR*.72,packH*.34,0]],.025,steel);
+   for(let i=0;i<4;i++){const a=i*Math.PI/2;bolt(packR*.72*Math.cos(a),packH*.56,packR*.72*Math.sin(a),.02,gold);}
+   return;
   }
   const baseR=mk2?r*.92:sr?r*.98:jr?r*.48:r*.9;
   lathe([[0,-h*.5],[baseR*.58,-h*.5],[baseR*.82,-h*.38],[baseR*.94,-h*.12],[baseR*.94,h*.16],[baseR*.82,h*.34],[baseR*.62,h*.5],[0,h*.5]],bodyMat,80);
