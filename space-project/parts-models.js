@@ -1541,8 +1541,21 @@ export function createPartModel(p,THREE){
    return;
   }
   if(control){
+   // PPD-?? experiment control station: operator console, screen, toggles, knobs and cable bays.
    box(r*1.1,h*.62,r*.72,body);
-   for(let i=0;i<4;i++){const ang=i*Math.PI/2;const x=Math.cos(ang)*r*.42,z=Math.sin(ang)*r*.42;tube([[0,h*.2,0],[x,h*.55,z]],.025,gold);}
+   box(r*.86,h*.3,.045,dark,[0,h*.12,r*.38]);
+   box(r*.72,h*.22,.025,blue,[0,h*.13,r*.41]);
+   for(let i=0;i<8;i++){const x=(i-3.5)*r*.09;box(.025,h*.14,.02,aluminium,[x,h*.13,r*.43]);}
+   for(let i=0;i<6;i++){const x=(i-2.5)*r*.16;sphere(.035,i%2?orange:green,[x,-h*.12,r*.4],[1,.65,.45]);}
+   for(let i=0;i<4;i++){const x=(i-1.5)*r*.22;const knob=new THREE.CylinderGeometry(.045,.055,.08,16);const m=new THREE.Mesh(knob,steel);m.position.set(x,h*.32,r*.36);g.add(m);sphere(.025,gold,[x,h*.37,r*.36]);}
+   for(let side of [-1,1]){
+    tube([[side*r*.45,-h*.2,0],[side*r*.62,-h*.3,r*.18],[side*r*.62,h*.3,r*.18]],.025,gold);
+    box(.12,h*.36,.08,steel,[side*r*.5,0,r*.3]);
+    for(let j=0;j<5;j++)box(.08,.025,.025,aluminium,[side*r*.51,(j-2)*h*.065,r*.35]);
+   }
+   box(r*.62,.06,.08,orange,[0,-h*.36,r*.2]);
+   for(let i=0;i<4;i++)bolt((i-1.5)*r*.22,-h*.26,r*.38,.02,gold);
+   for(let i=0;i<6;i++)box(r*.08,.025,.02,steel,[(i-2.5)*r*.16,h*.36,-r*.34]);
    return;
   }
   // Generic instrument chassis: raised control face, fasteners and cable glands.
@@ -1655,7 +1668,7 @@ export function createPartModel(p,THREE){
  const makePayload=()=>{
   const nm=(id+' '+name).toLowerCase();
   const groundLight=/ground-light|作業用照明/.test(nm),groundAnchor=/ground-anchor|グラウンドアンカー/.test(nm);
-  const fairing=/fairing|防護シェル/.test(nm),cargoBay=/cargo bay|カーゴベイ/.test(nm),ramp=/cargo ramp|カーゴドア/.test(nm),service=/service bay|サービスベイ/.test(nm),storage=/seq-|seq\d|保管ユニット|コンテナ/.test(nm),eva=/eva|ジェットパック|修理キット|実験キット|燃料シリンダー|個人用パラシュート/.test(nm),lab=/science lab|移動研究室/.test(nm),scienceStore=/science storage|実験用記憶装置/.test(nm),serviceModule=/sm-\d|サービスモジュール/.test(nm);
+  const fairing=/fairing|防護シェル/.test(nm),cargoBay=/cargo bay|カーゴベイ|cargo ramp|カーゴドア/.test(nm),ramp=/cargo ramp|カーゴドア/.test(nm),service=/service bay|サービスベイ/.test(nm),storage=/seq-|seq\d|保管ユニット|コンテナ/.test(nm),eva=/eva|ジェットパック|修理キット|実験キット|燃料シリンダー|個人用パラシュート/.test(nm),lab=/science lab|移動研究室/.test(nm),scienceStore=/science storage|実験用記憶装置/.test(nm),serviceModule=/sm-\d|サービスモジュール/.test(nm);
   if(groundLight||groundAnchor){makeUtility();return;}
   if(fairing){
    // Aerodynamic fairings: tapered shell, structural base, split clamshell seam and latch hardware.
@@ -1697,8 +1710,21 @@ export function createPartModel(p,THREE){
    }
    for(let z of [-length*.48,length*.48])for(let x of [-1,1])box(width*.12,thick*.62,.08,steel,[x*width*.42,0,z]);
    if(ramp){
-    box(width*.78,thick*.12,length*.48,ivory,[0,-thick*.42,length*.68],[.5,0,0]);
-    for(let side of [-1,1])tube([[side*width*.36,-thick*.3,length*.42],[side*width*.3,-thick*.6,length*.66],[side*width*.18,-thick*.64,length*.88]],.035,steel);
+    const rampLength=length*.48,rampY=-thick*.42,rampZ=length*.68;
+    box(width*.78,thick*.12,rampLength,painted('#c9ceca','#c56b31','MK3 CARGO RAMP',name),[0,rampY,rampZ],[.5,0,0]);
+    // Reinforced anti-slip ribs, side guide rails, hinge barrel and hydraulic deployment struts.
+    for(let i=0;i<9;i++){const z=rampZ-rampLength*.42+i*rampLength*.105;box(width*.72,.025,.035,steel,[0,rampY+thick*.08,z],[.5,0,0]);}
+    for(let side of [-1,1]){
+     tube([[side*width*.36,-thick*.3,length*.42],[side*width*.3,-thick*.6,length*.66],[side*width*.18,-thick*.64,length*.88]],.045,steel);
+     tube([[side*width*.35,-thick*.25,length*.44],[side*width*.46,-thick*.44,length*.72],[side*width*.38,-thick*.48,length*.9]],.025,gold);
+     const actuator=new THREE.Mesh(new THREE.CylinderGeometry(.035,.055,rampLength*.42,18),aluminium);
+     actuator.position.set(side*width*.31,-thick*.48,length*.64);actuator.rotation.x=.42;actuator.rotation.z=side*.18;g.add(actuator);
+     tube([[side*width*.31,-thick*.48,length*.64],[side*width*.42,-thick*.25,length*.45],[side*width*.42,-thick*.16,length*.35]],.022,orange);
+     for(let j=0;j<4;j++)bolt(side*width*.36,-thick*.36,length*.45+j*rampLength*.15,.022,gold);
+    }
+    const hinge=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,width*.82,28),steel);hinge.rotation.z=Math.PI/2;hinge.position.set(0,-thick*.34,length*.43);g.add(hinge);
+    for(let side of [-1,1])box(width*.08,thick*.22,.12,orange,[side*width*.36,rampY+thick*.08,rampZ+rampLength*.42]);
+    for(let i=0;i<6;i++){const x=(i-2.5)*width*.1;box(width*.055,.04,.08,i%2?dark:gold,[x,rampY+thick*.1,rampZ+rampLength*.45]);}
    }
   }
   else if(service){
@@ -1750,10 +1776,19 @@ export function createPartModel(p,THREE){
    }else if(/science/.test(nm)){
     box(r*.88,h*.72,r*.42,painted('#d6d8d1','#6f9db0','SCIENCE KIT',name));
     for(let i=0;i<3;i++)box(r*.16,h*.38,.035,blue,[(i-1)*r*.24,0,r*.24]);
-   }else if(/fuel cylinder/.test(nm)){
+   }else if(/fuel cylinder|燃料シリンダー/.test(nm)){
     lathe([[0,-h*.5],[r*.4,-h*.5],[r*.48,-h*.4],[r*.48,h*.36],[r*.36,h*.5],[0,h*.5]],painted('#c7cbc5','#c56b31','EVA FUEL CYLINDER',name),48);
     band(r*.48,-h*.36,.03,gold);band(r*.48,h*.36,.03,steel);
     cyl(r*.22,r*.22,.08,steel,h*.48,24);
+    cyl(r*.16,r*.16,.09,orange,h*.56,20);
+    box(r*.2,.1,.12,dark,[0,h*.28,r*.42]);
+    add(new THREE.TorusGeometry(r*.12,.018,8,24),gold,[0,h*.28,r*.49]);
+    for(let side of [-1,1]){
+     tube([[side*r*.38,h*.3,0],[side*r*.55,h*.12,0],[side*r*.38,-h*.3,0]],.025,aluminium);
+     box(.08,h*.12,r*.22,steel,[side*r*.43,0,0]);
+    }
+    for(let i=0;i<8;i++){const a=i*Math.PI/4;bolt(r*.47*Math.cos(a),-h*.28,r*.47*Math.sin(a),.018,gold);}
+    box(r*.54,.035,.025,ivory,[0,-h*.08,r*.48]);
    }else if(/parachute/.test(nm)){
     lathe([[0,-h*.4],[r*.55,-h*.4],[r*.62,-h*.2],[r*.62,h*.25],[r*.48,h*.4],[0,h*.4]],painted('#d2d2c8','#c56b31','PERSONAL PARACHUTE',name),48);
     for(let i=0;i<6;i++){const a=i*Math.PI/3;radialPipe(r*.6,-h*.18,h*.2,a,orange,.018);}
