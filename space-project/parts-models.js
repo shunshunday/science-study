@@ -694,7 +694,9 @@ export function createPartModel(p,THREE){
   sphere(.035, M(0x4c9b68,.18,.2,{emissive:0x10351d,emissiveIntensity:.15}),[span-sweep*.9,-tip*.32,thickness*.72]);
   for(let i=0;i<8;i++){const x=span*(.12+i*.1);bolt(x,0,thickness*.78,.012,gold);}
  }; const makeSolar=()=>{
-  const large=id.includes('xl')||id.includes('sp10')||id.includes('gigantor'),fixed=id.includes('ox-stat'),count=id.includes('ox4')?2:large?4:2,w=large?1.45:fixed?.92:1.05,depth=large?1.35:1.0;
+  const nm=(id+' '+name).toLowerCase();
+  const fixed=/ox-?/.test(nm)||/oxstat/.test(nm),circular=/10c/.test(nm),long=/1x6|1x5|4l|10l|sp-l/.test(nm),wide=/3x2|4w|sp-w/.test(nm);
+  const gigantor=/gigantor|sp-xl/.test(nm),colossus=/colossus|sp-xxl/.test(nm),stat=/ox-?stat/.test(nm);
   const textureKey='solar-cells-ksp1-v1';
   let cellTexture=PART_SKIN_CACHE.get(textureKey);
   if(!cellTexture){
@@ -709,21 +711,51 @@ export function createPartModel(p,THREE){
    q.fillStyle='rgba(255,255,255,.10)';q.beginPath();q.moveTo(0,0);q.lineTo(512,0);q.lineTo(512,80);q.closePath();q.fill();
    cellTexture=new THREE.CanvasTexture(c);cellTexture.colorSpace=THREE.SRGBColorSpace;cellTexture.anisotropy=8;PART_SKIN_CACHE.set(textureKey,cellTexture);
   }
-  cyl(.16,.2,.32,aluminium,h*.18,24);band(.18,h*.18,.035,gold);
-  for(let side of [-1,1]){
-   const x=side*(w*.65),panelMat=M(0xffffff,.66,.24,{map:cellTexture,emissive:0x061525,emissiveIntensity:.08});
-   box(w,.045,depth,panelMat,[x,h*.18,0]);
-   // Real panel frame, perimeter rails and electrical bus bars.
-   for(let z of [-depth*.5,depth*.5])box(w*1.02,.055,.035,aluminium,[x,h*.18,z]);
-   for(let xx of [-w*.5,w*.5])box(.035,.055,depth,aluminium,[x+xx,h*.18,0]);
-   for(let j=1;j<4;j++)box(w*.94,.014,.018,M(0x8db8d1,.55,.28),[x,h*.207,-depth*.5+depth*j/4]);
-   const hinge=add(new THREE.CylinderGeometry(.055,.055,w*.16,16),gold,[side*w*.13,h*.18,0],[0,0,Math.PI/2]);
-   for(let z of [-depth*.36,depth*.36])bolt(x,h*.22,z,.018,steel);
+  const panelMat=M(0xffffff,.66,.24,{map:cellTexture,emissive:0x061525,emissiveIntensity:.08});
+  const width=colossus?3.4:gigantor?2.7:stat?(id.includes('xl')||nm.includes('stat-xl')?1.55:.82):circular?1.35:long?(.78):wide?1.45:1.12;
+  const depth=colossus?4.2:gigantor?3.2:stat?(id.includes('xl')||nm.includes('stat-xl')?1.05:.72):circular?1.35:long?2.05:wide?1.12:1.12;
+  const y=h*.18;
+  if(circular){
+   const rr=width*.5;
+   add(new THREE.CircleGeometry(rr,96),panelMat,[0,y,0],[-Math.PI/2,0,0]);
+   add(new THREE.TorusGeometry(rr,.055,12,96),aluminium,[0,y,0],[-Math.PI/2,0,0]);
+   for(let i=0;i<12;i++){const ang=i*Math.PI/6;const x=Math.cos(ang)*rr*.92,z=Math.sin(ang)*rr*.92;tube([[0,y+.012,0],[x,y+.012,z]],.014,steel);bolt(x,y+.025,z,.018,gold);}
+   cyl(rr*.18,rr*.18,.12,steel,y-.08,32);
+  }else{
+   const rows=colossus?3:gigantor?2:wide?2:1,cols=colossus?10:gigantor?8:wide?3:long?6:stat?3:3;
+   const gap=.018,pw=(width-gap*(cols-1))/cols,pd=(depth-gap*(rows-1))/rows;
+   for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
+    const x=-width*.5+pw*.5+col*(pw+gap),z=-depth*.5+pd*.5+row*(pd+gap);
+    box(pw,.045,pd,panelMat,[x,y,z]);
+    for(let edge of [-1,1])box(pw,.055,.022,aluminium,[x,y+.015,z+edge*pd*.5]);
+    for(let edge of [-1,1])box(.022,.055,pd,aluminium,[x+edge*pw*.5,y+.015,z]);
+   }
+   // Longitudinal bus bars and cell-divider rails follow the true 1x6 / 3x2 planform.
+   for(let j=1;j<cols;j++)box(.025,.02,depth,steel,[-width*.5+j*width/cols,y+.04,0]);
+   for(let j=1;j<rows;j++)box(width,.02,.025,steel,[0,y+.04,-depth*.5+j*depth/rows]);
   }
-  if(fixed){box(.08,.07,depth*1.08,steel,[0,h*.18,0]);}
-  else{for(let side of [-1,1])tube([[0,h*.18,0],[side*w*.4,h*.18,.1],[side*w*.72,h*.18,.12]],.035,aluminium);}
- };
- const makeParachute=()=>{
+  // Structural boom, end fittings and model-specific deployment hardware.
+  const boomR=colossus?.11:gigantor?.09:.055;
+  const boom=new THREE.Mesh(new THREE.CylinderGeometry(boomR,boomR,depth*.92,20),steel);boom.rotation.x=Math.PI/2;boom.position.set(0,y-.12,0);g.add(boom);
+  for(let z of [-depth*.5,depth*.5])box(width*.08,.13,.14,aluminium,[0,y-.12,z]);
+  if(fixed){
+   // OX series are non-retractable: rigid brackets and no false folding hinge.
+   for(let side of [-1,1]){
+    tube([[side*width*.38,y-.05,0],[side*width*.38,y-.38,depth*.28],[0,y-.42,depth*.42]],.035,steel);
+    box(width*.12,.08,.16,gold,[side*width*.38,y-.42,depth*.42]);
+   }
+   box(width*.16,.18,.22,steel,[0,y-.28,-depth*.46]);
+  }else{
+   // SP series and the large arrays use a hinged deployment boom with locking braces.
+   const hinge=add(new THREE.CylinderGeometry(boomR*1.6,boomR*1.6,width*.28,24),gold,[0,y-.12,-depth*.5],[0,0,Math.PI/2]);
+   for(let side of [-1,1]){
+    tube([[0,y-.12,-depth*.5],[side*width*.32,y-.32,-depth*.28],[side*width*.44,y-.12,0]],.03,aluminium);
+    tube([[side*width*.32,y-.32,-depth*.28],[side*width*.42,y-.42,depth*.2],[side*width*.4,y-.12,depth*.44]],.02,gold);
+   }
+  }
+  if(stat){box(width*.22,.08,.24,steel,[0,y-.24,depth*.42]);}
+  for(let side of [-1,1])for(let z of [-depth*.42,depth*.42])bolt(side*width*.44,y+.045,z,.018,gold);
+ }; const makeParachute=()=>{
   const nm=(id+' '+name).toLowerCase();
   const radial=/radial|ラジアル/.test(nm),drogue=/drogue|ドラッグ|mk25/.test(nm),xl=/xl/.test(nm);
   const rad=r*(xl?1.02:drogue?.66:.76),bodyH=h*(radial?.62:xl?1.08:.92);
