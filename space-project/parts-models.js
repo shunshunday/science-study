@@ -224,7 +224,110 @@ export function createPartModel(p,THREE){
  const detailRivets=(rad,y,count=16,offset=0)=>{for(let i=0;i<count;i++){const a=i*Math.PI*2/count+offset;bolt(Math.cos(a)*rad,y,Math.sin(a)*rad,.018);}};
  const radialPipe=(rad,y0,y1,a,mat=aluminium,thick=.018)=>tube([[Math.cos(a)*rad,y0,Math.sin(a)*rad],[Math.cos(a*1.02)*rad*1.025,(y0+y1)/2,Math.sin(a*1.02)*rad*1.025],[Math.cos(a)*rad,y1,Math.sin(a)*rad]],thick,mat); 
  const makeTank=()=>{
-  const isRcs=id.startsWith('rcs-'),xenon=id.includes('xenon'),ore=id.startsWith('ore-')||/ore storage|鉱石/.test(name),oscar=id.includes('oscar'),donut=id.includes('donut')||id.includes('r12'),baguette=id.includes('baguette')||id.includes('r11'),rock=/rockomax|x200|jumbo/i.test(id+' '+name),kerb=id.includes('s3-'),mk2=id.includes('mk2-lf'),mk3=id.includes('mk3-lf'),mk0=id.includes('mk0-lf');
+  const isRcs=id.startsWith('rcs-')||id==='mh-flr5',xenon=id.includes('xenon'),ore=id.startsWith('ore-')||/ore storage|鉱石/.test(name),oscar=id.includes('oscar'),donut=id.includes('donut')||id.includes('r12'),baguette=id.includes('baguette')||id.includes('r11'),rock=/rockomax|x200|jumbo/i.test(id+' '+name),kerb=id.includes('s3-')||id.includes('s4-'),mk2=id.includes('mk2-lf'),mk3=id.includes('mk3-lf'),mk0=id.includes('mk0-lf');
+  // Making History tanks use distinct real-world-derived diameters and silhouettes.
+  if(id.startsWith('mh-')){
+   const finish=(family,label=name)=>makeTankArtwork(THREE,id,label,family);
+   if(/fla150|fla151|fla215|s3s4-adapter/.test(id)){
+    let bottomR=.9375,topR=.625,hh=2.2,family='fl';
+    if(id.includes('fla150')){bottomR=.9375;topR=.3125;hh=1.55;}
+    else if(id.includes('fla151s')){bottomR=.9375;topR=.625;hh=1.1;}
+    else if(id.includes('fla151l')){bottomR=.9375;topR=.625;hh=3.2;}
+    else if(id.includes('fla215')){bottomR=1.25;topR=.9375;hh=2.1;}
+    else if(id.includes('s3s4')){bottomR=2.5;topR=1.875;hh=3.4;family='kerb';}
+    const skin=M(0xffffff,.48,.56,{map:finish(family,'FUEL TANK ADAPTER')});
+    lathe([[0,-hh*.5],[bottomR*.82,-hh*.5],[bottomR*.96,-hh*.43],[bottomR,-hh*.32],[bottomR*.98,-hh*.22],[topR*1.04,hh*.28],[topR,hh*.42],[topR*.82,hh*.5],[0,hh*.5]],skin,96);
+    for(let y of [-hh*.43,-hh*.3,hh*.34,hh*.45])band(y<0?bottomR:topR,y,.045,y<0?steel:gold);
+    for(let i=0;i<12;i++){const a=i*Math.PI/6;const rr=bottomR-(bottomR-topR)*((i%2)*.02);radialPipe(rr,-hh*.3,hh*.38,a,aluminium,.018);bolt(bottomR*.98*Math.cos(a),-hh*.37,bottomR*.98*Math.sin(a),.02,gold);}
+    for(let side of [-1,1])tube([[side*bottomR*.72,-hh*.34,0],[side*bottomR*.62,0,topR*.45],[side*topR*.65,hh*.36,topR*.25]],.026,steel);
+    radialLabel(bottomR*1.01,0,bottomR*.72,hh*.16,getLabelMaterial());
+    cyl(bottomR*.72,bottomR*.72,.08,steel,-hh*.52,48);cyl(topR*.72,topR*.72,.08,steel,hh*.52,48);
+    return;
+   }
+   if(/fltx(220|440|900|1800)/.test(id)){
+    const capacity=Number((id.match(/fltx(\\d+)/)||[])[1]||440);
+    const rr=.9375,hh=capacity===220?1.15:capacity===440?2.05:capacity===900?3.7:6.6;
+    const skin=M(0xffffff,.48,.56,{map:finish('fl','FL-TX PROPELLANT TANK')});
+    lathe([[0,-hh*.5],[rr*.78,-hh*.5],[rr*.94,-hh*.44],[rr,-hh*.35],[rr,hh*.35],[rr*.94,hh*.44],[rr*.78,hh*.5],[0,hh*.5]],skin,96);
+    for(let y of [-hh*.44,-hh*.34,hh*.34,hh*.44])band(rr*.99,y,.04,y<0?steel:gold);
+    for(let i=0;i<12;i++){const a=i*Math.PI/6,x=Math.cos(a)*rr*.99,z=Math.sin(a)*rr*.99;radialPipe(rr*.99,-hh*.34,hh*.34,a,aluminium,.018);bolt(x,-hh*.28,z,.018,gold);}
+    for(let side of [-1,1]){box(rr*.12,hh*.72,.09,steel,[side*rr*.86,0,rr*.4]);tube([[side*rr*.86,-hh*.32,rr*.42],[side*rr*.96,-hh*.18,rr*.42],[side*rr*.96,hh*.18,rr*.42],[side*rr*.86,hh*.32,rr*.42]],.02,gold);}
+    radialLabel(rr*1.005,0,rr*.68,hh*.16,getLabelMaterial());
+    cyl(rr*.72,rr*.72,.08,steel,hh*.52,64);cyl(rr*.72,rr*.72,.08,steel,-hh*.52,64);
+    return;
+   }
+   if(/s4-(64|128|256|512)/.test(id)){
+    const capacity=Number((id.match(/s4-(\\d+)/)||[])[1]||64),rr=2.5,hh=capacity===64?2.7:capacity===128?5.1:capacity===256?9.6:17.5;
+    const skin=M(0xffffff,.5,.54,{map:finish('kerb','KERBODYNE S4 CRYOGENIC TANK')});
+    lathe([[0,-hh*.5],[rr*.78,-hh*.5],[rr*.94,-hh*.47],[rr,-hh*.42],[rr,hh*.42],[rr*.94,hh*.47],[rr*.78,hh*.5],[0,hh*.5]],skin,128);
+    for(let y of [-hh*.46,-hh*.4,hh*.4,hh*.46])band(rr*.99,y,.075,y<0?steel:gold);
+    for(let i=0;i<20;i++){const a=i*Math.PI/10,x=Math.cos(a)*rr*.99,z=Math.sin(a)*rr*.99;radialPipe(rr*.99,-hh*.4,hh*.4,a,aluminium,.032);bolt(x,-hh*.34,z,.024,gold);}
+    for(let y of [-hh*.25,0,hh*.25])band(rr*.995,y,.028,dark);
+    box(rr*.82,hh*.18,.06,dark,[0,0,rr*.99]);
+    box(rr*.62,hh*.1,.035,ivory,[0,0,rr*1.025]);
+    for(let i=0;i<8;i++)box(rr*.06,.045,.035,i%2?orange:gold,[(i-3.5)*rr*.16,0,rr*1.04]);
+    cyl(rr*.72,rr*.72,.12,steel,hh*.52,96);cyl(rr*.72,rr*.72,.12,steel,-hh*.52,96);
+    return;
+   }
+   if(id==='mh-engine-cluster-adapter'){
+    const rr=2.5,hh=5.2,skin=M(0xffffff,.5,.54,{map:finish('kerb','ENGINE CLUSTER ADAPTER')});
+    lathe([[0,-hh*.5],[rr*.7,-hh*.5],[rr*.92,-hh*.44],[rr,hh*.16],[rr*.96,hh*.34],[rr*.76,hh*.48],[0,hh*.5]],skin,128);
+    for(let y of [-hh*.42,-hh*.3,hh*.25,hh*.42])band(rr*(y<0?1:.9),y,.065,y<0?steel:gold);
+    for(let i=0;i<16;i++){const a=i*Math.PI/8,x=Math.cos(a)*rr*.98,z=Math.sin(a)*rr*.98;radialPipe(rr*.98,-hh*.38,hh*.3,a,aluminium,.028);bolt(x,-hh*.35,z,.024,gold);}
+    // Cluster adapter underside: eight independent engine sockets under a broad tapered shroud.
+    const n=8,portR=rr*.58;
+    for(let i=0;i<n;i++){
+     const a=i*Math.PI*2/n,x=Math.cos(a)*portR,z=Math.sin(a)*portR;
+     const socket=lathe([[0,-hh*.78],[rr*.16,-hh*.78],[rr*.18,-hh*.62],[rr*.18,-hh*.48],[rr*.14,-hh*.43],[0,-hh*.43]],steel,40,[x,0,z]);
+     socket.rotation.x=0;
+     band(rr*.17,-hh*.6,.035,gold).position.set(x,-hh*.6,z);
+     add(new THREE.TorusGeometry(rr*.12,.025,8,32),orange,[x,-hh*.78,z],[Math.PI/2,0,0]);
+    }
+    cyl(rr*.88,rr*.88,.14,dark,-hh*.52,96);
+    return;
+   }
+   if(id==='mh-flc1000'){
+    // FL-C1000 is an R-7 strap-on liquid booster with a pointed upper nose and a separation motor.
+    const rr=.72,hh=4.9,skin=M(0xffffff,.48,.56,{map:finish('fl','R-7 BOOSTER TANK')});
+    lathe([[0,-hh*.5],[rr*.74,-hh*.5],[rr*.92,-hh*.43],[rr,-hh*.28],[rr,hh*.2],[rr*.82,hh*.32],[rr*.42,hh*.46],[0,hh*.5]],skin,80);
+    for(let y of [-hh*.4,-hh*.27,hh*.22,hh*.34])band(rr*(y>0?.84:.99),y,.035,y<0?steel:gold);
+    for(let i=0;i<12;i++){const a=i*Math.PI/6,x=Math.cos(a)*rr*.99,z=Math.sin(a)*rr*.99;radialPipe(rr*.99,-hh*.28,hh*.24,a,aluminium,.018);bolt(x,-hh*.34,z,.018,gold);}
+    cyl(rr*.58,rr*.58,.1,steel,-hh*.52,48);
+    const nozzle=add(new THREE.ConeGeometry(rr*.22,.48,32),steel,[0,-hh*.62,0],[Math.PI,0,0]);
+    // Built-in solid-fuel separation charge and side mounting shoes.
+    for(let side of [-1,1]){
+     box(rr*.2,hh*.62,.1,steel,[side*rr*.84,0,rr*.22]);
+     box(rr*.24,.14,.12,orange,[side*rr*.84,-hh*.38,rr*.24]);
+     tube([[side*rr*.84,-hh*.34,rr*.24],[side*rr*1.02,-hh*.2,rr*.24],[side*rr*.84,hh*.3,rr*.24]],.02,gold);
+    }
+    box(rr*.48,.22,.16,dark,[0,-hh*.34,rr*.82]);
+    box(rr*.3,.12,.12,orange,[0,-hh*.34,rr*.9]);
+    return;
+   }
+   if(id==='mh-sv-mini-mp'){
+    // Mini-feed monopropellant bottle: compact rounded pressure vessel with a surface saddle.
+    const rr=.24,hh=.62,skin=painted('#b7c1c0','#c56b31','MINI-FEED MONOPROPELLANT',name);
+    lathe([[0,-hh*.5],[rr*.55,-hh*.5],[rr*.88,-hh*.38],[rr,0],[rr*.88,hh*.38],[rr*.55,hh*.5],[0,hh*.5]],skin,48);
+    for(let y of [-hh*.32,hh*.32])band(rr*.92,y,.025,gold);
+    box(rr*1.8,hh*.72,.07,steel,[0,0,-rr*.82]);
+    for(let side of [-1,1])box(.045,hh*.7,.1,aluminium,[side*rr*.72,0,-rr*.86]);
+    for(let i=0;i<8;i++){const a=i*Math.PI/4;bolt(rr*.98*Math.cos(a),0,rr*.98*Math.sin(a),.016,gold);}
+    cyl(rr*.3,rr*.3,.06,steel,hh*.52,24);
+    return;
+   }
+   if(id==='mh-flr5'){
+    // FL-R5 is a wide 1.875m monopropellant cylinder with reinforced ends and RCS service markings.
+    const rr=.9375,hh=2.25,skin=M(0xffffff,.48,.56,{map:finish('rcs','FL-R5 MONOPROPELLANT TANK')});
+    lathe([[0,-hh*.5],[rr*.74,-hh*.5],[rr*.92,-hh*.43],[rr,-hh*.3],[rr,hh*.3],[rr*.92,hh*.43],[rr*.74,hh*.5],[0,hh*.5]],skin,80);
+    for(let y of [-hh*.42,-hh*.3,hh*.3,hh*.42])band(rr*.98,y,.04,y<0?steel:orange);
+    for(let i=0;i<12;i++){const a=i*Math.PI/6,x=Math.cos(a)*rr*.99,z=Math.sin(a)*rr*.99;radialPipe(rr*.99,-hh*.3,hh*.3,a,aluminium,.018);bolt(x,-hh*.35,z,.018,gold);}
+    box(rr*.62,hh*.24,.045,dark,[0,0,rr*.98]);
+    box(rr*.42,hh*.13,.025,ivory,[0,0,rr*1.02]);
+    for(let side of [-1,1])tube([[side*rr*.82,-hh*.28,rr*.42],[side*rr*.96,0,rr*.42],[side*rr*.82,hh*.28,rr*.42]],.022,orange);
+    cyl(rr*.7,rr*.7,.09,steel,hh*.52,48);cyl(rr*.7,rr*.7,.09,steel,-hh*.52,48);
+    return;
+   }
+  }
   if(ore){
    const large=/large|大型/.test(id+' '+name),rr=r*(large?1.02:.82),hh=h*(large?1.08:.78),radial=id.includes('radial');
    const skin=painted('#858f8d','#d29b3c','ORE STORAGE VESSEL',name);
