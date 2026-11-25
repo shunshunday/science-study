@@ -918,7 +918,7 @@ export function createPartModel(p,THREE){
  }; 
  const makeSolar=()=>{
   const nm=(id+' '+name).toLowerCase();
-  const fixed=/\box-?\b|oxstat/.test(nm),circular=/10c/.test(nm),long=/1x6|1x5|4l|10l|sp-l/.test(nm),wide=/3x2|4w|sp-w/.test(nm);
+  const fixed=/ox-?stat|oxstat/.test(nm),circular=/10c/.test(nm),five=/1x5|10l/.test(nm),six=/1x6|sp-l/.test(nm),long=five||six,wide=/3x2|4w|sp-w/.test(nm);
   const gigantor=/gigantor|sp-xl/.test(nm),colossus=/colossus|sp-xxl/.test(nm),stat=/ox-?stat/.test(nm);
   const textureKey='solar-cells-ksp1-v1';
   let cellTexture=PART_SKIN_CACHE.get(textureKey);
@@ -939,23 +939,52 @@ export function createPartModel(p,THREE){
   const depth=colossus?4.2:gigantor?3.2:stat?(id.includes('xl')||nm.includes('stat-xl')?1.05:.72):circular?1.35:long?2.05:wide?1.12:1.12;
   const y=h*.18;
   if(circular){
-   const rr=width*.5;
-   add(new THREE.CircleGeometry(rr,96),panelMat,[0,y,0],[-Math.PI/2,0,0]);
-   add(new THREE.TorusGeometry(rr,.055,12,96),aluminium,[0,y,0],[-Math.PI/2,0,0]);
-   for(let i=0;i<12;i++){const ang=i*Math.PI/6;const x=Math.cos(ang)*rr*.92,z=Math.sin(ang)*rr*.92;tube([[0,y+.012,0],[x,y+.012,z]],.014,steel);bolt(x,y+.025,z,.018,gold);}
-   cyl(rr*.18,rr*.18,.12,steel,y-.08,32);
-  }else{
-   const rows=colossus?3:gigantor?2:wide?2:1,cols=colossus?10:gigantor?8:wide?3:long?6:stat?3:3;
-   const gap=.018,pw=(width-gap*(cols-1))/cols,pd=(depth-gap*(rows-1))/rows;
-   for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
-    const x=-width*.5+pw*.5+col*(pw+gap),z=-depth*.5+pd*.5+row*(pd+gap);
-    box(pw,.045,pd,panelMat,[x,y,z]);
-    for(let edge of [-1,1])box(pw,.055,.022,aluminium,[x,y+.015,z+edge*pd*.5]);
-    for(let edge of [-1,1])box(.022,.055,pd,aluminium,[x+edge*pw*.5,y+.015,z]);
+   // OX-10C / SP-10C: radial array folded around its central deployment canister in the VAB.
+   const rr=width*.3,canH=h*.62;
+   lathe([[0,-canH*.5],[rr*.7,-canH*.5],[rr,-canH*.34],[rr,canH*.34],[rr*.72,canH*.5],[0,canH*.5]],painted('#879397','#b68b4e','RADIAL SOLAR ARRAY CANISTER',name),56,[0,y,0]);
+   for(let yy of [y-canH*.38,y+canH*.36])band(rr,yy,.035,yy<y?steel:gold);
+   cyl(rr*.56,rr*.56,.08,steel,y+canH*.56,40);
+   for(let i=0;i<8;i++){
+    const a=i*Math.PI/4,x=Math.sin(a)*rr*.95,z=Math.cos(a)*rr*.95;
+    const petal=box(rr*.42,canH*.72,.035,panelMat,[x,y,z],[0,a,.08]);
+    box(rr*.34,.035,.025,dark,[x,y+canH*.2,z],[0,a,0]);
+    tube([[Math.sin(a)*rr*.55,y+canH*.25,Math.cos(a)*rr*.55],[x,y+canH*.25,z]],.018,aluminium);
+    for(let j=0;j<3;j++)bolt(x,y+(j-1)*canH*.2,z,.016,gold);
    }
-   // Longitudinal bus bars and cell-divider rails follow the true 1x6 / 3x2 planform.
+   box(rr*1.7,.1,rr*1.7,steel,[0,y-canH*.58,0]);
+   for(let i=0;i<8;i++){const a=i*Math.PI/4;bolt(Math.sin(a)*rr*.78,y-canH*.58,Math.cos(a)*rr*.78,.02,gold);}
+  }else if(!fixed){
+   // Deployable OX/SP arrays are stowed for launch: folded blue-cell leaves, hinge barrels and locking rails.
+   const leaves=colossus?10:gigantor?8:wide?3:five?5:six?6:4;
+   const packW=width*(wide?.82:long?.48:.68),packD=depth*(wide?.5:long?.82:.62),layer=.028;
+   box(packW*1.08,leaves*layer+.12,packD*1.08,steel,[0,y,0]);
+   box(packW,.045,packD,dark,[0,y+leaves*layer*.5,0]);
+   for(let i=0;i<leaves;i++){
+    const yy=y+(i-(leaves-1)/2)*layer;
+    const zz=(i-(leaves-1)/2)*.012;
+    box(packW*.94,.024,packD*.94,panelMat,[0,yy,zz]);
+    for(let side of [-1,1])box(.025,.035,packD*.94,aluminium,[side*packW*.48,yy+.018,zz]);
+    for(let end of [-1,1])box(packW*.94,.035,.025,aluminium,[0,yy+.018,end*packD*.48+zz]);
+   }
+   // Accordion hinge pins and transport locks are visible on the sides of the cassette.
+   for(let side of [-1,1]){
+    const hinge=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,packD*.9,20),gold);
+    hinge.position.set(side*packW*.55,y,0);hinge.rotation.x=Math.PI/2;g.add(hinge);
+    for(let j=0;j<4;j++)bolt(side*packW*.56,y+(j-1.5)*leaves*layer*.22,packD*.42,.018,steel);
+    tube([[side*packW*.52,y+leaves*layer*.55,-packD*.42],[side*packW*.7,y+leaves*layer*.8,0],[side*packW*.52,y+leaves*layer*.55,packD*.42]],.025,orange);
+   }
+   box(packW*.42,.11,.1,orange,[0,y-leaves*layer*.72,packD*.52]);
+   for(let j=0;j<6;j++)box(packW*.06,.025,.025,j%2?dark:gold,[(j-2.5)*packW*.12,y-leaves*layer*.72,packD*.56]);
+  }else{
+   // OX-STAT panels are fixed: their exposed cell grid remains flat in the VAB.
+   const rows=1,cols=stat?3:2,gap=.018,pw=(width-gap*(cols-1))/cols,pd=depth;
+   for(let col=0;col<cols;col++){
+    const x=-width*.5+pw*.5+col*(pw+gap);
+    box(pw,.045,pd,panelMat,[x,y,0]);
+    for(let edge of [-1,1])box(pw,.055,.022,aluminium,[x,y+.015,edge*pd*.5]);
+    for(let edge of [-1,1])box(.022,.055,pd,aluminium,[x+edge*pw*.5,y+.015,0]);
+   }
    for(let j=1;j<cols;j++)box(.025,.02,depth,steel,[-width*.5+j*width/cols,y+.04,0]);
-   for(let j=1;j<rows;j++)box(width,.02,.025,steel,[0,y+.04,-depth*.5+j*depth/rows]);
   }
   // Structural boom, end fittings and model-specific deployment hardware.
   const boomR=colossus?.11:gigantor?.09:.055;
