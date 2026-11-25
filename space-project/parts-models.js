@@ -2352,32 +2352,33 @@ export function createPartModel(p,THREE){
   const fairing=/fairing|防護シェル/.test(nm),cargoBay=/cargo bay|カーゴベイ|cargo ramp|カーゴドア/.test(nm),ramp=/cargo ramp|カーゴドア/.test(nm),service=/service bay|サービスベイ/.test(nm),storage=/seq-|seq\d|保管ユニット|コンテナ/.test(nm),eva=/eva|ジェットパック|修理キット|実験キット|燃料シリンダー|個人用パラシュート/.test(nm),lab=/science lab|移動研究室/.test(nm),scienceStore=/science storage|実験用記憶装置/.test(nm),serviceModule=/sm-?\d|service module|サービスモジュール/.test(nm);
   if(groundLight||groundAnchor){makeUtility();return;}
   if(fairing){
-   // Stock fairings are two separate clamshell halves around an internal payload truss.
-   const shellMat=painted('#d7d8d1','#b68b4e','AIRSTREAM PROTECTIVE SHELL',name);
-   shellMat.side=THREE.DoubleSide;
-   const fairingProfile=[[0,-h*.5],[r*.9,-h*.5],[r,-h*.38],[r*.98,h*.12],[r*.72,h*.35],[r*.36,h*.48],[0,h*.5]].map(v=>new THREE.Vector2(v[0],v[1]));
-   add(new THREE.LatheGeometry(fairingProfile,64,0,Math.PI),shellMat);
-   add(new THREE.LatheGeometry(fairingProfile,64,Math.PI,Math.PI),shellMat);
-   lathe([[0,-h*.5],[r*.96,-h*.5],[r*.96,-h*.42],[r*.82,-h*.36],[0,-h*.36]],steel,72);
-   band(r*.98,-h*.4,.045,gold);band(r*.96,-h*.32,.025,dark);
-   // Long split edges, hinge barrels, clamp shoes and the two removable shell halves.
-   for(const ang of [0,Math.PI]){
-    radialPipe(r*.995,-h*.36,h*.42,ang,steel,.026);
-    for(let j=0;j<7;j++){
-     const y=-h*.29+j*h*.115,x=Math.cos(ang)*r*.995,z=Math.sin(ang)*r*.995;
-     bolt(x,y,z,.022,gold);
-     if(j%2===0)box(r*.1,.07,.055,aluminium,[x,y,z],[0,-ang,0]);
-    }
+   // AE-FF fairing part is the base plate only; the shell is procedurally drawn by the player.
+   const baseR=r*.9,bodyH=h*.48,baseMat=painted('#bfc5c3','#b68b4e','AIRSTREAM FAIRING BASE',name);
+   lathe([[0,-bodyH*.5],[baseR*.62,-bodyH*.5],[baseR*.78,-bodyH*.42],[baseR*.82,-bodyH*.28],[baseR*.82,bodyH*.22],[baseR*.94,bodyH*.3],[baseR*1.1,bodyH*.34],[baseR*1.1,bodyH*.48],[baseR*.72,bodyH*.48],[baseR*.72,bodyH*.36],[baseR*.64,bodyH*.32],[0,bodyH*.32]],baseMat,96);
+   band(baseR*.8,-bodyH*.42,.045,gold);
+   band(baseR*.82,-bodyH*.28,.035,steel);
+   band(baseR*1.08,bodyH*.34,.035,aluminium);
+   add(new THREE.TorusGeometry(baseR*.88,.045,12,96),dark,[0,bodyH*.48,0],[Math.PI/2,0,0]);
+   add(new THREE.TorusGeometry(baseR*.72,.035,10,96),gold,[0,bodyH*.48,0],[Math.PI/2,0,0]);
+   // The distinctive alternating black/white striped clamp ring around the fairing lip.
+   for(let i=0;i<32;i++){
+    const a=i*Math.PI*2/32,x=Math.cos(a)*baseR*1.055,z=Math.sin(a)*baseR*1.055;
+    box(baseR*.105,bodyH*.115,.045,i%2?dark:ivory,[x,bodyH*.405,z],[0,-a,Math.sin(a)*.16]);
+    bolt(Math.cos(a)*baseR*.98,bodyH*.36,Math.sin(a)*baseR*.98,.02,gold);
    }
-   for(const ang of [Math.PI/2,Math.PI*1.5]){
-    radialPipe(r*.82,-h*.31,h*.34,ang,dark,.028);
-    for(let j=0;j<4;j++){const y=-h*.22+j*h*.14;bolt(Math.cos(ang)*r*.82,y,Math.sin(ang)*r*.82,.018,orange);}
+   // Inner payload attachment ring and structural support spokes.
+   cyl(baseR*.42,baseR*.42,.08,steel,bodyH*.5,48);
+   add(new THREE.TorusGeometry(baseR*.38,.04,10,64),gold,[0,bodyH*.55,0],[Math.PI/2,0,0]);
+   for(let i=0;i<8;i++){
+    const a=i*Math.PI/4,x=Math.cos(a)*baseR*.64,z=Math.sin(a)*baseR*.64;
+    tube([[x,bodyH*.31,z],[x*.78,bodyH*.5,z*.78],[x*.5,bodyH*.55,z*.5]],.025,aluminium);
+    box(baseR*.12,.08,.09,steel,[x,bodyH*.32,z],[0,-a,0]);
    }
-   // Reinforced nose cap, payload attachment ring and a visible internal mounting spine.
-   sphere(r*.075,gold,[0,h*.475,0],[1,.62,1]);
-   cyl(r*.42,r*.42,.09,steel,-h*.34,48);
-   for(let side of [-1,1])tube([[0,-h*.32,0],[side*r*.3,h*.02,0],[side*r*.18,h*.35,0]],.025,aluminium);
-   for(let i=0;i<12;i++){const ang=i*Math.PI/6;const x=Math.cos(ang)*r*.98,z=Math.sin(ang)*r*.98;bolt(x,-h*.43,z,.018,aluminium);}
+   for(let side of [-1,1]){
+    box(baseR*.28,bodyH*.2,.055,dark,[side*baseR*.7,0,baseR*.62]);
+    for(let j=0;j<4;j++)bolt(side*baseR*.72,(j-1.5)*bodyH*.07,baseR*.65,.018,gold);
+   }
+   return;
   }
   else if(cargoBay){
    // Mk2/Mk3 payload bays are longitudinal spaceplane shells with a dark cavity,
