@@ -252,8 +252,30 @@ export function createPartModel(p,THREE){
   }
  };
  const makeEngine=()=>{
-  const jet=type==='jet'||id.startsWith('jet-'),ion=id.includes('ion')||id.includes('dawn'),nuclear=id.includes('nerv'),dart=id.includes('dart'),vector=id.includes('vector'),mammoth=id.includes('mammoth'),twin=id.includes('twinboar'),spider=id.includes('spider'),thud=id.includes('thud'),poodle=id.includes('poodle'),rapier=id.includes('rapier');
-  if(jet){
+  const nm=(id+' '+name).toLowerCase();
+  const solid=type==='booster'||/solid booster|sepratron|bacc|rt-10|rt-5|thumper|hammer/.test(nm);
+  const jet=type==='jet'||id.startsWith('jet-'),ion=id.includes('ion')||id.includes('dawn'),nuclear=id.includes('nerv'),dart=id.includes('dart')||/aerospike/.test(nm),vector=id.includes('vector'),mammoth=id.includes('mammoth'),twin=id.includes('twinboar'),spider=id.includes('spider'),thud=id.includes('thud'),poodle=id.includes('poodle'),rapier=id.includes('rapier'),terrier=/terrier|lv-909/.test(nm),swivel=/swivel|lv-t45/.test(nm),reliant=/reliant|lv-t30/.test(nm);
+  if(solid){
+   // Solid boosters: long pressure casing, domed head, hazard band, aft nozzle and radial mounting shoes.
+   const canvas=document.createElement('canvas');canvas.width=512;canvas.height=256;const q=canvas.getContext('2d');
+   q.fillStyle='#d4d5cf';q.fillRect(0,0,512,256);
+   const grad=q.createLinearGradient(0,0,512,0);grad.addColorStop(0,'rgba(0,0,0,.2)');grad.addColorStop(.25,'rgba(255,255,255,.14)');grad.addColorStop(.7,'rgba(255,255,255,.02)');grad.addColorStop(1,'rgba(0,0,0,.2)');q.fillStyle=grad;q.fillRect(0,0,512,256);
+   q.fillStyle='#252c30';q.fillRect(0,196,512,60);
+   for(let x=-48;x<560;x+=64){q.save();q.translate(x,0);q.rotate(-.48);q.fillStyle='#e2b64b';q.fillRect(0,184,28,100);q.restore();}
+   q.fillStyle='#202a30';q.fillRect(104,72,304,92);q.strokeStyle='#b68b4e';q.lineWidth=4;q.strokeRect(104,72,304,92);
+   q.fillStyle='#f0eee5';q.font='bold 20px Arial';q.fillText('SOLID MOTOR',122,104);q.font='bold 15px Arial';q.fillText(name.toUpperCase().slice(0,28),122,132);q.font='11px Arial';q.fillText('PRESSURE CASE / IGNITER',122,151);
+   const tex=new THREE.CanvasTexture(canvas);tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=8;
+   const caseMat=M(0xffffff,.42,.58,{map:tex});
+   lathe([[0,-h*.5],[r*.62,-h*.5],[r*.82,-h*.44],[r*.96,-h*.34],[r,h*.28],[r*.94,h*.4],[r*.72,h*.5],[0,h*.5]],caseMat,80);
+   for(const y of [-h*.43,-h*.34,h*.31,h*.42])band(r*(y>0?.96:.98),y,.035,y<0?steel:aluminium);
+   // Rounded ogive cap and recessed aft nozzle.
+   lathe([[0,h*.32],[r*.9,h*.32],[r*.86,h*.4],[r*.65,h*.48],[r*.32,h*.52],[0,h*.52]],ivory,64);
+   lathe([[0,-h*.68],[r*.28,-h*.68],[r*.4,-h*.59],[r*.34,-h*.48],[r*.24,-h*.43],[0,-h*.43]],steel,48);
+   add(new THREE.TorusGeometry(r*.38,.035,10,48),gold,[0,-h*.58,0],[Math.PI/2,0,0]);
+   add(new THREE.CircleGeometry(r*.27,40),black,[0,-h*.675,0],[Math.PI/2,0,0]);
+   for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(r*.99,-h*.31,h*.27,a,steel,.018);bolt(Math.cos(a)*r*.99,-h*.4,Math.sin(a)*r*.99,.02,gold);}
+   for(let i=0;i<4;i++){const a=i*Math.PI/2,x=Math.cos(a)*r*.98,z=Math.sin(a)*r*.98;box(r*.34,h*.16,r*.22,aluminium,[x,-h*.1,z],[0,-a,0]);bolt(x,-h*.1,z,.035,gold);}
+  }else if(jet){
    const shellR=r*.78;lathe([[0,-h*.43],[shellR*.7,-h*.43],[shellR,-h*.34],[shellR,h*.32],[shellR*.82,h*.44],[shellR*.45,h*.47],[0,h*.47]],aluminium,64);
    const inlet=add(new THREE.TorusGeometry(shellR*.72,.075,16,64),steel,[0,0,h*.43],[Math.PI/2,0,0]);add(new THREE.CircleGeometry(shellR*.66,48),black,[0,0,h*.432],[Math.PI/2,0,0]);
    for(let i=0;i<14;i++){const a=i*Math.PI*2/14;box(.025,.025,shellR*.58,aluminium,[Math.cos(a)*shellR*.34,Math.sin(a)*shellR*.34,h*.44],[0,0,a]);}
@@ -272,7 +294,14 @@ export function createPartModel(p,THREE){
    lathe([[0,-h*.12],[bodyR*.78,-h*.12],[bodyR,-h*.05],[bodyR,h*.28],[bodyR*.88,h*.38],[bodyR*.62,h*.4],[0,h*.4]],painted(nuclear?'#6f7777':'#d9d9d0',nuclear?'#c56b31':'#b68b4e',nuclear?'NUCLEAR PROPULSION':'ROCKET ENGINE'),64);
    band(bodyR,h*.28,.045,steel);band(bodyR,-h*.06,.045,gold);
    if(nuclear){lathe([[r*.18,-h*.48],[r*.28,-h*.45],[r*.38,-h*.12],[r*.4,h*.04],[r*.34,h*.08],[r*.22,h*.08]],gold,48);for(let i=0;i<16;i++){const a=i*Math.PI/8;radialPipe(bodyR*1.05,-h*.08,h*.24,a,steel,.035);}band(bodyR*1.04,h*.22,.06,orange);}
-   else if(dart){lathe([[r*.05,-h*.5],[r*.24,-h*.48],[r*.52,-h*.18],[r*.7,-h*.08],[r*.58,h*.12],[r*.35,h*.18],[0,h*.18]],steel,48);band(r*.6,-h*.12,.06,gold);}
+   else if(dart){
+    // Toroidal aerospike: annular thrust ring with a long central expansion spike.
+    lathe([[r*.05,-h*.5],[r*.24,-h*.48],[r*.52,-h*.18],[r*.7,-h*.08],[r*.58,h*.12],[r*.35,h*.18],[0,h*.18]],steel,64);
+    add(new THREE.TorusGeometry(r*.64,.075,16,64),aluminium,[0,-h*.13,0],[Math.PI/2,0,0]);
+    const spike=add(new THREE.ConeGeometry(r*.28,h*.68,48),gold,[0,-h*.12,0],[Math.PI,0,0]);
+    band(r*.6,-h*.12,.06,gold);
+    for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(r*.66,-h*.1,h*.17,a,steel,.022);}
+   }
    else{
     for(let k=0;k<cluster;k++){
      const a=k*Math.PI*2/cluster,x=cluster===1?0:Math.cos(a)*r*.38,z=cluster===1?0:Math.sin(a)*r*.38,nr=cluster===4?r*.34:cluster===2?r*.42:r*.68;
@@ -291,10 +320,35 @@ export function createPartModel(p,THREE){
    for(const y of [-h*.105,-h*.075])band(bodyR*.96,y,.026,y<0?gold:aluminium);
    for(let i=0;i<12;i++){const a=i*Math.PI/6;const x=Math.cos(a)*bodyR*.99,z=Math.sin(a)*bodyR*.99;bolt(x,h*.23,z,.018,aluminium);}
    for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(bodyR*1.015,-h*.02,h*.24,a,i%2?steel:aluminium,.018);}
-   const gimbalRing=add(new THREE.TorusGeometry(bodyR*.56,.045,10,48),gold,[0,-h*.17,0],[Math.PI/2,0,0]);
-   for(let i=0;i<3;i++){const a=i*Math.PI*2/3,x=Math.cos(a)*bodyR*.72,z=Math.sin(a)*bodyR*.72;tube([[x,h*.12,z],[x*1.12,-h*.02,z*1.12],[x*.9,-h*.2,z*.9]],.022,aluminium);}
-   for(let i=0;i<3;i++){const a=i*Math.PI*2/3,x=Math.cos(a)*bodyR*.82,z=Math.sin(a)*bodyR*.82;box(bodyR*.16,h*.11,bodyR*.12,steel,[x,h*.04,z],[0,-a,0]);}
-   for(let i=0;i<3;i++){const a=i*Math.PI*2/3,x=Math.cos(a)*bodyR*.68,z=Math.sin(a)*bodyR*.68;const actuator=tube([[x,h*.05,z],[x*1.08,-h*.08,z*1.08],[x*.92,-h*.19,z*.92]],.012,gold);actuator.name='engine-gimbal-actuator';}
+   const gimballed=swivel||terrier||vector||rapier||poodle||id.includes('twitch')||id.includes('spark')||id.includes('wolfhound')||id.includes('skiff');
+   if(gimballed){
+    const gimbalRing=add(new THREE.TorusGeometry(bodyR*.56,.045,10,48),gold,[0,-h*.17,0],[Math.PI/2,0,0]);
+    for(let i=0;i<3;i++){const a=i*Math.PI*2/3,x=Math.cos(a)*bodyR*.72,z=Math.sin(a)*bodyR*.72;tube([[x,h*.12,z],[x*1.12,-h*.02,z*1.12],[x*.9,-h*.2,z*.9]],.022,aluminium);}
+    for(let i=0;i<3;i++){const a=i*Math.PI*2/3,x=Math.cos(a)*bodyR*.82,z=Math.sin(a)*bodyR*.82;box(bodyR*.16,h*.11,bodyR*.12,steel,[x,h*.04,z],[0,-a,0]);}
+    for(let i=0;i<3;i++){const a=i*Math.PI*2/3,x=Math.cos(a)*bodyR*.68,z=Math.sin(a)*bodyR*.68;const actuator=tube([[x,h*.05,z],[x*1.08,-h*.08,z*1.08],[x*.92,-h*.19,z*.92]],.012,gold);actuator.name='engine-gimbal-actuator';}
+   }else{
+    // Fixed-engine mount: rigid struts, no false thrust-vectoring hardware.
+    for(let i=0;i<4;i++){const a=i*Math.PI/2,x=Math.cos(a)*bodyR*.72,z=Math.sin(a)*bodyR*.72;tube([[x,h*.16,z],[x*1.08,-h*.04,z*1.08],[x*.9,-h*.2,z*.9]],.028,steel);}
+   }
+   if(terrier){
+    // Terrier's distinctive broad grey shroud and black bell with amber feed lines.
+    add(new THREE.TorusGeometry(bodyR*1.13,.11,16,72),M(0x858d8e,.7,.32),[0,h*.27,0]);
+    add(new THREE.TorusGeometry(bodyR*1.02,.035,10,72),gold,[0,h*.22,0]);
+    for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(bodyR*1.1,-h*.02,h*.27,a,i%2?steel:aluminium,.025);}
+    for(let side of [-1,1])tube([[side*bodyR*.58,h*.2,bodyR*.25],[side*bodyR*.9,h*.08,bodyR*.38],[side*bodyR*.72,-h*.16,bodyR*.52]],.025,orange);
+   }
+   if(swivel){
+    // Swivel-specific pivot ring and paired hydraulic actuators.
+    add(new THREE.TorusGeometry(bodyR*.82,.055,12,64),gold,[0,-h*.14,0],[Math.PI/2,0,0]);
+    for(let side of [-1,1]){tube([[side*bodyR*.62,h*.12,0],[side*bodyR*.94,-h*.02,0],[side*bodyR*.7,-h*.2,0]],.028,aluminium);sphere(.055,gold,[side*bodyR*.94,-h*.02,0]);}
+   }
+   if(reliant){
+    // Reliant's fixed thrust frame: exposed support webs, without Swivel's gimbal ring.
+    for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(bodyR*.98,-h*.08,h*.22,a,steel,.025);}
+   }
+   if(mammoth||twin){
+    const count=mammoth?4:2;for(let i=0;i<count;i++){const a=i*Math.PI*2/count;const x=Math.cos(a)*r*.48,z=Math.sin(a)*r*.48;band(r*.28,-h*.08,.018,orange).position.set(x,-h*.08,z);}
+   }
   }
  };
  const makePod=()=>{
