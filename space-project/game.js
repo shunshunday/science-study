@@ -158,12 +158,12 @@ hBox(230,.8,270,0,-.65,0,floorMat);
 const floorJoint=hangarMat(0x646d70,.02,.99),floorWhite=hangarMat(0xd9d8ce,.02,.88),floorYellow=hangarMat(0xd1a12e,.08,.82),floorStencil=hangarMat(0x929895,.02,.95);
 hBox(.12,.012,258,0,-.244,0,floorJoint);hBox(220,.012,.12,0,-.244,-64,floorJoint);hBox(220,.012,.12,0,-.244,64,floorJoint);
 for(const [cx,cz,w,d] of [[0,0,76,104],[-69,37,42,54],[69,-35,42,62]]){
- hBox(w,.022,1.15,cx,-.224,cz-d/2,floorWhite);hBox(w,.022,1.15,cx,-.224,cz+d/2,floorWhite);
- hBox(1.15,.022,d,cx-w/2,-.224,cz,floorWhite);hBox(1.15,.022,d,cx+w/2,-.224,cz,floorWhite);
+ hBox(w,.022,1.15,cx,-.239,cz-d/2,floorWhite);hBox(w,.022,1.15,cx,-.239,cz+d/2,floorWhite);
+ hBox(1.15,.022,d,cx-w/2,-.239,cz,floorWhite);hBox(1.15,.022,d,cx+w/2,-.239,cz,floorWhite);
 }
-hBox(7,.025,68,-49,-.218,2,floorYellow);hBox(7,.025,68,49,-.218,-4,floorYellow);
-hBox(30,.025,1.2,0,-.218,-58,floorYellow);hBox(30,.025,1.2,0,-.218,58,floorYellow);
-for(const [x,z] of [[-78,-58],[78,58],[-78,58],[78,-58]])hBox(13,.012,8,x,-.231,z,floorStencil);
+hBox(7,.025,68,-49,-.2375,2,floorYellow);hBox(7,.025,68,49,-.2375,-4,floorYellow);
+hBox(30,.025,1.2,0,-.2375,-58,floorYellow);hBox(30,.025,1.2,0,-.2375,58,floorYellow);
+for(const [x,z] of [[-78,-58],[78,58],[-78,58],[78,-58]])hBox(13,.012,8,x,-.244,z,floorStencil);
 for(let y of [18,48,78,108,138,150]){
  hBeam([-112,y,-95],[112,y,-95],.9,steelLight);
  hBeam([-112,y,95],[112,y,95],.9,steelLight);
@@ -189,10 +189,7 @@ hBox(68,.18,300,0,-.12,-245,runwayMat);
 hBox(2,.025,290,-34,-.015,-245,runwayLine);hBox(2,.025,290,34,-.015,-245,runwayLine);
 for(let z=-115;z>-385;z-=22)hBox(1.3,.03,10,0,-.015,z,runwayLine);
 hBox(74,.025,2,-1,-.015,-105,taxiYellow);hBox(74,.025,2,-1,-.015,-385,taxiYellow);
-/* Yellow aircraft service bay outline on the hangar floor */
-hBox(26,.035,1.1,0,-.19,-13,taxiYellow);hBox(26,.035,1.1,0,-.19,13,taxiYellow);
-hBox(1.1,.035,26,-13,-.19,0,taxiYellow);
-hBox(1.1,.035,26,13,-.19,0,taxiYellow);
+/* Service-bay outline is integrated into the flush floor paint above. */
 
 /* Industrial gantry crane, catwalks and maintenance buildings */
 const craneYellow=hangarMat(0xc18d2d,.62,.48),glassMat=hangarMat(0x6d9ba8,.38,.22),serviceMat=hangarMat(0x414d55,.5,.78);
@@ -240,29 +237,29 @@ for(const x of [-64,64])for(const z of [-82,82]){
 /* KSP1-inspired VAB envelope: flush wall skins, X-braced panels and a full-width lift door. */
 const vabGlass=new THREE.MeshStandardMaterial({color:0x7898a6,metalness:.22,roughness:.3,transparent:true,opacity:.48,side:THREE.DoubleSide,depthWrite:false});
 const vabWall=hangarMat(0x59666d,.42,.78),vabDoor=hangarMat(0xb28a36,.38,.62),vabBrace=hangarMat(0x3e4b52,.48,.72),vabSeam=hangarMat(0x77838a,.42,.72);
-function hWallBrace(a,b){
- const va=new THREE.Vector3(...a),vb=new THREE.Vector3(...b),delta=vb.clone().sub(va),length=delta.length();
+function hWallBrace(a,b,normal){
+ const va=new THREE.Vector3(...a),vb=new THREE.Vector3(...b),delta=vb.clone().sub(va),length=delta.length(),axisX=delta.normalize(),axisZ=new THREE.Vector3(...normal).normalize(),axisY=new THREE.Vector3().crossVectors(axisZ,axisX).normalize();
  const brace=new THREE.Mesh(new THREE.BoxGeometry(length,.72,.24),vabBrace);
- brace.position.copy(va.add(vb).multiplyScalar(.5));brace.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),delta.normalize());
+ brace.position.copy(va.add(vb).multiplyScalar(.5));brace.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(axisX,axisY,axisZ));
  brace.castShadow=true;brace.receiveShadow=true;hangar.add(brace);
 }
 for(const side of [-1,1]){
- const face=side*110.67;
+ const face=side*110.87;
  hBox(.9,76,184,side*111.2,39,0,vabWall);hBox(.9,35,184,side*111.2,132.5,0,vabWall);
  hBox(.55,34,184,side*110.65,94,0,vabGlass);
  for(let z=-92;z<=92;z+=23)hBox(.28,34,.48,side*110.67,94,z,steelLight);
  hBox(.28,.65,184,side*110.67,77,0,steelLight);hBox(.28,.65,184,side*110.67,111,0,steelLight);
  for(let z=-80;z<=80;z+=23){
-  hWallBrace([face,5,z-10],[face,72,z+10]);hWallBrace([face,5,z+10],[face,72,z-10]);
+  hWallBrace([face,5,z-10],[face,72,z+10],[side,0,0]);hWallBrace([face,5,z+10],[face,72,z-10],[side,0,0]);
   hBox(.26,.55,19,side*110.67,5,z,vabSeam);
-  hWallBrace([face,116,z-10],[face,148,z+10]);hWallBrace([face,116,z+10],[face,148,z-10]);
+  hWallBrace([face,116,z-10],[face,148,z+10],[side,0,0]);hWallBrace([face,116,z+10],[face,148,z-10],[side,0,0]);
  }
 }
 hBox(224,150,1.1,0,75,-96,vabWall);hBox(92,132,1.25,0,69,-96,vabDoor);
 for(let x=-42;x<=42;x+=14)hBox(1.1,128,1.5,x,69,-95.2,steelLight);
 for(let y=13;y<=125;y+=16)hBox(90,.75,1.5,0,y,-95.2,steelLight);
 for(const side of [-1,1])for(let x=side<0?-108:94;side<0?x<=-48:x<=108;x+=20){
- hWallBrace([x,8,-95.15],[x+18,68,-95.15]);hWallBrace([x,8,-95.15],[x-2,68,-95.15]);
+ hWallBrace([x,8,-95.57],[x+18,68,-95.57],[0,0,1]);hWallBrace([x,8,-95.57],[x-2,68,-95.57],[0,0,1]);
 }
 hBox(224,22,.5,0,137,-95.25,vabGlass);
 for(let x=-105;x<=105;x+=21)hBox(.35,22,.8,x,137,-95.1,steelLight);
