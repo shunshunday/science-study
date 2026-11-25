@@ -705,7 +705,7 @@ export function createPartModel(p,THREE){
   }
  };
  const makePod=()=>{
-  const inline=id.includes('inline'),lander=id.includes('lander'),cupola=id.includes('cupola'),mk2=id.includes('mk2'),mk3=id.includes('mk3'),mk13=id.includes('mk13')||/mk1-3|mk1 3/.test((id+' '+name).toLowerCase()),seat=id==='seat',aircraft=id.includes('aircraft');
+  const inline=id.includes('inline'),lander=id.includes('lander'),cupola=id.includes('cupola'),mk2=id.includes('mk2'),mk3=id.includes('mk3'),mk13=id.includes('mk13')||/mk1-3|mk1 3/.test((id+' '+name).toLowerCase()),seat=id==='seat',aircraft=/cockpit|inline|コックピット/.test(id+' '+name.toLowerCase());
   const crewCabin=/^crew-|crew cabin|crew container|乗員収容|客室|ppd-?10|hitchhiker|ヒッチハイカー/.test(id+' '+name.toLowerCase());
   const kv=/mh-kv[123]|onion|pomegranate|ピー/.test(id+' '+name.toLowerCase());
   const mem=/munar|mem/.test(id+' '+name.toLowerCase());
@@ -905,6 +905,44 @@ export function createPartModel(p,THREE){
    band(rr*.98,h*.1,.045,gold);
   }
   else if(aircraft){
+   if(mk2||mk3){
+    // Mk2/Mk3 cockpits use the same non-circular fuselage sections as their airframes.
+    const width=r*(mk3?2.25:2.3),depth=r*(mk3?1.34:.9),length=h*1.08,shape=new THREE.Shape(),corner=Math.min(width,depth)*.16;
+    if(mk2){
+     shape.moveTo(-width*.5,-depth*.34);shape.lineTo(width*.5,-depth*.34);
+     shape.quadraticCurveTo(width*.54,-depth*.05,width*.42,depth*.22);
+     shape.quadraticCurveTo(width*.3,depth*.53,0,depth*.56);
+     shape.quadraticCurveTo(-width*.3,depth*.53,-width*.42,depth*.22);
+     shape.quadraticCurveTo(-width*.54,-depth*.05,-width*.5,-depth*.34);
+    }else{
+     shape.moveTo(-width*.5+corner,-depth*.5);shape.lineTo(width*.5-corner,-depth*.5);
+     shape.quadraticCurveTo(width*.5,-depth*.5,width*.5,-depth*.5+corner);
+     shape.lineTo(width*.5,depth*.5-corner);shape.quadraticCurveTo(width*.5,depth*.5,width*.5-corner,depth*.5);
+     shape.lineTo(-width*.5+corner,depth*.5);shape.quadraticCurveTo(-width*.5,depth*.5,-width*.5,depth*.5-corner);
+     shape.lineTo(-width*.5,-depth*.5+corner);shape.quadraticCurveTo(-width*.5,-depth*.5,-width*.5+corner,-depth*.5);
+    }
+    add(new THREE.ExtrudeGeometry(shape,{depth:length,bevelEnabled:true,bevelSegments:5,bevelSize:.04,bevelThickness:.04}),painted('#d9d9d0','#b68b4e',mk3?'MK3 COCKPIT PRESSURE SHELL':'MK2 COCKPIT PRESSURE SHELL',name),[0,0,-length*.5]);
+    for(const z of [-length*.48,length*.48]){const pts=shape.getPoints(48).map(p=>[p.x,p.y,z]);pts.push(pts[0]);tube(pts,.035,steel);}
+    // Raised transparent canopy, framed windshield and side glazing.
+    const canopy=add(new THREE.SphereGeometry(width*.34,40,24,0,Math.PI*2,0,Math.PI/2),glass,[0,depth*.38,length*.2]);
+    canopy.scale.set(1,.7,mk3?.82:.68);
+    box(width*.56,.045,.05,steel,[0,depth*.43,length*.46]);
+    box(width*.46,.025,.025,glass,[0,depth*.45,length*.47]);
+    for(let side of [-1,1]){
+     tube([[side*width*.34,depth*.3,length*.38],[side*width*.27,depth*.5,length*.18],[0,depth*.55,length*.08]],.03,aluminium);
+     for(let j=0;j<3;j++){
+      const z=-length*.28+j*length*.2;
+      sphere(width*.045,steel,[side*width*.49,depth*.12,z],[.2,1,1.1]);
+      sphere(width*.033,glass,[side*width*.505,depth*.12,z],[.16,1,1.05]);
+     }
+     tube([[side*width*.46,-depth*.18,-length*.42],[side*width*.48,-depth*.18,0],[side*width*.46,-depth*.18,length*.42]],.028,steel);
+    }
+    box(width*.36,.06,length*.18,dark,[0,-depth*.39,-length*.22]);
+    for(let i=0;i<6;i++)bolt((i-2.5)*width*.1,-depth*.42,-length*.22,.018,gold);
+    sphere(.06,orange,[0,depth*.2,length*.52],[1,.55,.6]);
+    return;
+   }
+   // Mk1 inline cockpit: compact cylindrical pressure shell with a raised single-piece canopy.
    lathe([[0,-h*.5],[rr*.8,-h*.5],[rr,-h*.4],[rr*.95,h*.2],[rr*.72,h*.42],[rr*.5,h*.5],[0,h*.5]],painted('#d9d9d0','#b68b4e','COCKPIT PRESSURE SHELL',name),64);
    const canopy=add(new THREE.SphereGeometry(rr*.68,32,20,0,Math.PI*2,0,Math.PI/2),glass,[0,h*.36,0]);canopy.scale.set(1,.85,1);
    for(let side of [-1,1])tube([[side*rr*.56,h*.18,0],[side*rr*.42,h*.42,0],[0,h*.5,0]],.025,aluminium);
