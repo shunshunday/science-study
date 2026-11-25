@@ -142,30 +142,6 @@ const crew=makeCrew();crew.position.set(4,0,7);campus.add(crew);
 // 大型格納庫：鉄骨トラス、格子床、黄色い格納扉、照明、作業足場を独自モデルで構成
 const hangar=new THREE.Group();hangar.scale.set(.0018,.0022,.0018);scene.add(hangar);
 
-// Solid insulated hangar wall panels: close the gaps between the steel frame.
-const wallOuter=hangarMat(0x596b75,.38,.82),wallInner=hangarMat(0x354650,.28,.9),wallBase=hangarMat(0x7c8588,.18,.92),wallWindow= new THREE.MeshStandardMaterial({color:0x8aa9b5,metalness:.18,roughness:.28,transparent:true,opacity:.58});
-for(const side of [-1,1]){
-  hBox(2.4,132,184,side*110,70,0,wallOuter);
-  hBox(2.8,18,184,side*108.7,9,0,wallBase);
-  for(let y=28;y<=118;y+=30)hBox(2.9,1.2,184,side*108.6,y,0,steelLight);
-  for(let z=-77;z<=77;z+=22){
-    hBox(2.9,18,1.1,side*108.5,76,z,wallInner);
-    hBox(2.95,9,1.2,side*108.45,112,z,wallWindow);
-  }
-}
-hBox(220,132,2.4,0,70,94,wallOuter);
-hBox(220,18,2.8,0,9,92.7,wallBase);
-for(let y=28;y<=118;y+=30)hBox(220,1.2,2.9,0,y,92.6,steelLight);
-for(let x=-99;x<=99;x+=22){
-  hBox(20,18,2.9,x,76,92.5,wallInner);
-  hBox(20,9,2.95,x,112,92.45,wallWindow);
-}
-// Front facade leaves a broad central vehicle/rocket access opening.
-for(const side of [-1,1]){
-  hBox(31,132,2.4,side*94,70,-94,wallOuter);
-  hBox(31,18,2.8,side*94,9,-92.7,wallBase);
-  hBox(31,9,2.95,side*94,112,-92.45,wallWindow);
-}
 const hangarCrewGroup=new THREE.Group();hangar.add(hangarCrewGroup);
 const hangarMat=(color,metalness=.45,roughness=.72)=>new THREE.MeshStandardMaterial({color,metalness,roughness});
 const steel=hangarMat(0x657782,.72,.62),steelLight=hangarMat(0xb1bdc1,.68,.48),darkSteel=hangarMat(0x34434b,.62,.58),yellow=hangarMat(0xc5c9c5,.28,.72),floorMat=hangarMat(0x777f80,.12,.96);
