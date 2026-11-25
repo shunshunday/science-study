@@ -991,6 +991,30 @@ export function createPartModel(p,THREE){
    }
    return;
   }
+  const strutConnector=/eas-4|strut connector|ストラットコネクター/.test(nm),hardpoint=/hardpoint|ハードポイント/.test(nm),pylon=/pylon|パイロン/.test(nm);
+  if(strutConnector){
+   // EAS-4 strut connector: flexible structural rod, ball sockets and locking collars.
+   const length=h*.82;
+   tube([[0,-length*.5,0],[0,-length*.28,r*.08],[0,length*.28,r*.08],[0,length*.5,0]],.055,aluminium);
+   for(let side of [-1,1]){
+    sphere(r*.2,steel,[0,side*length*.5,0]);sphere(r*.12,gold,[0,side*length*.5,0]);
+    const socket=new THREE.Mesh(new THREE.TorusGeometry(r*.16,.035,10,32),aluminium);socket.position.set(0,side*length*.5,0);socket.rotation.x=Math.PI/2;g.add(socket);
+    box(r*.3,.09,r*.24,steel,[0,side*length*.42,0]);
+    for(let i=0;i<4;i++){const a=i*Math.PI/2;bolt(Math.cos(a)*r*.15,side*length*.42,Math.sin(a)*r*.15,.02,gold);}
+   }
+   band(r*.1,-length*.18,.025,orange);band(r*.1,length*.18,.025,orange);box(r*.42,.12,.08,dark,[0,0,r*.16]);return;
+  }
+  if(hardpoint){
+   box(r*1.35,h*.24,r*.88,steel);
+   box(r*.82,h*.3,r*.58,painted('#9da8aa','#b68b4e','STRUCTURAL HARDPOINT',name),[0,h*.18,0]);
+   cyl(r*.28,r*.28,.18,aluminium,h*.36,32);cyl(r*.18,r*.18,.1,dark,h*.47,32);
+   for(let side of [-1,1]){box(r*.12,h*.52,.12,gold,[side*r*.52,0,0]);for(let j=0;j<3;j++)bolt(side*r*.52,(j-1)*h*.2,.08,.025,steel);}return;
+  }
+  if(pylon){
+   lathe([[0,-h*.5],[r*.3,-h*.5],[r*.56,-h*.35],[r*.7,h*.18],[r*.48,h*.42],[r*.2,h*.5],[0,h*.5]],painted('#c9ceca','#b68b4e','AERODYNAMIC PYLON',name),48);
+   box(r*1.2,.12,r*.68,steel,[0,-h*.44,0]);box(r*.92,.1,r*.58,aluminium,[0,h*.42,0]);
+   for(let side of [-1,1]){tube([[side*r*.3,-h*.36,0],[side*r*.48,0,r*.12],[side*r*.28,h*.36,0]],.035,steel);for(let y of [-h*.34,h*.34])bolt(side*r*.34,y,0,.025,gold);}return;
+  }
   if(strut||beam){
    if(id.includes('cubic')||/octagonal strut|octagonal connector/.test(nm)){
     // Cubic octagonal strut: an eight-sided structural tube with reinforced end sockets.
@@ -1789,6 +1813,10 @@ export function createPartModel(p,THREE){
    }else if(/science/.test(nm)){
     box(r*.88,h*.72,r*.42,painted('#d6d8d1','#6f9db0','SCIENCE KIT',name));
     for(let i=0;i<3;i++)box(r*.16,h*.38,.035,blue,[(i-1)*r*.24,0,r*.24]);
+    box(r*.64,.08,.05,steel,[0,h*.4,0]);
+    for(let i=0;i<4;i++){const x=(i-1.5)*r*.18;const vial=new THREE.CylinderGeometry(.035,.05,h*.25,12);const m=new THREE.Mesh(vial,i%2?glass:ivory);m.position.set(x,-h*.1,r*.28);g.add(m);cyl(.045,.045,.025,orange,-h*.1+h*.13,12).position.set(x,-h*.1+h*.13,r*.28);}
+    for(let side of [-1,1]){box(.08,h*.3,.12,gold,[side*r*.48,0,0]);bolt(side*r*.46,h*.28,r*.24,.02,steel);}
+    for(let i=0;i<5;i++)box(.05,.025,.025,aluminium,[(i-2)*r*.12,-h*.32,r*.24]);
    }else if(/fuel cylinder|燃料シリンダー/.test(nm)){
     lathe([[0,-h*.5],[r*.4,-h*.5],[r*.48,-h*.4],[r*.48,h*.36],[r*.36,h*.5],[0,h*.5]],painted('#c7cbc5','#c56b31','EVA FUEL CYLINDER',name),48);
     band(r*.48,-h*.36,.03,gold);band(r*.48,h*.36,.03,steel);
@@ -1930,9 +1958,25 @@ export function createPartModel(p,THREE){
     const length=h*1.3;box(r*.34,.1,length,steel);box(r*.24,.055,length*.92,ivory,[0,.055,0]);
     for(let i=0;i<12;i++)sphere(.035,M(0xf1e8bd,.12,.2,{emissive:0x8b7b48,emissiveIntensity:.25}),[0,.1,(i-5.5)*length*.075],[1,.5,1]);
    }else if(nav){
-    cyl(r*.42,r*.48,h*.22,steel);for(let side of [-1,1])sphere(r*.24,M(side<0?0xc94b3e:0x4b9e65,.15,.18,{emissive:side<0?0x55110b:0x10351d,emissiveIntensity:.25}),[side*r*.3,h*.18,0],[1,.8,1]);band(r*.48,h*.1,.025,gold);
+    cyl(r*.42,r*.48,h*.22,steel);
+    for(let side of [-1,1]){
+     const lensMat=M(side<0?0xc94b3e:0x4b9e65,.15,.18,{emissive:side<0?0x55110b:0x10351d,emissiveIntensity:.25});
+     cyl(r*.28,r*.3,.08,aluminium,h*.18,24).position.x=side*r*.3;
+     sphere(r*.24,lensMat,[side*r*.3,h*.18,0],[1,.8,1]);
+     add(new THREE.TorusGeometry(r*.24,.025,8,32),gold,[side*r*.3,h*.18,0]);
+     for(let i=0;i<4;i++){const a=i*Math.PI/2;bolt(side*r*.3+Math.cos(a)*r*.3,h*.18,Math.sin(a)*r*.3,.015,steel);}
+    }
+    band(r*.48,h*.1,.025,gold);
+    box(r*.62,.1,r*.3,steel,[0,-h*.15,0]);
+    for(let side of [-1,1])tube([[side*r*.24,-h*.12,0],[side*r*.4,-h*.02,0],[side*r*.4,h*.04,0]],.025,aluminium);
    }else if(dome){
-    cyl(r*.46,r*.52,.12,steel);sphere(r*.48,M(0xe8e5cf,.1,.18,{transparent:true,opacity:.68,emissive:0x8e8b6d,emissiveIntensity:.25}),[0,h*.14,0],[1,.5,1]);band(r*.5,h*.05,.035,gold);
+    cyl(r*.46,r*.52,.12,steel);
+    sphere(r*.48,M(0xe8e5cf,.1,.18,{transparent:true,opacity:.68,emissive:0x8e8b6d,emissiveIntensity:.25}),[0,h*.14,0],[1,.5,1]);
+    band(r*.5,h*.05,.035,gold);
+    add(new THREE.TorusGeometry(r*.34,.025,8,40),aluminium,[0,h*.1,0]);
+    for(let i=0;i<10;i++){const a=i*Math.PI/5,x=Math.cos(a)*r*.32,z=Math.sin(a)*r*.32;sphere(.035,M(0xf2e8b9,.1,.15,{emissive:0x9c8851,emissiveIntensity:.35}),[x,h*.1,z]);}
+    for(let i=0;i<6;i++){const a=i*Math.PI/3;tube([[Math.cos(a)*r*.46,h*.04,Math.sin(a)*r*.46],[Math.cos(a)*r*.35,h*.22,Math.sin(a)*r*.35]],.018,steel);bolt(r*.44*Math.cos(a),.08,r*.44*Math.sin(a),.018,gold);}
+    box(r*.38,.07,.08,dark,[0,-.08,r*.43]);
    }else{
     const headR=r*(large?.68:.48);cyl(r*.34,r*.4,h*.2,steel);
     const housing=add(new THREE.CylinderGeometry(headR,headR*.85,h*.32,48,1,false),aluminium,[0,h*.22,0]);housing.rotation.x=Math.PI/2;
