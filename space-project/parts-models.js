@@ -761,356 +761,137 @@ export function createPartModel(p,THREE){
   for(let side of [-1,1]){cyl(width*.12,width*.12,.1,steel,height*.52,20).position.x=side*width*.26;bolt(side*width*.46,-height*.4,width*.34,.022,gold);}
   radialLabel(width*.68,0,width*.5,height*.18,getLabelMaterial());
  }; const makeScience=()=>{
-  const nm=name.toLowerCase();
-  if(/goo|グー/.test(nm)){lathe([[0,-h*.35],[r*.68,-h*.35],[r*.78,-h*.2],[r*.78,h*.24],[r*.55,h*.38],[0,h*.38]],ivory,48);sphere(r*.42,M(0x879b75,.08,.24),[0,h*.35,0],[1,.8,1]);band(r*.78,-h*.2,.035,gold);}
-  else if(/thermo|barometer|温度計|気圧計/.test(nm)){lathe([[0,-h*.4],[r*.6,-h*.4],[r*.72,-h*.3],[r*.72,h*.25],[r*.55,h*.4],[0,h*.4]],steel,40);sphere(r*.22,orange,[0,h*.52,0]);for(let i=0;i<5;i++)box(r*.55,.018,.018,ivory,[0,h*(.1+i*.07),r*.7]);}
-  else if(/scan|スキャン|gravioli|加速度|地震/.test(nm)){lathe([[0,-h*.35],[r*.7,-h*.35],[r*.85,-h*.2],[r*.85,h*.22],[r*.7,h*.35],[0,h*.35]],ivory,40);for(let i=0;i<3;i++){const a=i*Math.PI*2/3;tube([[Math.cos(a)*r*.55,h*.15,Math.sin(a)*r*.55],[Math.cos(a)*r*.95,h*.6,Math.sin(a)*r*.95],[Math.cos(a)*r*.75,h*.82,Math.sin(a)*r*.75]],.035,aluminium);}sphere(r*.16,gold,[0,h*.82,0]);}
-  else if(/telescope|望遠鏡/.test(nm)){lathe([[0,-h*.35],[r*.34,-h*.35],[r*.4,-h*.2],[r*.3,h*.65],[r*.42,h*.8],[r*.28,h*.9],[0,h*.9]],steel,40);band(r*.4,h*.7,.04,gold);sphere(r*.26,glass,[0,h*.9,0],[1,.3,1]);}
-  else{lathe([[0,-h*.45],[r*.72,-h*.45],[r*.85,-h*.3],[r*.85,h*.35],[r*.7,h*.45],[0,h*.45]],painted('#d9d9d0','#b68b4e','SCIENCE INSTRUMENT'),48);band(r*.85,h*.32,.035,gold);for(let i=0;i<4;i++){const a=i*Math.PI/2;const x=Math.cos(a)*r*.58,z=Math.sin(a)*r*.58;box(r*.18,h*.62,.08,steel,[x,h*.15,z]);}radialLabel(r*.86,0,r*.68,h*.22,getLabelMaterial());}
- };
- const makeDecoupler=()=>{
   const nm=(id+' '+name).toLowerCase();
-  const adapter=/adapter|アダプター/.test(nm),tri=/tri.?coupler|トライ/.test(nm),quad=/quad.?coupler|クアッド/.test(nm),bi=/bi.?coupler|バイカプラー/.test(nm),hub=/hubmax/.test(nm);
-  const radial=/radial|tt-?38|tt-?70|hydraulic|hdm|ラジアル|油圧式/.test(nm);
-  const separator=/separator|セパレーター/.test(nm);
-  const enginePlate=/engine plate|エンジンプレート/.test(nm);
-  const grip=/grip.?strip|grip.?pad|グリップ/.test(nm);
-  const beam=/i-beam|girder|beam|panel|mobility enhancer|パネル|ビーム|桁/.test(nm);
-  const strut=/strut|hardpoint|pylon|ストラット|ハードポイント|パイロン/.test(nm);
-  if(radial){
-   // TT-38K family: narrow side-mounted release rail, twin guide cheeks and a sprung ejector.
-   const bodyW=Math.max(.12,r*.34),bodyH=Math.max(.42,h*.9);
-   box(bodyW,bodyH,r*.22,steel);
-   box(bodyW*.42,bodyH*.82,r*.25,dark,[0,0,r*.16]);
+  const goo=/goo|グー/.test(nm),gauge=/thermo|barometer|温度計|気圧計/.test(nm),material=/materialbay|science jr|サイエンスjr/.test(nm);
+  const magnet=/magnetometer|磁力計/.test(nm),seismic=/accelerometer|seismic|地震/.test(nm),atmos=/atmosphere|spectro|大気分光/.test(nm);
+  const grav=/grav|重力子|グラヴィオリ/.test(nm),telescope=/telescope|sentinel|望遠鏡/.test(nm),m4435=/m4435|narrow.?band/.test(nm),m700=/m700|survey scanner|探査スキャナー/.test(nm);
+  const surface=/surface scan|地表スキャン/.test(nm),arm=/scan arm|スキャンアーム|crsy|sprt|op-e/.test(nm),control=/experiment control|実験制御/.test(nm);
+  const monitor=/goo monitor|観察滞在/.test(nm),weather=/weather|ウェザー/.test(nm),ion=/ionographer|イオノグラファー/.test(nm),grand=/grand slam|受動地震/.test(nm);
+  const body=painted('#cbd0ca','#b68b4e','SCIENTIFIC INSTRUMENT',name);
+  if(goo||monitor){
+   // Mystery Goo containment: clear pressure vessel, dark retaining cage and visible green sample.
+   cyl(r*.62,r*.62,h*.1,steel,-h*.35,48);
+   const jar=add(new THREE.SphereGeometry(r*.56,48,32),M(0xdce8e2,.05,.12,{transparent:true,opacity:.32,side:THREE.DoubleSide}),[0,h*.04,0],[1,1.12,1]);
+   sphere(r*.38,M(0x799a59,.08,.28),[0,-h*.05,0],[1,.86,.9]);
+   for(let i=0;i<8;i++){const ang=i*Math.PI/4;radialPipe(r*.62,-h*.3,h*.28,ang,steel,.025);bolt(r*.62*Math.cos(ang),h*.32,r*.62*Math.sin(ang),.02,gold);}
+   band(r*.62,-h*.3,.045,gold);band(r*.62,h*.3,.045,aluminium);
+   if(monitor){box(r*.34,h*.18,.06,dark,[0,h*.38,r*.42]);sphere(.09,glass,[0,h*.4,r*.47]);}
+   return;
+  }
+  if(gauge){
+   // Analog instrument face with calibrated tick marks and a physical pointer.
+   box(r*1.15,h*.78,r*.42,painted('#d1d4ce','#b68b4e','ENVIRONMENTAL SENSOR',name));
+   const face=add(new THREE.CircleGeometry(r*.43,48),dark,[0,h*.05,r*.24],[0,0,0]);
+   add(new THREE.TorusGeometry(r*.44,.035,10,48),aluminium,[0,h*.05,r*.25],[0,0,0]);
+   add(new THREE.CircleGeometry(r*.34,48),ivory,[0,h*.05,r*.27]);
+   for(let i=0;i<21;i++){const ang=-Math.PI*.8+i*Math.PI*1.6/20,x=Math.sin(ang)*r*.29,y=Math.cos(ang)*r*.29;box(.018,.065,.018,steel,[x,h*.05+y,r*.29],[0,0,-ang]);}
+   const needle=box(.018,r*.27,.02,orange,[0,h*.12,r*.31]);needle.rotation.z=-.55;
+   sphere(.06,gold,[0,h*.05,r*.33]);
+   for(let side of [-1,1])bolt(side*r*.42,-h*.3,r*.24,.02,gold);
+   return;
+  }
+  if(material){
+   // SC-9001 Science Jr.: cylindrical lab canister with four opening instrument panels.
+   lathe([[0,-h*.48],[r*.78,-h*.48],[r*.94,-h*.36],[r*.94,h*.34],[r*.78,h*.48],[0,h*.48]],body,72);
+   for(let y of [-h*.38,h*.38])band(r*.96,y,.045,gold);
+   cyl(r*.62,r*.62,.08,dark,h*.42,48);
+   for(let i=0;i<4;i++){
+    const ang=i*Math.PI/2,x=Math.sin(ang)*r*.78,z=Math.cos(ang)*r*.78;
+    box(r*.58,h*.54,.06,ivory,[x,0,z],[0,-ang,0]);
+    box(r*.42,h*.4,.025,dark,[x,0,z+.04],[0,-ang,0]);
+    for(let j=0;j<4;j++)box(r*.3,.025,.02,aluminium,[x,(j-1.5)*h*.085,z+.06],[0,-ang,0]);
+    for(let j=0;j<3;j++)sphere(.045,j%2?orange:blue,[x+(j-1)*r*.12,h*.2,z+.08]);
+    tube([[x-r*.22,-h*.28,z],[x-r*.22,-h*.4,z],[x+r*.22,-h*.4,z],[x+r*.22,-h*.28,z]],.018,steel);
+   }
+   for(let i=0;i<12;i++){const ang=i*Math.PI/6;bolt(r*.94*Math.cos(ang),-h*.4,r*.94*Math.sin(ang),.02,aluminium);}
+   return;
+  }
+  if(magnet||seismic||grand){
+   const boom=magnet||grand;
+   box(r*1.25,.13,r*1.1,steel,[0,-h*.36,0]);
+   lathe([[0,-h*.3],[r*.32,-h*.3],[r*.42,-h*.18],[r*.42,h*.25],[r*.28,h*.35],[0,h*.35]],body,48);
    for(let side of [-1,1]){
-    box(bodyW*.18,bodyH*.9,r*.18,aluminium,[side*bodyW*.43,0,r*.18]);
-    for(let j=0;j<5;j++)box(bodyW*.13,bodyH*.055,.018,(j%2?dark:gold),[side*bodyW*.43,(j-2)*bodyH*.17,r*.28]);
-    for(let j=0;j<3;j++)bolt(side*bodyW*.45,(j-1)*bodyH*.31,r*.29,.018,gold);
+    const x=side*r*.42;
+    tube([[x,h*.12,0],[x*1.4,h*.28,0],[x*1.9,h*.58,0],[x*2.2,h*.65,0]],.035,aluminium);
+    for(let j=0;j<3;j++)tube([[x*(1.2+j*.3),h*.28+j*h*.1,0],[x*(1.25+j*.3),h*.34+j*h*.1,r*.16]],.018,gold);
    }
-   box(bodyW*.28,bodyH*.34,.06,steel,[0,0,r*.31]);
-   box(bodyW*.12,bodyH*.2,.045,orange,[0,0,r*.35]);
-   for(let y of [-bodyH*.46,bodyH*.46])box(bodyW*.95,.055,r*.3,aluminium,[0,y,r*.05]);
-   for(let side of [-1,1])tube([[side*bodyW*.45,-bodyH*.3,r*.3],[side*bodyW*.55,0,r*.38],[side*bodyW*.45,bodyH*.3,r*.3]],.018,gold);
+   if(magnet){
+    for(let side of [-1,1])add(new THREE.TorusGeometry(r*.35,.035,10,48),gold,[side*r*1.05,h*.64,0],[Math.PI/2,0,0]);
+    sphere(.11,blue,[0,h*.42,0]);
+   }else if(seismic||grand){
+    for(let i=0;i<3;i++){const ang=i*Math.PI*2/3,x=Math.cos(ang)*r*.58,z=Math.sin(ang)*r*.58;tube([[0,-h*.18,0],[x,-h*.48,z]],.045,steel);cyl(.11,.11,.06,dark,-h*.49,20).position.set(x,-h*.49,z);}
+    const pendulum=add(new THREE.SphereGeometry(r*.14,20,16),gold,[0,h*.12,0]);
+    tube([[0,h*.12,0],[0,h*.34,0]],.025,aluminium);
+   }
    return;
   }
-  if(grip){
-   const w=r*1.55,len=h*.92,depth=Math.max(.045,r*.12);
-   box(w,len,depth,steel);
-   const padMat=M(0x252a2c,.02,.98);
-   if(/strip/.test(nm)){
-    for(let i=0;i<7;i++)box(w*.88,.045,depth*.8,padMat,[0,(i-3)*len*.13,depth*.56]);
+  if(atmos||weather||ion){
+   box(r*1.1,h*.5,r*.72,body);
+   for(let side of [-1,1])box(r*.12,h*.65,r*.12,steel,[side*r*.45,0,0]);
+   const mastH=h*(weather?1.05:.78);
+   tube([[0,h*.22,0],[0,h*.22+mastH*.7,0],[0,h*.22+mastH,0]],.03,aluminium);
+   if(weather){
+    for(let i=0;i<3;i++){const ang=i*Math.PI*2/3;const x=Math.cos(ang)*r*.42,z=Math.sin(ang)*r*.42;tube([[0,h*.65,0],[x,h*.82,z]],.02,gold);sphere(.08,ivory,[x,h*.82,z]);}
+    box(r*.65,.06,.08,orange,[0,h*.96,0]);
+   }else if(ion){
+    for(let i=0;i<6;i++){const ang=i*Math.PI/3;const x=Math.cos(ang)*r*.7,z=Math.sin(ang)*r*.7;tube([[0,h*.35,0],[x,h*.7,z],[x*1.15,h*.92,z*1.15]],.025,gold);sphere(.045,blue,[x*1.15,h*.92,z*1.15]);}
    }else{
-    const n=id.includes('156')||id.includes('gp156')?5:id.includes('036')?3:2;
-    for(let x=0;x<n;x++)for(let y=0;y<n;y++)box(w*.12,len*.1,depth*.8,padMat,[(x-(n-1)/2)*w*.18,(y-(n-1)/2)*len*.17,depth*.58]);
+    lathe([[0,h*.3],[r*.2,h*.3],[r*.34,h*.46],[r*.5,h*.72],[r*.42,h*.78],[0,h*.78]],aluminium,40);
+    cyl(r*.16,r*.16,.1,glass,h*.78,24);
+    for(let i=0;i<4;i++){const ang=i*Math.PI/2;radialPipe(r*.48,h*.35,h*.7,ang,steel,.02);}
    }
-   for(let x of [-1,1])for(let y of [-1,1])bolt(x*w*.43,y*len*.43,depth*.62,.025,gold);
+   for(let i=0;i<4;i++)bolt((i-1.5)*r*.22,-h*.2,r*.4,.02,gold);
    return;
   }
-  if(enginePlate){
-   const count=id.includes('ep50')?8:id.includes('ep37')?6:id.includes('ep25')?4:3;
-   lathe([[r*.42,-h*.12],[r*.9,-h*.12],[r,-h*.06],[r,h*.08],[r*.9,h*.14],[r*.42,h*.14]],steel,80);
-   band(r*.98,h*.08,.04,gold);band(r*.98,-h*.07,.04,aluminium);
+  if(telescope||m4435||m700||surface){
+   const long=telescope||m4435,scanner=m700||surface;
+   lathe([[0,-h*.48],[r*.42,-h*.48],[r*.52,-h*.36],[r*.52,h*.38],[r*.4,h*.5],[0,h*.5]],painted('#596368','#b68b4e',scanner?'SURVEY SCANNER':'OPTICAL INSTRUMENT',name),64);
+   for(let y of [-h*.35,h*.34])band(r*.53,y,.045,gold);
+   if(telescope||m4435){
+    const tubeR=r*(telescope?.38:.28);
+    lathe([[0,h*.18],[tubeR*.8,h*.18],[tubeR,h*.28],[tubeR,h*.82],[tubeR*.82,h*.92],[0,h*.92]],steel,48);
+    band(tubeR,h*.78,.035,gold);
+    add(new THREE.CircleGeometry(tubeR*.72,48),glass,[0,h*.92,0],[Math.PI/2,0,0]);
+    for(let side of [-1,1])tube([[side*r*.35,h*.25,0],[side*r*.5,h*.58,0],[0,h*.78,0]],.025,aluminium);
+    if(telescope){box(r*.8,h*.18,.06,dark,[0,h*.38,r*.45]);sphere(.12,glass,[0,h*.42,r*.5]);}
+   }else{
+    const head=box(r*1.05,h*.2,r*.72,steel,[0,h*.42,0]);
+    for(let i=0;i<4;i++){const x=(i-1.5)*r*.22;sphere(.09,glass,[x,h*.43,r*.38],[1,.5,1]);}
+    if(m700){
+     add(new THREE.TorusGeometry(r*.54,.04,10,48),gold,[0,h*.53,0],[Math.PI/2,0,0]);
+     for(let i=0;i<8;i++){const ang=i*Math.PI/4;radialPipe(r*.54,h*.38,h*.68,ang,aluminium,.018);}
+    }else{
+     for(let side of [-1,1])tube([[side*r*.42,h*.3,0],[side*r*.62,h*.62,0],[side*r*.62,h*.75,0]],.025,gold);
+    }
+   }
+   for(let i=0;i<8;i++){const ang=i*Math.PI/4;bolt(r*.5*Math.cos(ang),-h*.4,r*.5*Math.sin(ang),.018,gold);}
+   return;
+  }
+  if(arm){
+   const count=/op-e|large|ラージ/.test(nm)?4:/sprt|medium|ミディアム/.test(nm)?3:2;
+   box(r*.72,h*.22,r*.72,steel,[0,-h*.38,0]);
+   let last=[0,-h*.22,0];
    for(let i=0;i<count;i++){
-    const ang=i*Math.PI*2/count,x=Math.cos(ang)*r*.64,z=Math.sin(ang)*r*.64;
-    const mount=new THREE.Mesh(new THREE.CylinderGeometry(r*.2,r*.2,h*.18,48),dark);mount.position.set(x,h*.02,z);g.add(mount);
-    band(r*.2,h*.11,.018,gold).position.set(x,h*.11,z);
-    for(let j=0;j<6;j++){const aa=j*Math.PI/3;bolt(x+Math.cos(aa)*r*.16,h*.12,z+Math.sin(aa)*r*.16,.015,aluminium);}
+    const end=[r*(.3+i*.34),h*(.02+i*.18),0];
+    tube([last,end],Math.max(.025,r*.075),aluminium);
+    tube([[last[0],last[1]+.06,last[2]+.05],[end[0],end[1]+.06,end[2]+.05]],.018,steel);
+    sphere(.06,gold,end);
+    last=end;
    }
+   box(r*.42,.12,r*.32,painted('#bfc6c2','#b68b4e','ROBOTIC SCIENCE SCANNER',name),last);
+   for(let i=0;i<3;i++)sphere(.055,i===0?blue:glass,[last[0]+(i-1)*r*.12,last[1]+.08,last[2]+r*.18],[1,.6,.3]);
    return;
   }
-  if(strut||beam){
-   if(id.includes('cubic')||/octagonal strut|octagonal connector/.test(nm)){
-    const shape=new THREE.OctahedronGeometry(r*.7,0);add(shape,aluminium);
-    for(let i=0;i<8;i++){const a=i*Math.PI/4;const x=Math.cos(a)*r*.62,z=Math.sin(a)*r*.62;bolt(x,0,z,.035,gold);}
-   }else if(beam){
-    const long=h>r*1.4;
-    const length=long?h:r*1.7,width=long?r*.2:r*.16,depth=r*.18;
-    box(width,length,depth,steel);
-    box(width*.28,length*.92,depth*1.08,aluminium,[0,0,depth*.08]);
-    for(let y=-length*.42;y<=length*.43;y+=length*.14){
-     box(width*.96,.035,depth*.95,aluminium,[0,y,0]);
-     for(let side of [-1,1])bolt(side*width*.38,y,depth*.52,.018,gold);
-    }
-    if(/panel/.test(nm)){
-     box(r*1.65,h*.82,.06,ivory);
-     for(let x=-2;x<=2;x++)box(.018,h*.72,.018,steel,[x*r*.28,0,.045]);
-     for(let y=-2;y<=2;y++)box(r*1.5,.018,.018,steel,[0,y*h*.16,.05]);
-    }
-   }else{
-    box(r*1.7,.12,r*.5,steel);box(.12,r*1.7,r*.5,aluminium);
-    for(let x of [-1,1])for(let z of [-1,1])bolt(x*r*.72,0,z*r*.3,.05,gold);
-   }
+  if(control){
+   box(r*1.1,h*.62,r*.72,body);
+   for(let i=0;i<4;i++){const ang=i*Math.PI/2;const x=Math.cos(ang)*r*.42,z=Math.sin(ang)*r*.42;tube([[0,h*.2,0],[x,h*.55,z]],.025,gold);}
    return;
   }
-  if(hub){
-   cyl(r*.9,r*.9,h*.65,steel);
-   for(let i=0;i<6;i++){const a=i*Math.PI/3,x=Math.cos(a)*r*.86,z=Math.sin(a)*r*.86;lathe([[0,-h*.18],[r*.18,-h*.18],[r*.2,h*.18],[0,h*.18]],aluminium,24,[x,0,z]);}
-   band(r*.9,h*.32,.05,gold);return;
-  }
-  // Axial stack couplers have a thin split collar and machined top/bottom flanges.
-  const hh=separator?h*.34:h*.28;
-  lathe([[0,-hh*.5],[r*.72,-hh*.5],[r*.92,-hh*.42],[r,-hh*.28],[r,-hh*.16],[r*.84,-hh*.08],[r*.84,hh*.08],[r,hh*.16],[r,hh*.28],[r*.92,hh*.42],[r*.72,hh*.5],[0,hh*.5]],steel,80);
-  band(r*.99,hh*.42,.045,aluminium);band(r*.99,-hh*.42,.045,gold);
-  band(r*.86,0,.045,dark);band(r*.9,separator?hh*.16:-hh*.12,.025,orange);
-  detailRivets(r*.93,-hh*.3,16);detailRivets(r*.93,hh*.3,16,.1);
-  // Small black/yellow caution blocks around the separation seam.
-  for(let i=0;i<12;i++){const ang=i*Math.PI/6,x=Math.cos(ang)*r*.995,z=Math.sin(ang)*r*.995;box(r*.09,.035,.025,i%2?dark:gold,[x,0,z],[0,-ang,0]);}
-  if(adapter){
-   lathe([[0,hh*.12],[r*.5,hh*.12],[r*.55,hh*.22],[r*.85,hh*.48],[r*.95,hh*.5],[0,hh*.5]],ivory,64);
-   band(r*.55,hh*.22,.035,gold);
-  }
-  if(tri||quad||bi){
-   const n=tri?3:quad?4:2;
-   for(let i=0;i<n;i++){const ang=i*Math.PI*2/n,x=Math.cos(ang)*r*.58,z=Math.sin(ang)*r*.58;lathe([[0,hh*.12],[r*.22,hh*.12],[r*.24,hh*.48],[0,hh*.48]],aluminium,32,[x,0,z]);band(r*.23,hh*.46,.025,gold).position.set(x,hh*.46,z);}
-  }
-  // Direction arrow on one-way decouplers; separators receive symmetric release lips.
-  if(!separator){
-   const arrow=new THREE.Mesh(new THREE.ConeGeometry(r*.13,h*.18,3),orange);arrow.position.set(0,hh*.54,r*.84);arrow.rotation.x=Math.PI/2;g.add(arrow);
-  }else{
-   band(r*.97,hh*.5,.025,orange);band(r*.97,-hh*.5,.025,orange);
-  }
- }; const makeM1TireTexture=()=>{
-  if(PART_SKIN_CACHE.has('rovemax-m1-tire'))return PART_SKIN_CACHE.get('rovemax-m1-tire');
-  const c=document.createElement('canvas');c.width=512;c.height=256;const q=c.getContext('2d');
-  q.fillStyle='#b9ad8c';q.fillRect(0,0,512,256);
-  const shade=q.createLinearGradient(0,0,512,256);shade.addColorStop(0,'rgba(255,255,255,.16)');shade.addColorStop(.5,'rgba(80,70,50,.02)');shade.addColorStop(1,'rgba(25,25,20,.22)');q.fillStyle=shade;q.fillRect(0,0,512,256);
-  // The stock M1 has a fine, orthogonal moulded grid rather than aircraft-style lugs.
-  q.strokeStyle='rgba(66,62,49,.34)';q.lineWidth=2;
-  for(let x=0;x<=512;x+=32){q.beginPath();q.moveTo(x,0);q.lineTo(x,256);q.stroke();}
-  for(let y=0;y<=256;y+=32){q.beginPath();q.moveTo(0,y);q.lineTo(512,y);q.stroke();}
-  q.strokeStyle='rgba(238,229,202,.18)';q.lineWidth=1;
-  for(let x=16;x<512;x+=32){q.beginPath();q.moveTo(x,0);q.lineTo(x,256);q.stroke();}
-  for(let y=16;y<256;y+=32){q.beginPath();q.moveTo(0,y);q.lineTo(512,y);q.stroke();}
-  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=THREE.RepeatWrapping;t.wrapT=THREE.RepeatWrapping;t.anisotropy=8;
-  PART_SKIN_CACHE.set('rovemax-m1-tire',t);return t;
- };
- const makeRollingWheel=(radius,width,at=[0,0,0],variant='rover')=>{
-  const wheel=new THREE.Group();wheel.name='wheel-spin';wheel.position.set(...at);wheel.userData.rollRadius=radius;wheel.userData.rollAxis='x';g.add(wheel);
-  const wheelId=(id+' '+name).toLowerCase(),m1=/m1|rovermax.?model.?1/.test(wheelId),rugged=/tr-2l|xl3|rugged|large/.test(wheelId),small=/s2|small|tiny/.test(wheelId),aircraft=variant==='aircraft';
-  const tireMat=m1?M(0xffffff,.01,.98,{map:makeM1TireTexture()}):M(0x17191b,.015,.99),sideMat=M(m1?0xb9ad8c:0x24282a,.04,.92),rimMat=M(m1?0xb9b9b2:0x9ca6a8,.84,.27),rimDark=M(0x343d42,.72,.38),hubMat=M(m1?0x858b8b:0x68747a,.82,.3),boltMat=M(0xb6bfbd,.88,.24),rubberInset=M(m1?0x8f856c:0x101416,.02,.98);
-  const section=aircraft?.17:m1?.24:rugged?.235:.205;
-  // Rounded pneumatic tyre carcass with a broad, continuous shoulder.
-  const carcass=new THREE.Mesh(new THREE.TorusGeometry(radius*(1-section),radius*section,32,96),tireMat);
-  carcass.rotation.y=Math.PI/2;carcass.castShadow=true;carcass.receiveShadow=true;wheel.add(carcass);
-  // Sidewall shoulders and concentric moulded rings.
-  for(const side of [-1,1]){
-   const faceX=side*width*.34;
-   const shoulder=new THREE.Mesh(new THREE.TorusGeometry(radius*.77,radius*.035,12,80),sideMat);
-   shoulder.rotation.y=Math.PI/2;shoulder.position.x=faceX;wheel.add(shoulder);
-   for(const rr of [.55,.64,.72]){
-    const ring=new THREE.Mesh(new THREE.TorusGeometry(radius*rr,radius*.012,8,64),sideMat);
-    ring.rotation.y=Math.PI/2;ring.position.x=side*width*.405;wheel.add(ring);
-   }
-   // Recessed metal wheel dish and inset dark well.
-   const dish=new THREE.Mesh(new THREE.CylinderGeometry(radius*.57,radius*.57,width*.19,64),rimDark);
-   dish.rotation.z=Math.PI/2;dish.position.x=side*width*.34;wheel.add(dish);
-   const rim=new THREE.Mesh(new THREE.CylinderGeometry(radius*.49,radius*.49,width*.205,64),rimMat);
-   rim.rotation.z=Math.PI/2;rim.position.x=side*width*.405;wheel.add(rim);
-   const inset=new THREE.Mesh(new THREE.CylinderGeometry(radius*.39,radius*.39,width*.214,64),rimDark);
-   inset.rotation.z=Math.PI/2;inset.position.x=side*width*.42;wheel.add(inset);
-   const hub=new THREE.Mesh(new THREE.CylinderGeometry(radius*.22,radius*.22,width*.24,48),hubMat);
-   hub.rotation.z=Math.PI/2;hub.position.x=side*width*.47;wheel.add(hub);
-   const cap=new THREE.Mesh(new THREE.CylinderGeometry(radius*.115,radius*.115,width*.25,40),rimMat);
-   cap.rotation.z=Math.PI/2;cap.position.x=side*width*.49;wheel.add(cap);
-   // Evenly spaced recessed lug nuts around the hub.
-   for(let i=0;i<10;i++){
-    const a=i*Math.PI/5,y=Math.cos(a)*radius*.34,z=Math.sin(a)*radius*.34;
-    const nut=new THREE.Mesh(new THREE.CylinderGeometry(radius*.027,radius*.027,width*.035,8),boltMat);
-    nut.rotation.set(Math.PI/2,0,Math.PI/2);nut.position.set(side*width*.49,y,z);wheel.add(nut);
-   }
-   // Tiny moulded sidewall lettering/size marks.
-   const mark=new THREE.Mesh(new THREE.BoxGeometry(width*.012,radius*.19,radius*.035),rubberInset);
-   mark.position.set(side*width*.445,-radius*.69, radius*.12);mark.rotation.x=-.2;wheel.add(mark);
-  }
-  // Tread blocks are individually modelled and follow the tyre curvature.
-  const count=small?32:rugged?40:36;
-  if(!m1)for(let i=0;i<count;i++){
-   const a=i*Math.PI*2/count;
-   if(rugged){
-    for(const side of [-1,1]){
-     const lug=new THREE.Mesh(new THREE.BoxGeometry(width*.48,radius*.092,radius*.17),i%2?sideMat:tireMat);
-     lug.position.set(side*width*.235,Math.cos(a)*radius*.965,Math.sin(a)*radius*.965);
-     lug.rotation.x=a;lug.rotation.z=side*.24*(i%2?1:-1);lug.castShadow=true;wheel.add(lug);
-    }
-   }else if(/rover/.test(wheelId)){
-    const lug=new THREE.Mesh(new THREE.BoxGeometry(width*.88,radius*.09,radius*.145),sideMat);
-    lug.position.set(0,Math.cos(a)*radius*.96,Math.sin(a)*radius*.96);
-    lug.rotation.x=a;lug.castShadow=true;wheel.add(lug);
-   }else{
-    const lug=new THREE.Mesh(new THREE.BoxGeometry(width*.9,radius*.075,radius*.12),sideMat);
-    lug.position.set(0,Math.cos(a)*radius*.96,Math.sin(a)*radius*.96);
-    lug.rotation.x=a;lug.castShadow=true;wheel.add(lug);
-   }
-  }
-  // Sidewall bead and inner bead seat.
-  for(const side of [-1,1]){
-   const bead=new THREE.Mesh(new THREE.TorusGeometry(radius*.79,radius*.018,8,80),rubberInset);
-   bead.rotation.y=Math.PI/2;bead.position.x=side*width*.43;wheel.add(bead);
-  }
-  return wheel;
- };
- const makeRoverWheel=()=>{
-  const rr=Math.max(r*.62,.16),width=Math.max(rr*.48,.09);
-  const mount=new THREE.Mesh(new THREE.CylinderGeometry(rr*.17,rr*.17,h*.62,20),steel);mount.position.set(0,h*.32,0);g.add(mount);
-  const arm=new THREE.Mesh(new THREE.BoxGeometry(rr*.2,h*.18,rr*.22),aluminium);arm.position.set(0,h*.05,0);g.add(arm);
-  makeRollingWheel(rr,width,[0,-h*.08,0],'rover');
-
- };
- const makeGear=()=>{
-  const nm=(id+' '+name).toLowerCase();
-  const landingLeg=/lt-?1|lt-?2|lt-?5|着陸脚/.test(nm);
-  const fixed=/ly-?01|ly-?05|固定式|steerable/.test(nm)&&!id.includes('ly10');
-  const retractable=/ly-?10|ly-?35|ly-?60|ly-?99|小型ランディング|中型ランディング|大型ランディング|超大型/.test(nm);
-  const large=/ly-?60|ly-?99|大型|超大型/.test(nm),medium=/ly-?35|中型/.test(nm),steer=/ly-?05|ly-?10|ly-?35|steering|ステアリング/.test(nm);
-  if(landingLeg){
-   // LT landing strut: one telescopic leg with a splayed brace and a broad ground shoe.
-   const pivot=new THREE.Group();pivot.name='landing-gear-pivot';pivot.userData.side=1;pivot.position.set(0,-h*.02,0);g.add(pivot);
-   const legScale=/lt-?5/.test(nm)?.72:/lt-?2/.test(nm)?1.22:1;
-   const L=h*.68*legScale,spread=r*.72*legScale,rod=Math.max(.025,r*.11);
-   const mount=new THREE.Mesh(new THREE.CylinderGeometry(r*.34,r*.38,h*.24,24),steel);mount.position.set(0,h*.22,0);pivot.add(mount);
-   band(r*.38,h*.32,.035,gold);
-   const mainPath=new THREE.CatmullRomCurve3([new THREE.Vector3(0,h*.18,0),new THREE.Vector3(spread*.18,0,0),new THREE.Vector3(spread*.62,-L*.62,0),new THREE.Vector3(spread,-L,0)]);
-   const main=new THREE.Mesh(new THREE.TubeGeometry(mainPath,32,rod,12,false),aluminium);main.castShadow=true;main.receiveShadow=true;pivot.add(main);
-   const oleo=new THREE.Mesh(new THREE.CylinderGeometry(rod*.9,rod*1.15,L*.3,20),steel);oleo.position.set(spread*.34,-L*.35,r*.05);oleo.rotation.z=-.42;pivot.add(oleo);
-   const piston=new THREE.Mesh(new THREE.CylinderGeometry(rod*.32,rod*.32,L*.22,16),gold);piston.position.set(spread*.55,-L*.65,r*.05);piston.rotation.z=-.38;pivot.add(piston);
-   const bracePath=new THREE.CatmullRomCurve3([new THREE.Vector3(0,h*.12,-r*.12),new THREE.Vector3(spread*.35,-L*.22,-r*.18),new THREE.Vector3(spread*.82,-L*.82,-r*.18)]);
-   const brace=new THREE.Mesh(new THREE.TubeGeometry(bracePath,20,rod*.42,8,false),steel);pivot.add(brace);
-   const shoe=new THREE.Mesh(new THREE.BoxGeometry(r*.72*legScale,.09*legScale,r*.42*legScale),dark);shoe.position.set(spread,-L,r*.02);shoe.castShadow=true;pivot.add(shoe);
-   const foot=new THREE.Mesh(new THREE.BoxGeometry(r*.68*legScale,.035*legScale,r*.38*legScale),aluminium);foot.position.set(spread,-L-.045*legScale,r*.02);pivot.add(foot);
-   for(let x of [-1,1])bolt(spread+x*r*.22*legScale,-L-.02,r*.18,.022,gold);
-   for(let i=0;i<5;i++)box(r*.5,.025,.025,i%2?dark:gold,[spread,-L*.78+i*L*.035,r*.13]);
-   return;
-  }
-  // LY aircraft gear: a single compact wheel assembly with an actual fork, oleo and bay door.
-  const wheelR=large?r*.36:medium?r*.31:r*.27,wheelW=large?.2:medium?.16:.13;
-  const bayW=r*(large?1.12:medium?.98:.82),bayH=h*.42;
-  lathe([[0,-h*.35],[r*.36,-h*.35],[r*.48,-h*.22],[r*.48,h*.24],[r*.34,h*.35],[0,h*.35]],steel,40);
-  band(r*.49,h*.24,.035,gold);band(r*.49,-h*.22,.025,aluminium);
-  box(bayW,bayH,.11,painted('#d5d8d5','#b68b4e','LANDING GEAR BAY',name),[0,h*.16,r*.22]);
-  box(bayW*.72,bayH*.68,.04,dark,[0,h*.16,r*.29]);
-  for(let side of [-1,1]){
-   tube([[side*bayW*.34,h*.32,r*.26],[side*bayW*.34,h*.02,r*.3],[side*bayW*.28,-h*.12,r*.28]],.025,aluminium);
-   for(let j=0;j<4;j++)bolt(side*bayW*.32,(j-1.5)*bayH*.18,r*.3,.018,gold);
-  }
-  const pivot=new THREE.Group();pivot.name=fixed?'landing-gear-fixed':'landing-gear-pivot';pivot.userData.side=1;pivot.position.set(0,-h*.12,0);g.add(pivot);
-  const strutPath=new THREE.CatmullRomCurve3([new THREE.Vector3(0,h*.22,0),new THREE.Vector3(0,h*.02,r*.08),new THREE.Vector3(0,-h*.2,r*.22),new THREE.Vector3(0,-h*.43,r*.32)]);
-  const strut=new THREE.Mesh(new THREE.TubeGeometry(strutPath,28,Math.max(.035,r*.075),12,false),aluminium);strut.castShadow=true;pivot.add(strut);
-  const oleo=new THREE.Mesh(new THREE.CylinderGeometry(r*.09,r*.12,h*.28,20),steel);oleo.position.set(0,-h*.12,r*.16);oleo.rotation.x=.18;pivot.add(oleo);
-  const piston=new THREE.Mesh(new THREE.CylinderGeometry(r*.045,r*.045,h*.22,16),gold);piston.position.set(0,-h*.29,r*.22);piston.rotation.x=.18;pivot.add(piston);
-  for(let side of [-1,1]){
-   const fork=tube([[side*r*.12,-h*.25,r*.2],[side*r*.24,-h*.39,r*.28],[side*r*.25,-h*.52,r*.34]],Math.max(.025,r*.04),steel);pivot.add(fork);
-  }
-  const count=large?4:medium?2:1;
-  for(let i=0;i<count;i++){
-   const z=(i-(count-1)/2)*wheelR*.62;
-   const wheel=makeRollingWheel(wheelR,wheelW,[0,-h*.57,z+r*.34],'aircraft');
-   g.remove(wheel);pivot.add(wheel);
-  }
-  // Fixed LY-01/05 retain the exposed fork; LY-10 and larger have retractable clamshell doors.
-  if(retractable){
-   for(let side of [-1,1]){
-    const door=box(bayW*.38,h*.06,.055,ivory,[side*bayW*.25,-h*.12,r*.42]);
-    door.rotation.z=side*.08;
-    tube([[side*bayW*.25,-h*.12,r*.42],[side*bayW*.38,-h*.22,r*.48],[side*bayW*.4,-h*.32,r*.46]],.018,gold);
-   }
-  }else{
-   // Fixed gear uses a rigid triangular brace and no false retractable door.
-   for(let side of [-1,1])tube([[side*r*.25,h*.18,0],[side*r*.42,-h*.08,r*.1],[0,-h*.48,r*.3]],.035,steel);
-  }
-  if(steer){
-   const steeringHub=new THREE.Mesh(new THREE.CylinderGeometry(wheelR*.18,wheelR*.18,wheelW*.9,20),gold);steeringHub.rotation.z=Math.PI/2;steeringHub.position.set(0,-h*.56,r*.34);pivot.add(steeringHub);
-  }
-  // Landing lights and hydraulic service fittings.
-  for(let side of [-1,1]){
-   sphere(.045, M(0xe7e4c7,.1,.18,{emissive:0x6b5c2c,emissiveIntensity:.3}),[side*bayW*.36,h*.2,r*.3],[1,.7,.35]);
-   bolt(side*bayW*.36,h*.32,r*.3,.02,gold);
-  }
- };
- const makeIntake=()=>{
-  const nm=(id+' '+name).toLowerCase();
-  const shock=/shock|ショック/.test(nm),circular=/circular|サーキュラー/.test(nm),ram=/ram|ramp|可変インテーク|可変型/.test(nm),radial=/radial|ラジアル/.test(nm),nacelle=/nacelle|ナセル/.test(nm),precool=/precool|プリクーラー/.test(nm),dsi=/diverterless|supersonic|ダイバータレス/.test(nm);
-  const shell=painted('#cbd0cd','#b68b4e','AIR INDUCTION SYSTEM',name);
-  if(nacelle||precool){
-   const long=nacelle?h*1.1:h*.88,rr=r*.82;
-   const duct=add(new THREE.CylinderGeometry(rr,rr,long,64,1,false),shell,[0,0,0],[Math.PI/2,0,0]);
-   for(let z of [-long*.48,long*.48]){const ring=add(new THREE.TorusGeometry(rr,.055,12,64),gold,[0,0,z],[0,0,0]);}
-   // Forward intake lip and deep internal compressor throat.
-   add(new THREE.TorusGeometry(rr*.84,.07,14,64),aluminium,[0,0,long*.5],[0,0,0]);
-   add(new THREE.CircleGeometry(rr*.72,48),black,[0,0,long*.505]);
-   for(let i=0;i<14;i++){const ang=i*Math.PI*2/14,x=Math.cos(ang)*rr*.5,y=Math.sin(ang)*rr*.5;const blade=box(.025,.12,rr*.5,steel,[x,y,long*.43],[0,0,ang]);}
-   if(precool){
-    for(let i=0;i<12;i++){const z=(i-5.5)*long*.07;const fin=add(new THREE.TorusGeometry(rr*1.02,.018,8,64),aluminium,[0,0,z],[0,0,0]);}
-    for(let side of [-1,1]){box(rr*.18,long*.55,.1,dark,[side*rr*.94,0,0]);for(let j=0;j<5;j++)box(rr*.16,.025,.03,orange,[side*rr*.99,(j-2)*long*.1,0]);}
-   }else{
-    for(let side of [-1,1]){const p=box(rr*.3,long*.5,.07,ivory,[side*rr*.78,0,0]);p.rotation.z=side*.12;for(let j=0;j<4;j++)bolt(side*rr*.85,(j-1.5)*long*.1,.05,.018,gold);}
-   }
-   return;
-  }
-  if(dsi){
-   // Mk1 DSI inlet: flattened rectangular mouth, curved compression bump and side fences.
-   const width=r*1.75,depth=h*.72,thick=r*.54;
-   box(width,thick,depth,shell);
-   box(width*.86,thick*.5,depth*.88,dark,[0,thick*.05,depth*.08]);
-   box(width*.72,thick*.36,depth*.7,black,[0,thick*.12,depth*.12]);
-   const bump=add(new THREE.SphereGeometry(width*.24,32,20),aluminium,[0,thick*.42,depth*.12],[0,0,0],[1,.3,1.25]);
-   for(let side of [-1,1]){
-    box(width*.08,thick*.7,depth*.92,steel,[side*width*.47,0,0]);
-    tube([[side*width*.38,thick*.2,-depth*.35],[side*width*.32,thick*.32,0],[side*width*.38,thick*.2,depth*.35]],.025,gold);
-   }
-   for(let i=0;i<6;i++)box(width*.07,.025,.04,aluminium,[(i-2.5)*width*.12,thick*.35,depth*.42]);
-   return;
-  }
-  if(radial){
-   // XM-G50 / variable radial intake: side-mounted oval duct with an offset mounting shoe.
-   const rr=r*.78,bodyH=h*.72;
-   lathe([[0,-bodyH*.5],[rr*.72,-bodyH*.5],[rr,-bodyH*.34],[rr,h*.2],[rr*.82,h*.44],[rr*.5,h*.5],[0,h*.5]],shell,64);
-   const lip=add(new THREE.TorusGeometry(rr*.78,.07,14,56),aluminium,[0,0,h*.48],[Math.PI/2,0,0]);
-   add(new THREE.CircleGeometry(rr*.67,48),black,[0,0,h*.485],[Math.PI/2,0,0]);
-   box(r*1.2,h*.28,.1,steel,[0,-h*.28,-r*.3]);
-   for(let i=0;i<8;i++){const ang=i*Math.PI/4;radialPipe(rr*.96,-h*.28,h*.28,ang,aluminium,.018);}
-   for(let i=0;i<4;i++)box(.04,.04,r*.42,steel,[(i-1.5)*r*.2,h*.02,h*.36]);
-   if(ram){
-    const ramp=box(rr*.9,.055,h*.34,gold,[0,-h*.1,h*.28],[.3,0,0]);
-    for(let side of [-1,1])tube([[side*rr*.48,-h*.2,h*.25],[side*rr*.3,h*.05,h*.42],[side*rr*.22,h*.25,h*.46]],.022,steel);
-   }
-   return;
-  }
-  if(shock){
-   // Shock cone: long pointed centrebody suspended inside a wide annular inlet.
-   const shellR=r*.88;
-   lathe([[0,-h*.48],[shellR*.55,-h*.48],[shellR*.92,-h*.32],[shellR,h*.2],[shellR*.82,h*.42],[shellR*.5,h*.5],[0,h*.5]],shell,72);
-   add(new THREE.TorusGeometry(shellR*.78,.075,16,64),aluminium,[0,0,h*.46],[Math.PI/2,0,0]);
-   add(new THREE.CircleGeometry(shellR*.66,48),black,[0,0,h*.47],[Math.PI/2,0,0]);
-   const spike=add(new THREE.ConeGeometry(shellR*.34,h*.82,48),steel,[0,0,h*.12],[Math.PI/2,0,0]);
-   spike.rotation.x=Math.PI/2;
-   const support=add(new THREE.TorusGeometry(shellR*.48,.035,10,48),gold,[0,0,h*.2],[Math.PI/2,0,0]);
-   for(let i=0;i<8;i++){const ang=i*Math.PI/4;radialPipe(shellR*.9,-h*.3,h*.28,ang,steel,.025);}
-   band(shellR,h*.22,.045,gold);
-   return;
-  }
-  if(ram){
-   // Adjustable ramp intake: rectangular duct with a hinged internal compression ramp.
-   const width=r*1.5,length=h*.86,thick=r*.54;
-   box(width,thick,length,shell);
-   box(width*.86,thick*.64,length*.84,dark,[0,0,length*.05]);
-   box(width*.7,thick*.42,length*.7,black,[0,thick*.02,length*.06]);
-   const ramp=box(width*.62,.07,length*.48,aluminium,[0,-thick*.18,length*.2],[.36,0,0]);
-   for(let side of [-1,1]){
-    box(width*.08,thick*.82,length*.9,steel,[side*width*.46,0,0]);
-    tube([[side*width*.28,-thick*.18,length*.1],[side*width*.28,thick*.16,length*.34],[side*width*.28,thick*.12,length*.42]],.025,gold);
-    for(let j=0;j<5;j++)bolt(side*width*.46,(j-2)*thick*.14,length*.42,.018,aluminium);
-   }
-   band(width*.48,length*.47,.025,gold);
-   return;
-  }
-  // Circular intake family: short duct, rolled lip, inner diffuser and stator vanes.
-  const shellR=r*.82;
-  lathe([[0,-h*.48],[shellR*.62,-h*.48],[shellR*.92,-h*.3],[shellR,h*.22],[shellR*.82,h*.46],[shellR*.48,h*.5],[0,h*.5]],shell,64);
-  add(new THREE.TorusGeometry(shellR*.78,.07,14,56),aluminium,[0,0,h*.48],[Math.PI/2,0,0]);
-  add(new THREE.CircleGeometry(shellR*.66,48),black,[0,0,h*.485],[Math.PI/2,0,0]);
-  for(let i=0;i<12;i++){const ang=i*Math.PI/6;const x=Math.cos(ang)*shellR*.43,y=Math.sin(ang)*shellR*.43;box(.025,.035,shellR*.48,steel,[x,y,h*.25],[0,0,ang]);}
-  for(let i=0;i<8;i++){const ang=i*Math.PI/4;radialPipe(shellR*.98,-h*.25,h*.28,ang,steel,.018);}
-  band(shellR,h*.22,.04,gold);band(shellR*.9,-h*.38,.025,aluminium);
+  // Generic instrument chassis: raised control face, fasteners and cable glands.
+  box(r*1.2,h*.72,r*.68,body);
+  box(r*.82,h*.38,.04,dark,[0,0,r*.36]);
+  for(let i=0;i<5;i++){const x=(i-2)*r*.16;sphere(.045,i%2?orange:blue,[x,h*.06,r*.4],[1,.7,.3]);}
+  for(let side of [-1,1]){tube([[side*r*.48,-h*.22,0],[side*r*.66,-h*.3,r*.18],[side*r*.66,h*.3,r*.18]],.02,gold);bolt(side*r*.5,h*.28,r*.35,.02,aluminium);}
  };
  const makeComm=()=>{
   const nm=(id+' '+name).toLowerCase();
