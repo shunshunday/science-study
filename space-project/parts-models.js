@@ -330,7 +330,7 @@ export function createPartModel(p,THREE){
     }
     if(vector){for(let i=0;i<4;i++){const a=i*Math.PI/2;radialPipe(r*.72,-h*.02,h*.27,a,gold,.04);}}
     if(poodle){for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(r*.7,-h*.03,h*.24,a,aluminium,.035);}}
-    if(rapier){band(bodyR*1.02,h*.1,.055,orange);for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(bodyR*1.03,-h*.05,h*.27,a,gold,.025);}}
+    if(rapier){band(bodyR*1.02,h*.1,.055,orange);for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(bodyR*1.03,-h*.05,h*.27,a,gold,.025);}add(new THREE.TorusGeometry(bodyR*.72,.055,12,64),aluminium,[0,h*.36,0],[Math.PI/2,0,0]);add(new THREE.CircleGeometry(bodyR*.62,48),black,[0,h*.365,0],[Math.PI/2,0,0]);for(let i=0;i<14;i++){const a=i*Math.PI/7;box(.03,.035,bodyR*.56,steel,[Math.cos(a)*bodyR*.38,h*.37,Math.sin(a)*bodyR*.38],[0,-a,0]);}}
    }
    // Engine mounting flange, gimbal bearing, feed lines and actuator hardware.
    for(const y of [-h*.105,-h*.075])band(bodyR*.96,y,.026,y<0?gold:aluminium);
@@ -1852,7 +1852,7 @@ export function createPartModel(p,THREE){
  }
  // Functional visual hooks used by the flight simulation.
  if(type==='engine'||type==='jet'||type==='booster'){
-  const plume=add(new THREE.ConeGeometry(r*.38,.9,24),new THREE.MeshBasicMaterial({color:0xffa34d,transparent:true,opacity:.82,depthWrite:false}),[0,-h*.62,0],[Math.PI,0,0]);plume.name='engine-flame';plume.visible=false;
+  const plume=add(new THREE.ConeGeometry(r*.38,.9,24),new THREE.MeshBasicMaterial({color:0xffa34d,transparent:true,opacity:.82,depthWrite:false}),[0,-h*.62,0],[Math.PI,0,0]);if(id.includes('thud'))plume.rotation.z=Math.PI/2;plume.name='engine-flame';plume.visible=false;
  }
 
  // Keep authored material assignments per sub-mesh; never stamp one generic decal atlas
