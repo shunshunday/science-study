@@ -239,6 +239,37 @@ for(const z of [-88,-62,-36,-10,16,42,68,92]){
  hBox(.5,20,15,-107,63,z,glassMat);hBox(.5,20,15,107,63,z,glassMat);
 }
 
+/* KSP1-inspired VAB envelope: tall glazed side bays and a monumental rear facade.
+   Keep the front approach and central rocket workspace clear. */
+const vabGlass=new THREE.MeshStandardMaterial({color:0x7898a6,metalness:.28,roughness:.24,transparent:true,opacity:.34,side:THREE.DoubleSide,depthWrite:false});
+const vabWall=hangarMat(0x46545c,.58,.72),vabDoor=hangarMat(0xb28a36,.52,.58);
+for(const side of [-1,1]){
+ for(let z=-82;z<=82;z+=28){
+  hBox(.8,24,24,side*110,91,z,vabGlass);
+  hBox(1.5,26,1.2,side*109.3,91,z-12,steelLight);hBox(1.5,26,1.2,side*109.3,91,z+12,steelLight);
+  hBox(1.5,1.2,24,side*109.3,79,z,steelLight);hBox(1.5,1.2,24,side*109.3,103,z,steelLight);
+  hBeam([side*109.2,79,z-12],[side*109.2,103,z+12],.22,steel);
+  hBeam([side*109.2,103,z-12],[side*109.2,79,z+12],.22,steel);
+ }
+ for(const y of [22,48,74,100,126])hBox(2,1.4,184,side*108.8,y,0,steelLight);
+}
+// High rear windows frame the yellow segmented service doors.
+for(const x of [-94,-70,70,94]){
+ hBox(20,92,1.2,x,91,-96,vabGlass);
+ hBox(1.2,96,2,x-10,91,-96,steelLight);hBox(1.2,96,2,x+10,91,-96,steelLight);
+ for(const y of [45,69,93,117,139])hBox(20,1.2,2,x,y,-96,steelLight);
+ hBeam([x-10,46,-97],[x+10,68,-97],.2,steel);hBeam([x+10,46,-97],[x-10,68,-97],.2,steel);
+}
+for(const x of [-48,48]){
+ hBox(3,132,3,x,68,-96,vabWall);hBox(2,128,2,x,68,-98,vabDoor);
+ for(let y=12;y<130;y+=16)hBox(2.2,.8,2.2,x,y,-99,steelLight);
+}
+// Narrow roof skylights sit above the truss line, away from the craft camera.
+for(let z=-77;z<=55;z+=44)for(const side of [-1,1]){
+ const pane=new THREE.Mesh(new THREE.BoxGeometry(36,.45,30),vabGlass);
+ pane.position.set(side*54,153,z);pane.rotation.z=side*.13;hangar.add(pane);
+}
+
 const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);const parts=[],debrisAssemblies=[];let mode='vab',gameMode='career',aircraftCraft=false,funds=25000,fundsUnlimited=true,science=0,stage=0,assemblyStage=0,stageUiFuelPercent=-1,throttle=0,flight=false,flightPeakAltitude=0,paused=false,sasEnabled=false,rcsEnabled=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
 const catalog=[
 {id:'pod',name:'Mk1 コマンドポッド',type:'pod',tech:'basic',mass:0.84,cost:600,crew:1,icon:'◉',height:2,radius:.9},
