@@ -1973,7 +1973,7 @@ export function createPartModel(p,THREE){
     cyl(r*.46,r*.52,.12,steel);
     sphere(r*.48,M(0xe8e5cf,.1,.18,{transparent:true,opacity:.68,emissive:0x8e8b6d,emissiveIntensity:.25}),[0,h*.14,0],[1,.5,1]);
     band(r*.5,h*.05,.035,gold);
-    add(new THREE.TorusGeometry(r*.34,.025,8,40),aluminium,[0,h*.1,0]);
+    add(new THREE.TorusGeometry(r*.34,.025,8,40),aluminium,[0,h*.1,0],[Math.PI/2,0,0]);
     for(let i=0;i<10;i++){const a=i*Math.PI/5,x=Math.cos(a)*r*.32,z=Math.sin(a)*r*.32;sphere(.035,M(0xf2e8b9,.1,.15,{emissive:0x9c8851,emissiveIntensity:.35}),[x,h*.1,z]);}
     for(let i=0;i<6;i++){const a=i*Math.PI/3;tube([[Math.cos(a)*r*.46,h*.04,Math.sin(a)*r*.46],[Math.cos(a)*r*.35,h*.22,Math.sin(a)*r*.35]],.018,steel);bolt(r*.44*Math.cos(a),.08,r*.44*Math.sin(a),.018,gold);}
     box(r*.38,.07,.08,dark,[0,-.08,r*.43]);
