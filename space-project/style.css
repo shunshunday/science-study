@@ -623,8 +623,8 @@ body.part-drag-over #viewport canvas{cursor:copy!important;}
 .vab-craft-name::placeholder{color:#bdc7c8}
 
 
-/* Maximum-height 3D part preview frames. */
-#parts .part-list{grid-auto-rows:200px!important;}
-#parts .part-list .part{height:200px!important;min-height:200px!important;max-height:200px!important;}
+/* Restore original 88px part preview cards. */
+#parts .part-list{grid-auto-rows:88px!important;}
+#parts .part-list .part{height:88px!important;min-height:88px!important;max-height:88px!important;}
 #parts .part-list .part-icon{height:100%!important;min-height:0!important;flex:1 1 auto!important;}
 #parts .part-list .part-preview-canvas{height:100%!important;max-height:100%!important;object-fit:contain!important;}
