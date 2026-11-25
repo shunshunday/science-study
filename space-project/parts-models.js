@@ -278,8 +278,11 @@ export function createPartModel(p,THREE){
  };
  const makeEngine=()=>{
   const nm=(id+' '+name).toLowerCase();
+  // A deprecated Mk2 lander can is catalogued as an engine for legacy compatibility;
+  // keep its original capsule silhouette instead of drawing an engine nozzle.
+  if(id==='legacy-mk2-lander'){makePod();return;}
   const solid=type==='booster'||/solid booster|sepratron|bacc|rt-10|rt-5|thumper|hammer/.test(nm);
-  const rcs=/rcs|place-anywhere|vernor|vernier|puff/.test(nm),puff=/puff|o-10/.test(nm),turboshaft=/r121|r7000|turboshaft|ターボシャフト/.test(nm);
+  const rcs=/rcs|place-anywhere|vernor|vernier|puff|rv-1|cub|カブ|バーニア/.test(nm),puff=/puff|o-10/.test(nm),cub=/rv-1|cub|カブ|バーニア/.test(nm),turboshaft=/r121|r7000|turboshaft|ターボシャフト/.test(nm);
   const jet=type==='jet'||id.startsWith('jet-'),ion=id.includes('ion')||id.includes('dawn'),nuclear=id.includes('nerv'),dart=id.includes('dart')||/aerospike/.test(nm),vector=id.includes('vector'),mammoth=id.includes('mammoth'),twin=id.includes('twinboar'),spider=id.includes('spider'),thud=id.includes('thud'),poodle=id.includes('poodle'),rapier=id.includes('rapier'),terrier=/terrier|lv-909/.test(nm),swivel=/swivel|lv-t45/.test(nm),reliant=/reliant|lv-t30/.test(nm),wolfhound=/wolfhound/.test(nm),cheetah=/cheetah/.test(nm),skiff=/skiff/.test(nm),mainsail=/mainsail/.test(nm),juno=/juno/.test(nm),wheesley=/wheesley/.test(nm),panther=/panther/.test(nm),goliath=/goliath/.test(nm),mastodon=/mastodon/.test(nm),rhino=/rhino/.test(nm),bobcat=/bobcat/.test(nm),kodiak=/kodiak/.test(nm),skipper=/skipper/.test(nm),ant=/\bant\b/.test(nm),spark=/spark/.test(nm),twitch=/twitch/.test(nm);
   if(solid){
    // Solid boosters: long pressure casing, domed head, hazard band, aft nozzle and radial mounting shoes.
@@ -303,6 +306,18 @@ export function createPartModel(p,THREE){
    for(let i=0;i<4;i++){const a=i*Math.PI/2,x=Math.cos(a)*r*.98,z=Math.sin(a)*r*.98;box(r*.34,h*.16,r*.22,aluminium,[x,-h*.1,z],[0,-a,0]);bolt(x,-h*.1,z,.035,gold);}
   }else if(rcs){
    // RCS units are compact multi-axis nozzle blocks, not liquid rocket engines.
+   if(cub){
+    // RV-1 Cub: tiny side-mounted vernier with a compact feed chamber and a single bell.
+    const rr=r*.44,hh=h*.52;
+    lathe([[0,-hh*.42],[rr*.58,-hh*.42],[rr*.88,-hh*.26],[rr,hh*.18],[rr*.72,hh*.42],[0,hh*.42]],painted('#aab3b2','#c56b31','RV-1 CUB VERNIER',name),48);
+    band(rr,hh*.25,.025,gold);band(rr,-hh*.3,.025,steel);
+    lathe([[0,-hh*.9],[rr*.42,-hh*.9],[rr*.68,-hh*.7],[rr*.78,-hh*.35],[rr*.52,-hh*.12],[0,-hh*.12]],steel,40,[0,-hh*.5,0]);
+    add(new THREE.TorusGeometry(rr*.72,.022,8,32),aluminium,[0,-hh*.9,0],[Math.PI/2,0,0]);
+    add(new THREE.CircleGeometry(rr*.5,24),black,[0,-hh*.91,0],[Math.PI/2,0,0]);
+    box(rr*1.7,.1,rr*.82,aluminium,[0,hh*.38,0]);
+    for(let side of [-1,1]){tube([[side*rr*.5,hh*.18,0],[side*rr*.82,hh*.06,rr*.18],[side*rr*.82,-hh*.18,rr*.18]],.018,orange);bolt(side*rr*.72,hh*.3,rr*.25,.018,gold);}
+    return;
+   }
    if(puff){
     const rr=r*.48,hh=h*.58;
     lathe([[0,-hh*.42],[rr*.7,-hh*.42],[rr,-hh*.28],[rr*.96,hh*.22],[rr*.72,hh*.42],[0,hh*.42]],painted('#7a8588','#b68b4e','MONOPROPELLANT ENGINE',name),48);
