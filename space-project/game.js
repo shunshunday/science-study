@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {createPartModel} from './parts-models.js?v=20261125-painted-surface-decals-01';
+import {createPartModel} from './parts-models.js?v=20261125-m1-wheel-actual-import-03';
 import {additionalParts} from './parts-inventory.js?v=20261124-rollback-01';
 import {BODY,G0,gravityAcceleration,atmosphericDensity,orbitalElements,rk4Step,deltaV,rocketMassKg} from './physics/orbital.js';
 import {aerodynamicAcceleration} from './physics/aerodynamics.js';
