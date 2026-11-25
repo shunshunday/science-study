@@ -199,7 +199,7 @@ export function createPartModel(p,THREE){
   }
   return M(0xffffff,.48,.58,{map:tex});
  };
- const ivory=M(0xd9d9d0,.42,.52),paint=M(0xe7e6dc,.28,.6),aluminium=M(0xaeb9bd,.82,.28),steel=M(0x59666d,.82,.34),dark=M(0x252f35,.68,.38),rubber=M(0x171b1e,.04,.91),gold=M(0xb68b4e,.72,.32),orange=M(0xc56b31,.35,.58),blue=M(0x28547c,.58,.3),glass=M(0x173f5c,.62,.14,{emissive:0x071a2c,emissiveIntensity:.22}),black=M(0x111a20,.45,.25);
+ const ivory=M(0xd9d9d0,.42,.52),paint=M(0xe7e6dc,.28,.6),aluminium=M(0xaeb9bd,.82,.28),steel=M(0x59666d,.82,.34),dark=M(0x252f35,.68,.38),rubber=M(0x171b1e,.04,.91),gold=M(0xb68b4e,.72,.32),orange=M(0xc56b31,.35,.58),blue=M(0x28547c,.58,.3),green=M(0x4c9b65,.3,.4),glass=M(0x173f5c,.62,.14,{emissive:0x071a2c,emissiveIntensity:.22}),black=M(0x111a20,.45,.25);
  const add=(geo,mat,pos=[0,0,0],rot=[0,0,0],scale)=>{const o=new THREE.Mesh(geo,mat);o.position.set(...pos);o.rotation.set(...rot);if(scale)o.scale.set(...scale);o.castShadow=true;o.receiveShadow=true;g.add(o);return o;};
  const lathe=(profile,mat,segments=64,pos=[0,0,0])=>add(new THREE.LatheGeometry(profile.map(v=>new THREE.Vector2(v[0],v[1])),segments),mat,pos);
  const band=(radius,y,t=.025,mat=steel)=>add(new THREE.TorusGeometry(radius,t,8,64),mat,[0,y,0],[Math.PI/2,0,0]);
@@ -1133,6 +1133,21 @@ export function createPartModel(p,THREE){
 
  const makeBattery=()=>{
   const nm=(id+' '+name).toLowerCase();
+  const reaction=/wheel-(small|advanced|large)|reaction wheel|リアクションホイール|スタビライザー/.test(nm);
+  if(reaction){
+   // Reaction wheel assembly: machined gyroscope housing, high-speed flywheel and bearing rings.
+   const big=/large|大型/.test(nm),rr=r*(big?.92:.66),hh=h*(big?.78:.62);
+   lathe([[0,-hh*.5],[rr*.72,-hh*.5],[rr*.92,-hh*.38],[rr,hh*.3],[rr*.82,hh*.48],[0,hh*.48]],painted('#778286','#b68b4e','REACTION CONTROL GYROSCOPE',name),72);
+   for(let y of [-hh*.38,hh*.34])band(rr,y,.04,gold);
+   cyl(rr*.72,rr*.72,.08,dark,hh*.49,56);
+   cyl(rr*.54,rr*.54,.12,steel,hh*.56,56);
+   add(new THREE.TorusGeometry(rr*.48,.05,12,64),aluminium,[0,hh*.63,0]);
+   cyl(rr*.25,rr*.25,.16,gold,hh*.66,40);
+   for(let i=0;i<16;i++){const ang=i*Math.PI/8;radialPipe(rr*.98,-hh*.28,hh*.28,ang,steel,.018);}
+   for(let i=0;i<8;i++){const ang=i*Math.PI/4;bolt(rr*.84*Math.cos(ang),-hh*.35,rr*.84*Math.sin(ang),.022,aluminium);}
+   for(let side of [-1,1])box(rr*.22,.16,rr*.28,steel,[side*rr*.84,-hh*.2,0]);
+   return;
+  }
   const rtg=/rtg|pb-nuk|mininuk|原子力電池/.test(nm),fuelcell=/fuel.?cell|燃料電池/.test(nm);
   if(rtg){
    box(r*1.25,.12,r*1.15,steel,[0,-h*.38,0]);
