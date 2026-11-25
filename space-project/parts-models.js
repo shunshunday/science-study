@@ -919,26 +919,73 @@ export function createPartModel(p,THREE){
 
  };
  const makeGear=()=>{
-  const large=id.includes('large'),legR=large?.075:.052,spread=r*.72;
-  // Compact oleo strut housing with a reinforced mounting collar.
-  lathe([[0,-h*.42],[r*.34,-h*.42],[r*.48,-h*.28],[r*.48,h*.28],[r*.34,h*.42],[0,h*.42]],steel,40);
-  band(r*.49,h*.27,.035,gold);band(r*.49,-h*.27,.025,aluminium);
-  for(const side of [-1,1]){
-   const pivot=new THREE.Group();pivot.name='landing-gear-pivot';pivot.userData.side=side;pivot.position.set(side*spread*.28,-h*.02,0);g.add(pivot);
-   const strutPath=new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0,0,0),new THREE.Vector3(side*spread*.22,-h*.16,0),
-    new THREE.Vector3(side*spread*.55,-h*.40,0),new THREE.Vector3(side*spread*.70,-h*.61,0)
-   ]);
-   const main=new THREE.Mesh(new THREE.TubeGeometry(strutPath,24,legR,10,false),aluminium);main.castShadow=true;main.receiveShadow=true;pivot.add(main);
-   const bracePath=new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0,-h*.04,0),new THREE.Vector3(side*spread*.35,-h*.18,r*.16),
-    new THREE.Vector3(side*spread*.67,-h*.48,r*.16)
-   ]);
-   const brace=new THREE.Mesh(new THREE.TubeGeometry(bracePath,18,legR*.48,8,false),gold);brace.castShadow=true;pivot.add(brace);
-   const oleo=new THREE.Mesh(new THREE.CylinderGeometry(legR*.38,legR*.38,h*.25,16),steel);oleo.position.set(side*spread*.39,-h*.28,r*.025);oleo.rotation.z=-side*.62;pivot.add(oleo);
-   const wheel=makeRollingWheel(large?r*.34:r*.27,large?.17:.13,[side*spread*.70,-h*.61,0],'aircraft');
+  const nm=(id+' '+name).toLowerCase();
+  const landingLeg=/lt-?1|lt-?2|lt-?5|着陸脚/.test(nm);
+  const fixed=/ly-?01|ly-?05|固定式|steerable/.test(nm)&&!id.includes('ly10');
+  const retractable=/ly-?10|ly-?35|ly-?60|ly-?99|小型ランディング|中型ランディング|大型ランディング|超大型/.test(nm);
+  const large=/ly-?60|ly-?99|大型|超大型/.test(nm),medium=/ly-?35|中型/.test(nm),steer=/ly-?05|ly-?10|ly-?35|steering|ステアリング/.test(nm);
+  if(landingLeg){
+   // LT landing strut: one telescopic leg with a splayed brace and a broad ground shoe.
+   const pivot=new THREE.Group();pivot.name='landing-gear-pivot';pivot.userData.side=1;pivot.position.set(0,-h*.02,0);g.add(pivot);
+   const legScale=/lt-?5/.test(nm)?.72:/lt-?2/.test(nm)?1.22:1;
+   const L=h*.68*legScale,spread=r*.72*legScale,rod=Math.max(.025,r*.11);
+   const mount=new THREE.Mesh(new THREE.CylinderGeometry(r*.34,r*.38,h*.24,24),steel);mount.position.set(0,h*.22,0);pivot.add(mount);
+   band(r*.38,h*.32,.035,gold);
+   const mainPath=new THREE.CatmullRomCurve3([new THREE.Vector3(0,h*.18,0),new THREE.Vector3(spread*.18,0,0),new THREE.Vector3(spread*.62,-L*.62,0),new THREE.Vector3(spread,-L,0)]);
+   const main=new THREE.Mesh(new THREE.TubeGeometry(mainPath,32,rod,12,false),aluminium);main.castShadow=true;main.receiveShadow=true;pivot.add(main);
+   const oleo=new THREE.Mesh(new THREE.CylinderGeometry(rod*.9,rod*1.15,L*.3,20),steel);oleo.position.set(spread*.34,-L*.35,r*.05);oleo.rotation.z=-.42;pivot.add(oleo);
+   const piston=new THREE.Mesh(new THREE.CylinderGeometry(rod*.32,rod*.32,L*.22,16),gold);piston.position.set(spread*.55,-L*.65,r*.05);piston.rotation.z=-.38;pivot.add(piston);
+   const bracePath=new THREE.CatmullRomCurve3([new THREE.Vector3(0,h*.12,-r*.12),new THREE.Vector3(spread*.35,-L*.22,-r*.18),new THREE.Vector3(spread*.82,-L*.82,-r*.18)]);
+   const brace=new THREE.Mesh(new THREE.TubeGeometry(bracePath,20,rod*.42,8,false),steel);pivot.add(brace);
+   const shoe=new THREE.Mesh(new THREE.BoxGeometry(r*.72*legScale,.09*legScale,r*.42*legScale),dark);shoe.position.set(spread,-L,r*.02);shoe.castShadow=true;pivot.add(shoe);
+   const foot=new THREE.Mesh(new THREE.BoxGeometry(r*.68*legScale,.035*legScale,r*.38*legScale),aluminium);foot.position.set(spread,-L-.045*legScale,r*.02);pivot.add(foot);
+   for(let x of [-1,1])bolt(spread+x*r*.22*legScale,-L-.02,r*.18,.022,gold);
+   for(let i=0;i<5;i++)box(r*.5,.025,.025,i%2?dark:gold,[spread,-L*.78+i*L*.035,r*.13]);
+   return;
+  }
+  // LY aircraft gear: a single compact wheel assembly with an actual fork, oleo and bay door.
+  const wheelR=large?r*.36:medium?r*.31:r*.27,wheelW=large?.2:medium?.16:.13;
+  const bayW=r*(large?1.12:medium?.98:.82),bayH=h*.42;
+  lathe([[0,-h*.35],[r*.36,-h*.35],[r*.48,-h*.22],[r*.48,h*.24],[r*.34,h*.35],[0,h*.35]],steel,40);
+  band(r*.49,h*.24,.035,gold);band(r*.49,-h*.22,.025,aluminium);
+  box(bayW,bayH,.11,painted('#d5d8d5','#b68b4e','LANDING GEAR BAY',name),[0,h*.16,r*.22]);
+  box(bayW*.72,bayH*.68,.04,dark,[0,h*.16,r*.29]);
+  for(let side of [-1,1]){
+   tube([[side*bayW*.34,h*.32,r*.26],[side*bayW*.34,h*.02,r*.3],[side*bayW*.28,-h*.12,r*.28]],.025,aluminium);
+   for(let j=0;j<4;j++)bolt(side*bayW*.32,(j-1.5)*bayH*.18,r*.3,.018,gold);
+  }
+  const pivot=new THREE.Group();pivot.name='landing-gear-pivot';pivot.userData.side=1;pivot.position.set(0,-h*.12,0);g.add(pivot);
+  const strutPath=new THREE.CatmullRomCurve3([new THREE.Vector3(0,h*.22,0),new THREE.Vector3(0,h*.02,r*.08),new THREE.Vector3(0,-h*.2,r*.22),new THREE.Vector3(0,-h*.43,r*.32)]);
+  const strut=new THREE.Mesh(new THREE.TubeGeometry(strutPath,28,Math.max(.035,r*.075),12,false),aluminium);strut.castShadow=true;pivot.add(strut);
+  const oleo=new THREE.Mesh(new THREE.CylinderGeometry(r*.09,r*.12,h*.28,20),steel);oleo.position.set(0,-h*.12,r*.16);oleo.rotation.x=.18;pivot.add(oleo);
+  const piston=new THREE.Mesh(new THREE.CylinderGeometry(r*.045,r*.045,h*.22,16),gold);piston.position.set(0,-h*.29,r*.22);piston.rotation.x=.18;pivot.add(piston);
+  for(let side of [-1,1]){
+   const fork=tube([[side*r*.12,-h*.25,r*.2],[side*r*.24,-h*.39,r*.28],[side*r*.25,-h*.52,r*.34]],Math.max(.025,r*.04),steel);pivot.add(fork);
+  }
+  const count=large?4:medium?2:1;
+  for(let i=0;i<count;i++){
+   const z=(i-(count-1)/2)*wheelR*.62;
+   const wheel=makeRollingWheel(wheelR,wheelW,[0,-h*.57,z+r*.34],'aircraft');
    g.remove(wheel);pivot.add(wheel);
-   const fork=new THREE.Mesh(new THREE.TorusGeometry(large?r*.35:r*.28,legR*.42,8,48),gold);fork.rotation.y=Math.PI/2;fork.position.set(side*spread*.70,-h*.61,0);pivot.add(fork);
+  }
+  // Fixed LY-01/05 retain the exposed fork; LY-10 and larger have retractable clamshell doors.
+  if(retractable){
+   for(let side of [-1,1]){
+    const door=box(bayW*.38,h*.06,.055,ivory,[side*bayW*.25,-h*.12,r*.42]);
+    door.rotation.z=side*.08;
+    tube([[side*bayW*.25,-h*.12,r*.42],[side*bayW*.38,-h*.22,r*.48],[side*bayW*.4,-h*.32,r*.46]],.018,gold);
+   }
+  }else{
+   // Fixed gear uses a rigid triangular brace and no false retractable door.
+   for(let side of [-1,1])tube([[side*r*.25,h*.18,0],[side*r*.42,-h*.08,r*.1],[0,-h*.48,r*.3]],.035,steel);
+  }
+  if(steer){
+   const steeringHub=new THREE.Mesh(new THREE.CylinderGeometry(wheelR*.18,wheelR*.18,wheelW*.9,20),gold);steeringHub.rotation.z=Math.PI/2;steeringHub.position.set(0,-h*.56,r*.34);pivot.add(steeringHub);
+  }
+  // Landing lights and hydraulic service fittings.
+  for(let side of [-1,1]){
+   sphere(.045, M(0xe7e4c7,.1,.18,{emissive:0x6b5c2c,emissiveIntensity:.3}),[side*bayW*.36,h*.2,r*.3],[1,.7,.35]);
+   bolt(side*bayW*.36,h*.32,r*.3,.02,gold);
   }
  };
  const makeIntake=()=>{
