@@ -2304,13 +2304,22 @@ export function createPartModel(p,THREE){
   for(let i=0;i<16;i++){const a=i*Math.PI/8,x=Math.cos(a)*baseR*.96,z=Math.sin(a)*baseR*.96;box(baseR*.12,.07,.035,i%2?dark:gold,[x,-h*.22,z],[0,-a,0]);}
   for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(baseR*.9,-h*.28,h*.22,a,steel,.025);}
   if(shielded){
+   // Shielded Clamp-O-Tron is closed in the VAB: three overlapping protective leaves form one sealed nose cap.
+   const shieldR=baseR*.82,shieldH=h*.2,shieldMat=painted('#c7cbc6','#b68b4e','SHIELDED DOCKING PORT COVER',name);
+   lathe([[0,-shieldH*.28],[shieldR*.82,-shieldH*.28],[shieldR,-shieldH*.12],[shieldR*.98,shieldH*.08],[shieldR*.78,shieldH*.25],[shieldR*.42,shieldH*.34],[0,shieldH*.36]],shieldMat,72,[0,faceY+.02,0]);
+   band(shieldR*.98,faceY-shieldH*.08,.035,steel);
+   band(shieldR*.76,faceY+shieldH*.27,.03,gold);
    for(let i=0;i<3;i++){
-    const a=i*Math.PI*2/3,x=Math.cos(a)*baseR*.9,z=Math.sin(a)*baseR*.9;
-    const petal=box(baseR*.72,h*.16,.055,ivory,[x,faceY+.06,z],[0,-a,0]);petal.rotation.z=Math.sin(a)*.18;
-    box(baseR*.2,.12,.12,steel,[x*.78,faceY+.02,z*.78],[0,-a,0]);
-    tube([[x*.55,faceY-.02,z*.55],[x*1.05,faceY+.2,z*1.05],[x*1.25,faceY+.12,z*1.25]],.025,gold);
+    const a=i*Math.PI*2/3;
+    const pts=[];for(let j=0;j<=12;j++){const t=j/12,rad=shieldR*Math.sin(t*Math.PI*.5),y=faceY-shieldH*.22+shieldH*.55*t;pts.push([Math.cos(a)*rad,y,Math.sin(a)*rad]);}
+    tube(pts,.022,aluminium);
+    const x=Math.cos(a)*shieldR*.84,z=Math.sin(a)*shieldR*.84;
+    box(shieldR*.18,.11,.08,steel,[x,faceY-shieldH*.1,z],[0,-a,0]);
+    bolt(x,faceY-shieldH*.08,z,.025,gold);
    }
-   band(baseR*.7,faceY+.13,.035,orange);
+   cyl(shieldR*.18,shieldR*.18,.08,dark,faceY+shieldH*.34,32);
+   add(new THREE.TorusGeometry(shieldR*.18,.025,8,32),orange,[0,faceY+shieldH*.36,0],[Math.PI/2,0,0]);
+   for(let i=0;i<12;i++){const a=i*Math.PI/6;bolt(shieldR*.96*Math.cos(a),faceY-shieldH*.12,shieldR*.96*Math.sin(a),.018,gold);}
   }
   if(inline){
    // Inline Clamp-O-Tron: recessed fuselage sleeve, split clamshell doors and a telescoping port carriage.
