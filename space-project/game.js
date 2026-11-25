@@ -255,14 +255,18 @@ for(const side of [-1,1]){
   hWallBrace([face,116,z-10],[face,148,z+10],[side,0,0]);hWallBrace([face,116,z+10],[face,148,z-10],[side,0,0]);
  }
 }
-hBox(224,150,1.1,0,75,-96,vabWall);hBox(92,132,1.25,0,69,-96,vabDoor);
+// Side panels stop below the clerestory so the upper band is genuinely glazed.
+hBox(66,120,1.1,-79,60,-96,vabWall);hBox(66,120,1.1,79,60,-96,vabWall);
+hBox(92,1.2,1.1,0,135.6,-96,vabWall);
+hBox(92,132,1.25,0,69,-96,vabDoor);
 for(let x=-42;x<=42;x+=14)hBox(1.1,128,1.5,x,69,-95.2,steelLight);
 for(let y=13;y<=125;y+=16)hBox(90,.75,1.5,0,y,-95.2,steelLight);
-for(const side of [-1,1])for(let x=side<0?-108:94;side<0?x<=-48:x<=108;x+=20){
- hWallBrace([x,8,-95.57],[x+18,68,-95.57],[0,0,1]);hWallBrace([x,8,-95.57],[x-2,68,-95.57],[0,0,1]);
+hBox(224,28,.5,0,136,-95.45,vabGlass);
+for(let x=-105;x<=105;x+=21)hBox(.35,28,.8,x,136,-95.3,steelLight);
+for(let x of [-108,-88,-68,-48,48,68,88]){
+ hWallBrace([x,5,-95.43],[x+18,115,-95.43],[0,0,1]);
+ hWallBrace([x+18,5,-95.43],[x,115,-95.43],[0,0,1]);
 }
-hBox(224,22,.5,0,137,-95.25,vabGlass);
-for(let x=-105;x<=105;x+=21)hBox(.35,22,.8,x,137,-95.1,steelLight);
 for(let z=-77;z<=55;z+=44)for(const side of [-1,1]){const pane=new THREE.Mesh(new THREE.BoxGeometry(34,.35,28),vabGlass);pane.position.set(side*54,151.2,z);hangar.add(pane);}
 const rocket=new THREE.Group();rocket.scale.setScalar(.001);scene.add(rocket);const parts=[],debrisAssemblies=[];let mode='vab',gameMode='career',aircraftCraft=false,funds=25000,fundsUnlimited=true,science=0,stage=0,assemblyStage=0,stageUiFuelPercent=-1,throttle=0,flight=false,flightPeakAltitude=0,paused=false,sasEnabled=false,rcsEnabled=false,elapsed=0,craftMass=0,fuel=0,maxFuel=0,thrust=0,position=new THREE.Vector3(0,2,0),velocity=new THREE.Vector3(),attitude=new THREE.Quaternion(),angular=new THREE.Vector3(),last=performance.now(),map=false;
 const catalog=[
