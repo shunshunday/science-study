@@ -204,7 +204,14 @@ export function createPartModel(p,THREE){
     if(poodle){for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(r*.7,-h*.03,h*.24,a,aluminium,.035);}}
     if(rapier){band(bodyR*1.02,h*.1,.055,orange);for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(bodyR*1.03,-h*.05,h*.27,a,gold,.025);}}
    }
-   for(let i=0;i<3;i++){const a=i*Math.PI*2/3;const x=Math.cos(a)*bodyR*.75,z=Math.sin(a)*bodyR*.75;tube([[x,h*.2,z],[x*1.1,h*.02,z*1.1],[x*.92,-h*.12,z*.92]],.025,aluminium);}
+   // Engine mounting flange, gimbal bearing, feed lines and actuator hardware.
+   for(const y of [-h*.105,-h*.075])band(bodyR*.96,y,.026,y<0?gold:aluminium);
+   for(let i=0;i<12;i++){const a=i*Math.PI/6;const x=Math.cos(a)*bodyR*.99,z=Math.sin(a)*bodyR*.99;bolt(x,h*.23,z,.018,aluminium);}
+   for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(bodyR*1.015,-h*.02,h*.24,a,i%2?steel:aluminium,.018);}
+   const gimbalRing=add(new THREE.TorusGeometry(bodyR*.56,.045,10,48),gold,[0,-h*.17,0],[Math.PI/2,0,0]);
+   for(let i=0;i<3;i++){const a=i*Math.PI*2/3,x=Math.cos(a)*bodyR*.72,z=Math.sin(a)*bodyR*.72;tube([[x,h*.12,z],[x*1.12,-h*.02,z*1.12],[x*.9,-h*.2,z*.9]],.022,aluminium);}
+   for(let i=0;i<3;i++){const a=i*Math.PI*2/3,x=Math.cos(a)*bodyR*.82,z=Math.sin(a)*bodyR*.82;box(bodyR*.16,h*.11,bodyR*.12,steel,[x,h*.04,z],[0,-a,0]);}
+   for(let i=0;i<3;i++){const a=i*Math.PI*2/3,x=Math.cos(a)*bodyR*.68,z=Math.sin(a)*bodyR*.68;const actuator=tube([[x,h*.05,z],[x*1.08,-h*.08,z*1.08],[x*.92,-h*.19,z*.92]],.012,gold);actuator.name='engine-gimbal-actuator';}
   }
  };
  const makePod=()=>{
@@ -245,11 +252,24 @@ export function createPartModel(p,THREE){
   const span=r*(small?.82:1.15),chord=vertical?h*.85:h*1.15,root=chord*(delta?1.5:1),tip=chord*(delta?.2:swept?.48:.62);
   const shape=new THREE.Shape();shape.moveTo(-root*.5,0);shape.lineTo(root*.5,0);shape.lineTo(span,tip*.5);shape.lineTo(span*.86,-tip*.5);shape.lineTo(-root*.5,-root*.5);shape.closePath();
   const geo=new THREE.ExtrudeGeometry(shape,{depth:.09,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.035,bevelThickness:.025,curveSegments:8});
-  const wing=add(geo,M(0xb6bfbd,.55,.42),[0,0,0],vertical?[0,0,0]:[-Math.PI/2,0,0]);
+  const wing=add(geo,painted('#c9ceca','#c56b31',vertical?'VERTICAL STABILIZER':'AERO SURFACE'),[0,0,0],vertical?[0,0,0]:[-Math.PI/2,0,0]);
   if(vertical)wing.position.y=h*.12;
   const leading=add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(-root*.5,0,.04),new THREE.Vector3(span*.5,tip*.2,.04),new THREE.Vector3(span,0,.04)]),32,.025,8,false),steel,[0,0,0],vertical?[0,0,0]:[-Math.PI/2,0,0]);
+  // Flush inspection panels, spanwise ribs and raised hinge hardware.
+  for(let i=0;i<5;i++){
+   const x=span*(.12+i*.15);
+   const rib=box(.012,Math.max(.018,tip*.62),.018,aluminium,[x,.105,.025]);
+   if(!vertical)rib.rotation.x=-Math.PI/2;
+   for(const side of [-1,1])bolt(x,side*tip*.18,.075,.012,gold);
+  }
+  const rootCap=box(root*.94,.025,.12,steel,[0,.025,.045]);if(!vertical)rootCap.rotation.x=-Math.PI/2;
+  const tipCap=box(.04,tip*.94,.08,aluminium,[span*.96,.02,.04]);if(!vertical)tipCap.rotation.x=-Math.PI/2;
   for(let i=0;i<4;i++){const x=span*(.15+i*.16);const line=box(.018,.015,.075,gold,[x,.1,.02]);if(!vertical)line.rotation.x=-Math.PI/2;}
-  if(type==='control'||id.includes('elevon')||id.includes('rudder')){const hinge=box(span*.52,.055,.12,dark,[span*.43,.04,.1]);if(!vertical)hinge.rotation.x=-Math.PI/2;for(let i=0;i<5;i++)bolt(span*(.2+i*.12),.09,.16,.018);}
+  if(type==='control'||id.includes('elevon')||id.includes('rudder')){
+   const hinge=box(span*.52,.055,.12,dark,[span*.43,.04,.1]);if(!vertical)hinge.rotation.x=-Math.PI/2;
+   for(let i=0;i<5;i++){bolt(span*(.2+i*.12),.09,.16,.018);}
+   for(let i=0;i<4;i++){const x=span*(.24+i*.13);const actuator=tube([[x,.06,.08],[x+span*.04,.14,.16],[x+span*.08,.08,.2]],.014,gold);}
+  }
  };
  const makeSolar=()=>{
   const large=id.includes('xl')||id.includes('sp10')||id.includes('gigantor'),fixed=id.includes('ox-stat'),count=id.includes('ox4')?2:large?4:2,w=large?1.45:fixed?.92:1.05;
