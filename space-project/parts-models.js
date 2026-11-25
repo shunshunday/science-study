@@ -206,6 +206,7 @@ export function createPartModel(p,THREE){
    else{q.beginPath();q.arc(744,240,40,0,Math.PI*2);q.stroke();q.beginPath();q.arc(744,240,18,0,Math.PI*2);q.stroke();}
    q.fillStyle='rgba(25,36,41,.68)';q.fillRect(44,354,916,7);q.fillStyle=pal[2];q.fillRect(44,354,916,2);
    tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.wrapS=THREE.RepeatWrapping;tex.wrapT=THREE.ClampToEdgeWrapping;tex.anisotropy=16;PART_SKIN_CACHE.set(key,tex);
+   }
    // Smooth painted surfaces use material response instead of exaggerated bump relief.
    return M(0xffffff,.48,.56,{map:tex,roughness:family==='electrical'?.38:family==='thermal'?.72:.62});
  };
