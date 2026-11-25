@@ -514,11 +514,20 @@ export function createPartModel(p,THREE){
    add(new THREE.TorusGeometry(r*.4,.055,12,48),gold,[0,h*.23,0]);add(new THREE.CircleGeometry(r*.36,48),blue,[0,h*.25,0]);
    for(let i=0;i<6;i++){const a=i*Math.PI/3;box(.055,h*.42,.055,aluminium,[Math.cos(a)*r*.53,h*.05,Math.sin(a)*r*.53]);}
   }else{
-   const cluster=mammoth?4:twin?2:spider?4:1,bodyR=r*(mammoth?1.02:mastodon?1.1:rhino?1.08:twin?.9:wolfhound?.94:skiff?.88:skipper?.9:mainsail?.95:bobcat?.86:kodiak?.8:cheetah?.72:ant?.5:spark?.56:twitch?.58:.82);
+   // Stock engines with multi-chamber hardware keep their actual nozzle count.
+   const cluster=mammoth?4:(twin||poodle||bobcat)?2:(spider||kodiak)?4:1,bodyR=r*(mammoth?1.02:mastodon?1.1:rhino?1.08:twin?.9:wolfhound?.94:skiff?.88:skipper?.9:mainsail?.95:bobcat?.86:kodiak?.8:cheetah?.72:ant?.5:spark?.56:twitch?.58:.82);
    const nr=cluster===4?r*.34:cluster===2?r*.42:terrier?r*.72:poodle?r*.82:rhino?r*1.08:mastodon?r*.96:wolfhound?r*.9:skiff?r*.92:skipper?r*.84:mainsail?r*.82:bobcat?r*.78:kodiak?r*.7:cheetah?r*.62:ant?r*.42:spark?r*.48:twitch?r*.5:r*.68;
    lathe([[0,-h*.12],[bodyR*.78,-h*.12],[bodyR,-h*.05],[bodyR,h*.28],[bodyR*.88,h*.38],[bodyR*.62,h*.4],[0,h*.4]],painted(nuclear?'#6f7777':'#d9d9d0',nuclear?'#c56b31':'#b68b4e',nuclear?'NUCLEAR PROPULSION':'ROCKET ENGINE'),64);
    band(bodyR,h*.28,.045,steel);band(bodyR,-h*.06,.045,gold);
-   if(nuclear){lathe([[r*.18,-h*.48],[r*.28,-h*.45],[r*.38,-h*.12],[r*.4,h*.04],[r*.34,h*.08],[r*.22,h*.08]],gold,48);for(let i=0;i<16;i++){const a=i*Math.PI/8;radialPipe(bodyR*1.05,-h*.08,h*.24,a,steel,.035);}band(bodyR*1.04,h*.22,.06,orange);}
+   if(nuclear){
+    // NERV nuclear thermal engine: long dark graphite exhaust nozzle below the reactor core.
+    lathe([[0,-h*.68],[r*.26,-h*.68],[r*.38,-h*.61],[r*.52,-h*.42],[r*.62,-h*.2],[r*.58,-h*.08],[r*.44,-h*.02],[0,-h*.02]],M(0x3d4548,.72,.36),64,[0,-h*.32,0]);
+    add(new THREE.TorusGeometry(r*.57,.045,10,56),aluminium,[0,-h*.98,0],[Math.PI/2,0,0]);
+    add(new THREE.CircleGeometry(r*.42,40),black,[0,-h*.99,0],[Math.PI/2,0,0]);
+    lathe([[r*.18,-h*.48],[r*.28,-h*.45],[r*.38,-h*.12],[r*.4,h*.04],[r*.34,h*.08],[r*.22,h*.08]],gold,48);
+    for(let i=0;i<16;i++){const a=i*Math.PI/8;radialPipe(bodyR*1.05,-h*.08,h*.24,a,steel,.035);}
+    band(bodyR*1.04,h*.22,.06,orange);
+   }
    else if(dart){
     // Toroidal aerospike: annular thrust ring with a long central expansion spike.
     lathe([[r*.05,-h*.5],[r*.24,-h*.48],[r*.52,-h*.18],[r*.7,-h*.08],[r*.58,h*.12],[r*.35,h*.18],[0,h*.18]],steel,64);
@@ -541,6 +550,26 @@ export function createPartModel(p,THREE){
     if(vector){for(let i=0;i<4;i++){const a=i*Math.PI/2;radialPipe(r*.72,-h*.02,h*.27,a,gold,.04);}}
     if(poodle){for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(r*.7,-h*.03,h*.24,a,aluminium,.035);}}
     if(rapier){band(bodyR*1.02,h*.1,.055,orange);for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(bodyR*1.03,-h*.05,h*.27,a,gold,.025);}add(new THREE.TorusGeometry(bodyR*.72,.055,12,64),aluminium,[0,h*.36,0],[Math.PI/2,0,0]);add(new THREE.CircleGeometry(bodyR*.62,48),black,[0,h*.365,0],[Math.PI/2,0,0]);for(let i=0;i<14;i++){const a=i*Math.PI/7;box(.03,.035,bodyR*.56,steel,[Math.cos(a)*bodyR*.38,h*.37,Math.sin(a)*bodyR*.38],[0,-a,0]);}}
+   }
+   // Dedicated turbopump housings and high-pressure feed lines on the Making History engine families.
+   if(cheetah||skiff||kodiak||bobcat||wolfhound){
+    for(let side of [-1,1]){
+     const x=side*bodyR*.78,z=bodyR*.2;
+     const pumpR=bodyR*(skiff?.24:kodiak?.2:.18);
+     lathe([[0,-h*.22],[pumpR*.68,-h*.22],[pumpR,-h*.12],[pumpR,h*.12],[pumpR*.7,h*.22],[0,h*.22]],painted('#7b8587','#b68b4e','TURBOPUMP ASSEMBLY',name),40,[x,h*.02,z]);
+     band(pumpR,h*.14,.025,gold).position.x=x;
+     tube([[x,h*.18,z],[side*bodyR*.95,h*.26,bodyR*.34],[side*bodyR*.88,-h*.12,bodyR*.48],[side*bodyR*.52,-h*.34,bodyR*.42]],.028,orange);
+     for(let j=0;j<4;j++)bolt(x,(j-1.5)*h*.1,z+ pumpR*.8,.018,aluminium);
+    }
+   }
+   if(kodiak){
+    // RD-107-derived vernier pair mounted outside the four main combustion chambers.
+    for(let side of [-1,1]){
+     const x=side*bodyR*1.12,z=bodyR*.18,vr=bodyR*.14;
+     lathe([[0,-h*.38],[vr*.5,-h*.38],[vr*.82,-h*.28],[vr,-h*.08],[vr*.7,h*.06],[0,h*.06]],steel,32,[x,-h*.12,z]);
+     add(new THREE.TorusGeometry(vr*.9,.018,8,24),gold,[x,-h*.5,z],[Math.PI/2,0,0]);
+     tube([[x,h*.12,z],[x*1.05,-h*.02,z*1.2],[x,-h*.32,z*1.15]],.018,orange);
+    }
    }
    // Engine mounting flange, gimbal bearing, feed lines and actuator hardware.
    for(const y of [-h*.105,-h*.075])band(bodyR*.96,y,.026,y<0?gold:aluminium);
