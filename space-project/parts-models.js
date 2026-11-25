@@ -384,6 +384,7 @@ export function createPartModel(p,THREE){
    for(let i=0;i<6;i++){const a=i*Math.PI/3;box(.055,h*.42,.055,aluminium,[Math.cos(a)*r*.53,h*.05,Math.sin(a)*r*.53]);}
   }else{
    const cluster=mammoth?4:twin?2:spider?4:1,bodyR=r*(mammoth?1.02:mastodon?1.1:rhino?1.08:twin?.9:wolfhound?.94:skiff?.88:skipper?.9:mainsail?.95:bobcat?.86:kodiak?.8:cheetah?.72:ant?.5:spark?.56:twitch?.58:.82);
+   const nr=cluster===4?r*.34:cluster===2?r*.42:terrier?r*.72:poodle?r*.82:rhino?r*1.08:mastodon?r*.96:wolfhound?r*.9:skiff?r*.92:skipper?r*.84:mainsail?r*.82:bobcat?r*.78:kodiak?r*.7:cheetah?r*.62:ant?r*.42:spark?r*.48:twitch?r*.5:r*.68;
    lathe([[0,-h*.12],[bodyR*.78,-h*.12],[bodyR,-h*.05],[bodyR,h*.28],[bodyR*.88,h*.38],[bodyR*.62,h*.4],[0,h*.4]],painted(nuclear?'#6f7777':'#d9d9d0',nuclear?'#c56b31':'#b68b4e',nuclear?'NUCLEAR PROPULSION':'ROCKET ENGINE'),64);
    band(bodyR,h*.28,.045,steel);band(bodyR,-h*.06,.045,gold);
    if(nuclear){lathe([[r*.18,-h*.48],[r*.28,-h*.45],[r*.38,-h*.12],[r*.4,h*.04],[r*.34,h*.08],[r*.22,h*.08]],gold,48);for(let i=0;i<16;i++){const a=i*Math.PI/8;radialPipe(bodyR*1.05,-h*.08,h*.24,a,steel,.035);}band(bodyR*1.04,h*.22,.06,orange);}
