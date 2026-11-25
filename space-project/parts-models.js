@@ -560,18 +560,55 @@ export function createPartModel(p,THREE){
    }
    box(rr*1.35,.12,rr*.92,steel,[0,-hh*.5,0]);
   }else if(jet){
-   const shellR=r*.78;lathe([[0,-h*.43],[shellR*.7,-h*.43],[shellR,-h*.34],[shellR,h*.32],[shellR*.82,h*.44],[shellR*.45,h*.47],[0,h*.47]],aluminium,64);
-   const inlet=add(new THREE.TorusGeometry(shellR*.72,.075,16,64),steel,[0,0,h*.43],[Math.PI/2,0,0]);add(new THREE.CircleGeometry(shellR*.66,48),black,[0,0,h*.432],[Math.PI/2,0,0]);
-   for(let i=0;i<(goliath?24:16);i++){const a=i*Math.PI*2/(goliath?24:16);const blade=box(.035,.035,shellR*.62,aluminium,[Math.cos(a)*shellR*.34,Math.sin(a)*shellR*.34,h*.44],[0,0,a]);}
-   add(new THREE.TorusGeometry(shellR*.42,.035,10,48),gold,[0,0,h*.45],[0,0,0]);
+   // Jet engines run along the aircraft fuselage axis (Z), with a real intake fan at the nose and exhaust nozzle aft.
+   const shellR=r*.78;
+   const shell=lathe([[0,-h*.43],[shellR*.7,-h*.43],[shellR,-h*.34],[shellR,h*.32],[shellR*.82,h*.44],[shellR*.45,h*.47],[0,h*.47]],painted('#bfc7c6','#b68b4e','TURBOJET ENGINE NACELLE',name),64);
+   shell.rotation.x=Math.PI/2;
+   add(new THREE.TorusGeometry(shellR*.72,.075,16,64),steel,[0,0,h*.43]);
+   add(new THREE.CircleGeometry(shellR*.66,48),black,[0,0,h*.432]);
+   const bladeCount=goliath?24:16;
+   for(let i=0;i<bladeCount;i++){
+    const a=i*Math.PI*2/bladeCount;
+    const blade=box(.035,.035,shellR*.62,aluminium,[Math.cos(a)*shellR*.34,Math.sin(a)*shellR*.34,h*.44],[0,0,a]);
+    blade.rotation.z=a;
+   }
+   add(new THREE.TorusGeometry(shellR*.42,.035,10,48),gold,[0,0,h*.45]);
    cyl(shellR*.18,shellR*.18,.08,steel,0,24).position.z=h*.46;
-   for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(shellR*1.02,-h*.28,h*.28,a,steel,.026);}
-   band(shellR,-h*.3,.045,gold);band(shellR,h*.32,.045,dark);
-   if(panther){for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(shellR*1.04,-h*.2,h*.22,a,orange,.018);}band(shellR*1.08,h*.12,.045,gold);}
-   if(wheesley||juno){for(let i=0;i<10;i++){const a=i*Math.PI/5;radialPipe(shellR*.9,-h*.22,h*.2,a,aluminium,.022);}}
-   if(rapier){add(new THREE.TorusGeometry(shellR*.78,.07,12,64),gold,[0,0,h*.34],[Math.PI/2,0,0]);for(let i=0;i<18;i++){const a=i*Math.PI/9;box(.025,.025,shellR*.6,[0,0,0],[Math.cos(a)*shellR*.55,Math.sin(a)*shellR*.55,h*.35],[0,0,a]);}}
-   if(id.includes('whiplash')){for(let i=0;i<10;i++){const a=i*Math.PI/5;radialPipe(shellR*1.06,-h*.35,h*.3,a,steel,.035);}for(let y of [-h*.34,-h*.2,-h*.06])band(shellR*1.04,y,.035,orange);}
-   if(id.includes('goliath')){for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(shellR*1.03,-h*.3,h*.3,a,gold,.035);}}
+   // Longitudinal external pipes and compressor casing seams follow the Z-axis.
+   for(let i=0;i<8;i++){
+    const a=i*Math.PI/4,x=Math.cos(a)*shellR*1.02,y=Math.sin(a)*shellR*1.02;
+    tube([[x,y,-h*.28],[x,y,h*.28]],.026,steel);
+   }
+   for(const z of [-h*.3,h*.32])add(new THREE.TorusGeometry(shellR,.045,10,64),z<0?gold:dark,[0,0,z]);
+   if(panther){
+    for(let i=0;i<12;i++){const a=i*Math.PI/6,x=Math.cos(a)*shellR*1.04,y=Math.sin(a)*shellR*1.04;tube([[x,y,-h*.2],[x,y,h*.22]],.018,orange);}
+    add(new THREE.TorusGeometry(shellR*1.08,.045,10,64),gold,[0,0,h*.12]);
+   }
+   if(wheesley||juno){
+    for(let i=0;i<10;i++){const a=i*Math.PI/5,x=Math.cos(a)*shellR*.9,y=Math.sin(a)*shellR*.9;tube([[x,y,-h*.22],[x,y,h*.2]],.022,aluminium);}
+   }
+   if(rapier){
+    add(new THREE.TorusGeometry(shellR*.78,.07,12,64),gold,[0,0,h*.34]);
+    for(let i=0;i<18;i++){const a=i*Math.PI/9,x=Math.cos(a)*shellR*.55,y=Math.sin(a)*shellR*.55;box(.025,.025,shellR*.6,steel,[x,y,h*.35],[0,0,a]);}
+   }
+   if(id.includes('whiplash')){
+    for(let i=0;i<10;i++){const a=i*Math.PI/5,x=Math.cos(a)*shellR*1.06,y=Math.sin(a)*shellR*1.06;tube([[x,y,-h*.35],[x,y,h*.3]],.035,steel);}
+    for(let z of [-h*.34,-h*.2,-h*.06])add(new THREE.TorusGeometry(shellR*1.04,.035,8,48),orange,[0,0,z]);
+   }
+   if(goliath){
+    for(let i=0;i<12;i++){const a=i*Math.PI/6,x=Math.cos(a)*shellR*1.03,y=Math.sin(a)*shellR*1.03;tube([[x,y,-h*.3],[x,y,h*.3]],.035,gold);}
+   }
+   // All turbofans have a converging exhaust; the RAPIER adds its distinctive rocket-mode core nozzle.
+   const nozzleR=shellR*(rapier?.58:goliath?.62:whiplash?.55:.48),nozzleH=h*(rapier?.4:.3);
+   const nozzle=lathe([[0,-nozzleH*.5],[nozzleR*.62,-nozzleH*.5],[nozzleR,-nozzleH*.34],[nozzleR*.9,nozzleH*.1],[nozzleR*.62,nozzleH*.5],[0,nozzleH*.5]],M(0x4b5356,.72,.34),56,[0,0,-h*.43]);
+   nozzle.rotation.x=Math.PI/2;
+   add(new THREE.TorusGeometry(nozzleR*.95,.04,10,48),aluminium,[0,0,-h*.43-nozzleH*.5]);
+   add(new THREE.CircleGeometry(nozzleR*.7,40),black,[0,0,-h*.43-nozzleH*.52]);
+   if(rapier){
+    const coreR=nozzleR*.48,core=lathe([[0,-nozzleH*.35],[coreR*.62,-nozzleH*.35],[coreR,-nozzleH*.18],[coreR*.78,nozzleH*.24],[coreR*.48,nozzleH*.35],[0,nozzleH*.35]],gold,40,[0,0,-h*.45]);
+    core.rotation.x=Math.PI/2;
+    add(new THREE.TorusGeometry(coreR*.9,.025,8,32),orange,[0,0,-h*.45-nozzleH*.35]);
+   }
   }else if(ion){
    lathe([[0,-h*.28],[r*.25,-h*.28],[r*.42,-h*.12],[r*.48,h*.1],[r*.32,h*.25],[0,h*.25]],steel,48);
    for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(r*.46,-h*.2,h*.28,a,gold,.018);}
