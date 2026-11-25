@@ -949,14 +949,20 @@ export function createPartModel(p,THREE){
    return;
   }
   if(grip){
-   const w=r*1.55,len=h*.92,depth=Math.max(.045,r*.12);
-   box(w,len,depth,steel);
-   const padMat=M(0x252a2c,.02,.98);
+   const w=r*1.55,len=h*.92,depth=Math.max(.045,r*.12),padMat=M(0x252a2c,.02,.98),round=/round|circular|円形|丸型/.test(nm);
    if(/strip/.test(nm)){
-    for(let i=0;i<7;i++)box(w*.88,.045,depth*.8,padMat,[0,(i-3)*len*.13,depth*.56]);
+    box(w,len,depth,steel);
+    for(let i=0;i<9;i++)box(w*.9,.035,depth*.8,padMat,[0,(i-4)*len*.105,depth*.56]);
+    for(let side of [-1,1])box(.035,len*.94,depth*.8,aluminium,[side*w*.48,0,depth*.56]);
+   }else if(round){
+    const rr=Math.min(w,len)*.48;cyl(rr,rr,depth,steel,0,64);
+    for(let ring=1;ring<=4;ring++)add(new THREE.TorusGeometry(rr*ring/5,.018,6,48),dark,[0,depth*.52,0]);
+    for(let i=0;i<16;i++){const a=i*Math.PI/8,x=Math.cos(a)*rr*.78,z=Math.sin(a)*rr*.78;box(.045,.018,.045,padMat,[x,depth*.55,z]);}
    }else{
-    const n=id.includes('156')||id.includes('gp156')?5:id.includes('036')?3:2;
-    for(let x=0;x<n;x++)for(let y=0;y<n;y++)box(w*.12,len*.1,depth*.8,padMat,[(x-(n-1)/2)*w*.18,(y-(n-1)/2)*len*.17,depth*.58]);
+    box(w,len,depth,steel);
+    const n=id.includes('156')||id.includes('gp156')?6:id.includes('036')?4:3;
+    for(let x=0;x<n;x++)for(let y=0;y<n;y++)box(w*.105,len*.085,depth*.8,padMat,[(x-(n-1)/2)*w*.15,(y-(n-1)/2)*len*.15,depth*.58]);
+    for(let side of [-1,1])box(.035,len*.94,depth*.9,aluminium,[side*w*.48,0,depth*.55]);
    }
    for(let x of [-1,1])for(let y of [-1,1])bolt(x*w*.43,y*len*.43,depth*.62,.025,gold);
    return;
@@ -975,22 +981,42 @@ export function createPartModel(p,THREE){
   }
   if(strut||beam){
    if(id.includes('cubic')||/octagonal strut|octagonal connector/.test(nm)){
-    const shape=new THREE.OctahedronGeometry(r*.7,0);add(shape,aluminium);
-    for(let i=0;i<8;i++){const a=i*Math.PI/4;const x=Math.cos(a)*r*.62,z=Math.sin(a)*r*.62;bolt(x,0,z,.035,gold);}
+    // Cubic octagonal strut: an eight-sided structural tube with reinforced end sockets.
+    cyl(r*.48,r*.48,h*.78,steel,0,8);
+    cyl(r*.68,r*.68,.12,aluminium,h*.4,8);cyl(r*.68,r*.68,.12,aluminium,-h*.4,8);
+    cyl(r*.25,r*.25,.08,dark,h*.47,8);cyl(r*.25,r*.25,.08,dark,-h*.47,8);
+    for(let i=0;i<8;i++){const a=i*Math.PI/4,x=Math.cos(a)*r*.48,z=Math.sin(a)*r*.48;bolt(x,h*.36,z,.022,gold);bolt(x,-h*.36,z,.022,gold);}
+   }else if(beam&&/i-beam/.test(nm)){
+    // True I-section: two flanges connected by a narrow central web.
+    const length=h>r*1.4?h:r*1.7,width=r*.34,depth=r*.28,flange=depth*.22;
+    box(width,length,flange,aluminium,[0,0,depth*.5-flange*.5]);
+    box(width,length,flange,aluminium,[0,0,-depth*.5+flange*.5]);
+    box(width*.2,length,depth,steel);
+    for(let y=-length*.42;y<=length*.43;y+=length*.14){box(width*.18,.035,depth*.86,gold,[0,y,0]);}
+    for(let side of [-1,1])for(let end of [-1,1])bolt(side*width*.38,length*.44,end*depth*.5,.018,steel);
+   }else if(beam&&/girder/.test(nm)){
+    // Modular girder segment: open truss with four longitudinal chords and diagonal web members.
+    const length=h>r*1.4?h:r*1.7,width=r*.48,depth=r*.42,segments=6;
+    for(let sx of [-1,1])for(let sz of [-1,1])tube([[sx*width*.5,-length*.5,sz*depth*.5],[sx*width*.5,length*.5,sz*depth*.5]],.035,aluminium);
+    for(let i=0;i<=segments;i++){
+     const y=-length*.5+i*length/segments;
+     for(let sx of [-1,1])tube([[sx*width*.5,y,-depth*.5],[sx*width*.5,y,depth*.5]],.022,steel);
+    }
+    for(let i=0;i<segments;i++){
+     const y0=-length*.5+i*length/segments,y1=y0+length/segments;
+     for(let sx of [-1,1])for(let sz of [-1,1])tube([[sx*width*.5,y0,sz*depth*.5],[-sx*width*.5,y1,sz*depth*.5]],.025,gold);
+    }
+    for(let end of [-1,1])box(width*1.1,.08,depth*1.1,steel,[0,end*length*.5,0]);
+   }else if(beam&&/panel/.test(nm)){
+    box(r*1.65,h*.82,.06,painted('#b9c1c0','#b68b4e','STRUCTURAL PANEL',name));
+    for(let x=-3;x<=3;x++)box(.018,h*.72,.018,steel,[x*r*.22,0,.045]);
+    for(let y=-3;y<=3;y++)box(r*1.5,.018,.018,steel,[0,y*h*.13,.05]);
+    for(let side of [-1,1])box(.08,h*.9,.1,aluminium,[side*r*.8,0,0]);
    }else if(beam){
-    const long=h>r*1.4;
-    const length=long?h:r*1.7,width=long?r*.2:r*.16,depth=r*.18;
+    const length=h>r*1.4?h:r*1.7,width=r*.2,depth=r*.18;
     box(width,length,depth,steel);
     box(width*.28,length*.92,depth*1.08,aluminium,[0,0,depth*.08]);
-    for(let y=-length*.42;y<=length*.43;y+=length*.14){
-     box(width*.96,.035,depth*.95,aluminium,[0,y,0]);
-     for(let side of [-1,1])bolt(side*width*.38,y,depth*.52,.018,gold);
-    }
-    if(/panel/.test(nm)){
-     box(r*1.65,h*.82,.06,ivory);
-     for(let x=-2;x<=2;x++)box(.018,h*.72,.018,steel,[x*r*.28,0,.045]);
-     for(let y=-2;y<=2;y++)box(r*1.5,.018,.018,steel,[0,y*h*.16,.05]);
-    }
+    for(let y=-length*.42;y<=length*.43;y+=length*.14){box(width*.96,.035,depth*.95,aluminium,[0,y,0]);for(let side of [-1,1])bolt(side*width*.38,y,depth*.52,.018,gold);}
    }else{
     box(r*1.7,.12,r*.5,steel);box(.12,r*1.7,r*.5,aluminium);
     for(let x of [-1,1])for(let z of [-1,1])bolt(x*r*.72,0,z*r*.3,.05,gold);
