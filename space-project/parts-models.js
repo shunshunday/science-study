@@ -1060,13 +1060,68 @@ export function createPartModel(p,THREE){
    band(r*.85,h*.32,.035,gold);radialLabel(r*.86,0,r*.7,h*.2,getLabelMaterial());
   }
  }; const makeThermal=()=>{
+  const nm=(id+' '+name).toLowerCase();
+  const shield=/heat shield|耐熱シールド|heatshield/.test(nm),inflatable=/10m|inflatable|膨張/.test(nm),panel=/radiator panel|ラジエーターパネル/.test(nm),edge=/edge|エッジ/.test(nm),control=/thermal control|熱制御システム/.test(nm),large=/large|大型/.test(nm),medium=/medium|中型/.test(nm);
+  if(shield){
+   // Ablative shield: ceramic tile face, segmented metal rim and recessed separation hardware.
+   const rr=r*(inflatable?1.5:1),th=h*(inflatable?.22:.3),tileMat=M(0xffffff,.08,.96,{map:makeThermalTileMaterial(THREE)});
+   if(inflatable){
+    const membrane=add(new THREE.CircleGeometry(rr,96),M(0x9da7a7,.12,.92,{side:THREE.DoubleSide}),[0,h*.18,0],[Math.PI/2,0,0]);
+    const outer=add(new THREE.TorusGeometry(rr,.13,18,96),M(0x6d777b,.25,.82),[0,h*.18,0],[Math.PI/2,0,0]);
+    for(let i=0;i<24;i++){const ang=i*Math.PI/12,x=Math.cos(ang)*rr*.92,z=Math.sin(ang)*rr*.92;tube([[0,h*.18,0],[x,h*.18,z]],.018,aluminium);bolt(x,h*.18,z,.025,gold);}
+    for(let i=0;i<12;i++){const ang=i*Math.PI/6;const x=Math.cos(ang)*rr*.8,z=Math.sin(ang)*rr*.8;box(rr*.22,.07,.1,steel,[x,h*.18,z],[0,-ang,0]);}
+    cyl(rr*.38,rr*.38,.12,dark,-h*.08,64);band(rr*.42,-h*.08,.045,gold);
+   }else{
+    lathe([[0,-th*.5],[rr*.76,-th*.5],[rr*.94,-th*.42],[rr,-th*.2],[rr*.98,th*.2],[rr*.86,th*.5],[rr*.58,th*.55],[0,th*.55]],tileMat,96);
+    band(rr*.99,-th*.25,.06,steel);band(rr*.98,th*.3,.055,gold);band(rr*.82,th*.5,.025,aluminium);
+    cyl(rr*.58,rr*.58,.08,dark,-th*.5,72);
+    for(let i=0;i<32;i++){const ang=i*Math.PI/16,x=Math.cos(ang)*rr*.96,z=Math.sin(ang)*rr*.96;bolt(x,th*.22,z,.018,aluminium);}
+    for(let i=0;i<16;i++){const ang=i*Math.PI/8;radialPipe(rr*.94,-th*.16,th*.36,ang,steel,.014);}
+    for(let ring=1;ring<=3;ring++)band(rr*(.28+ring*.16),th*.52,.012,steel);
+   }
+   return;
+  }
+  if(panel){
+   // Fixed radiator panels are thin, framed heat exchangers with exposed coolant channels.
+   const width=r*(edge?.42:large?1.65:medium?1.15:.82),length=h*(edge?1.28:large?1.5:1.05),thick=edge?.055:.075;
+   box(width,length,thick,painted('#303a3e','#b68b4e','RADIATOR PANEL',name));
+   box(width*.9,length*.92,.025,dark,[0,0,thick*.58]);
+   for(let i=0;i<(edge?3:12);i++){
+    const x=edge?0:(i-5.5)*width*.07;
+    box(edge?width*.78:width*.025,length*.84,.018,aluminium,[x,0,thick*.8]);
+   }
+   for(let side of [-1,1])box(width*.045,length*.98,thick*1.4,steel,[side*width*.48,0,0]);
+   tube([[-width*.38,-length*.38,thick*.72],[0,-length*.22,thick*.72],[width*.38,-length*.38,thick*.72]],.025,orange);
+   tube([[-width*.38,length*.38,thick*.72],[0,length*.22,thick*.72],[width*.38,length*.38,thick*.72]],.025,blue);
+   for(let x of [-1,1])for(let y of [-1,1])bolt(x*width*.44,y*length*.44,thick*.82,.022,gold);
+   if(edge){box(width*.2,.16,.14,steel,[0,-length*.48,0]);}
+   return;
+  }
+  if(control){
+   // Thermal Control System: compact stowed housing with folded radiator leaves and hinge packs.
+   const size=large?1.12:medium?.9:.68,coreR=r*size;
+   lathe([[0,-h*.42],[coreR*.72,-h*.42],[coreR,-h*.3],[coreR,h*.28],[coreR*.72,h*.42],[0,h*.42]],painted('#6f797c','#b68b4e','THERMAL CONTROL SYSTEM',name),64);
+   for(let y of [-h*.34,h*.32])band(coreR,y,.045,gold);
+   const leaves=large?6:4;
+   for(let i=0;i<leaves;i++){
+    const ang=i*Math.PI*2/leaves,x=Math.cos(ang)*coreR*.82,z=Math.sin(ang)*coreR*.82;
+    const hinge=new THREE.Mesh(new THREE.CylinderGeometry(coreR*.09,coreR*.09,h*.72,20),steel);hinge.position.set(x,0,z);hinge.rotation.z=Math.PI/2;g.add(hinge);
+    for(let j=0;j<3;j++){
+     const leaf=box(coreR*.48,h*.2,.035,dark,[x+Math.cos(ang)*coreR*(.2+j*.16),h*(.15-j*.15),z+Math.sin(ang)*coreR*(.2+j*.16)],[0,-ang,0]);
+     for(let k=0;k<4;k++)box(coreR*.36,.012,.018,aluminium,[leaf.position.x,leaf.position.y+(k-1.5)*h*.045,leaf.position.z+.025],[0,-ang,0]);
+    }
+    tube([[x,0,z],[x*1.35,h*.25,z*1.35],[x*1.5,h*.12,z*1.5]],.025,gold);
+   }
+   box(coreR*.5,.16,coreR*.5,steel,[0,-h*.46,0]);
+   return;
+  }
+  // Thermal parts without a more specific name retain an insulated shield-like profile.
   const tileMat=M(0xffffff,.08,.96,{map:makeThermalTileMaterial(THREE)});
   lathe([[0,-h*.5],[r*.72,-h*.5],[r,-h*.34],[r*.94,h*.25],[r*.7,h*.5],[0,h*.5]],tileMat,96);
   band(r*.96,h*.28,.06,gold);band(r*.94,-h*.32,.035,steel);
   for(let i=0;i<24;i++){const a=i*Math.PI/12;radialPipe(r*.95,-h*.28,h*.24,a,steel,.018);}
   for(let i=0;i<12;i++){const a=i*Math.PI/6;bolt(Math.cos(a)*r*.96,h*.2,Math.sin(a)*r*.96,.022,aluminium);}
- };
- const makeUtility=()=>{
+ }; const makeUtility=()=>{
   const nm=(id+' '+name).toLowerCase();
   const ladder=/ladder|mobility enhancer|機動性向上/.test(nm),light=/light|illuminator|照明|ライト|イルミネーター/.test(nm);
   const launch=/launch escape|脱出システム/.test(nm),drill=/drill|採掘機/.test(nm),isru=/isru|convert-o-tron|コンバートオートロン/.test(nm);
