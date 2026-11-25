@@ -487,12 +487,29 @@ export function createPartModel(p,THREE){
     return;
    }
    if(puff){
+    // O-10 Puff reference study: white rounded pressure head, yellow separator band,
+    // long ribbed graphite bell and a broad rolled nozzle lip.
     const rr=r*.48,hh=h*.58;
-    lathe([[0,-hh*.42],[rr*.7,-hh*.42],[rr,-hh*.28],[rr*.96,hh*.22],[rr*.72,hh*.42],[0,hh*.42]],painted('#7a8588','#b68b4e','MONOPROPELLANT ENGINE',name),48);
-    band(rr,hh*.28,.035,gold);band(rr,-hh*.3,.035,steel);
-    const bell=lathe([[0,-hh*.52],[rr*.42,-hh*.52],[rr*.72,-hh*.36],[rr*.86,-hh*.1],[rr*.58,hh*.2],[0,hh*.2]],steel,32,[0,-hh*.48,0]);bell.scale.setScalar(.85);
-    for(let side of [-1,1]){tube([[side*rr*.7,hh*.12,0],[side*rr*.95,-hh*.08,rr*.12],[side*rr*.78,-hh*.28,rr*.12]],.025,orange);bolt(side*rr*.78,hh*.3,rr*.3,.018,gold);}
-    box(rr*1.7,.12,rr*1.2,steel,[0,hh*.42,0]);return;
+    lathe([[0,-hh*.42],[rr*.62,-hh*.42],[rr*.9,-hh*.3],[rr,hh*.02],[rr*.94,hh*.25],[rr*.72,hh*.43],[rr*.38,hh*.51],[0,hh*.52]],painted('#e0e1dc','#d4ad42','O-10 PUFF MONOPROPELLANT ENGINE',name),64);
+    band(rr*.98,hh*.23,.035,gold);band(rr*.88,-hh*.31,.025,aluminium);
+    // Dark nozzle throat and flared bell with repeated external cooling ribs.
+    lathe([[0,-hh*1.12],[rr*.34,-hh*1.12],[rr*.52,-hh*.98],[rr*.68,-hh*.76],[rr*.84,-hh*.48],[rr*.78,-hh*.38],[rr*.62,-hh*.43],[rr*.42,-hh*.66],[0,-hh*.66]],M(0x242a2d,.34,.72),48,[0,-hh*.52,0]);
+    for(let i=0;i<7;i++){
+     const t=i/6,y=-hh*(1.06-t*.52),rad=rr*(.48+t*.31);
+     band(rad,y,.018, i%2?steel:dark);
+    }
+    add(new THREE.TorusGeometry(rr*.82,.035,10,48),steel,[0,-hh*1.08,0],[Math.PI/2,0,0]);
+    add(new THREE.CircleGeometry(rr*.68,40),black,[0,-hh*1.105,0],[Math.PI/2,0,0]);
+    // Top service cap, yellow identification stripe, mounting ears and feed fittings.
+    cyl(rr*.42,rr*.42,.08,aluminium,hh*.53,40);
+    add(new THREE.TorusGeometry(rr*.39,.025,8,40),gold,[0,hh*.54,0],[Math.PI/2,0,0]);
+    box(rr*1.7,.12,rr*1.2,steel,[0,hh*.39,0]);
+    for(let side of [-1,1]){
+     box(rr*.22,hh*.42,.09,steel,[side*rr*.78,hh*.02,0]);
+     tube([[side*rr*.72,hh*.2,0],[side*rr*.98,hh*.05,rr*.12],[side*rr*.82,-hh*.24,rr*.12]],.022,orange);
+     bolt(side*rr*.78,hh*.29,rr*.3,.02,gold);
+    }
+    return;
    }
    const block=/rv-105|rv-1x|rcs thruster block/.test(nm),linear=/place-anywhere|linear rcs/.test(nm),vernor=/vernor|vernier/.test(nm);
    const small=/rv-1x|place-anywhere 1|cub vernor/.test(nm),bodyW=r*(small?.68:block?1.02:.86),bodyH=h*(vernor?.72:.58);
