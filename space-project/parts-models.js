@@ -1787,7 +1787,7 @@ export function createPartModel(p,THREE){
   for(let i=0;i<8;i++){const ang=i*Math.PI/4;bolt(baseR*.9*Math.cos(ang),-h*.3,baseR*.9*Math.sin(ang),.018,gold);}
  }; const makeDock=()=>{
   const nm=(id+' '+name).toLowerCase();
-  const shielded=/shield|シールド/.test(nm),inline=/inline|インライン/.test(nm),grabbing=/grabbing|グラビング/.test(nm),inflatable=/inflatable|膨張式/.test(nm),mk2=/mk2/.test(nm),sr=/\bsr\b|senior|sr\./.test(nm);
+  const shielded=/shield|シールド/.test(nm),inline=/inline|インライン/.test(nm),grabbing=/grabbing|グラビング/.test(nm),inflatable=/inflatable|膨張式/.test(nm),mk2=/mk2/.test(nm),jr=/jr|ジュニア/.test(nm),sr=/\bsr\b|senior|sr\./.test(nm);
   const faceY=h*.48,bodyMat=painted('#bfc5c3','#c6a04c','CLAMP-O-TRON DOCKING SYSTEM',name);
   if(grabbing){
    lathe([[0,-h*.5],[r*.58,-h*.5],[r*.82,-h*.3],[r*.9,h*.15],[r*.78,h*.4],[r*.58,h*.5],[0,h*.5]],steel,64);
@@ -1806,7 +1806,7 @@ export function createPartModel(p,THREE){
    band(r*.5,h*.34,.045,gold);cyl(r*.46,r*.46,.07,dark,h*.36,48);
    for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(r*.86,-h*.05,h*.35,a,steel,.025);}return;
   }
-  const baseR=mk2?r*.92:sr?r*.98:r*.9;
+  const baseR=mk2?r*.92:sr?r*.98:jr?r*.48:r*.9;
   lathe([[0,-h*.5],[baseR*.58,-h*.5],[baseR*.82,-h*.38],[baseR*.94,-h*.12],[baseR*.94,h*.16],[baseR*.82,h*.34],[baseR*.62,h*.5],[0,h*.5]],bodyMat,80);
   for(const y of [-h*.38,-h*.18,h*.28,h*.4])band(baseR*(y>0?.92:.98),y,.035,y<0?steel:aluminium);
   band(baseR*.88,h*.42,.055,gold);band(baseR*.7,h*.47,.035,ivory);
@@ -1831,12 +1831,36 @@ export function createPartModel(p,THREE){
    band(baseR*.7,faceY+.13,.035,orange);
   }
   if(inline){
-   lathe([[0,-h*.5],[baseR*.76,-h*.5],[baseR*.86,-h*.35],[baseR*.86,h*.48],[baseR*.7,h*.5],[0,h*.5]],steel,72);
+   // Inline Clamp-O-Tron: recessed fuselage sleeve, split clamshell doors and a telescoping port carriage.
+   const sleeve=lathe([[0,-h*.5],[baseR*.72,-h*.5],[baseR*.86,-h*.38],[baseR*.86,h*.48],[baseR*.7,h*.5],[0,h*.5]],painted('#aeb8b7','#b68b4e','INLINE DOCKING SLEEVE',name),72);
    band(baseR*.86,h*.43,.045,gold);
+   box(baseR*1.72,h*.56,.06,dark,[0,-h*.02,baseR*.72]);
+   for(let side of [-1,1]){
+    const door=box(baseR*.72,h*.52,.075,painted('#c7ccc7','#b68b4e','CLAMSHELL ACCESS DOOR',name),[side*baseR*.43,-h*.02,baseR*.72],[0,0,side*.08]);
+    box(baseR*.56,h*.4,.025,ivory,[side*baseR*.43,-h*.02,baseR*.77],[0,0,side*.08]);
+    for(let j=0;j<6;j++)bolt(side*baseR*.66,(j-2.5)*h*.075,baseR*.8,.018,gold);
+    tube([[side*baseR*.78,-h*.25,baseR*.58],[side*baseR*.96,-h*.08,baseR*.7],[side*baseR*.84,h*.2,baseR*.74]],.028,steel);
+    tube([[side*baseR*.3,-h*.25,baseR*.6],[side*baseR*.52,-h*.4,baseR*.42],[side*baseR*.68,-h*.22,baseR*.52]],.022,orange);
+   }
+   cyl(baseR*.48,baseR*.48,h*.3,steel,faceY+h*.13,48);
+   band(baseR*.52,faceY+h*.22,.035,gold);
+   for(let i=0;i<8;i++){const a=i*Math.PI/4;bolt(baseR*.74*Math.cos(a),faceY+h*.18,baseR*.74*Math.sin(a),.02,aluminium);}
   }
   if(mk2){
-   box(baseR*1.9,h*.66,baseR*1.15,steel,[0,-h*.05,0]);
-   for(let side of [-1,1])box(baseR*.08,h*.55,baseR*.95,gold,[side*baseR*.9,-h*.05,0]);
+   // Mk2 Clamp-O-Tron is integrated into the Mk2 fuselage and opens two large side doors.
+   box(baseR*2.2,h*.82,baseR*1.32,painted('#cbd0cb','#b68b4e','MK2 DOCKING FUSELAGE',name),[0,-h*.06,0]);
+   box(baseR*1.82,h*.48,baseR*.1,dark,[0,-h*.02,baseR*.68]);
+   for(let side of [-1,1]){
+    box(baseR*.86,h*.62,.075,ivory,[side*baseR*.58,-h*.02,baseR*.65],[0,0,side*.1]);
+    box(baseR*.68,h*.44,.03,dark,[side*baseR*.58,-h*.02,baseR*.7],[0,0,side*.1]);
+    for(let j=0;j<7;j++)bolt(side*baseR*.82,(j-3)*h*.075,baseR*.73,.018,gold);
+    tube([[side*baseR*.98,-h*.3,baseR*.48],[side*baseR*1.08,-h*.12,baseR*.65],[side*baseR*.98,h*.24,baseR*.48]],.035,steel);
+    tube([[side*baseR*.36,-h*.28,baseR*.6],[side*baseR*.56,-h*.42,baseR*.4],[side*baseR*.78,-h*.22,baseR*.52]],.026,orange);
+   }
+   // Integrated monopropellant tank and telescoping docking head.
+   lathe([[0,-h*.45],[baseR*.48,-h*.45],[baseR*.56,-h*.32],[baseR*.56,h*.24],[baseR*.42,h*.42],[0,h*.42]],painted('#899597','#b68b4e','MK2 RCS SUPPLY',name),48,[0,-h*.28,-baseR*.48]);
+   cyl(baseR*.44,baseR*.44,h*.26,steel,faceY+h*.12,48);
+   band(baseR*.48,faceY+h*.23,.04,gold);
   }
   for(let i=0;i<16;i++){const a=i*Math.PI/8;bolt(baseR*.94*Math.cos(a),-h*.38,baseR*.94*Math.sin(a),.018,gold);}
  };
