@@ -426,7 +426,7 @@ export function createPartModel(p,THREE){
  else if(type==='battery')makeBattery();
  else if(type==='science')makeScience();
  else if(type==='decoupler'||type==='structural')makeDecoupler();
- else if(type==='ground'&&/wheel/.test(id))makeRoverWheel();
+ else if(/rover-wheel|rover.*wheel|wheel.*rover/i.test(id)||(/wheel/i.test(name)&&/rover|rovermax|ローブマックス/i.test(name)))makeRoverWheel();
  else if(type==='gear'||type==='ground')makeGear();
  else if(type==='intake')makeIntake();
  else if(type==='comm')makeComm();
