@@ -774,7 +774,7 @@ $('#part-search').addEventListener('input',drawPartsCatalogV2);$('#part-sort').a
   const b=e.target.closest('button[data-part]');
   if(!b||b.disabled||mode!=='vab'||flight||(e.pointerType==='mouse'&&e.button!==0))return;
   catalogPointerDrag={id:b.dataset.part,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,moved:false};
- });
+ },true);
  document.addEventListener('pointermove',e=>{
   if(!catalogPointerDrag||e.pointerId!==catalogPointerDrag.pointerId)return;
   if(!catalogPointerDrag.moved&&Math.hypot(e.clientX-catalogPointerDrag.startX,e.clientY-catalogPointerDrag.startY)>6){
