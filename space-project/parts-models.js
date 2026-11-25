@@ -1,5 +1,53 @@
 // Independently authored high-detail KSP1-inspired procedural part models.
 // Each stock-style part family gets its own silhouette, finish, decals and mechanical detailing.
+
+// One compact, hand-painted surface atlas per part family. Reused by all 454 catalog
+// entries so the finish stays cohesive without allocating hundreds of large textures.
+const PART_SKIN_CACHE=new Map();
+function getPartSkin(THREE,family){
+ if(PART_SKIN_CACHE.has(family))return PART_SKIN_CACHE.get(family);
+ const c=document.createElement('canvas');c.width=512;c.height=512;
+ const x=c.getContext('2d');
+ const palettes={
+  tank:['#e6e5dc','#343d40','#c65b35','FUEL SYSTEM'],
+  engine:['#777f80','#252c30','#c56b31','PROPULSION'],
+  pod:['#e8e7df','#263b48','#d18a38','CREW MODULE'],
+  aero:['#e5e5df','#35424a','#c18b48','AERODYNAMICS'],
+  solar:['#173c5b','#a8c5d4','#b68b4e','POWER ARRAY'],
+  science:['#d9ddd8','#33434b','#c18b48','SCIENCE PAYLOAD'],
+  structure:['#aeb8b8','#354047','#c18b48','STRUCTURAL'],
+  utility:['#d9d9d0','#354047','#c18b48','FLIGHT SYSTEM'],
+  general:['#dedfd8','#354047','#bd8750','FLIGHT HARDWARE']
+ };
+ const [base,ink,accent,label]=palettes[family]||palettes.general;
+ x.fillStyle=base;x.fillRect(0,0,512,512);
+ // Soft painted-metal lighting, not photographic noise.
+ const grad=x.createLinearGradient(0,0,512,0);grad.addColorStop(0,'rgba(0,0,0,.13)');grad.addColorStop(.18,'rgba(255,255,255,.14)');grad.addColorStop(.52,'rgba(255,255,255,0)');grad.addColorStop(1,'rgba(0,0,0,.16)');x.fillStyle=grad;x.fillRect(0,0,512,512);
+ // Repeated formed-panel seams and restrained fasteners.
+ x.strokeStyle='rgba(30,42,47,.30)';x.lineWidth=2;
+ for(let y=28;y<512;y+=96){x.beginPath();x.moveTo(0,y);x.lineTo(512,y);x.stroke();}
+ for(let xx=64;xx<512;xx+=128){x.beginPath();x.moveTo(xx,0);x.lineTo(xx,512);x.stroke();}
+ for(let y=34;y<512;y+=96)for(let xx=18;xx<512;xx+=64){
+  x.fillStyle='#b8c0bd';x.beginPath();x.arc(xx,y,3.2,0,Math.PI*2);x.fill();
+  x.fillStyle='rgba(25,34,39,.65)';x.beginPath();x.arc(xx,y,1.5,0,Math.PI*2);x.fill();
+ }
+ // A real-looking, small equipment stencil and serial panel.
+ x.fillStyle=ink;x.fillRect(24,174,214,92);x.strokeStyle=accent;x.lineWidth=5;x.strokeRect(24,174,214,92);
+ x.fillStyle='#f3f0e5';x.font='bold 24px Arial';x.fillText(label,38,208,186);
+ x.font='bold 15px Arial';x.fillText('KSP FLIGHT HARDWARE',38,232,186);
+ x.font='12px Arial';x.fillText('SERIES 01  /  INSPECTED',38,251,186);
+ // Caution band and service access hatch.
+ x.fillStyle=ink;x.fillRect(280,184,206,68);
+ x.fillStyle=accent;
+ for(let i=0;i<12;i++){x.beginPath();x.moveTo(286+i*17,184);x.lineTo(298+i*17,184);x.lineTo(286+i*17,202);x.lineTo(274+i*17,202);x.fill();}
+ x.strokeStyle='rgba(255,255,255,.72)';x.lineWidth=2;x.strokeRect(300,280,150,116);
+ x.fillStyle='rgba(25,38,44,.12)';x.fillRect(308,288,134,100);
+ x.fillStyle=ink;x.fillRect(326,314,98,10);x.fillRect(326,338,72,7);x.fillRect(326,358,84,7);
+ x.fillStyle=accent;x.fillRect(24,456,464,12);
+ const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=4;
+ PART_SKIN_CACHE.set(family,tex);return tex;
+}
+
 export function createPartModel(p,THREE){
  const g=new THREE.Group(),id=String(p.id||''),name=String(p.name||''),type=String(p.type||''),r=Math.max(.055,Number(p.radius)||.5),h=Math.max(.12,Number(p.height)||.5);
  const M=(color,metalness=.35,roughness=.48,extra={})=>new THREE.MeshStandardMaterial({color,metalness,roughness,...extra});
@@ -334,6 +382,28 @@ export function createPartModel(p,THREE){
  if(type==='engine'||type==='jet'||type==='booster'){
   const plume=add(new THREE.ConeGeometry(r*.38,.9,24),new THREE.MeshBasicMaterial({color:0xffa34d,transparent:true,opacity:.82,depthWrite:false}),[0,-h*.62,0],[Math.PI,0,0]);plume.name='engine-flame';plume.visible=false;
  }
- g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
+
+ const family=type==='tank'||type==='resource'?'tank':
+  type==='engine'||type==='jet'||type==='booster'?'engine':
+  type==='pod'||type==='cockpit'?'pod':
+  type==='fin'||type==='wing'||type==='tail'||type==='control'||type==='intake'||type==='nosecone'||type==='airbrake'?'aero':
+  type==='solar'?'solar':
+  type==='science'||type==='probe'?'science':
+  type==='decoupler'||type==='structural'||type==='fuselage'||type==='robotics'||type==='rotor-blade'?'structure':
+  type==='utility'||type==='battery'||type==='comm'||type==='docking'||type==='payload'||type==='thermal'||type==='chute'?'utility':'general';
+ const skin=getPartSkin(THREE,family);
+ g.traverse(o=>{if(o.isMesh){
+  o.castShadow=true;o.receiveShadow=true;
+  const apply=m=>{
+   if(!m||!m.isMeshStandardMaterial)return m;
+   const c=m.color||new THREE.Color(1,1,1),luma=.2126*c.r+.7152*c.g+.0722*c.b;
+   if(luma<.22||family==='solar')return m;
+   const painted=m.clone();painted.map=skin;painted.needsUpdate=true;
+   painted.roughness=Math.max(painted.roughness||.5,.42);
+   return painted;
+  };
+  o.material=Array.isArray(o.material)?o.material.map(apply):apply(o.material);
+ }});
+
  return g;
 }
