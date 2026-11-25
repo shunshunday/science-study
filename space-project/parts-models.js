@@ -702,19 +702,52 @@ export function createPartModel(p,THREE){
   else{for(let side of [-1,1])tube([[0,h*.18,0],[side*w*.4,h*.18,.1],[side*w*.72,h*.18,.12]],.035,aluminium);}
  };
  const makeParachute=()=>{
-  const rad=r*.76;lathe([[0,-h*.5],[rad*.75,-h*.5],[rad,-h*.36],[rad,h*.25],[rad*.86,h*.5],[0,h*.5]],ivory,48);
-  band(rad,h*.34,.045,gold);cyl(rad*.56,rad*.56,.1,orange,h*.49,32);
+  const nm=(id+' '+name).toLowerCase();
+  const radial=/radial|ラジアル/.test(nm),drogue=/drogue|ドラッグ|mk25/.test(nm),xl=/xl/.test(nm);
+  const rad=r*(xl?1.02:drogue?.66:.76),bodyH=h*(radial?.62:xl?1.08:.92);
+  const canisterMat=painted(drogue?'#c4c7bf':'#d5d7cf',drogue?'#c56b31':'#b68b4e',drogue?'DROGUE PARACHUTE':'RECOVERY PARACHUTE',name);
+  if(radial){
+   // Radial chute canister: horizontal pressure capsule, flat attachment shoe and release latches.
+   const can=lathe([[0,-bodyH*.5],[rad*.58,-bodyH*.5],[rad*.82,-bodyH*.38],[rad*.82,bodyH*.38],[rad*.58,bodyH*.5],[0,bodyH*.5]],canisterMat,64);
+   can.rotation.z=Math.PI/2;
+   for(let y of [-bodyH*.36,bodyH*.36]){const ring=band(rad*.82,y,.035,gold);ring.rotation.z=Math.PI/2;}
+   const plate=box(rad*1.1,bodyH*.92,.08,steel,[0,0,-rad*.78]);
+   box(rad*.84,bodyH*.68,.04,dark,[0,0,-rad*.83]);
+   for(let side of [-1,1]){box(rad*.12,bodyH*.84,.12,aluminium,[side*rad*.48,0,-rad*.84]);for(let j=0;j<4;j++)bolt(side*rad*.48,(j-1.5)*bodyH*.18,-rad*.91,.02,gold);}
+   for(let i=0;i<6;i++)box(rad*.55,.025,.025,i%2?dark:orange,[0,(i-2.5)*bodyH*.1,rad*.7]);
+   cyl(rad*.22,rad*.22,.09,black,0,24).rotation.z=Math.PI/2;
+  }else{
+   lathe([[0,-bodyH*.5],[rad*.68,-bodyH*.5],[rad*.9,-bodyH*.4],[rad,bodyH*.24],[rad*.86,bodyH*.42],[rad*.54,bodyH*.5],[0,bodyH*.5]],canisterMat,72);
+   for(let y of [-bodyH*.4,-bodyH*.28,bodyH*.28,bodyH*.42])band(rad*(y>0?.9:.98),y,.035,y<0?steel:gold);
+   cyl(rad*.56,rad*.56,.09,dark,-bodyH*.49,48);
+   cyl(rad*.52,rad*.52,.07,orange,bodyH*.49,48);
+   for(let i=0;i<12;i++){const ang=i*Math.PI/6;bolt(rad*.92*Math.cos(ang),-bodyH*.34,rad*.92*Math.sin(ang),.018,aluminium);}
+  }
   const rig=new THREE.Group();rig.name='parachute-rig';rig.visible=false;
-  const canopy=new THREE.Group();canopy.name='parachute-canopy';canopy.position.y=h*1.35;canopy.scale.setScalar(.04);
-  const canopyR=r*2.1,canopyH=r*.72;
-  const geo=new THREE.SphereGeometry(canopyR,64,24,0,Math.PI*2,0,Math.PI/2);
-  const clothA=M(0xd6d2c2,.05,.88,{side:THREE.DoubleSide}),clothB=M(0xc86b3b,.04,.86,{side:THREE.DoubleSide});
-  for(let i=0;i<16;i++){const a=i*Math.PI/8;const panel=new THREE.Mesh(new THREE.SphereGeometry(canopyR,16,12,a,Math.PI/8,0,Math.PI/2),i%2?clothA:clothB);panel.scale.set(1,canopyH/canopyR,1);panel.castShadow=true;canopy.add(panel);}
+  const canopy=new THREE.Group();canopy.name='parachute-canopy';canopy.position.y=h*(radial?1.12:1.35);canopy.scale.setScalar(.04);
+  const canopyR=r*(drogue?.92:xl?2.65:2.1),canopyH=canopyR*(drogue?.38:.72);
+  const clothA=M(drogue?0xc96d3e:0xe5e5dc,.05,.88,{side:THREE.DoubleSide});
+  const clothB=M(drogue?0xe8e2d2:0x4b6b84,.05,.88,{side:THREE.DoubleSide});
+  for(let i=0;i<20;i++){
+   const ang=i*Math.PI/10;
+   const panel=new THREE.Mesh(new THREE.SphereGeometry(canopyR,24,16,ang,Math.PI/10,0,Math.PI/2),i%2?clothA:clothB);
+   panel.scale.set(1,canopyH/canopyR,1);panel.castShadow=true;canopy.add(panel);
+   const seam=new THREE.CatmullRomCurve3([new THREE.Vector3(0,canopyH,0),new THREE.Vector3(Math.cos(ang)*canopyR*.38,canopyH*.82,Math.sin(ang)*canopyR*.38),new THREE.Vector3(Math.cos(ang)*canopyR*.96,0,Math.sin(ang)*canopyR*.96)]);
+   canopy.add(new THREE.Mesh(new THREE.TubeGeometry(seam,24,.009,6,false),gold));
+  }
+  const skirt=new THREE.Mesh(new THREE.TorusGeometry(canopyR*.98,.025,8,96),steel);skirt.position.y=0;canopy.add(skirt);
+  const vent=new THREE.Mesh(new THREE.CircleGeometry(canopyR*.12,32),dark);vent.position.y=canopyH*.98;vent.rotation.x=-Math.PI/2;canopy.add(vent);
   rig.add(canopy);
-  for(let i=0;i<12;i++){const a=i*Math.PI/6,start=new THREE.Vector3(Math.cos(a)*r*.18,h*.62,Math.sin(a)*r*.18),end=new THREE.Vector3(Math.cos(a)*canopyR*.92,h*1.35,Math.sin(a)*canopyR*.92),dir=end.clone().sub(start),line=add(new THREE.CylinderGeometry(.008,.008,dir.length(),6),gold,[0,0,0]);line.position.copy(start).add(end).multiplyScalar(.5);line.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());rig.add(line);}
+  const cordCount=drogue?12:16;
+  for(let i=0;i<cordCount;i++){
+   const ang=i*Math.PI*2/cordCount;
+   const start=new THREE.Vector3(Math.cos(ang)*rad*.18,bodyH*.62,Math.sin(ang)*rad*.18);
+   const end=new THREE.Vector3(Math.cos(ang)*canopyR*.94,h*(radial?1.12:1.35),Math.sin(ang)*canopyR*.94);
+   const dir=end.clone().sub(start),line=new THREE.Mesh(new THREE.CylinderGeometry(.008,.008,dir.length(),6),gold);
+   line.position.copy(start).add(end).multiplyScalar(.5);line.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());rig.add(line);
+  }
   g.add(rig);
- };
- const makeBattery=()=>{
+ }; const makeBattery=()=>{
   const nm=(id+' '+name).toLowerCase();
   const rtg=/rtg|pb-nuk|mininuk|原子力電池/.test(nm),fuelcell=/fuel.?cell|燃料電池/.test(nm);
   if(rtg){
