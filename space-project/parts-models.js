@@ -259,11 +259,26 @@ export function createPartModel(p,THREE){
   if(adapter){lathe([[0,h*.12],[r*.5,h*.12],[r*.55,h*.22],[r*.85,h*.48],[r*.95,h*.5],[0,h*.5]],ivory,64);band(r*.55,h*.22,.035,gold);}
   if(tri||quad||bi){const n=tri?3:quad?4:2;for(let i=0;i<n;i++){const a=i*Math.PI*2/n,x=Math.cos(a)*r*.58,z=Math.sin(a)*r*.58;lathe([[0,h*.12],[r*.22,h*.12],[r*.24,h*.48],[0,h*.48]],aluminium,32,[x,0,z]);band(r*.23,h*.46,.025,gold).position.set(x,h*.46,z);}}
  };
+ const makeM1TireTexture=()=>{
+  if(PART_SKIN_CACHE.has('rovemax-m1-tire'))return PART_SKIN_CACHE.get('rovemax-m1-tire');
+  const c=document.createElement('canvas');c.width=512;c.height=256;const q=c.getContext('2d');
+  q.fillStyle='#b9ad8c';q.fillRect(0,0,512,256);
+  const shade=q.createLinearGradient(0,0,512,256);shade.addColorStop(0,'rgba(255,255,255,.16)');shade.addColorStop(.5,'rgba(80,70,50,.02)');shade.addColorStop(1,'rgba(25,25,20,.22)');q.fillStyle=shade;q.fillRect(0,0,512,256);
+  // The stock M1 has a fine, orthogonal moulded grid rather than aircraft-style lugs.
+  q.strokeStyle='rgba(66,62,49,.34)';q.lineWidth=2;
+  for(let x=0;x<=512;x+=32){q.beginPath();q.moveTo(x,0);q.lineTo(x,256);q.stroke();}
+  for(let y=0;y<=256;y+=32){q.beginPath();q.moveTo(0,y);q.lineTo(512,y);q.stroke();}
+  q.strokeStyle='rgba(238,229,202,.18)';q.lineWidth=1;
+  for(let x=16;x<512;x+=32){q.beginPath();q.moveTo(x,0);q.lineTo(x,256);q.stroke();}
+  for(let y=16;y<256;y+=32){q.beginPath();q.moveTo(0,y);q.lineTo(512,y);q.stroke();}
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=THREE.RepeatWrapping;t.wrapT=THREE.RepeatWrapping;t.anisotropy=8;
+  PART_SKIN_CACHE.set('rovemax-m1-tire',t);return t;
+ };
  const makeRollingWheel=(radius,width,at=[0,0,0],variant='rover')=>{
   const wheel=new THREE.Group();wheel.name='wheel-spin';wheel.position.set(...at);wheel.userData.rollRadius=radius;wheel.userData.rollAxis='x';g.add(wheel);
-  const tireMat=M(0x17191b,.015,.99),sideMat=M(0x24282a,.04,.92),rimMat=M(0x9ca6a8,.84,.27),rimDark=M(0x343d42,.72,.38),hubMat=M(0x68747a,.82,.3),boltMat=M(0xb6bfbd,.88,.24),rubberInset=M(0x101416,.02,.98);
-  const wheelId=(id+' '+name).toLowerCase(),rugged=/tr-2l|xl3|rugged|large/.test(wheelId),small=/s2|small|tiny/.test(wheelId),aircraft=variant==='aircraft';
-  const section=aircraft?.17:rugged?.235:.205;
+  const wheelId=(id+' '+name).toLowerCase(),m1=/m1|rovermax.?model.?1/.test(wheelId),rugged=/tr-2l|xl3|rugged|large/.test(wheelId),small=/s2|small|tiny/.test(wheelId),aircraft=variant==='aircraft';
+  const tireMat=m1?M(0xffffff,.01,.98,{map:makeM1TireTexture()}):M(0x17191b,.015,.99),sideMat=M(m1?0xb9ad8c:0x24282a,.04,.92),rimMat=M(m1?0xb9b9b2:0x9ca6a8,.84,.27),rimDark=M(0x343d42,.72,.38),hubMat=M(m1?0x858b8b:0x68747a,.82,.3),boltMat=M(0xb6bfbd,.88,.24),rubberInset=M(m1?0x8f856c:0x101416,.02,.98);
+  const section=aircraft?.17:m1?.24:rugged?.235:.205;
   // Rounded pneumatic tyre carcass with a broad, continuous shoulder.
   const carcass=new THREE.Mesh(new THREE.TorusGeometry(radius*(1-section),radius*section,32,96),tireMat);
   carcass.rotation.y=Math.PI/2;carcass.castShadow=true;carcass.receiveShadow=true;wheel.add(carcass);
@@ -299,7 +314,7 @@ export function createPartModel(p,THREE){
   }
   // Tread blocks are individually modelled and follow the tyre curvature.
   const count=small?32:rugged?40:36;
-  for(let i=0;i<count;i++){
+  if(!m1)for(let i=0;i<count;i++){
    const a=i*Math.PI*2/count;
    if(rugged){
     for(const side of [-1,1]){
@@ -307,7 +322,7 @@ export function createPartModel(p,THREE){
      lug.position.set(side*width*.235,Math.cos(a)*radius*.965,Math.sin(a)*radius*.965);
      lug.rotation.x=a;lug.rotation.z=side*.24*(i%2?1:-1);lug.castShadow=true;wheel.add(lug);
     }
-   }else if(/m1|rover/.test(wheelId)){
+   }else if(/rover/.test(wheelId)){
     const lug=new THREE.Mesh(new THREE.BoxGeometry(width*.88,radius*.09,radius*.145),sideMat);
     lug.position.set(0,Math.cos(a)*radius*.96,Math.sin(a)*radius*.96);
     lug.rotation.x=a;lug.castShadow=true;wheel.add(lug);
@@ -434,27 +449,9 @@ export function createPartModel(p,THREE){
   const plume=add(new THREE.ConeGeometry(r*.38,.9,24),new THREE.MeshBasicMaterial({color:0xffa34d,transparent:true,opacity:.82,depthWrite:false}),[0,-h*.62,0],[Math.PI,0,0]);plume.name='engine-flame';plume.visible=false;
  }
 
- const family=type==='tank'||type==='resource'?'tank':
-  type==='engine'||type==='jet'||type==='booster'?'engine':
-  type==='pod'||type==='cockpit'?'pod':
-  type==='fin'||type==='wing'||type==='tail'||type==='control'||type==='intake'||type==='nosecone'||type==='airbrake'?'aero':
-  type==='solar'?'solar':
-  type==='science'||type==='probe'?'science':
-  type==='decoupler'||type==='structural'||type==='fuselage'||type==='robotics'||type==='rotor-blade'?'structure':
-  type==='utility'||type==='battery'||type==='comm'||type==='docking'||type==='payload'||type==='thermal'||type==='chute'?'utility':'general';
- const skin=getPartSkin(THREE,family);
- g.traverse(o=>{if(o.isMesh){
-  o.castShadow=true;o.receiveShadow=true;
-  const apply=m=>{
-   if(!m||!m.isMeshStandardMaterial)return m;
-   const c=m.color||new THREE.Color(1,1,1),luma=.2126*c.r+.7152*c.g+.0722*c.b;
-   if(luma<.22||family==='solar')return m;
-   const painted=m.clone();painted.map=skin;painted.needsUpdate=true;
-   painted.roughness=Math.max(painted.roughness||.5,.42);
-   return painted;
-  };
-  o.material=Array.isArray(o.material)?o.material.map(apply):apply(o.material);
- }});
+ // Keep authored material assignments per sub-mesh; never stamp one generic decal atlas
+ // across every surface (that distorts wheels, solar cells, glass and small mechanisms).
+ g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
 
  return g;
 }
