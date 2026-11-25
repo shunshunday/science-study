@@ -1725,7 +1725,7 @@ export function createPartModel(p,THREE){
   const nm=(id+' '+name).toLowerCase();
   const ground=/hg-48|ground/.test(nm),dish=/dts|hg-5|hg-55|88-88|ra-|relay|dish|中継|ハイゲイン/.test(nm);
   const large=/ra-100|88-88/.test(nm),medium=/ra-15|hg-55|dts/.test(nm),small=/ra-2|hg-5/.test(nm);
-  const fixed=/16-s|communotron 16-s|固定/.test(nm),flat=/dts/.test(nm);
+  const fixed=/16-s|communotron 16-s|固定/.test(nm),flat=/dts/.test(nm),folding=/hg-55|88-88/.test(nm);
   const baseR=r*(large?1.05:medium?.86:small?.62:.38);
   lathe([[0,-h*.42],[baseR*.68,-h*.42],[baseR,-h*.25],[baseR,h*.12],[baseR*.78,h*.22],[0,h*.22]],painted('#aeb6b6','#b68b4e','COMMUNICATION HARDWARE',name),48);
   band(baseR,h*.14,.035,gold);band(baseR*.82,-h*.3,.025,steel);
@@ -1743,6 +1743,24 @@ export function createPartModel(p,THREE){
   }
   if(dish){
    const dishR=r*(large?1.18:medium?.92:small?.7:.72),dishY=h*(flat?.48:.58);
+   if(folding){
+    // HG-55 and 88-88 are shown in their VAB stowed configuration, not as an already deployed dish.
+    const canR=r*(large?.46:.34),canH=h*(large?.9:.72),petals=large?8:6;
+    lathe([[0,-canH*.5],[canR*.76,-canH*.5],[canR,-canH*.34],[canR,canH*.32],[canR*.78,canH*.5],[0,canH*.5]],painted('#b8c1bf','#b68b4e','FOLDING HIGH GAIN ANTENNA',name),48);
+    for(let y of [-canH*.38,canH*.36])band(canR,y,.035,y<0?steel:gold);
+    cyl(canR*.48,canR*.48,.08,steel,canH*.54,32);
+    for(let i=0;i<petals;i++){
+     const a=i*Math.PI*2/petals,x=Math.sin(a)*canR*.94,z=Math.cos(a)*canR*.94;
+     const petal=box(canR*.42,canH*.62,.035,ivory,[x,0,z],[0,a,.08]);
+     box(canR*.32,.045,.025,dark,[x,canH*.18,z],[0,a,0]);
+     tube([[Math.sin(a)*canR*.58,canH*.28,Math.cos(a)*canR*.58],[x,canH*.28,z]],.018,aluminium);
+     for(let j=0;j<3;j++)bolt(x,(j-1)*canH*.2,z,.016,gold);
+    }
+    for(let side of [-1,1])tube([[side*canR*.34,-canH*.28,0],[side*canR*.55,-canH*.08,canR*.3],[side*canR*.34,canH*.3,0]],.025,steel);
+    band(canR*.8,-canH*.12,.025,aluminium);
+    sphere(.045,gold,[0,canH*.58,0]);
+    return;
+   }
    if(flat){
     box(dishR*1.75,dishR*.16,dishR*.58,aluminium,[0,dishY,0]);
     box(dishR*1.58,dishR*.08,dishR*.48,ivory,[0,dishY+.1,0]);
