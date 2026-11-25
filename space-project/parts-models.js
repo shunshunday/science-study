@@ -997,7 +997,7 @@ export function createPartModel(p,THREE){
  };
  const makeProbe=()=>{
   const nm=(id+' '+name).toLowerCase();
-  const legacyHecs=/legacy-hecs/.test(id),oct=/okto/.test(nm),hecs=/hecs/.test(nm)&&!legacyHecs,qbe=/qbe/.test(nm),stay=/stayputnik|ステイプートニク/.test(nm),rover=/rovemate|rove.?mate|ローブメイト/.test(nm),rcl=/rc-l01|rcl01|remote guidance unit/.test(nm),rc001=/rc-001s|rc001s/.test(nm),mk2drone=/mk2 drone/.test(nm);
+  const legacyHecs=/legacy-hecs/.test(id),chj3=/ch-j3|chj3|fly-by-wire|フライバイワイヤ/.test(nm),oct=/okto/.test(nm),hecs=/hecs/.test(nm)&&!legacyHecs,qbe=/qbe/.test(nm),stay=/stayputnik|ステイプートニク/.test(nm),rover=/rovemate|rove.?mate|ローブメイト/.test(nm),rcl=/rc-l01|rcl01|remote guidance unit/.test(nm),rc001=/rc-001s|rc001s/.test(nm),mk2drone=/mk2 drone/.test(nm);
   const skin=(base,accent,label)=>painted(base,accent,label,name);
   const shell=skin(oct?'#9da6a6':hecs?'#d7d9d2':qbe?'#b8bebc':stay?'#8b9292':'#d6d8d2','#b68b4e','PROBODOBODYNE AVIONICS');
   const facePlate=(x,y,z,w,d,material=dark)=>box(w,d,.035,material,[x,y,z]);
@@ -1010,6 +1010,23 @@ export function createPartModel(p,THREE){
    cyl(r*.36,r*.36,.09,steel,h*.42,6);cyl(r*.25,r*.25,.06,dark,-h*.4,6);
    box(r*.62,h*.16,.025,dark,[0,-h*.08,r*.91]);
    for(let i=0;i<4;i++)box(r*.1,.018,.018,orange,[(i-1.5)*r*.13,-h*.08,r*.93]);
+  }
+  else if(chj3){
+   // CH-J3 fly-by-wire avionics: compact aircraft computer with a broad control face, vent banks and connector rails.
+   box(r*1.52,h*.68,r*1.08,skin('#c7ccc8','#b68b4e','FLY-BY-WIRE AVIONICS',name));
+   box(r*1.34,h*.48,.045,dark,[0,0,r*.56]);
+   box(r*.92,h*.28,.025,ivory,[0,h*.02,r*.59]);
+   box(r*.76,h*.18,.018,blue,[0,h*.02,r*.61]);
+   for(let i=0;i<6;i++)sphere(.035,i%2?green:orange,[(i-2.5)*r*.14,h*.02,r*.63],[1,.6,.4]);
+   for(let side of [-1,1]){
+    box(.06,h*.58,r*.78,steel,[side*r*.76,0,0]);
+    for(let j=0;j<8;j++)box(.025,.035,r*.54,aluminium,[side*r*.8,(j-3.5)*h*.07,0]);
+    for(let j=0;j<4;j++)bolt(side*r*.8,(j-1.5)*h*.2,r*.55,.02,gold);
+    tube([[side*r*.5,-h*.28,-r*.46],[side*r*.76,-h*.2,0],[side*r*.5,h*.28,r*.46]],.025,orange);
+   }
+   box(r*.82,.08,r*.72,steel,[0,-h*.42,0]);
+   for(let i=0;i<4;i++)cyl(.055,.055,.1,gold,0,12).position.set((i-1.5)*r*.28,-h*.5,r*.24);
+   for(let i=0;i<6;i++)box(r*.04,.02,r*.45,steel,[(i-2.5)*r*.14,h*.42,-r*.2]);
   }
   else if(qbe){
    // QBE: compact rectangular probe core with flat service faces.
