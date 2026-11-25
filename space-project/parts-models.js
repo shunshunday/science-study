@@ -2081,8 +2081,26 @@ export function createPartModel(p,THREE){
    for(let i=0;i<4;i++)bolt((i-1.5)*r*.22,-h*.2,r*.4,.02,gold);
    return;
   }
-  if(telescope||m4435||m700||surface){
-   const long=telescope||m4435,scanner=m700||surface;
+  if(surface){
+   // Surface Scanning Module: compact ground-contact scanner with a recessed optical head, stabilizing feet and data antenna.
+   box(r*1.1,h*.48,r*.78,painted('#596368','#b68b4e','SURFACE SCANNING MODULE',name));
+   box(r*.9,h*.3,.045,dark,[0,0,r*.42]);
+   cyl(r*.3,r*.3,.07,steel,0,32).position.set(0,h*.04,r*.47);
+   add(new THREE.CircleGeometry(r*.22,40),glass,[0,h*.04,r*.51]);
+   add(new THREE.TorusGeometry(r*.27,.025,8,40),gold,[0,h*.04,r*.52]);
+   for(let side of [-1,1]){
+    box(r*.18,h*.52,r*.22,steel,[side*r*.48,-h*.08,0]);
+    tube([[side*r*.4,-h*.18,r*.3],[side*r*.62,-h*.3,r*.42],[side*r*.5,h*.2,r*.3]],.022,orange);
+    for(let j=0;j<4;j++)bolt(side*r*.52,(j-1.5)*h*.12,r*.43,.018,gold);
+   }
+   for(let i=0;i<4;i++){const x=(i%2?1:-1)*r*.38,z=(i<2?-1:1)*r*.28;box(r*.16,.08,r*.16,aluminium,[x,-h*.34,z]);}
+   tube([[0,h*.24,-r*.22],[0,h*.52,-r*.22],[r*.08,h*.62,-r*.22]],.018,steel);
+   sphere(.035,blue,[r*.08,h*.62,-r*.22]);
+   for(let i=0;i<5;i++)box(r*.05,.018,.02,i%2?dark:gold,[(i-2)*r*.1,h*.29,-r*.28]);
+   return;
+  }
+  if(telescope||m4435||m700){
+   const long=telescope||m4435,scanner=m700;
    lathe([[0,-h*.48],[r*.42,-h*.48],[r*.52,-h*.36],[r*.52,h*.38],[r*.4,h*.5],[0,h*.5]],painted('#596368','#b68b4e',scanner?'SURVEY SCANNER':'OPTICAL INSTRUMENT',name),64);
    for(let y of [-h*.35,h*.34])band(r*.53,y,.045,gold);
    if(telescope||m4435){
