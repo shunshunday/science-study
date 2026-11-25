@@ -630,7 +630,8 @@ body.part-drag-over #viewport canvas{cursor:copy!important;}
 #parts .part-list .part-preview-canvas{height:100%!important;max-height:100%!important;object-fit:contain!important;}
 
 
-/* 86px 3D viewport inside the unchanged 88px catalog tile. */
+
+/* 88px 3D viewport inside the unchanged 88px catalog tile. */
 #parts .part-list .part{position:relative!important;overflow:hidden!important}
-#parts .part-list .part-icon{position:absolute!important;inset:1px 1px auto 1px!important;width:auto!important;height:86px!important;min-height:86px!important;max-height:86px!important;z-index:2!important;border-radius:6px!important;overflow:hidden!important}
+#parts .part-list .part-icon{position:absolute!important;inset:0!important;width:100%!important;height:88px!important;min-height:88px!important;max-height:88px!important;z-index:2!important;border-radius:6px!important;overflow:hidden!important}
 #parts .part-list .part-preview-canvas{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:fill!important}
