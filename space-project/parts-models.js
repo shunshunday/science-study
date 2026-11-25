@@ -172,32 +172,45 @@ export function createPartModel(p,THREE){
  const M=(color,metalness=.35,roughness=.48,extra={})=>new THREE.MeshStandardMaterial({color,metalness,roughness,...extra});
 
  const painted=(base,accent,word,serial=id.toUpperCase())=>{
-  const brand=/rockomax|x200|mainsail|skipper|poodle/i.test(id+' '+name)?'ROCKOMAX':/kerbodyne|s3-|mammoth|nerv/i.test(id+' '+name)?'KERBODYNE':/mk2|mk3|c7/i.test(id+' '+name)?'C7 AEROSPACE':/probe|okto|hecs|qbe|stayputnik|probodobodyne/i.test(id+' '+name)?'PROBODOBODYNE':/engine|lv-|terrier|swivel|reliant|spark/i.test(id+' '+name)?'JEBEDIAH KERMAN\'S JUNKYARD':'SQUAD FLIGHT SYSTEMS';
-  const key='part-art:'+id+':'+base+':'+accent;
+  const nm=(id+' '+name+' '+word).toLowerCase();
+  const brand=/rockomax|x200|mainsail|skipper|poodle/.test(nm)?'ROCKOMAX':/kerbodyne|s3-|mammoth|nerv/.test(nm)?'KERBODYNE':/mk2|mk3|c7/.test(nm)?'C7 AEROSPACE':/probe|okto|hecs|qbe|stayputnik|probodobodyne/.test(nm)?'PROBODOBODYNE':/engine|lv-|terrier|swivel|reliant|spark/.test(nm)?'JEBEDIAH KERMAN\'S JUNKYARD':'SQUAD FLIGHT SYSTEMS';
+  const family=type==='tank'||type==='resource'?'tank':type==='engine'||type==='jet'||type==='booster'?'engine':type==='pod'||type==='cockpit'?'crew':type==='wing'||type==='fin'||type==='tail'||type==='control'||type==='fuselage'?'aero':type==='solar'||type==='battery'?'electrical':type==='science'||type==='probe'||type==='comm'?'instrument':type==='gear'||type==='ground'?'mechanical':type==='robotics'||type==='rotor-blade'?'robotic':type==='chute'?'fabric':type==='thermal'?'thermal':type==='docking'||type==='decoupler'?'interface':'structure';
+  const pal=({tank:['#d7d8d1','#222b30','#d5a34d'],engine:['#687277','#202a30','#c56a32'],crew:['#d8d9d2','#27363d','#d6a24b'],aero:['#d8d9d2','#34434a','#b9c4c2'],electrical:['#254b68','#152b3a','#b6cbd2'],instrument:['#c6ceca','#26343a','#c98b42'],mechanical:['#aeb8b8','#303b40','#c28d4b'],robotic:['#8c9999','#28343a','#d49b42'],fabric:['#b9b7a8','#343a3b','#d1a34d'],thermal:['#6d5550','#252d31','#d27b43'],interface:['#9ca8a8','#263239','#d6a34a'],structure:['#b9c1bf','#303b40','#b68b4e']})[family];
+  const key='part-art-v4:'+id+':'+base+':'+accent+':'+family;
   let tex=PART_SKIN_CACHE.get(key);
   if(!tex){
-   const c=document.createElement('canvas');c.width=512;c.height=256;const q=c.getContext('2d');
-   q.fillStyle=base;q.fillRect(0,0,512,256);
-   const grad=q.createLinearGradient(0,0,512,0);grad.addColorStop(0,'rgba(0,0,0,.24)');grad.addColorStop(.18,'rgba(255,255,255,.15)');grad.addColorStop(.52,'rgba(255,255,255,.02)');grad.addColorStop(.84,'rgba(0,0,0,.08)');grad.addColorStop(1,'rgba(0,0,0,.24)');q.fillStyle=grad;q.fillRect(0,0,512,256);
-   q.strokeStyle='rgba(25,36,41,.36)';q.lineWidth=2;
-   for(let x=18;x<512;x+=64){q.beginPath();q.moveTo(x,12);q.lineTo(x,244);q.stroke();}
-   for(const y of [18,34,220,238]){q.beginPath();q.moveTo(0,y);q.lineTo(512,y);q.stroke();}
-   for(let x=20;x<512;x+=32){for(const y of [26,230]){q.fillStyle='#d4d8d3';q.beginPath();q.arc(x,y,2,0,Math.PI*2);q.fill();}}
-   q.fillStyle=accent;q.fillRect(0,48,512,7);q.fillRect(0,202,512,7);
-   // Recessed equipment identification plate, manufacturer and part-specific marking.
-   q.fillStyle='#202a30';q.fillRect(28,78,270,92);q.strokeStyle=accent;q.lineWidth=3;q.strokeRect(28,78,270,92);
-   q.fillStyle='#f1f0e8';q.font='bold 16px Arial';q.fillText(brand,40,101,246);
-   q.font='bold 14px Arial';q.fillText(String(name).toUpperCase().slice(0,30),40,126,246);
-   q.fillStyle='#c7cfca';q.font='10px Arial';q.fillText(String(serial).toUpperCase().slice(0,34),40,146,246);
-   q.fillText('INSPECT  /  SERVICE PANEL',40,160,246);
-   // Stamped caution area, service hatches and fastener shadows.
-   q.fillStyle='#29343a';q.fillRect(326,82,150,76);q.strokeStyle='#c5ccc7';q.lineWidth=2;q.strokeRect(326,82,150,76);
-   q.fillStyle='#dce0d9';q.fillRect(338,94,116,5);q.fillRect(338,108,82,4);q.fillRect(338,121,102,4);
-   q.fillStyle=accent;for(let i=0;i<8;i++){q.beginPath();q.moveTo(338+i*15,137);q.lineTo(348+i*15,137);q.lineTo(338+i*15,153);q.lineTo(328+i*15,153);q.fill();}
-   for(let i=0;i<650;i++){const x=(i*73)%512,y=(i*139)%256;q.fillStyle=i%2?'rgba(255,255,255,.025)':'rgba(0,0,0,.035)';q.fillRect(x,y,1,1);}
-   tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.wrapS=THREE.RepeatWrapping;tex.wrapT=THREE.ClampToEdgeWrapping;tex.anisotropy=8;PART_SKIN_CACHE.set(key,tex);
+   const c=document.createElement('canvas');c.width=1024;c.height=512;const q=c.getContext('2d');
+   q.fillStyle=base;q.fillRect(0,0,1024,512);
+   const grad=q.createLinearGradient(0,0,1024,0);grad.addColorStop(0,'rgba(0,0,0,.32)');grad.addColorStop(.12,'rgba(255,255,255,.16)');grad.addColorStop(.36,'rgba(255,255,255,.035)');grad.addColorStop(.68,'rgba(0,0,0,.035)');grad.addColorStop(1,'rgba(0,0,0,.28)');q.fillStyle=grad;q.fillRect(0,0,1024,512);
+   q.save();q.globalAlpha=.12;q.strokeStyle='#f4f4ec';q.lineWidth=1;for(let y=0;y<512;y+=5){q.beginPath();q.moveTo(0,y);q.lineTo(1024,y);q.stroke();}q.restore();
+   q.strokeStyle='rgba(22,32,37,.42)';q.lineWidth=2;for(let x=18;x<1024;x+=128){q.beginPath();q.moveTo(x,12);q.lineTo(x,500);q.stroke();}for(const y of [22,42,466,488]){q.beginPath();q.moveTo(0,y);q.lineTo(1024,y);q.stroke();}
+   if(family==='aero'){
+    q.strokeStyle='rgba(30,42,47,.36)';q.lineWidth=3;for(let x=80;x<1024;x+=112){q.beginPath();q.moveTo(x,64);q.lineTo(x+28,448);q.stroke();}q.fillStyle=pal[1];q.fillRect(72,76,880,10);q.fillRect(72,426,880,8);
+   }else if(family==='electrical'){
+    for(let y=70;y<450;y+=48)for(let x=76;x<980;x+=56){q.fillStyle=(x+y)%3?'#17466a':'#286083';q.fillRect(x,y,48,38);q.strokeStyle='rgba(190,220,232,.5)';q.strokeRect(x+2,y+2,44,34);}
+   }else if(family==='fabric'){
+    q.strokeStyle='rgba(40,43,39,.22)';q.lineWidth=1;for(let x=0;x<1024;x+=8){q.beginPath();q.moveTo(x,0);q.lineTo(x,512);q.stroke();}for(let y=0;y<512;y+=8){q.beginPath();q.moveTo(0,y);q.lineTo(1024,y);q.stroke();}
+   }else if(family==='thermal'){
+    for(let y=64;y<468;y+=46)for(let x=64;x<980;x+=58){q.fillStyle=(x+y)%2?'#393d40':'#8b6254';q.fillRect(x,y,52,40);q.strokeStyle='rgba(230,210,190,.35)';q.strokeRect(x+2,y+2,48,36);}
+   }else if(['robotic','mechanical','interface'].includes(family)){
+    q.fillStyle=pal[1];for(let x=80;x<980;x+=180){q.fillRect(x,76,8,360);q.fillRect(x+12,76,34,8);q.fillRect(x+12,428,34,8);}q.strokeStyle='rgba(225,230,224,.42)';q.lineWidth=3;for(let y=110;y<430;y+=80){q.beginPath();q.moveTo(52,y);q.lineTo(972,y);q.stroke();}
+   }else{
+    q.strokeStyle='rgba(25,36,41,.30)';q.lineWidth=2;for(let y=78;y<460;y+=96){q.beginPath();q.moveTo(0,y);q.lineTo(1024,y);q.stroke();}for(let x=42;x<1024;x+=64)for(let y of [66,450]){q.fillStyle='#c6ceca';q.beginPath();q.arc(x,y,3,0,Math.PI*2);q.fill();}
+   }
+   q.fillStyle=pal[1];q.fillRect(44,132,430,188);q.strokeStyle=pal[2];q.lineWidth=6;q.strokeRect(44,132,430,188);
+   q.fillStyle='#f2f0e8';q.font='bold 34px Arial';q.fillText(brand,66,180,386);q.font='bold 25px Arial';q.fillText(String(name).toUpperCase().slice(0,30),66,222,386);q.font='17px Arial';q.fillStyle='#cbd2cf';q.fillText(String(serial).toUpperCase().slice(0,38),66,258,386);q.font='15px Arial';q.fillText(family.toUpperCase()+' / FLIGHT HARDWARE',66,290,386);
+   q.fillStyle='#e0e3dc';q.fillRect(540,132,420,188);q.strokeStyle=pal[2];q.lineWidth=5;q.strokeRect(540,132,420,188);q.fillStyle=pal[1];q.font='bold 20px Arial';q.fillText('INSPECTION / SERVICE',560,164);
+   q.strokeStyle=pal[1];q.lineWidth=4;
+   if(['tank','engine','crew'].includes(family)){q.beginPath();q.moveTo(610,192);q.lineTo(610,278);q.lineTo(660,292);q.lineTo(710,278);q.lineTo(710,192);q.closePath();q.stroke();q.beginPath();q.moveTo(624,210);q.lineTo(696,210);q.moveTo(624,260);q.lineTo(696,260);q.stroke();}
+   else if(family==='aero'){q.beginPath();q.moveTo(574,266);q.quadraticCurveTo(730,174,914,210);q.lineTo(914,244);q.quadraticCurveTo(732,222,574,286);q.stroke();}
+   else{q.beginPath();q.arc(744,240,54,0,Math.PI*2);q.stroke();q.beginPath();q.arc(744,240,24,0,Math.PI*2);q.stroke();q.moveTo(690,240);q.lineTo(798,240);q.moveTo(744,186);q.lineTo(744,294);q.stroke();}
+   q.fillStyle=pal[1];q.fillRect(44,354,916,18);q.fillStyle=pal[2];q.fillRect(44,354,916,5);
+   for(let x=52;x<958;x+=34){q.fillStyle=x%2?pal[1]:pal[2];q.fillRect(x,394,18,34);}q.fillStyle=pal[1];for(let x=54;x<960;x+=12)q.fillRect(x,450,x%5===0?3:1,24);
+   q.fillStyle='#f0f0e8';q.font='14px Arial';q.fillText('CAUTION  •  INSPECT BEFORE FLIGHT',54,490);
+   for(let i=0;i<1500;i++){const x=(i*73)%1024,y=(i*139)%512;q.fillStyle=i%3?'rgba(255,255,255,.025)':'rgba(0,0,0,.04)';q.fillRect(x,y,1,1);}
+   tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.wrapS=THREE.RepeatWrapping;tex.wrapT=THREE.ClampToEdgeWrapping;tex.anisotropy=16;PART_SKIN_CACHE.set(key,tex);
   }
-  return M(0xffffff,.48,.58,{map:tex});
+  return M(0xffffff,.48,.56,{map:tex});
  };
  const ivory=M(0xd9d9d0,.42,.52),paint=M(0xe7e6dc,.28,.6),aluminium=M(0xaeb9bd,.82,.28),steel=M(0x59666d,.82,.34),dark=M(0x252f35,.68,.38),rubber=M(0x171b1e,.04,.91),gold=M(0xb68b4e,.72,.32),orange=M(0xc56b31,.35,.58),blue=M(0x28547c,.58,.3),green=M(0x4c9b65,.3,.4),glass=M(0x173f5c,.62,.14,{emissive:0x071a2c,emissiveIntensity:.22}),black=M(0x111a20,.45,.25);
  const add=(geo,mat,pos=[0,0,0],rot=[0,0,0],scale)=>{const o=new THREE.Mesh(geo,mat);o.position.set(...pos);o.rotation.set(...rot);if(scale)o.scale.set(...scale);o.castShadow=true;o.receiveShadow=true;g.add(o);return o;};
