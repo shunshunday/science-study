@@ -266,6 +266,7 @@ export function createPartModel(p,THREE){
  const makeEngine=()=>{
   const nm=(id+' '+name).toLowerCase();
   const solid=type==='booster'||/solid booster|sepratron|bacc|rt-10|rt-5|thumper|hammer/.test(nm);
+  const rcs=/rcs|place-anywhere|vernor|vernier/.test(nm);
   const jet=type==='jet'||id.startsWith('jet-'),ion=id.includes('ion')||id.includes('dawn'),nuclear=id.includes('nerv'),dart=id.includes('dart')||/aerospike/.test(nm),vector=id.includes('vector'),mammoth=id.includes('mammoth'),twin=id.includes('twinboar'),spider=id.includes('spider'),thud=id.includes('thud'),poodle=id.includes('poodle'),rapier=id.includes('rapier'),terrier=/terrier|lv-909/.test(nm),swivel=/swivel|lv-t45/.test(nm),reliant=/reliant|lv-t30/.test(nm),wolfhound=/wolfhound/.test(nm),cheetah=/cheetah/.test(nm),skiff=/skiff/.test(nm),mainsail=/mainsail/.test(nm),juno=/juno/.test(nm),wheesley=/wheesley/.test(nm),panther=/panther/.test(nm),goliath=/goliath/.test(nm);
   if(solid){
    // Solid boosters: long pressure casing, domed head, hazard band, aft nozzle and radial mounting shoes.
@@ -287,6 +288,51 @@ export function createPartModel(p,THREE){
    add(new THREE.CircleGeometry(r*.27,40),black,[0,-h*.675,0],[Math.PI/2,0,0]);
    for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(r*.99,-h*.31,h*.27,a,steel,.018);bolt(Math.cos(a)*r*.99,-h*.4,Math.sin(a)*r*.99,.02,gold);}
    for(let i=0;i<4;i++){const a=i*Math.PI/2,x=Math.cos(a)*r*.98,z=Math.sin(a)*r*.98;box(r*.34,h*.16,r*.22,aluminium,[x,-h*.1,z],[0,-a,0]);bolt(x,-h*.1,z,.035,gold);}
+  }else if(rcs){
+   // RCS units are compact multi-axis nozzle blocks, not liquid rocket engines.
+   const block=/rv-105|rv-1x|rcs thruster block/.test(nm),linear=/place-anywhere|linear rcs/.test(nm),vernor=/vernor|vernier/.test(nm);
+   const small=/rv-1x|place-anywhere 1|cub vernor/.test(nm),bodyW=r*(small?.68:block?1.02:.86),bodyH=h*(vernor?.72:.58);
+   box(bodyW,bodyH,bodyW*.88,painted('#c7cbc7','#b68b4e',block?'RCS THRUSTER BLOCK':'MONOPROPELLANT THRUSTER',name));
+   box(bodyW*.82,bodyH*.14,bodyW*.82,steel,[0,bodyH*.42,0]);
+   for(let side of [-1,1])for(let zside of [-1,1])bolt(side*bodyW*.38,bodyH*.38,zside*bodyW*.34,.022,gold);
+   const nozzle=(pos,rot,scale=1)=>{
+    const nr=bodyW*(small?.12:.18)*scale,nh=bodyH*(small?.28:.34)*scale;
+    const mesh=lathe([[0,-nh*.5],[nr*.55,-nh*.5],[nr,-nh*.24],[nr*.92,nh*.18],[nr*.62,nh*.5],[0,nh*.5]],steel,32,pos);
+    mesh.rotation.set(rot[0],rot[1],rot[2]);
+    const lip=add(new THREE.TorusGeometry(nr*.88,.025*scale,8,32),aluminium,pos,rot);
+    const aperture=add(new THREE.CircleGeometry(nr*.68,32),black,pos,rot);
+    const normal=new THREE.Vector3(0,1,0);const axis=new THREE.Vector3(0,1,0);
+    aperture.position.set(pos[0],pos[1],pos[2]);
+    return mesh;
+   };
+   if(block){
+    const dirs=[
+     {p:[bodyW*.55,0,0],r:[0,0,-Math.PI/2]},
+     {p:[-bodyW*.55,0,0],r:[0,0,Math.PI/2]},
+     {p:[0,0,bodyW*.5],r:[Math.PI/2,0,0]},
+     {p:[0,0,-bodyW*.5],r:[-Math.PI/2,0,0]}
+    ];
+    for(const d of dirs)nozzle(d.p,d.r,small?.82:1);
+    // Four recessed feed ports and an engraved manufacturer panel.
+    for(let i=0;i<4;i++){const a=i*Math.PI/2;radialPipe(bodyW*.36,-bodyH*.28,bodyH*.48,a,orange,.018);}
+    box(bodyW*.56,bodyH*.3,.025,dark,[0,0,bodyW*.46]);
+    box(bodyW*.4,.025,.018,ivory,[0,bodyH*.08,bodyW*.48]);
+   }else if(linear){
+    const count=/place-anywhere 7/.test(nm)?7:1;
+    const cols=count===7?3:1,rows=count===7?3:1;
+    for(let i=0;i<count;i++){
+     const x=count===7?(i%cols-1)*bodyW*.23:0,z=count===7?(Math.floor(i/cols)-1)*bodyW*.22:bodyW*.45;
+     nozzle([x,-bodyH*.35,z],[0,0,0],count===7?.52:1);
+    }
+    box(bodyW*.9,.09,bodyW*.82,aluminium,[0,bodyH*.4,0]);
+    for(let side of [-1,1])bolt(side*bodyW*.38,bodyH*.45,bodyW*.3,.02,gold);
+   }else if(vernor){
+    lathe([[0,-bodyH*.55],[r*.3,-bodyH*.55],[r*.42,-bodyH*.38],[r*.44,bodyH*.2],[r*.34,bodyH*.38],[0,bodyH*.38]],painted('#777f80','#c56b31','VERNIER MONOPROPELLANT ENGINE',name),48);
+    band(r*.44,-bodyH*.35,.04,gold);band(r*.4,bodyH*.26,.035,steel);
+    nozzle([0,-bodyH*.5,0],[Math.PI,0,0],small?.7:1.5);
+    for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(r*.44,-bodyH*.22,bodyH*.4,a,aluminium,.018);}
+   }
+   for(let i=0;i<8;i++){const a=i*Math.PI/4;bolt(bodyW*.42*Math.cos(a),-bodyH*.42,bodyW*.42*Math.sin(a),.018,gold);}
   }else if(jet){
    const shellR=r*.78;lathe([[0,-h*.43],[shellR*.7,-h*.43],[shellR,-h*.34],[shellR,h*.32],[shellR*.82,h*.44],[shellR*.45,h*.47],[0,h*.47]],aluminium,64);
    const inlet=add(new THREE.TorusGeometry(shellR*.72,.075,16,64),steel,[0,0,h*.43],[Math.PI/2,0,0]);add(new THREE.CircleGeometry(shellR*.66,48),black,[0,0,h*.432],[Math.PI/2,0,0]);
@@ -1976,7 +2022,7 @@ export function createPartModel(p,THREE){
   lathe([[0,-h*.5],[r*.72,-h*.5],[r*.9,-h*.35],[r*.9,h*.35],[r*.72,h*.5],[0,h*.5]],ivory,48);band(r*.9,h*.36,.035,gold);radialLabel(r*.91,0,r*.7,h*.2,getLabelMaterial());
  }
  // Functional visual hooks used by the flight simulation.
- if(type==='engine'||type==='jet'||type==='booster'){
+ if((type==='engine'||type==='jet'||type==='booster')&&!/rcs|place-anywhere|vernor|vernier/i.test(id+' '+name)){
   const plume=add(new THREE.ConeGeometry(r*.38,.9,24),new THREE.MeshBasicMaterial({color:0xffa34d,transparent:true,opacity:.82,depthWrite:false}),[0,-h*.62,0],[Math.PI,0,0]);if(id.includes('thud'))plume.rotation.z=Math.PI/2;plume.name='engine-flame';plume.visible=false;
  }
 
