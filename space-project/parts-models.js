@@ -1060,9 +1060,23 @@ export function createPartModel(p,THREE){
    return;
   }
   if(hub){
-   cyl(r*.9,r*.9,h*.65,steel);
-   for(let i=0;i<6;i++){const a=i*Math.PI/3,x=Math.cos(a)*r*.86,z=Math.sin(a)*r*.86;lathe([[0,-h*.18],[r*.18,-h*.18],[r*.2,h*.18],[0,h*.18]],aluminium,24,[x,0,z]);}
-   band(r*.9,h*.32,.05,gold);return;
+   // HubMax: six radial docking sockets around a reinforced central structural drum.
+   cyl(r*.9,r*.9,h*.65,painted('#788487','#b68b4e','HUBMAX MULTIPOINT NODE',name),0,64);
+   band(r*.92,h*.32,.055,gold);band(r*.92,-h*.32,.055,steel);
+   cyl(r*.58,r*.58,.12,aluminium,h*.39,48);cyl(r*.48,r*.48,.1,dark,-h*.39,48);
+   for(let i=0;i<6;i++){
+    const a=i*Math.PI/3,x=Math.cos(a),z=Math.sin(a);
+    tube([[x*r*.48,0,z*r*.48],[x*r*.82,0,z*r*.82]],.065,steel);
+    const port=lathe([[0,-h*.2],[r*.16,-h*.2],[r*.2,-h*.1],[r*.2,h*.12],[r*.16,h*.2],[0,h*.2]],aluminium,32,[x*r*.92,0,z*r*.92]);
+    port.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(x,0,z));
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(r*.2,.035,10,36),gold);
+    ring.position.set(x*r*1.1,0,z*r*1.1);ring.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),new THREE.Vector3(x,0,z));g.add(ring);
+    const face=new THREE.Mesh(new THREE.CircleGeometry(r*.14,32),dark);
+    face.position.set(x*r*1.13,0,z*r*1.13);face.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),new THREE.Vector3(x,0,z));g.add(face);
+    for(let j=0;j<6;j++){const q=j*Math.PI/3,px=x*r*1.1+Math.cos(q)*r*.15,pz=z*r*1.1+Math.sin(q)*r*.15;bolt(px,Math.sin(q)*r*.15,pz,.02,aluminium);}
+   }
+   for(let i=0;i<12;i++){const a=i*Math.PI/6;bolt(r*.84*Math.cos(a),h*.27,r*.84*Math.sin(a),.022,aluminium);}
+   box(r*.62,.1,.08,dark,[0,0,r*.9]);return;
   }
   // Axial stack couplers have a thin split collar and machined top/bottom flanges.
   const hh=separator?h*.34:h*.28;
@@ -1801,15 +1815,29 @@ export function createPartModel(p,THREE){
    if(/jetpack/.test(nm)){
     box(r*.78,h*.8,r*.46,painted('#c5c8c0','#c56b31','EVA PROPULSION PACK',name));
     for(let side of [-1,1]){
-     lathe([[0,-h*.3],[r*.16,-h*.3],[r*.2,h*.3],[r*.12,h*.4],[0,h*.4]],steel,24,[side*r*.42,0,0]);
+     lathe([[0,-h*.3],[r*.16,-h*.3],[r*.2,h*.3],[r*.12,h*.4],[0,h*.4]],steel,32,[side*r*.42,0,0]);
+     for(let y of [-h*.28,h*.25])band(r*.2,y,.025,gold);
      cyl(r*.13,r*.13,.16,orange,0,24).position.set(side*r*.42,-h*.38,0);
      tube([[side*r*.22,h*.24,0],[side*r*.45,h*.42,0],[side*r*.45,h*.52,0]],.025,gold);
+     tube([[side*r*.42,h*.2,r*.08],[side*r*.52,0,r*.18],[side*r*.42,-h*.24,r*.08]],.022,orange);
+     for(let y of [-h*.35,h*.35])box(r*.24,.06,.08,aluminium,[side*r*.42,y,0]);
     }
     box(r*.52,h*.2,.04,dark,[0,-h*.12,r*.25]);
+    box(r*.46,.13,.06,steel,[0,h*.35,r*.18]);
+    for(let i=0;i<4;i++){const x=(i-1.5)*r*.2;sphere(.035,i%2?green:orange,[x,h*.35,r*.23]);}
+    for(let side of [-1,1]){tube([[side*r*.3,h*.35,-r*.2],[side*r*.58,h*.1,-r*.22],[side*r*.3,-h*.3,-r*.2]],.04,aluminium);bolt(side*r*.3,h*.35,-r*.2,.025,gold);}
    }else if(/repair/.test(nm)){
     box(r*.9,h*.72,r*.42,painted('#d3d5ce','#d38c36','ENGINEER REPAIR KIT',name));
     for(let i=0;i<4;i++)box(r*.12,h*.42,.025,steel,[(i-1.5)*r*.18,0,r*.23]);
     for(let i=0;i<3;i++)sphere(.055,gold,[(i-1)*r*.22,h*.28,r*.25]);
+    box(r*.48,.09,.08,steel,[0,h*.42,0]);
+    for(let side of [-1,1]){box(.08,h*.28,.06,orange,[side*r*.42,0,r*.23]);bolt(side*r*.42,h*.3,r*.25,.022,gold);}
+    // Visible tool silhouettes: spanner, pliers, screwdriver and patch applicator.
+    tube([[-r*.28,-h*.22,r*.28],[-r*.28,h*.12,r*.28],[-r*.42,h*.22,r*.28]],.025,aluminium);
+    tube([[r*.08,-h*.2,r*.28],[r*.08,h*.18,r*.28],[r*.2,h*.28,r*.28]],.025,gold);
+    box(.05,h*.34,.04,steel,[r*.34,0,r*.28]);
+    sphere(.06,orange,[r*.34,h*.2,r*.28]);
+    for(let i=0;i<4;i++)box(.12,.045,.03,i%2?dark:gold,[(i-1.5)*r*.17,-h*.34,r*.24]);
    }else if(/science/.test(nm)){
     box(r*.88,h*.72,r*.42,painted('#d6d8d1','#6f9db0','SCIENCE KIT',name));
     for(let i=0;i<3;i++)box(r*.16,h*.38,.035,blue,[(i-1)*r*.24,0,r*.24]);
