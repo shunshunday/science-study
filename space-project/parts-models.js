@@ -359,11 +359,19 @@ export function createPartModel(p,THREE){
    // Mk2 and Mk3 liquid-fuel tanks use spaceplane fuselage cross-sections, not round rocket barrels.
    const width=r*(mk3?1.32:1.08),depth=r*(mk3?.94:.64),hh=h*(mk3?1.04:.92);
    const shape=new THREE.Shape(),corner=Math.min(width,depth)*.2;
-   shape.moveTo(-width*.5+corner,-depth*.5);
-   shape.lineTo(width*.5-corner,-depth*.5);shape.quadraticCurveTo(width*.5,-depth*.5,width*.5,-depth*.5+corner);
-   shape.lineTo(width*.5,depth*.5-corner);shape.quadraticCurveTo(width*.5,depth*.5,width*.5-corner,depth*.5);
-   shape.lineTo(-width*.5+corner,depth*.5);shape.quadraticCurveTo(-width*.5,depth*.5,-width*.5,depth*.5-corner);
-   shape.lineTo(-width*.5,-depth*.5+corner);shape.quadraticCurveTo(-width*.5,-depth*.5,-width*.5+corner,-depth*.5);
+   if(mk2){
+    shape.moveTo(-width*.5,-depth*.34);shape.lineTo(width*.5,-depth*.34);
+    shape.quadraticCurveTo(width*.54,-depth*.05,width*.42,depth*.22);
+    shape.quadraticCurveTo(width*.3,depth*.53,0,depth*.56);
+    shape.quadraticCurveTo(-width*.3,depth*.53,-width*.42,depth*.22);
+    shape.quadraticCurveTo(-width*.54,-depth*.05,-width*.5,-depth*.34);
+   }else{
+    shape.moveTo(-width*.5+corner,-depth*.5);
+    shape.lineTo(width*.5-corner,-depth*.5);shape.quadraticCurveTo(width*.5,-depth*.5,width*.5,-depth*.5+corner);
+    shape.lineTo(width*.5,depth*.5-corner);shape.quadraticCurveTo(width*.5,depth*.5,width*.5-corner,depth*.5);
+    shape.lineTo(-width*.5+corner,depth*.5);shape.quadraticCurveTo(-width*.5,depth*.5,-width*.5,depth*.5-corner);
+    shape.lineTo(-width*.5,-depth*.5+corner);shape.quadraticCurveTo(-width*.5,-depth*.5,-width*.5+corner,-depth*.5);
+   }
    const shellMat=M(0xffffff,.48,.56,{map:makeTankArtwork(THREE,id,name,'mk')});
    add(new THREE.ExtrudeGeometry(shape,{depth:hh,bevelEnabled:true,bevelSegments:5,bevelSize:.035,bevelThickness:.035}),shellMat,[0,-hh*.5,0],[-Math.PI/2,0,0]);
    for(const y of [-hh*.48,hh*.48])add(new THREE.ShapeGeometry(shape),steel,[0,y,0],[-Math.PI/2,0,0]);
