@@ -2644,14 +2644,57 @@ export function createPartModel(p,THREE){
   for(let side of [-1,1])box(base*.12,h*.08,.025,orange,[side*base*.62,-h*.2,base*.72]);
  };
  const makeFuselage=()=>{
-  const mk0=id.includes('mk0'),mk2=id.includes('mk2'),mk3=id.includes('mk3'),w=r*(mk3?1.2:mk2?1.05:mk0?.72:.9),height=r*(mk3?.9:mk2?.78:.82);
-  const shell=add(new THREE.CylinderGeometry(w*.92,w,h*.82,48,1,false),mk0?painted('#9da8a9','#b68b4e','MK0 FUSELAGE'):painted('#d9d9d0','#b68b4e','FUSELAGE'),[0,0,0],[Math.PI/2,0,0],[1,1,height/w]);
-  const end1=add(new THREE.TorusGeometry(w*.94,.045,10,48),steel,[0,0,-h*.41],[0,0,0],[1,height/w,1]);
-  const end2=add(new THREE.TorusGeometry(w*.94,.045,10,48),gold,[0,0,h*.41],[0,0,0],[1,height/w,1]);
-  for(let z of [-h*.26,0,h*.26]){const seam=add(new THREE.TorusGeometry(w*.925,.018,8,48),aluminium,[0,0,z],[0,0,0],[1,height/w,1]);}
-  // Side service strip and fuel inspection windows are aligned to the fuselage axis.
-  box(w*.72,.055,h*.46,dark,[0,height*.92,0]);for(let i=0;i<5;i++)box(w*.09,.018,h*.38,blue,[(i-2)*w*.13,height*.96,0]);
-  for(let z of [-h*.32,h*.32])for(let side of [-1,1])bolt(side*w*.72,0,z,.035,gold);
+  const mk0=id.includes('mk0'),mk1=id.includes('mk1'),mk2=id.includes('mk2'),mk3=id.includes('mk3');
+  const length=h*(mk3?1:mk2?.98:mk1?.9:.82),width=r*(mk3?2.25:mk2?2.3:mk1?1.85:1.65),depth=r*(mk3?1.34:mk2?.9:mk1?1.85:1.65);
+  const shell=painted(mk0?'#9da8a9':'#d9d9d0','#b68b4e',mk3?'MK3 ROCKET FUSELAGE':mk2?'MK2 AIRCRAFT FUSELAGE':mk1?'MK1 FUEL FUSELAGE':'MK0 FUEL FUSELAGE',name);
+  if(mk2||mk3){
+   // Mk2 is a flattened D-section; Mk3 is a wider rounded-rectangle fuselage section.
+   const shape=new THREE.Shape(),corner=Math.min(width,depth)*(mk2?.18:.16);
+   shape.moveTo(-width*.5+corner,-depth*.5);
+   shape.lineTo(width*.5-corner,-depth*.5);shape.quadraticCurveTo(width*.5,-depth*.5,width*.5,-depth*.5+corner);
+   shape.lineTo(width*.5,depth*.5-corner);shape.quadraticCurveTo(width*.5,depth*.5,width*.5-corner,depth*.5);
+   shape.lineTo(-width*.5+corner,depth*.5);shape.quadraticCurveTo(-width*.5,depth*.5,-width*.5,depth*.5-corner);
+   shape.lineTo(-width*.5,-depth*.5+corner);shape.quadraticCurveTo(-width*.5,-depth*.5,-width*.5+corner,-depth*.5);
+   add(new THREE.ExtrudeGeometry(shape,{depth:length,bevelEnabled:true,bevelSegments:5,bevelSize:.035,bevelThickness:.035}),shell,[0,0,-length*.5]);
+   // Reinforced end frames trace the non-circular stock cross-section.
+   for(const z of [-length*.49,length*.49]){
+    const pts=shape.getPoints(48).map(p=>[p.x,p.y,z]);pts.push(pts[0]);
+    tube(pts,.035,steel);
+   }
+   // Upper service spine, lower keel rails and segmented access panels.
+   for(let side of [-1,1]){
+    tube([[side*width*.46,-depth*.2,-length*.42],[side*width*.5,-depth*.2,0],[side*width*.46,-depth*.2,length*.42]],.035,aluminium);
+    tube([[side*width*.38,depth*.42,-length*.42],[side*width*.38,depth*.42,0],[side*width*.38,depth*.42,length*.42]],.028,steel);
+    for(let j=0;j<6;j++){
+     const z=-length*.36+j*length*.144;
+     box(width*.12,depth*.12,.04,ivory,[side*width*.36,depth*.43,z]);
+     bolt(side*width*.42,depth*.44,z,.02,gold);
+    }
+   }
+   box(width*.42,.055,length*.68,dark,[0,depth*.49,0]);
+   for(let i=0;i<8;i++)box(width*.045,.02,length*.52,i%2?orange:aluminium,[(i-3.5)*width*.055,depth*.53,0]);
+   box(width*.52,.06,length*.55,steel,[0,-depth*.5,0]);
+  }else{
+   // Mk0/Mk1 are circular pressure/fuel tubes with rolled end rings and longitudinal seams.
+   const rr=width*.5;
+   const body=lathe([[0,-length*.5],[rr*.72,-length*.5],[rr*.9,-length*.46],[rr,-length*.34],[rr,length*.34],[rr*.9,length*.46],[rr*.72,length*.5],[0,length*.5]],shell,80);
+   body.rotation.x=Math.PI/2;
+   for(const z of [-length*.48,-length*.36,length*.36,length*.48])add(new THREE.TorusGeometry(rr*(Math.abs(z)>length*.4?.78:.99),.035,10,64),Math.abs(z)>length*.4?steel:gold,[0,0,z]);
+   for(let side of [-1,1]){
+    tube([[side*rr*.94,-rr*.1,-length*.4],[side*rr*.94,-rr*.1,0],[side*rr*.94,-rr*.1,length*.4]],.025,aluminium);
+    box(rr*.48,.055,length*.32,dark,[side*rr*.58,rr*.72,0]);
+    for(let j=0;j<5;j++)bolt(side*rr*.58,rr*.75,(j-2)*length*.065,.018,gold);
+   }
+  }
+  // Shared end fittings, fuel service panel and inspection marks.
+  for(let side of [-1,1]){
+   const z=side*length*.49;
+   cyl(width*.34,width*.34,.08,steel,z,48);
+   cyl(width*.22,width*.22,.045,dark,z+side*.045,40);
+   for(let i=0;i<8;i++){const a=i*Math.PI/4;bolt(width*.3*Math.cos(a),depth*.3*Math.sin(a),z+side*.07,.018,gold);}
+  }
+  box(width*.3,.055,.08,orange,[0,depth*.52,length*.18]);
+  for(let i=0;i<4;i++)box(width*.07,.025,.025,ivory,[(i-1.5)*width*.09,depth*.55,length*.18]);
  };
  const makeAirbrake=()=>{
   const root=lathe([[0,-h*.28],[r*.36,-h*.28],[r*.44,h*.22],[r*.36,h*.28],[0,h*.28]],steel,32);
