@@ -1127,7 +1127,7 @@ export function createPartModel(p,THREE){
    const joint=new THREE.Mesh(new THREE.SphereGeometry(r*.2,24,16),gold);joint.position.set(r*.5,h*.1,r*.22);g.add(joint);
    const motor=new THREE.Mesh(new THREE.CylinderGeometry(r*.22,r*.26,h*.36,32),steel);motor.position.set(r*1.2,-h*.22,r*.42);motor.rotation.z=Math.PI/2;g.add(motor);
    const bit=new THREE.Mesh(new THREE.ConeGeometry(r*.19,h*.5,8),dark);bit.position.set(r*1.2,-h*.52,r*.42);bit.rotation.x=Math.PI;g.add(bit);
-   for(let i=0;i<6;i++){const ang=i*Math.PI/3;radialPipe(r*.24,-h*.15,h*.15,ang,orange,.022,[r*1.2,-h*.22,r*.42]);}
+   for(let i=0;i<6;i++){const ang=i*Math.PI/3;tube([[r*1.2+Math.cos(ang)*r*.22,-h*.22-h*.15,r*.42+Math.sin(ang)*r*.22],[r*1.2+Math.cos(ang)*r*.22,-h*.22+h*.15,r*.42+Math.sin(ang)*r*.22]],.022,orange);}
    box(r*.65,h*.12,.06,black,[0,-h*.2,r*.45]);for(let i=0;i<4;i++)bolt((i-1.5)*r*.14,-h*.2,r*.49,.018,gold);return;
   }
   if(isru){
