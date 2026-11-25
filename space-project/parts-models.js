@@ -662,6 +662,28 @@ export function createPartModel(p,THREE){
     for(let j=0;j<3;j++)bolt(side*bw*.48,(j-1)*bh*.24,bd*.2,.018,aluminium);
    }
    for(let i=0;i<8;i++){const a=i*Math.PI/4;bolt(r*.55*Math.cos(a),h*.04+bh*.39,r*.55*Math.sin(a),.018,gold);}
+  }else if(twitch){
+   // 24-77 Twitch reference study: compact orange radial engine canister,
+   // offset mounting bracket, black articulated nozzle and visible feed linkage.
+   const rr=r*.58,hh=h*.58;
+   lathe([[0,-hh*.48],[rr*.7,-hh*.48],[rr*.94,-hh*.38],[rr, -hh*.22],[rr,hh*.28],[rr*.88,hh*.42],[rr*.62,hh*.5],[0,hh*.5]],painted('#c7782f','#d8a64c','24-77 TWITCH RADIAL ENGINE',name),64);
+   for(let y of [-hh*.39,-hh*.22,hh*.27,hh*.42])band(rr*(y>0?.9:.98),y,.03,y<0?steel:gold);
+   // Top access cap and shallow machined shoulder.
+   cyl(rr*.62,rr*.62,.08,steel,hh*.52,40);
+   add(new THREE.TorusGeometry(rr*.58,.025,8,40),gold,[0,hh*.56,0],[Math.PI/2,0,0]);
+   // Ribbed graphite bell and spherical gimbal socket.
+   add(new THREE.TorusGeometry(rr*.48,.055,12,48),gold,[0,-hh*.48,0],[Math.PI/2,0,0]);
+   lathe([[0,-hh*1.02],[rr*.28,-hh*1.02],[rr*.42,-hh*.91],[rr*.58,-hh*.7],[rr*.72,-hh*.48],[rr*.65,-hh*.39],[rr*.5,-hh*.44],[rr*.34,-hh*.64],[0,-hh*.64]],M(0x24292d,.42,.68),48);
+   for(let i=0;i<6;i++){const t=i/5;band(rr*(.43+t*.24),-hh*(.96-t*.43),.018,i%2?steel:dark);}
+   add(new THREE.TorusGeometry(rr*.7,.03,8,40),aluminium,[0,-hh*.99,0],[Math.PI/2,0,0]);
+   add(new THREE.CircleGeometry(rr*.56,40),black,[0,-hh*1.01,0],[Math.PI/2,0,0]);
+   // Flat radial mounting shoe and triangular gusset visible in the stock silhouette.
+   box(rr*1.55,.13,rr*.95,steel,[rr*.82,hh*.28,0]);
+   box(rr*.72,hh*.48,.09,dark,[rr*1.35,hh*.16,0]);
+   tube([[rr*.7,hh*.42,rr*.2],[rr*1.45,hh*.28,rr*.2],[rr*1.18,-hh*.12,rr*.2]],.035,aluminium);
+   tube([[rr*.7,-hh*.3,0],[rr*1.28,-hh*.1,rr*.12],[rr*1.3,hh*.24,rr*.12]],.022,gold);
+   for(let side of [-1,1])bolt(rr*1.35,hh*.28,side*rr*.22,.025,gold);
+   for(let i=0;i<12;i++){const a=i*Math.PI/6;bolt(rr*.94*Math.cos(a),-hh*.3,rr*.94*Math.sin(a),.016,aluminium);}
   }else{
    // Stock engines with multi-chamber hardware keep their actual nozzle count.
    const cluster=mammoth?4:(twin||poodle||bobcat)?2:(spider||kodiak)?4:1,bodyR=r*(mammoth?1.02:mastodon?1.1:rhino?1.08:twin?.9:wolfhound?.94:skiff?.88:skipper?.9:mainsail?.95:bobcat?.86:kodiak?.8:cheetah?.72:ant?.5:spark?.56:twitch?.58:.82);
