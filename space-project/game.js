@@ -459,8 +459,19 @@ function renderPartPreviews(items){
  const buttons=[...list.querySelectorAll('button[data-part]')];
  const previews=[];
  for(const button of buttons){const p=items.find(x=>x.id===button.dataset.part);const holder=button.querySelector('.part-icon');if(!p||!holder)continue;holder.innerHTML='<canvas class="part-preview-canvas" width="232" height="116" aria-label="'+p.name+' の回転可能な3Dモデル"></canvas>';const canvas=holder.firstElementChild;canvas.dataset.partId=p.id;previews.push({canvas,p});}
- // 未描画の部品だけを1フレーム10個ずつ生成し、生成済みモデルはキャッシュ画像を即時表示する。
- for(const item of previews){const cached=partPreviewModelCache.get(item.p.id);if(cached){attachPartPreview(item.canvas,item.p,cached);showCachedPartPreview(cached,item.canvas);}else queuePartPreview(item.canvas,item.p);}
+ // 画面内に入った部品だけ3D生成する。下に隠れた部品はスクロールされるまで処理しない。
+ partPreviewObserver=new IntersectionObserver(entries=>{
+  for(const entry of entries){
+   if(!entry.isIntersecting)continue;
+   const canvas=entry.target,part=items.find(p=>p.id===canvas.dataset.partId);
+   if(part){partPreviewObserver.unobserve(canvas);queuePartPreview(canvas,part);}
+  }
+ },{root:list,rootMargin:'140px 0px'});
+ for(const item of previews){
+  const cached=partPreviewModelCache.get(item.p.id);
+  if(cached){attachPartPreview(item.canvas,item.p,cached);showCachedPartPreview(cached,item.canvas);}
+  else partPreviewObserver.observe(item.canvas);
+ }
 }
 function partHoverInfo(p){
  const types={
