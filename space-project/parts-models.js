@@ -4,7 +4,6 @@
 // Cached family finishes and per-part artwork keep materials consistent without
 // allocating a new high-resolution texture every time a preview is revisited.
 const PART_SKIN_CACHE=new Map();
-const PART_BUMP_CACHE=new WeakMap();
 function getPartSkin(THREE,family){
  if(PART_SKIN_CACHE.has(family))return PART_SKIN_CACHE.get(family);
  const c=document.createElement('canvas');c.width=512;c.height=512;
