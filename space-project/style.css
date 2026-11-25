@@ -621,3 +621,12 @@ body.part-drag-over #viewport canvas{cursor:copy!important;}
 }
 .vab-craft-name:focus{border-color:#e0b56e;box-shadow:0 0 0 2px #d69a4540;background:#1d2b34}
 .vab-craft-name::placeholder{color:#bdc7c8}
+
+
+/* Taller thumbnail window so long 3D parts stay fully inside their frame. */
+#parts .part-list .part{height:116px!important;min-height:116px!important;grid-auto-rows:116px!important}
+#parts .part-list .part-icon{height:100%!important;min-height:0!important;flex:1 1 auto!important}
+#parts .part-list .part-preview-canvas{height:100%!important;max-height:100%!important;object-fit:contain!important}
+@media(max-width:700px){
+ #parts .part-list .part{height:104px!important;min-height:104px!important;grid-auto-rows:104px!important}
+}
