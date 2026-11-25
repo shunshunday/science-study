@@ -224,7 +224,7 @@ export function createPartModel(p,THREE){
  const detailRivets=(rad,y,count=16,offset=0)=>{for(let i=0;i<count;i++){const a=i*Math.PI*2/count+offset;bolt(Math.cos(a)*rad,y,Math.sin(a)*rad,.018);}};
  const radialPipe=(rad,y0,y1,a,mat=aluminium,thick=.018)=>tube([[Math.cos(a)*rad,y0,Math.sin(a)*rad],[Math.cos(a*1.02)*rad*1.025,(y0+y1)/2,Math.sin(a*1.02)*rad*1.025],[Math.cos(a)*rad,y1,Math.sin(a)*rad]],thick,mat); 
  const makeTank=()=>{
-  const isRcs=id.startsWith('rcs-')||id==='mh-flr5',xenon=id.includes('xenon'),ore=id.startsWith('ore-')||/ore storage|鉱石/.test(name),oscar=id.includes('oscar'),donut=id.includes('donut')||id.includes('r12'),baguette=id.includes('baguette')||id.includes('r11'),rock=/rockomax|x200|jumbo/i.test(id+' '+name),kerb=id.includes('s3-')||id.includes('s4-'),mk2=id.includes('mk2-lf'),mk3=id.includes('mk3-lf'),mk0=id.includes('mk0-lf');
+  const isRcs=id.startsWith('rcs-')||id==='mh-flr5',xenon=id.includes('xenon'),ore=id.startsWith('ore-')||/ore storage|鉱石/.test(name),oscar=id.includes('oscar'),donut=id.includes('donut')||id.includes('r12')||/ドーナツ/.test(name),baguette=id.includes('baguette')||id.includes('r11'),rock=/rockomax|x200|jumbo/i.test(id+' '+name),kerb=id.includes('s3-')||id.includes('s4-'),mk2=id.includes('mk2-lf'),mk3=id.includes('mk3-lf'),mk0=id.includes('mk0-lf');
   // Making History tanks use distinct real-world-derived diameters and silhouettes.
   if(id.startsWith('mh-')){
    const finish=(family,label=name)=>makeTankArtwork(THREE,id,label,family);
@@ -355,10 +355,34 @@ export function createPartModel(p,THREE){
    box(r*.44,.11,.025,ivory,[0,0,r*.75]);
    cyl(r*.28,r*.28,.12,steel,h*.49,32);cyl(r*.24,r*.24,.1,dark,-h*.49,32);
   }
+  else if(mk2||mk3){
+   // Mk2 and Mk3 liquid-fuel tanks use spaceplane fuselage cross-sections, not round rocket barrels.
+   const width=r*(mk3?1.32:1.08),depth=r*(mk3?.94:.64),hh=h*(mk3?1.04:.92);
+   const shape=new THREE.Shape(),corner=Math.min(width,depth)*.2;
+   shape.moveTo(-width*.5+corner,-depth*.5);
+   shape.lineTo(width*.5-corner,-depth*.5);shape.quadraticCurveTo(width*.5,-depth*.5,width*.5,-depth*.5+corner);
+   shape.lineTo(width*.5,depth*.5-corner);shape.quadraticCurveTo(width*.5,depth*.5,width*.5-corner,depth*.5);
+   shape.lineTo(-width*.5+corner,depth*.5);shape.quadraticCurveTo(-width*.5,depth*.5,-width*.5,depth*.5-corner);
+   shape.lineTo(-width*.5,-depth*.5+corner);shape.quadraticCurveTo(-width*.5,-depth*.5,-width*.5+corner,-depth*.5);
+   const shellMat=M(0xffffff,.48,.56,{map:makeTankArtwork(THREE,id,name,'mk')});
+   add(new THREE.ExtrudeGeometry(shape,{depth:hh,bevelEnabled:true,bevelSegments:5,bevelSize:.035,bevelThickness:.035}),shellMat,[0,-hh*.5,0],[-Math.PI/2,0,0]);
+   for(const y of [-hh*.48,hh*.48])add(new THREE.ShapeGeometry(shape),steel,[0,y,0],[-Math.PI/2,0,0]);
+   // Four longitudinal reinforcement rails, aft service hatch and top fuel feed flange.
+   for(let side of [-1,1]){
+    tube([[side*width*.47,-hh*.4,depth*.18],[side*width*.5,0,depth*.18],[side*width*.47,hh*.4,depth*.18]],.035,aluminium);
+    tube([[side*width*.47,-hh*.4,-depth*.18],[side*width*.5,0,-depth*.18],[side*width*.47,hh*.4,-depth*.18]],.028,steel);
+    for(let j=0;j<6;j++)bolt(side*width*.47,(j-2.5)*hh*.13,depth*.2,.018,gold);
+   }
+   box(width*.48,hh*.2,.05,dark,[0,0,depth*.51]);
+   box(width*.34,hh*.12,.025,ivory,[0,0,depth*.54]);
+   for(let i=0;i<6;i++)box(width*.055,.022,.02,i%2?orange:gold,[(i-2.5)*width*.08,0,depth*.56]);
+   for(let y of [-hh*.3,hh*.3])for(let side of [-1,1])box(width*.16,.09,.07,orange,[side*width*.38,y,depth*.3]);
+   return;
+  }
   else{
    let rad=r,profile;
    if(mk2||mk3){rad*=mk3?1.05:1;profile=[[0,-h*.5],[rad*.72,-h*.5],[rad*.93,-h*.45],[rad,-h*.35],[rad,h*.35],[rad*.93,h*.45],[rad*.72,h*.5],[0,h*.5]];}
-   else if(oscar){profile=[[0,-h*.5],[r*.65,-h*.5],[r*.92,-h*.42],[r,-h*.25],[r,h*.25],[r*.92,h*.42],[r*.65,h*.5],[0,h*.5]];}
+   else if(oscar){profile=[[0,-h*.5],[r*.34,-h*.47],[r*.62,-h*.36],[r*.84,-h*.18],[r*.96,0],[r*.84,h*.18],[r*.62,h*.36],[r*.34,h*.47],[0,h*.5]];}
    else if(rock){profile=[[0,-h*.5],[r*.72,-h*.5],[r*.9,-h*.47],[r*.98,-h*.42],[r,-h*.34],[r,h*.34],[r*.98,h*.42],[r*.9,h*.47],[r*.72,h*.5],[0,h*.5]];}
    else if(kerb){profile=[[0,-h*.5],[r*.68,-h*.5],[r*.88,-h*.47],[r*.97,-h*.42],[r,h*.42],[r*.97,h*.46],[r*.88,h*.49],[r*.68,h*.5],[0,h*.5]];}
    else{profile=[[0,-h*.5],[r*.58,-h*.5],[r*.82,-h*.48],[r*.94,-h*.44],[r*.985,-h*.36],[r*.985,h*.36],[r*.94,h*.44],[r*.82,h*.48],[r*.58,h*.5],[0,h*.5]];}
