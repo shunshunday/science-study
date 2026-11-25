@@ -1027,7 +1027,7 @@ export function createPartModel(p,THREE){
  }; const makeDecoupler=()=>{
   const nm=(id+' '+name).toLowerCase();
   const adapter=/adapter|アダプター/.test(nm),tri=/tri.?coupler|トライ/.test(nm),quad=/quad.?coupler|クアッド/.test(nm),bi=/bi.?coupler|バイカプラー/.test(nm),hub=/hubmax/.test(nm);
-  const radial=/radial|tt-?38|tt-?70|hydraulic|hdm|ラジアル|油圧式/.test(nm);
+  const radial=/radial|tt-?38|tt-?70|hydraulic|hdm|ラジアル|油圧式/.test(nm),hdm=/hydraulic|hdm|油圧式/.test(nm),tt70=/tt-?70/.test(nm);
   const fuelLine=/fuel.?line|fuel-line|燃料ダクト/.test(nm);
   if(fuelLine){
    // FTX-2 external fuel duct: twin flexible transfer hoses with end couplings and clamp saddles.
@@ -1048,7 +1048,49 @@ export function createPartModel(p,THREE){
   const beam=/i-beam|girder|beam|panel|mobility enhancer|パネル|ビーム|桁/.test(nm);
   const strut=/strut|hardpoint|pylon|ストラット|ハードポイント|パイロン/.test(nm);
   if(radial){
-   // TT-38K family: narrow side-mounted release rail, twin guide cheeks and a sprung ejector.
+   if(hdm){
+    // Hydraulic Separation Manifold: wide attachment plate, paired hydraulic rams and a reinforced ejector face.
+    const w=r*1.02,len=h*1.05,depth=r*.24;
+    box(w,len,depth,painted('#7d898b','#c56b31','HYDRAULIC SEPARATION MANIFOLD',name));
+    box(w*.84,len*.82,depth*.28,dark,[0,0,depth*.62]);
+    for(let side of [-1,1]){
+     const x=side*w*.31;
+     box(w*.22,len*.78,depth*.38,steel,[x,0,depth*.34]);
+     for(let y of [-1,1]){
+      const yy=y*len*.25;
+      const ram=new THREE.Mesh(new THREE.CylinderGeometry(r*.095,r*.12,len*.42,24),aluminium);
+      ram.position.set(x,yy,depth*.7);ram.rotation.z=side*.12;g.add(ram);
+      const piston=new THREE.Mesh(new THREE.CylinderGeometry(r*.052,r*.052,len*.22,20),gold);
+      piston.position.set(x,yy+y*len*.25,depth*.72);piston.rotation.z=side*.12;g.add(piston);
+      tube([[x,yy-y*len*.13,depth*.7],[x,yy,depth*.82],[x,yy+y*len*.13,depth*.7]],.025,orange);
+     }
+     tube([[x,-len*.4,depth*.78],[x,0,depth*.88],[x,len*.4,depth*.78]],.035,orange);
+     for(let j=0;j<6;j++)bolt(x,(j-2.5)*len*.14,depth*.82,.022,gold);
+    }
+    box(w*.46,len*.18,depth*.25,orange,[0,0,depth*.82]);
+    for(let i=0;i<8;i++){const x=(i-3.5)*w*.105;box(w*.055,len*.08,.04,aluminium,[x,0,depth*.98]);}
+    for(let side of [-1,1])tube([[side*w*.42,-len*.42,depth*.2],[side*w*.56,-len*.2,depth*.45],[side*w*.42,len*.42,depth*.2]],.045,steel);
+    return;
+   }
+   if(tt70){
+    // TT-70: a long stand-off bracket moves the booster away from the core before separation.
+    const width=r*.4,length=h*1.05,offset=r*.68;
+    box(width,length*.9,r*.2,steel,[0,0,0]);
+    box(width*.76,length*.72,r*.26,dark,[0,0,r*.12]);
+    for(let side of [-1,1]){
+     tube([[side*width*.42,-length*.42,0],[side*width*.58,-length*.22,offset*.48],[side*width*.42,length*.42,offset]],.045,aluminium);
+     tube([[side*width*.42,length*.42,0],[side*width*.58,length*.22,offset*.48],[side*width*.42,-length*.42,offset]],.035,steel);
+     box(width*.18,length*.86,.08,gold,[side*width*.48,0,offset*.92]);
+     for(let j=0;j<5;j++)bolt(side*width*.48,(j-2)*length*.18,offset,.022,orange);
+    }
+    box(width*.92,.14,offset*.36,steel,[0,length*.46,offset*.82]);
+    box(width*.92,.14,offset*.36,steel,[0,-length*.46,offset*.82]);
+    const ejector=new THREE.Mesh(new THREE.CylinderGeometry(r*.12,r*.16,offset*.82,24),gold);
+    ejector.rotation.x=Math.PI/2;ejector.position.set(0,0,offset*.48);g.add(ejector);
+    box(width*.66,length*.2,.08,orange,[0,0,offset*1.02]);
+    return;
+   }
+   // TT-38K: compact side-mounted release rail, twin guide cheeks and a sprung ejector.
    const bodyW=Math.max(.12,r*.34),bodyH=Math.max(.42,h*.9);
    box(bodyW,bodyH,r*.22,steel);
    box(bodyW*.42,bodyH*.82,r*.25,dark,[0,0,r*.16]);
@@ -1182,26 +1224,27 @@ export function createPartModel(p,THREE){
    box(r*.62,.1,.08,dark,[0,0,r*.9]);return;
   }
   // Axial stack couplers have a thin split collar and machined top/bottom flanges.
-  const hh=separator?h*.34:h*.28;
-  lathe([[0,-hh*.5],[r*.72,-hh*.5],[r*.92,-hh*.42],[r,-hh*.28],[r,-hh*.16],[r*.84,-hh*.08],[r*.84,hh*.08],[r,hh*.16],[r,hh*.28],[r*.92,hh*.42],[r*.72,hh*.5],[0,hh*.5]],steel,80);
-  band(r*.99,hh*.42,.045,aluminium);band(r*.99,-hh*.42,.045,gold);
-  band(r*.86,0,.045,dark);band(r*.9,separator?hh*.16:-hh*.12,.025,orange);
-  detailRivets(r*.93,-hh*.3,16);detailRivets(r*.93,hh*.3,16,.1);
+  const sizeScale=/06|small|小型/.test(nm)?.52:/12|medium|中型/.test(nm)?.82:/25|large|大型/.test(nm)?1.18:/37|50|xl|超大/.test(nm)?1.48:1;
+  const rr=r*sizeScale,hh=(separator?h*.34:h*.28)*sizeScale;
+  lathe([[0,-hh*.5],[rr*.72,-hh*.5],[rr*.92,-hh*.42],[rr,-hh*.28],[rr,-hh*.16],[rr*.84,-hh*.08],[rr*.84,hh*.08],[rr,hh*.16],[rr,hh*.28],[rr*.92,hh*.42],[rr*.72,hh*.5],[0,hh*.5]],painted('#687477','#b68b4e',separator?'STACK SEPARATOR':'DIRECTIONAL DECOUPLER',name),80);
+  band(rr*.99,hh*.42,.045,aluminium);band(rr*.99,-hh*.42,.045,gold);
+  band(rr*.86,0,.045,dark);band(rr*.9,separator?hh*.16:-hh*.12,.025,orange);
+  detailRivets(rr*.93,-hh*.3,16);detailRivets(rr*.93,hh*.3,16,.1);
   // Small black/yellow caution blocks around the separation seam.
-  for(let i=0;i<12;i++){const ang=i*Math.PI/6,x=Math.cos(ang)*r*.995,z=Math.sin(ang)*r*.995;box(r*.09,.035,.025,i%2?dark:gold,[x,0,z],[0,-ang,0]);}
+  for(let i=0;i<12;i++){const ang=i*Math.PI/6,x=Math.cos(ang)*rr*.995,z=Math.sin(ang)*rr*.995;box(rr*.09,.035,.025,i%2?dark:gold,[x,0,z],[0,-ang,0]);}
   if(adapter){
-   lathe([[0,hh*.12],[r*.5,hh*.12],[r*.55,hh*.22],[r*.85,hh*.48],[r*.95,hh*.5],[0,hh*.5]],ivory,64);
-   band(r*.55,hh*.22,.035,gold);
+   lathe([[0,hh*.12],[rr*.5,hh*.12],[rr*.55,hh*.22],[rr*.85,hh*.48],[rr*.95,hh*.5],[0,hh*.5]],ivory,64);
+   band(rr*.55,hh*.22,.035,gold);
   }
   if(tri||quad||bi){
    const n=tri?3:quad?4:2;
-   for(let i=0;i<n;i++){const ang=i*Math.PI*2/n,x=Math.cos(ang)*r*.58,z=Math.sin(ang)*r*.58;lathe([[0,hh*.12],[r*.22,hh*.12],[r*.24,hh*.48],[0,hh*.48]],aluminium,32,[x,0,z]);band(r*.23,hh*.46,.025,gold).position.set(x,hh*.46,z);}
+   for(let i=0;i<n;i++){const ang=i*Math.PI*2/n,x=Math.cos(ang)*rr*.58,z=Math.sin(ang)*rr*.58;lathe([[0,hh*.12],[rr*.22,hh*.12],[rr*.24,hh*.48],[0,hh*.48]],aluminium,32,[x,0,z]);band(rr*.23,hh*.46,.025,gold).position.set(x,hh*.46,z);}
   }
   // Direction arrow on one-way decouplers; separators receive symmetric release lips.
   if(!separator){
-   const arrow=new THREE.Mesh(new THREE.ConeGeometry(r*.13,h*.18,3),orange);arrow.position.set(0,hh*.54,r*.84);arrow.rotation.x=Math.PI/2;g.add(arrow);
+   const arrow=new THREE.Mesh(new THREE.ConeGeometry(rr*.13,h*.18,3),orange);arrow.position.set(0,hh*.54,rr*.84);arrow.rotation.x=Math.PI/2;g.add(arrow);
   }else{
-   band(r*.97,hh*.5,.025,orange);band(r*.97,-hh*.5,.025,orange);
+   band(rr*.97,hh*.5,.025,orange);band(rr*.97,-hh*.5,.025,orange);
   }
  };
  const makeM1TireTexture=()=>{
