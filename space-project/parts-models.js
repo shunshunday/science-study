@@ -290,6 +290,14 @@ export function createPartModel(p,THREE){
    for(let i=0;i<4;i++){const a=i*Math.PI/2,x=Math.cos(a)*r*.98,z=Math.sin(a)*r*.98;box(r*.34,h*.16,r*.22,aluminium,[x,-h*.1,z],[0,-a,0]);bolt(x,-h*.1,z,.035,gold);}
   }else if(rcs){
    // RCS units are compact multi-axis nozzle blocks, not liquid rocket engines.
+   if(puff){
+    const rr=r*.48,hh=h*.58;
+    lathe([[0,-hh*.42],[rr*.7,-hh*.42],[rr,-hh*.28],[rr*.96,hh*.22],[rr*.72,hh*.42],[0,hh*.42]],painted('#7a8588','#b68b4e','MONOPROPELLANT ENGINE',name),48);
+    band(rr,hh*.28,.035,gold);band(rr,-hh*.3,.035,steel);
+    const bell=lathe([[0,-hh*.52],[rr*.42,-hh*.52],[rr*.72,-hh*.36],[rr*.86,-hh*.1],[rr*.58,hh*.2],[0,hh*.2]],steel,32,[0,-hh*.48,0]);bell.scale.setScalar(.85);
+    for(let side of [-1,1]){tube([[side*rr*.7,hh*.12,0],[side*rr*.95,-hh*.08,rr*.12],[side*rr*.78,-hh*.28,rr*.12]],.025,orange);bolt(side*rr*.78,hh*.3,rr*.3,.018,gold);}
+    box(rr*1.7,.12,rr*1.2,steel,[0,hh*.42,0]);return;
+   }
    const block=/rv-105|rv-1x|rcs thruster block/.test(nm),linear=/place-anywhere|linear rcs/.test(nm),vernor=/vernor|vernier/.test(nm);
    const small=/rv-1x|place-anywhere 1|cub vernor/.test(nm),bodyW=r*(small?.68:block?1.02:.86),bodyH=h*(vernor?.72:.58);
    box(bodyW,bodyH,bodyW*.88,painted('#c7cbc7','#b68b4e',block?'RCS THRUSTER BLOCK':'MONOPROPELLANT THRUSTER',name));
@@ -356,45 +364,6 @@ export function createPartModel(p,THREE){
     tube([[side*rr*.52,-hh*.24,rr*.3],[side*rr*.9,-hh*.34,rr*.36],[side*rr*.92,hh*.18,rr*.36]],.035,orange);
    }
    box(rr*1.35,.12,rr*.92,steel,[0,-hh*.5,0]);
-  }else if(rcs){
-   // RCS units are compact multi-axis nozzle blocks, not liquid rocket engines.
-   const block=/rv-105|rv-1x|rcs thruster block/.test(nm),linear=/place-anywhere|linear rcs/.test(nm),vernor=/vernor|vernier/.test(nm);
-   const small=/rv-1x|place-anywhere 1|cub vernor/.test(nm),bodyW=r*(small?.68:block?1.02:.86),bodyH=h*(vernor?.72:.58);
-   if(puff){
-    const rr=r*.48,hh=h*.58;
-    lathe([[0,-hh*.42],[rr*.7,-hh*.42],[rr,-hh*.28],[rr*.96,hh*.22],[rr*.72,hh*.42],[0,hh*.42]],painted('#7a8588','#b68b4e','MONOPROPELLANT ENGINE',name),48);
-    band(rr,hh*.28,.035,gold);band(rr,-hh*.3,.035,steel);
-    const bell=lathe([[0,-hh*.52],[rr*.42,-hh*.52],[rr*.72,-hh*.36],[rr*.86,-hh*.1],[rr*.58,hh*.2],[0,hh*.2]],steel,32,[0,-hh*.48,0]);bell.scale.setScalar(.85);
-    for(let side of [-1,1]){tube([[side*rr*.7,hh*.12,0],[side*rr*.95,-hh*.08,rr*.12],[side*rr*.78,-hh*.28,rr*.12]],.025,orange);bolt(side*rr*.78,hh*.3,rr*.3,.018,gold);}
-    box(rr*1.7,.12,rr*1.2,steel,[0,hh*.42,0]);return;
-   }
-   box(bodyW,bodyH,bodyW*.88,painted('#c7cbc7','#b68b4e',block?'RCS THRUSTER BLOCK':'MONOPROPELLANT THRUSTER',name));
-   box(bodyW*.82,bodyH*.14,bodyW*.82,steel,[0,bodyH*.42,0]);
-   for(let side of [-1,1])for(let zside of [-1,1])bolt(side*bodyW*.38,bodyH*.38,zside*bodyW*.34,.022,gold);
-   const nozzle=(pos,rot,scale=1)=>{
-    const nr=bodyW*(small?.12:.18)*scale,nh=bodyH*(small?.28:.34)*scale;
-    const mesh=lathe([[0,-nh*.5],[nr*.55,-nh*.5],[nr,-nh*.24],[nr*.92,nh*.18],[nr*.62,nh*.5],[0,nh*.5]],steel,32);g.remove(mesh);
-    const assembly=new THREE.Group();assembly.add(mesh);
-    const lip=new THREE.Mesh(new THREE.TorusGeometry(nr*.88,.025*scale,8,32),aluminium);lip.position.y=nh*.5;lip.rotation.x=-Math.PI/2;assembly.add(lip);
-    const aperture=new THREE.Mesh(new THREE.CircleGeometry(nr*.68,32),black);aperture.position.y=nh*.505;aperture.rotation.x=-Math.PI/2;assembly.add(aperture);
-    assembly.position.set(pos[0],pos[1],pos[2]);assembly.rotation.set(rot[0],rot[1],rot[2]);g.add(assembly);return assembly;
-   };
-   if(block){
-    const dirs=[{p:[bodyW*.55,0,0],r:[0,0,-Math.PI/2]},{p:[-bodyW*.55,0,0],r:[0,0,Math.PI/2]},{p:[0,0,bodyW*.5],r:[Math.PI/2,0,0]},{p:[0,0,-bodyW*.5],r:[-Math.PI/2,0,0]}];
-    for(const d of dirs)nozzle(d.p,d.r,small?.82:1);
-    for(let i=0;i<4;i++){const a=i*Math.PI/2;radialPipe(bodyW*.36,-bodyH*.28,bodyH*.48,a,orange,.018);}
-    box(bodyW*.56,bodyH*.3,.025,dark,[0,0,bodyW*.46]);box(bodyW*.4,.025,.018,ivory,[0,bodyH*.08,bodyW*.48]);
-   }else if(linear){
-    const count=/place-anywhere 7/.test(nm)?7:1,cols=3;
-    for(let i=0;i<count;i++){const x=count===7?(i%cols-1)*bodyW*.23:0,y=count===7?(Math.floor(i/cols)-1)*bodyW*.22:0,z=bodyW*.45;nozzle([x,y,z],[Math.PI/2,0,0],count===7?.52:1);}
-    box(bodyW*.9,.09,bodyW*.82,aluminium,[0,bodyH*.4,0]);
-    for(let side of [-1,1])bolt(side*bodyW*.38,bodyH*.45,bodyW*.3,.02,gold);
-   }else if(vernor){
-    lathe([[0,-bodyH*.55],[r*.3,-bodyH*.55],[r*.42,-bodyH*.38],[r*.44,bodyH*.2],[r*.34,bodyH*.38],[0,bodyH*.38]],painted('#777f80','#c56b31','VERNIER MONOPROPELLANT ENGINE',name),48);
-    band(r*.44,-bodyH*.35,.04,gold);band(r*.4,bodyH*.26,.035,steel);nozzle([0,-bodyH*.5,0],[Math.PI,0,0],small?.7:1.5);
-    for(let i=0;i<8;i++){const a=i*Math.PI/4;radialPipe(r*.44,-bodyH*.22,bodyH*.4,a,aluminium,.018);}
-   }
-   for(let i=0;i<8;i++){const a=i*Math.PI/4;bolt(bodyW*.42*Math.cos(a),-bodyH*.42,bodyW*.42*Math.sin(a),.018,gold);}
   }else if(jet){
    const shellR=r*.78;lathe([[0,-h*.43],[shellR*.7,-h*.43],[shellR,-h*.34],[shellR,h*.32],[shellR*.82,h*.44],[shellR*.45,h*.47],[0,h*.47]],aluminium,64);
    const inlet=add(new THREE.TorusGeometry(shellR*.72,.075,16,64),steel,[0,0,h*.43],[Math.PI/2,0,0]);add(new THREE.CircleGeometry(shellR*.66,48),black,[0,0,h*.432],[Math.PI/2,0,0]);
@@ -427,8 +396,9 @@ export function createPartModel(p,THREE){
     for(let i=0;i<12;i++){const a=i*Math.PI/6;radialPipe(r*.66,-h*.1,h*.17,a,steel,.022);}
    }
    else{
+    const nr=cluster===4?r*.34:cluster===2?r*.42:terrier?r*.72:poodle?r*.82:rhino?r*1.08:mastodon?r*.96:wolfhound?r*.9:skiff?r*.92:skipper?r*.84:mainsail?r*.82:bobcat?r*.78:kodiak?r*.7:cheetah?r*.62:ant?r*.42:spark?r*.48:twitch?r*.5:r*.68;
     for(let k=0;k<cluster;k++){
-     const a=k*Math.PI*2/cluster,x=cluster===1?0:Math.cos(a)*r*.38,z=cluster===1?0:Math.sin(a)*r*.38,nr=cluster===4?r*.34:cluster===2?r*.42:terrier?r*.72:poodle?r*.82:rhino?r*1.08:mastodon?r*.96:wolfhound?r*.9:skiff?r*.92:skipper?r*.84:mainsail?r*.82:bobcat?r*.78:kodiak?r*.7:cheetah?r*.62:ant?r*.42:spark?r*.48:twitch?r*.5:r*.68;
+     const a=k*Math.PI*2/cluster,x=cluster===1?0:Math.cos(a)*r*.38,z=cluster===1?0:Math.sin(a)*r*.38;
      const profile=[[nr*.22,-h*.58],[nr*.3,-h*.55],[nr*.48,-h*.4],[nr*.72,-h*.2],[nr*.92,-h*.06],[nr,-h*.025],[nr*.94,-h*.0],[nr*.82,-h*.04],[nr*.68,-h*.13],[nr*.48,-h*.34],[nr*.3,-h*.52],[nr*.22,-h*.58]];
      lathe(profile,steel,48,[x,0,z]);
      const throat=add(new THREE.CircleGeometry(nr*.56,32),black,[x,-h*.565,z],[Math.PI/2,0,0]);
