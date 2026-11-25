@@ -1842,9 +1842,12 @@ export function createPartModel(p,THREE){
  const makeAirbrake=()=>{
   const root=lathe([[0,-h*.28],[r*.36,-h*.28],[r*.44,h*.22],[r*.36,h*.28],[0,h*.28]],steel,32);
   const bladeShape=new THREE.Shape();bladeShape.moveTo(-r*.72,-h*.42);bladeShape.lineTo(r*.72,-h*.42);bladeShape.lineTo(r*.62,h*.42);bladeShape.lineTo(-r*.62,h*.42);bladeShape.closePath();
-  const blade=add(new THREE.ExtrudeGeometry(bladeShape,{depth:.07,bevelEnabled:true,bevelSegments:3,bevelSize:.035,bevelThickness:.02}),ivory,[0,0,r*.22],[Math.PI/2,0,0]);
-  for(let i=0;i<5;i++){box(.025,h*.64,.018,gold,[(i-2)*r*.24,.09,r*.27]);}
+  const blade=add(new THREE.ExtrudeGeometry(bladeShape,{depth:.07,bevelEnabled:true,bevelSegments:4,bevelSize:.035,bevelThickness:.02}),painted('#cbd0ce','#c56b31','A.I.R.B.R.A.K.E.S',name),[0,0,r*.22],[Math.PI/2,0,0]);
+  for(let i=0;i<5;i++){box(.025,h*.64,.018,aluminium,[(i-2)*r*.24,.09,r*.27]);}
   for(let side of [-1,1]){tube([[side*r*.28,-h*.2,0],[side*r*.6,h*.05,r*.22],[side*r*.62,h*.2,r*.28]],.035,aluminium);bolt(side*r*.35,-h*.18,0,.05,gold);}
+  const hinge=new THREE.Mesh(new THREE.CylinderGeometry(.055,.055,r*1.42,24),steel);hinge.rotation.z=Math.PI/2;hinge.position.set(0,-h*.34,r*.22);g.add(hinge);
+  for(let side of [-1,1]){const actuator=new THREE.Mesh(new THREE.CylinderGeometry(.035,.055,h*.36,16),gold);actuator.position.set(side*r*.42,-h*.03,r*.12);actuator.rotation.z=-side*.42;g.add(actuator);tube([[side*r*.42,-h*.18,r*.12],[side*r*.55,h*.02,r*.22],[side*r*.62,h*.18,r*.28]],.022,steel);}
+  for(let side of [-1,1])for(let y of [-h*.3,h*.28])bolt(side*r*.62,y,r*.28,.022,gold);
   band(r*.42,h*.22,.035,gold);
  };
  // Select a dedicated construction family; no one-size-fits-all primitive stand-in.
