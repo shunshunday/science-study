@@ -464,7 +464,7 @@ function getSharedPreviewRenderer(){
  if(!sharedPreviewRenderer){
   const surface=document.createElement('canvas');
   sharedPreviewRenderer=new THREE.WebGLRenderer({canvas:surface,antialias:false,alpha:false,powerPreference:'low-power'});
-  sharedPreviewRenderer.setPixelRatio(1);sharedPreviewRenderer.setSize(232,88,false);sharedPreviewRenderer.outputColorSpace=THREE.SRGBColorSpace;sharedPreviewRenderer.toneMapping=THREE.ACESFilmicToneMapping;sharedPreviewRenderer.toneMappingExposure=1.2;
+  sharedPreviewRenderer.setPixelRatio(1);sharedPreviewRenderer.setSize(176,176,false);sharedPreviewRenderer.outputColorSpace=THREE.SRGBColorSpace;sharedPreviewRenderer.toneMapping=THREE.ACESFilmicToneMapping;sharedPreviewRenderer.toneMappingExposure=1.2;
  }
  return sharedPreviewRenderer;
 }
@@ -493,8 +493,8 @@ function renderOnePartPreview(canvas,p){
   const key=new THREE.DirectionalLight(0xffedcf,3.2);key.position.set(3,5,4);scene.add(key);
   const fill=new THREE.DirectionalLight(0x9fc8e8,1.1);fill.position.set(-4,1,-3);scene.add(fill);
   const model=partMesh(p);scene.add(model);const box=new THREE.Box3().setFromObject(model),center=box.getCenter(new THREE.Vector3()),sphere=box.getBoundingSphere(new THREE.Sphere());model.position.sub(center);
-  const camera=new THREE.PerspectiveCamera(34,232/88,.01,1000),dist=Math.max(.7,sphere.radius/Math.sin(THREE.MathUtils.degToRad(camera.fov/2))*1.08);camera.position.set(dist*.55,dist*.35,dist*.75);camera.lookAt(0,0,0);camera.far=dist*12;camera.updateProjectionMatrix();
-  const originalRotation=model.rotation.clone(),snapshot=document.createElement('canvas');snapshot.width=232;snapshot.height=88;
+  const camera=new THREE.PerspectiveCamera(34,1,.01,1000),dist=Math.max(.7,sphere.radius/Math.sin(THREE.MathUtils.degToRad(camera.fov/2))*1.08);camera.position.set(dist*.55,dist*.35,dist*.75);camera.lookAt(0,0,0);camera.far=dist*12;camera.updateProjectionMatrix();
+  const originalRotation=model.rotation.clone(),snapshot=document.createElement('canvas');snapshot.width=176;snapshot.height=176;
   entry={scene,camera,model,originalRotation,snapshot,canvas:null,hovered:false,raf:0,lastFrame:0};partPreviewModelCache.set(p.id,entry);attachPartPreview(canvas,p,entry);paintPartPreview(entry,canvas);
  }catch(err){canvas.replaceWith(Object.assign(document.createElement('span'),{className:'part-preview-error',textContent:'3D'}));}
 }
@@ -505,7 +505,7 @@ function renderPartPreviews(items){
  const list=$('#part-list');list.innerHTML=list.innerHTML;
  const buttons=[...list.querySelectorAll('button[data-part]')];
  const previews=[];
- for(const button of buttons){const p=items.find(x=>x.id===button.dataset.part);const holder=button.querySelector('.part-icon');if(!p||!holder)continue;holder.innerHTML='<canvas class="part-preview-canvas" width="232" height="88" aria-label="'+p.name+' の回転可能な3Dモデル"></canvas>';const canvas=holder.firstElementChild;canvas.dataset.partId=p.id;previews.push({canvas,p});}
+ for(const button of buttons){const p=items.find(x=>x.id===button.dataset.part);const holder=button.querySelector('.part-icon');if(!p||!holder)continue;holder.innerHTML='<canvas class="part-preview-canvas" width="176" height="176" aria-label="'+p.name+' の回転可能な3Dモデル"></canvas>';const canvas=holder.firstElementChild;canvas.dataset.partId=p.id;previews.push({canvas,p});}
  // 画面内に入った部品だけ3D生成する。下に隠れた部品はスクロールされるまで処理しない。
  partPreviewObserver=new IntersectionObserver(entries=>{
   for(const entry of entries){
