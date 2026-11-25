@@ -2623,13 +2623,24 @@ export function createPartModel(p,THREE){
   const shield=/heat shield|耐熱シールド|heatshield/.test(nm),inflatable=/10m|inflatable|膨張/.test(nm),panel=/radiator panel|ラジエーターパネル/.test(nm),edge=/edge|エッジ/.test(nm),control=/thermal control|熱制御システム/.test(nm),large=/large|大型/.test(nm),medium=/medium|中型/.test(nm);
   if(shield){
    // Ablative shield: ceramic tile face, segmented metal rim and recessed separation hardware.
-   const rr=r*(inflatable?1.5:1),th=h*(inflatable?.22:.3),tileMat=M(0xffffff,.08,.96,{map:makeThermalTileMaterial(THREE)});
+   const rr=r*(inflatable?.62:1),th=h*(inflatable?.62:.3),tileMat=M(0xffffff,.08,.96,{map:makeThermalTileMaterial(THREE)});
    if(inflatable){
-    const membrane=add(new THREE.CircleGeometry(rr,96),M(0x9da7a7,.12,.92,{side:THREE.DoubleSide}),[0,h*.18,0],[Math.PI/2,0,0]);
-    const outer=add(new THREE.TorusGeometry(rr,.13,18,96),M(0x6d777b,.25,.82),[0,h*.18,0],[Math.PI/2,0,0]);
-    for(let i=0;i<24;i++){const ang=i*Math.PI/12,x=Math.cos(ang)*rr*.92,z=Math.sin(ang)*rr*.92;tube([[0,h*.18,0],[x,h*.18,z]],.018,aluminium);bolt(x,h*.18,z,.025,gold);}
-    for(let i=0;i<12;i++){const ang=i*Math.PI/6;const x=Math.cos(ang)*rr*.8,z=Math.sin(ang)*rr*.8;box(rr*.22,.07,.1,steel,[x,h*.18,z],[0,-ang,0]);}
-    cyl(rr*.38,rr*.38,.12,dark,-h*.08,64);band(rr*.42,-h*.08,.045,gold);
+    // 10m inflatable shield is packed into a launch canister; the broad membrane is not deployed in the VAB.
+    const packMat=painted('#737c7c','#c56b31','INFLATABLE HEAT SHIELD PACK',name);
+    lathe([[0,-th*.5],[rr*.72,-th*.5],[rr*.92,-th*.38],[rr, -th*.18],[rr*.96,th*.22],[rr*.82,th*.42],[rr*.62,th*.5],[0,th*.5]],packMat,64);
+    for(let y of [-th*.4,-th*.2,th*.22,th*.42])band(rr*(y>0?.84:.98),y,.04,y<0?steel:gold);
+    // Folded membrane pleats are visible as narrow radial folds around the packed circumference.
+    for(let i=0;i<16;i++){
+     const a=i*Math.PI/8,x=Math.cos(a)*rr*.98,z=Math.sin(a)*rr*.98;
+     tube([[x,-th*.3,z],[x*.9,-th*.08,z*.9],[x,th*.12,z],[x*.78,th*.36,z*.78]],.018,aluminium);
+     box(.055,th*.68,.07,steel,[x,0,z],[0,-a,0]);
+     bolt(x,th*.38,z,.018,gold);
+    }
+    cyl(rr*.62,rr*.62,.1,dark,th*.55,48);
+    cyl(rr*.5,rr*.5,.08,steel,-th*.55,48);
+    add(new THREE.TorusGeometry(rr*.52,.035,10,48),gold,[0,th*.58,0]);
+    box(rr*.58,.1,.08,orange,[0,-th*.62,0]);
+    for(let side of [-1,1])tube([[side*rr*.7,-th*.35,0],[side*rr*.88,0,rr*.14],[side*rr*.7,th*.35,0]],.025,steel);
    }else{
     lathe([[0,-th*.5],[rr*.76,-th*.5],[rr*.94,-th*.42],[rr,-th*.2],[rr*.98,th*.2],[rr*.86,th*.5],[rr*.58,th*.55],[0,th*.55]],tileMat,96);
     band(rr*.99,-th*.25,.06,steel);band(rr*.98,th*.3,.055,gold);band(rr*.82,th*.5,.025,aluminium);
