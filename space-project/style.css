@@ -638,4 +638,5 @@ body.part-drag-over #viewport canvas{cursor:copy!important;}
 
 
 /* Keep part cards from handing a held drag to browser scrolling; list scrolling remains available between cards. */
-#part-list .part{touch-action:none!important;}
+#part-list .part{touch-action:none!important;user-select:none!important;-webkit-user-select:none!important;}
+#part-list .part .part-icon,#part-list .part .part-preview-canvas{pointer-events:none!important;}
