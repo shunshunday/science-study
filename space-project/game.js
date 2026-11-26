@@ -589,7 +589,7 @@ function drawPartsCatalogV2(){
  let items=catalog.filter(p=>(activePartCategory==='すべて'||categoryFor(p)===activePartCategory)&&(!query||(p.name+' '+p.id+' '+categoryFor(p)).toLowerCase().includes(query)));
  items.sort((a,b)=>sort==='mass'?a.mass-b.mass:sort==='cost'?a.cost-b.cost:sort==='size'?a.height-b.height:a.name.localeCompare(b.name,'ja'));
  $('#part-result-count').textContent=items.length+' 件';
- $('#part-list').innerHTML=items.map(p=>{const unlocked=gameMode==='sandbox'||unlockedTech.has(p.tech||'basic'),esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const sourceLabel=p.catalogSource==='Making History'?'MAKING HISTORY':p.catalogSource==='Breaking Ground'?'BREAKING GROUND':p.catalogSource==='stock'?'STOCK':'BASE';return '<button class="part" draggable="true" data-part="'+p.id+'" aria-label="'+esc(p.name)+'" '+(unlocked?'':'disabled')+' data-tip="'+esc(partHoverInfo(p))+'"><span class="part-icon"></span></button>';}).join('');renderPartPreviews(items);
+ $('#part-list').innerHTML=items.map(p=>{const unlocked=gameMode==='sandbox'||unlockedTech.has(p.tech||'basic'),esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const sourceLabel=p.catalogSource==='Making History'?'MAKING HISTORY':p.catalogSource==='Breaking Ground'?'BREAKING GROUND':p.catalogSource==='stock'?'STOCK':'BASE';return '<button class="part" data-part="'+p.id+'" aria-label="'+esc(p.name)+'" '+(unlocked?'':'disabled')+' data-tip="'+esc(partHoverInfo(p))+'"><span class="part-icon"></span></button>';}).join('');renderPartPreviews(items);
 }
 
 const techTree=[
@@ -767,15 +767,15 @@ renderCategories();drawPartsCatalogV2();rebuildHangarCrew();
 
 $('#part-categories').addEventListener('click',e=>{const b=e.target.closest('[data-part-category]');if(b){const chosen=b.dataset.partCategory;const panel=$('#parts');if(activePartCategory===chosen&&!panel.classList.contains('categories-collapsed')){panel.classList.add('categories-collapsed');return;}activePartCategory=chosen;panel.classList.remove('categories-collapsed');renderCategories();drawPartsCatalogV2();}});
 $('#part-search').addEventListener('input',drawPartsCatalogV2);$('#part-sort').addEventListener('change',drawPartsCatalogV2);
-// Controlled pointer drag: no native browser drag image, so the catalog/sidebar never gets carried.
+// Unified pointer drag: disable native HTML dragging and capture on the stable catalog container.
  let catalogPointerDrag=null;
- $('#part-list').addEventListener('dragstart',e=>e.preventDefault());
- $('#part-list').addEventListener('pointerdown',e=>{
+ const partList=$('#part-list');
+ partList.addEventListener('pointerdown',e=>{
   const b=e.target.closest('button[data-part]');
   if(!b||b.disabled||mode!=='vab'||flight||(e.pointerType==='mouse'&&e.button!==0))return;
   e.preventDefault();
-  try{b.setPointerCapture(e.pointerId);}catch{}
   catalogPointerDrag={id:b.dataset.part,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,moved:false};
+  try{partList.setPointerCapture(e.pointerId);}catch{}
  },true);
  document.addEventListener('pointermove',e=>{
   if(!catalogPointerDrag||e.pointerId!==catalogPointerDrag.pointerId)return;
@@ -787,7 +787,7 @@ $('#part-search').addEventListener('input',drawPartsCatalogV2);$('#part-sort').a
  const finishCatalogPointerDrag=e=>{
   if(!catalogPointerDrag||e.pointerId!==catalogPointerDrag.pointerId)return;
   const drag=catalogPointerDrag;catalogPointerDrag=null;document.body.classList.remove('part-dragging','part-drag-over');
-  if(!drag.moved)return;
+  if(e.type==='pointercancel'||!drag.moved)return;
   const rect=renderer.domElement.getBoundingClientRect();
   if(mode==='vab'&&!flight&&e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom)placePartAtScreen(drag.id,e.clientX,e.clientY);
  };
